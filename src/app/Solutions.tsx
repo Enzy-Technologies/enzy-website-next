@@ -80,7 +80,7 @@ export function Solutions() {
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-center w-full px-4 pt-32 pb-24 max-w-7xl mx-auto z-20 min-h-screen">
+      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
       
       {/* Header */}
       <motion.div 
