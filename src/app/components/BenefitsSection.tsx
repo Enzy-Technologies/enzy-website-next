@@ -15,7 +15,7 @@ export function BenefitsSection() {
           <h2 className="font-['Roboto_Mono'] text-[#19ad7d] text-xs uppercase tracking-widest">
             Benefits
           </h2>
-          <p className={`font-['Inter'] font-bold text-5xl md:text-[60px] tracking-[-3px] leading-[0.9] ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} font-[IvyOra_Text]`}>
+          <p className={`font-medium text-5xl md:text-[60px] tracking-[-3px] leading-[0.9] ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} font-[IvyOra_Text]`}>
             When behavior changes, results follow.
           </p>
           <p className={`font-['Roboto_Mono'] text-[15px] uppercase tracking-[-0.075px] max-w-[600px] leading-relaxed ${isLightMode ? 'text-[#4a5568]' : 'text-[#a3adb8]'}`}>
