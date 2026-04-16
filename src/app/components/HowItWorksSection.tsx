@@ -7,7 +7,7 @@ import analyzeImg from "@/assets/818a5b0370e47250af5f3233218b98f9533f97ef.png";
 
 export function HowItWorksSection() {
   return (
-    <section className="relative z-20 w-full bg-[rgba(255,255,255,0.6)] backdrop-blur-[32px] border-t border-white/60 flex justify-center overflow-hidden rounded-t-[40px] md:rounded-t-[60px] lg:rounded-t-[80px] -mt-[150px] md:-mt-[250px] lg:-mt-[350px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] bg-[#ffffffe3] px-[16px] py-[64px]">
+    <section className="relative z-20 w-full bg-[rgba(255,255,255,0.6)] backdrop-blur-[32px] border-t border-white/60 flex justify-center overflow-hidden rounded-t-[40px] md:rounded-t-[60px] lg:rounded-t-[80px] -mt-[320px] md:-mt-[420px] lg:-mt-[560px] shadow-[0_-20px_60px_rgba(0,0,0,0.1)] bg-[#ffffffe3] px-[16px] py-[64px]">
       <div className="w-full max-w-[1280px] flex flex-col items-start gap-12 relative">
         
         {/* Header */}

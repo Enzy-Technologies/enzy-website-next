@@ -82,7 +82,7 @@ function Frame4() {
 function Header() {
   return (
     <header className="content-stretch flex flex-col gap-[52px] items-center max-w-[1500px] overflow-clip relative shrink-0 w-[1200px]" data-name="Header">
-      <h1 className="block font-['IvyOra_Text:Medium',sans-serif] leading-[0.95] not-italic relative shrink-0 text-[#f5f7fa] text-[110px] text-center tracking-[-0.04em] w-full max-w-[1200px] px-4 mx-auto">
+      <h1 className="block font-['IvyOra_Text:Medium',sans-serif] leading-[0.95] not-italic relative shrink-0 text-[#f5f7fa] text-[110px] text-center tracking-[-2px] w-full max-w-[1200px] px-4 mx-auto">
         The Operating System for<br />
         High-Performance<br />
         Sales Teams

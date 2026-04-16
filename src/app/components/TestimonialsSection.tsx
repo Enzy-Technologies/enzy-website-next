@@ -132,7 +132,7 @@ export function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center w-full gap-4 text-center"
         >
-          <h2 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-3px] leading-[1.1] font-medium`}>
+          <h2 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[1.1] font-medium`}>
             Loved by leaders
           </h2>
           <p className={`font-['Inter'] text-sm md:text-base ${isLightMode ? "text-black/60" : "text-white/60"} uppercase tracking-widest max-w-[600px]`}>

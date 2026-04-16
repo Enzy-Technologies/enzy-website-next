@@ -32,7 +32,7 @@ export default function Frame() {
   return (
     <div className="bg-[rgba(255,255,255,0.21)] overflow-clip relative rounded-[89.831px] size-full">
       <Group />
-      <div className="-translate-x-1/2 absolute font-['IvyOra_Text:Medium',sans-serif] leading-[0] left-[173.58px] not-italic text-[#f5f7fa] text-[10.522px] text-center top-[46.54px] tracking-[-0.6576px] whitespace-nowrap">
+      <div className="-translate-x-1/2 absolute font-['IvyOra_Text:Medium',sans-serif] leading-[0] left-[173.58px] not-italic text-[#f5f7fa] text-[10.522px] text-center top-[46.54px] tracking-[-2px] whitespace-nowrap">
         <p className="leading-[13.153px] mb-0">“Makes other platforms look</p>
         <p className="leading-[13.153px]">elementary. It really stands out.”</p>
       </div>

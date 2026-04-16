@@ -159,9 +159,9 @@ export function FeaturesSection() {
   };
 
   return (
-    <section className={`relative w-full py-24 flex flex-col items-center ${isLightMode ? 'bg-[#f5f7fa]' : 'bg-[#0b0f14]'}`}>
+    <section className="relative w-full py-24 flex flex-col items-center bg-transparent">
       <div className="w-full flex flex-col items-center gap-4 mb-12 text-center px-4">
-        <h1 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-3px] leading-[1.1] font-medium`}>
+        <h1 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[1.1] font-medium`}>
           Features
         </h1>
         <p className={`font-['Inter'] tracking-[-0.04em] text-center max-w-2xl ${isLightMode ? 'text-black/60' : 'text-white/50'} text-[18px] md:text-[22px]`}>
