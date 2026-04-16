@@ -7,7 +7,7 @@ export function Privacy() {
   const { isLightMode } = useTheme();
 
   return (
-    <main className={`w-full pt-32 pb-24 px-4 md:px-12 lg:px-20 max-w-4xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
+    <main className={`w-full pt-8 md:pt-16 lg:pt-24 pb-16 px-4 md:px-12 lg:px-20 max-w-4xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 font-['Inter']">Privacy Policy</h1>
         <p className="opacity-70 mb-8 font-['Roboto_Mono'] text-sm">Effective Date: August 09, 2024</p>
         

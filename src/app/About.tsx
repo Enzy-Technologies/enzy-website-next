@@ -25,7 +25,7 @@ export function About() {
 
   return (
     <>
-      <div className="relative w-full flex flex-col items-center justify-start pt-32 pb-40 overflow-hidden min-h-screen z-20 transition-colors duration-500">
+      <div className="relative w-full flex flex-col items-center justify-start pt-8 md:pt-16 lg:pt-24 pb-24 md:pb-32 overflow-hidden z-20 transition-colors duration-500">
       
       {/* Background Glows */}
       <div className={`absolute top-[20%] right-[-10%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.08)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${isLightMode ? 'opacity-50' : 'opacity-100'}`} />

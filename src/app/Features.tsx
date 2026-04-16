@@ -174,7 +174,7 @@ export function Features() {
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-center w-full px-4 pt-32 pb-16 max-w-7xl mx-auto z-20 min-h-[50vh]">
+      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-8 md:pb-12 max-w-7xl mx-auto z-20">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

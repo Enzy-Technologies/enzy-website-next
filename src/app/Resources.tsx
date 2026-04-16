@@ -131,7 +131,7 @@ export function Resources() {
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-32 pb-24 min-h-screen z-20">
+      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 z-20">
         <div className="max-w-7xl mx-auto w-full mb-16">
         <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-tight tracking-[-2px] text-center transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
           Learn <span className="text-[#19ad7d]">More</span>

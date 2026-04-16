@@ -66,15 +66,16 @@ export function QuickJumpFAB({
             }}
             transition={{ type: "spring", bounce: 0.22, duration: 0.6 }}
             style={{ transformOrigin: "bottom right" }}
-            className={`absolute bottom-[56px] right-0 mb-2 w-64 md:w-72 p-2 backdrop-blur-2xl rounded-2xl flex flex-col gap-1 overflow-hidden transition-colors duration-500 ${
+            className={`absolute bottom-full right-0 mb-3 w-64 md:w-72 p-2 backdrop-blur-2xl rounded-2xl flex flex-col gap-1 overflow-hidden transition-colors duration-500 ${
               isLightMode
-                ? "bg-white/80 border border-black/10 shadow-[0_16px_64px_rgba(0,0,0,0.1)]"
-                : "bg-[#0b0f14]/80 border border-white/10 shadow-[0_16px_64px_rgba(0,0,0,0.6)]"
+                ? "bg-white/75 border border-[#19ad7d]/20 shadow-[0_16px_64px_rgba(0,0,0,0.1)]"
+                : "bg-[#0b0f14]/80 border border-[#19ad7d]/20 shadow-[0_16px_64px_rgba(0,0,0,0.6)]"
             }`}
             role="menu"
             aria-label={title}
             aria-describedby={menuId}
           >
+            <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/50 to-transparent" />
             <div className={`p-3 border-b mb-1 transition-colors duration-500 ${isLightMode ? "border-black/5" : "border-white/5"}`}>
               <span
                 id={menuId}
@@ -126,7 +127,7 @@ export function QuickJumpFAB({
         onClick={() => setIsOpen((v) => !v)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="h-12 px-6 rounded-full gap-2 hover:scale-105 transition-transform duration-300 text-sm font-semibold tracking-wide uppercase"
+        className="w-14 h-14 md:w-16 md:h-16 p-0 rounded-[16px] md:rounded-[18px] hover:scale-105 transition-transform duration-300"
       >
         <AnimatePresence mode="wait">
           <motion.span
@@ -135,16 +136,12 @@ export function QuickJumpFAB({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.18 }}
-            className="flex items-center gap-2"
+            className="flex items-center justify-center"
           >
             {isOpen ? (
-              <>
-                <X size={16} /> Close
-              </>
+              <X size={22} />
             ) : (
-              <>
-                <Layers size={16} /> {title}
-              </>
+              <Layers size={22} />
             )}
           </motion.span>
         </AnimatePresence>
