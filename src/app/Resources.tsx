@@ -133,7 +133,7 @@ export function Resources() {
     <>
       <section className="relative flex flex-col items-center justify-start w-full px-4 pt-32 pb-24 min-h-screen z-20">
         <div className="max-w-7xl mx-auto w-full mb-16">
-        <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-tight tracking-tighter text-center transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+        <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-tight tracking-[-2px] text-center transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
           Learn <span className="text-[#19ad7d]">More</span>
         </h1>
         <p className={`font-['Inter'] text-sm md:text-base mt-6 max-w-2xl mx-auto text-center transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
@@ -192,7 +192,7 @@ export function Resources() {
                     <X size={20} />
                   </button>
 
-                  <h2 className="font-['IvyOra_Text'] text-4xl md:text-5xl text-black dark:text-white mb-6 mt-4">
+                  <h2 className="font-['IvyOra_Text'] font-medium text-4xl md:text-5xl tracking-[-2px] text-black dark:text-white mb-6 mt-4">
                     {selectedItem.title}
                   </h2>
                   <p className="font-['Inter'] text-lg text-black/60 dark:text-white/60 mb-8 leading-relaxed">

@@ -15,8 +15,12 @@ export function BenefitsSection() {
           <h2 className="font-['Roboto_Mono'] text-[#19ad7d] text-xs uppercase tracking-widest">
             Benefits
           </h2>
-          <p className={`font-['Inter'] font-bold text-5xl md:text-[60px] tracking-[-3px] leading-[0.9] ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} font-[IvyOra_Text]`}>
-            When behavior changes, results follow.
+          <p
+            className={`font-medium text-[32px] sm:text-[40px] md:text-[60px] lg:text-[72px] tracking-[-2px] leading-[1.05] md:leading-[0.9] ${isLightMode ? "text-brand-dark" : "text-brand-light"} font-[IvyOra_Text]`}
+          >
+            <span className="block">Visibility drives action.</span>
+            <span className="block">Action creates momentum.</span>
+            <span className="block">Momentum builds revenue.</span>
           </p>
           <p className={`font-['Roboto_Mono'] text-[15px] uppercase tracking-[-0.075px] max-w-[600px] leading-relaxed ${isLightMode ? 'text-[#4a5568]' : 'text-[#a3adb8]'}`}>
             Enzy provides real insights, without the data overload.
@@ -62,20 +66,7 @@ export function BenefitsSection() {
             </div>
           </div>
 
-          {/* Feature 4 */}
-          <div className={`flex flex-col gap-6 w-full border-t pt-10 ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
-            <div className="flex flex-col gap-3 h-full justify-center">
-              <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] font-bold tracking-[-1px] leading-tight ${isLightMode ? 'text-brand-dark' : 'text-brand-light'}`}>
-                Visibility drives action.
-              </h3>
-              <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] font-bold tracking-[-1px] leading-tight ${isLightMode ? 'text-brand-dark' : 'text-brand-light'}`}>
-                Action builds momentum.
-              </h3>
-              <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] font-bold tracking-[-1px] leading-tight text-[#19ad7d]`}>
-                Momentum drives revenue.
-              </h3>
-            </div>
-          </div>
+          {/* Feature 4 removed */}
 
         </div>
       </div>

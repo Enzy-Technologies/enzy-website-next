@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue } from "motion/react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { createPortal } from "react-dom";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
 import userScreen from "@/assets/61beea51a9bcfe1555d356d42bbc0ef63df8b0d3.png";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -67,6 +68,8 @@ export function HeroSection() {
   const { isLightMode } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
+  const [isPhoneExpanded, setIsPhoneExpanded] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   const nextScreen = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -78,11 +81,143 @@ export function HeroSection() {
     setCurrentScreenIndex((prev) => (prev - 1 + SCREEN_IMAGES.length) % SCREEN_IMAGES.length);
   };
 
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isPhoneExpanded) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsPhoneExpanded(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isPhoneExpanded]);
+
+  const phoneOverlay =
+    hasMounted && isPhoneExpanded
+      ? createPortal(
+          <AnimatePresence>
+            <motion.div
+              className="fixed inset-0 z-[9999] md:hidden pointer-events-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsPhoneExpanded(false)}
+            >
+              <div className="absolute inset-0 bg-black/60" />
+
+              <div className="absolute top-4 right-4 z-20">
+                <CloseButton onClick={() => setIsPhoneExpanded(false)} />
+              </div>
+
+              <div className="absolute inset-0 flex items-center justify-center p-6">
+                <motion.div
+                  layoutId="hero-phone"
+                  className="relative"
+                  style={{
+                    width: "min(92vw, 420px)",
+                    aspectRatio: "375 / 812",
+                  }}
+                  initial={{ scale: 0.98 }}
+                  animate={{ scale: 1 }}
+                  exit={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 30 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <div
+                    className={`relative w-full h-full rounded-[36px] border-[3px] border-solid overflow-hidden ${
+                      isLightMode
+                        ? "border-black/20 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]"
+                        : "border-white/50 bg-black shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
+                    }`}
+                  >
+                    <div
+                      className={`absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-[28px] rounded-b-[20px] z-10 ${
+                        isLightMode ? "bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)]" : "bg-black"
+                      }`}
+                    />
+
+                    <div className={`absolute inset-[12px] rounded-[24px] overflow-hidden ${isLightMode ? "bg-white" : "bg-black"}`}>
+                      <AnimatePresence>
+                        <motion.div
+                          key={currentScreenIndex}
+                          initial={{ opacity: 0, scale: 1.02 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 1 }}
+                          transition={{ duration: 0.6, ease: "easeInOut" }}
+                          className="absolute inset-0 w-full h-full"
+                        >
+                          {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
+                            <ImageWithFallback
+                              src={SCREEN_IMAGES[currentScreenIndex]}
+                              alt={`Dashboard Screen ${currentScreenIndex + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <img
+                              src={SCREEN_IMAGES[currentScreenIndex]}
+                              alt={`Dashboard Screen ${currentScreenIndex + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                          )}
+                        </motion.div>
+                      </AnimatePresence>
+
+                      <div className="absolute inset-0 flex items-center justify-between px-2 z-20 pointer-events-none">
+                        <button
+                          onClick={prevScreen}
+                          className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/60 text-white/90 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
+                        >
+                          <ChevronLeft size={20} />
+                        </button>
+                        <button
+                          onClick={nextScreen}
+                          className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/60 text-white/90 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
+                        >
+                          <ChevronRight size={20} />
+                        </button>
+                      </div>
+
+                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-[#11161d]/60 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 pointer-events-auto">
+                        {SCREEN_IMAGES.map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setCurrentScreenIndex(i);
+                            }}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              i === currentScreenIndex ? "bg-[#19ad7d] w-4" : "bg-white/40 w-1.5"
+                            }`}
+                            aria-label={`Go to screen ${i + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+          </AnimatePresence>,
+          document.body
+        )
+      : null;
+
   return (
-    <section className="relative flex flex-col items-center w-full px-4 pt-8 md:pt-16 lg:pt-24 max-w-7xl mx-auto pointer-events-none">
-      {/* Header Content */}
-      <div className="flex flex-col items-center w-full gap-6 md:gap-10">
-        <h1 className={`font-['IvyOra_Text'] font-medium leading-[1.1] tracking-[-0.04em] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}>
+    <>
+      <section className="relative flex flex-col items-center w-full px-4 pt-8 md:pt-16 lg:pt-24 max-w-7xl mx-auto pointer-events-none">
+        {/* Header Content */}
+        <div className="flex flex-col items-center w-full gap-6 md:gap-10">
+        <h1 className={`font-['IvyOra_Text'] font-medium leading-[1.1] tracking-[-2px] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}>
           The Operating System<br />
           for High-Performance<br />
           Sales Teams
@@ -249,96 +384,128 @@ export function HeroSection() {
           </motion.div>
 
           {/* Mobile - Phone */}
-          <motion.div
-            animate={{
-              y: isHovered ? -150 : 10,
-              scale: isHovered ? 1.05 : 1,
-            }}
-            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-            className="relative mx-auto md:hidden cursor-pointer pb-8"
-            style={{
-              width: 'min(85vw, 375px)',
-              aspectRatio: '375 / 812',
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsHovered(!isHovered);
-            }}
-          >
-            {/* Phone Frame */}
-            <div
-              className={`relative w-full h-full rounded-[36px] border-[3px] border-solid overflow-hidden ${isLightMode ? 'border-black/20 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]' : 'border-white/50 bg-black'}`}
-              style={{ 
-                boxShadow: isHovered 
-                  ? (isLightMode ? '0px -8px 40px 0px rgba(0, 0, 0, 0.1), 0px 0px 60px 0px rgba(25, 173, 125, 0.15)' : '0px -8px 40px 0px rgba(0, 0, 0, 0.3), 0px 0px 60px 0px rgba(25, 173, 125, 0.2)') 
-                  : (isLightMode ? '0px -4px 20px 0px rgba(0, 0, 0, 0.05)' : '0px -4px 20px 0px rgba(0, 0, 0, 0.2)'),
-                transition: 'box-shadow 0.4s ease-out'
-              }}
-            >
-              {/* Notch */}
-              <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-[28px] rounded-b-[20px] z-10 ${isLightMode ? 'bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)]' : 'bg-black'}`} />
-              
-              {/* Inner Screen */}
-              <div className={`absolute inset-[12px] rounded-[24px] overflow-hidden ${isLightMode ? 'bg-white shadow-[inset_0_4px_12px_rgba(0,0,0,0.05)]' : 'bg-black'}`}>
-                <AnimatePresence>
-                  <motion.div
-                    key={currentScreenIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full"
-                  >
-                    {SCREEN_IMAGES[currentScreenIndex].startsWith('http') ? (
-                      <ImageWithFallback 
-                        src={SCREEN_IMAGES[currentScreenIndex]} 
-                        alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={SCREEN_IMAGES[currentScreenIndex]}
-                        alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-                
-                {/* Navigation Controls (Always visible on mobile, semi-transparent) */}
-                <div className="absolute inset-0 flex items-center justify-between px-2 z-20 pointer-events-none">
-                  <button 
-                    onClick={prevScreen} 
-                    className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
-                  <button 
-                    onClick={nextScreen} 
-                    className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
+          <AnimatePresence initial={false}>
+            {!isPhoneExpanded ? (
+              <motion.div
+                layoutId="hero-phone"
+                animate={{
+                  y: isHovered ? -150 : 10,
+                  scale: isHovered ? 1.05 : 1,
+                }}
+                transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+                className="relative mx-auto md:hidden cursor-pointer pb-8"
+                style={{
+                  width: "min(85vw, 375px)",
+                  aspectRatio: "375 / 812",
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPhoneExpanded(true);
+                }}
+              >
+                {/* Phone Frame */}
+                <div
+                  className={`relative w-full h-full rounded-[36px] border-[3px] border-solid overflow-hidden ${isLightMode ? "border-black/20 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]" : "border-white/50 bg-black"}`}
+                  style={{
+                    boxShadow: isHovered
+                      ? (isLightMode
+                          ? "0px -8px 40px 0px rgba(0, 0, 0, 0.1), 0px 0px 60px 0px rgba(25, 173, 125, 0.15)"
+                          : "0px -8px 40px 0px rgba(0, 0, 0, 0.3), 0px 0px 60px 0px rgba(25, 173, 125, 0.2)")
+                      : (isLightMode
+                          ? "0px -4px 20px 0px rgba(0, 0, 0, 0.05)"
+                          : "0px -4px 20px 0px rgba(0, 0, 0, 0.2)"),
+                    transition: "box-shadow 0.4s ease-out",
+                  }}
+                >
+                  {/* Notch */}
+                  <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-[28px] rounded-b-[20px] z-10 ${isLightMode ? "bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)]" : "bg-black"}`} />
+
+                  {/* Inner Screen */}
+                  <div className={`absolute inset-[12px] rounded-[24px] overflow-hidden ${isLightMode ? "bg-white shadow-[inset_0_4px_12px_rgba(0,0,0,0.05)]" : "bg-black"}`}>
+                    <AnimatePresence>
+                      <motion.div
+                        key={currentScreenIndex}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 1 }}
+                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                        className="absolute inset-0 w-full h-full"
+                      >
+                        {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
+                          <ImageWithFallback
+                            src={SCREEN_IMAGES[currentScreenIndex]}
+                            alt={`Dashboard Screen ${currentScreenIndex + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={SCREEN_IMAGES[currentScreenIndex]}
+                            alt={`Dashboard Screen ${currentScreenIndex + 1}`}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
+
+                    {/* Navigation Controls (Always visible on mobile, semi-transparent) */}
+                    <div className="absolute inset-0 flex items-center justify-between px-2 z-20 pointer-events-none">
+                      <button
+                        onClick={prevScreen}
+                        className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
+                      >
+                        <ChevronLeft size={20} />
+                      </button>
+                      <button
+                        onClick={nextScreen}
+                        className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
+                      >
+                        <ChevronRight size={20} />
+                      </button>
+                    </div>
+
+                    {/* Indicators */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-[#11161d]/50 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 pointer-events-auto">
+                      {SCREEN_IMAGES.map((_, i) => (
+                        <button
+                          key={i}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCurrentScreenIndex(i);
+                          }}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${i === currentScreenIndex ? "bg-[#19ad7d] w-4" : "bg-white/40 w-1.5"}`}
+                          aria-label={`Go to screen ${i + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                
-                {/* Indicators */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-[#11161d]/50 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 pointer-events-auto">
-                  {SCREEN_IMAGES.map((_, i) => (
-                    <button 
-                      key={i} 
-                      onClick={(e) => { e.stopPropagation(); setCurrentScreenIndex(i); }}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${i === currentScreenIndex ? 'bg-[#19ad7d] w-4' : 'bg-white/40 w-1.5'}`} 
-                      aria-label={`Go to screen ${i + 1}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
+              </motion.div>
+            ) : (
+              <div
+                className="relative mx-auto md:hidden pb-8"
+                style={{ width: "min(85vw, 375px)", aspectRatio: "375 / 812" }}
+              />
+            )}
+          </AnimatePresence>
         </motion.div>
 
-      </div>
-    </section>
+        </div>
+      </section>
+      {phoneOverlay}
+    </>
+  );
+}
+
+function CloseButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="pointer-events-auto inline-flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 hover:bg-black/70 active:bg-black/80 transition-colors"
+      aria-label="Close"
+    >
+      <span className="text-[20px] leading-none select-none">×</span>
+    </button>
   );
 }
 

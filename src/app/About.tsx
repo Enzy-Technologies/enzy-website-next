@@ -38,7 +38,7 @@ export function About() {
           <div className={`px-5 py-2 rounded-full border backdrop-blur-sm text-xs font-bold tracking-[0.2em] uppercase mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'}`}>
             The Engagement Problem
           </div>
-          <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-tighter max-w-3xl mb-8 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+          <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-[-2px] max-w-3xl mb-8 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
             You don't have a data problem. You have an <span className="text-[#19ad7d]">engagement</span> problem.
           </h1>
           <p className={`font-['Inter'] text-lg md:text-xl max-w-2xl leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
@@ -93,7 +93,7 @@ export function About() {
 
         {/* 4. What We Do Now */}
         <FadeInSection className="w-full text-center max-w-3xl mx-auto mb-32">
-          <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl mb-8 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
+          <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl mb-8 tracking-[-2px] transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
             An engine for high-performance cultures.
           </h2>
           <p className={`font-['Inter'] text-lg md:text-xl leading-relaxed mb-6 transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
@@ -195,7 +195,7 @@ export function About() {
             <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(25,173,125,0.2)_0%,transparent_70%)] transition-opacity duration-700 pointer-events-none ${isLightMode ? 'opacity-20 group-hover:opacity-40' : 'opacity-50 group-hover:opacity-100'}`} />
             
             <Target size={48} className="text-[#19ad7d] mb-8 relative z-10" />
-            <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl mb-6 relative z-10 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
+            <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl mb-6 tracking-[-2px] relative z-10 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
               Ready to change how your team works?
             </h2>
             <p className={`font-['Inter'] text-lg max-w-xl mx-auto mb-10 relative z-10 leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>

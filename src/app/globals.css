@@ -3,3 +3,14 @@
 @import "../styles/theme.css";
 @import "../styles/tailwind.css";
 
+/* Hide the browser scrollbar (keep scrolling enabled). */
+html,
+body {
+  -ms-overflow-style: none; /* IE/Edge legacy */
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}

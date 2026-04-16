@@ -98,8 +98,8 @@ export function TestimonialHero() {
               className="text-center max-w-3xl"
             >
               <h2 
-                className="text-3xl md:text-4xl lg:text-[56px] font-normal leading-tight md:leading-[70px] tracking-[-0.0625em] mb-6 transition-colors duration-500"
-                style={{ fontFamily: "'IvyOra_Text', serif", color: colors.text.primary }}
+                className="text-3xl md:text-4xl lg:text-[56px] font-medium leading-tight md:leading-[70px] tracking-[-2px] mb-6 transition-colors duration-500"
+                style={{ fontFamily: "'IvyOra_Text', serif", fontWeight: 500, letterSpacing: "-2px", color: colors.text.primary }}
               >
                 "Makes other platforms<br />look elementary. It really stands out."
               </h2>

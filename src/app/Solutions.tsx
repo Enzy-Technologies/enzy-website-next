@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "./components/ThemeProvider";
+import { QuickJumpFAB } from "./components/QuickJumpFAB";
 
 const SOLUTIONS_DATA = [
   {
@@ -71,6 +72,11 @@ export function Solutions() {
   }, []);
 
   const activeData = SOLUTIONS_DATA.find(s => s.id === activeId) || SOLUTIONS_DATA[0];
+  const jumpItems = SOLUTIONS_DATA.map((s, i) => ({
+    id: s.id,
+    label: s.role,
+    meta: (i + 1).toString().padStart(2, "0"),
+  }));
 
   return (
     <>
@@ -86,7 +92,7 @@ export function Solutions() {
         <div className={`px-5 py-2 rounded-full border backdrop-blur-sm text-xs font-bold tracking-[0.2em] uppercase mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'}`}>
           Platform Adaptability
         </div>
-        <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-tighter text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+        <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
           Tailored <span className="text-[#19ad7d]">Solutions</span>
         </h1>
         <p className={`font-['Inter'] text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/50'}`}>
@@ -225,6 +231,17 @@ export function Solutions() {
       </div>
 
       </section>
+
+      <QuickJumpFAB
+        title="Quick Jump"
+        items={jumpItems}
+        onJump={(id) => {
+          setActiveId(id);
+          const el = document.getElementById("solutions-interactive");
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+          if (window.location.hash !== `#${id}`) window.history.replaceState(null, "", `#${id}`);
+        }}
+      />
     </>
   );
 }

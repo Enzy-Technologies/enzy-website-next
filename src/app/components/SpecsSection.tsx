@@ -104,9 +104,10 @@ export function SpecsSection() {
                   className="text-[#f5f7fa]"
                   style={{ 
                     fontFamily: "'IvyOra_Text', serif",
+                    fontWeight: 500,
                     fontSize: '3.03cqw',
                     lineHeight: '3.79cqw',
-                    letterSpacing: '-0.19cqw'
+                    letterSpacing: "-2px"
                   }}
                 >
                   <p className="mb-0">“Makes other platforms look</p>
