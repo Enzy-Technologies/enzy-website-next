@@ -45,7 +45,8 @@ const LEARN_DATA = [
     bottomImage: imgStoriesBottom.src,
     textColor: "text-white",
     descColor: "text-white/70",
-    customBg: "bg-[#111113]", // Used a solid dark color to match Figma style
+    customBg:
+      "liquid-glass bg-[rgba(17,17,19,0.55)] border-white/12",
     layoutStyle: "tile3",
     content: "See how top solar and roofing teams increased their appointment set rates by 40% in just two months using real-time leaderboards and automated field tracking. Read our collection of case studies featuring organizations that transformed their culture from complacent to competitive overnight."
   },
@@ -147,14 +148,17 @@ export function Resources() {
             key={item.id}
             layoutId={`card-container-${item.id}`}
             onClick={() => setSelectedId(item.id)}
-            className={`relative overflow-hidden rounded-[24px] cursor-pointer group flex flex-col min-h-[380px] w-full ${item.colSpan} ${item.customBg || "bg-[#f5f7fa] dark:bg-[#111113]"}`}
+            className={`relative overflow-hidden rounded-[24px] cursor-pointer group flex flex-col min-h-[380px] w-full ${item.colSpan} ${
+              item.customBg ||
+              "liquid-glass"
+            }`}
             whileHover={{ scale: 0.99 }}
             transition={{ duration: 0.3 }}
           >
             {renderTileContent(item)}
             
             {/* Subtle hover overlay to indicate it's clickable */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 z-20" />
+            <div className="pointer-events-none absolute inset-0 z-20 bg-black/0 transition-colors duration-300 group-hover:bg-black/[0.04] dark:group-hover:bg-white/[0.04]" />
           </motion.div>
         ))}
       </div>
@@ -172,19 +176,22 @@ export function Resources() {
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
                 layoutId={`card-container-${selectedItem.id}`}
-                className={`relative overflow-hidden rounded-[32px] w-full max-w-5xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col md:flex-row shadow-2xl ${
-                  selectedItem.customBg || "bg-[#f5f7fa] dark:bg-[#111113]"
+                className={`relative overflow-hidden rounded-[32px] w-full max-w-5xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col md:flex-row liquid-glass ${
+                  selectedItem.customBg ? "bg-[rgba(17,17,19,0.55)] border-white/12" : ""
                 }`}
               >
                 {/* Left/Top Half: Original Artwork Layout */}
-                <div className={`relative w-full md:w-1/2 h-[40%] md:h-full flex-shrink-0 ${
-                  selectedItem.customBg || "bg-[#f5f7fa] dark:bg-[#111113]"
-                }`}>
+                <div
+                  className={`relative w-full md:w-1/2 h-[40%] md:h-full flex-shrink-0 ${
+                    selectedItem.customBg ||
+                    "bg-white/40 dark:bg-[rgba(11,15,20,0.5)]"
+                  }`}
+                >
                   {renderTileContent(selectedItem)}
                 </div>
 
                 {/* Right/Bottom Half: Expanded Content */}
-                <div className="flex-1 w-full md:w-1/2 h-[60%] md:h-full bg-white dark:bg-[#0b0f14] p-8 md:p-12 flex flex-col relative z-20 overflow-y-auto border-l border-black/5 dark:border-white/5">
+                <div className="flex-1 w-full md:w-1/2 h-[60%] md:h-full border-l border-black/8 bg-white/92 p-8 backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0f14]/92 md:p-12 flex flex-col relative z-20 overflow-y-auto">
                   <button
                     onClick={() => setSelectedId(null)}
                     className="absolute top-6 right-6 p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-black dark:text-white"

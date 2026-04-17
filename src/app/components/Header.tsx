@@ -31,7 +31,7 @@ export function Header() {
       <div 
         className={`absolute inset-0 transition-all duration-300 pointer-events-none ${
           isScrolled 
-            ? 'bg-[rgba(255,255,255,0.1)] backdrop-blur-[32px] shadow-[0_8px_32px_rgba(0,0,0,0.1)] border-b border-white/20' 
+            ? 'liquid-glass rounded-none border-x-0 border-t-0 border-b border-white/20 shadow-none' 
             : 'bg-transparent'
         }`}
       />

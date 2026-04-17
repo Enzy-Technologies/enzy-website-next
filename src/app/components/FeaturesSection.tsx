@@ -212,8 +212,8 @@ export function FeaturesSection() {
                 onMouseEnter={() => setIsHoveringIndex(i)}
                 onMouseLeave={() => setIsHoveringIndex(null)}
                 onClick={() => scrollToCard(i)}
-                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer transition-all duration-500 ease-out
-                  ${isCenter ? 'ring-2 ring-[#19ad7d] shadow-[0_0_40px_rgba(25,173,125,0.2)]' : 'opacity-60 hover:opacity-90'}
+                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
+                  ${isCenter ? 'ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]' : 'opacity-60 hover:opacity-90'}
                 `}
               >
                 {/* Background Image */}
@@ -222,11 +222,21 @@ export function FeaturesSection() {
                   alt={card.title} 
                   className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${showDetails ? 'scale-105' : 'scale-100'}`} 
                 />
-                
-                {/* Overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-t transition-colors duration-500 ease-out flex flex-col justify-end p-8 pb-10
-                  ${showDetails ? 'from-black via-black/60 to-black/0' : 'from-black/90 via-black/20 to-black/0'}
-                `}>
+
+                {/* Soft vignette for readability */}
+                <div
+                  className={`pointer-events-none absolute inset-0 bg-gradient-to-t transition-opacity duration-500 ${
+                    showDetails ? "from-black/55 via-black/15 to-transparent" : "from-black/70 via-black/10 to-transparent"
+                  }`}
+                />
+
+                {/* Frosted content sheet */}
+                <div
+                  className={`absolute bottom-0 left-0 right-0 flex flex-col border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[28px] ${
+                    showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
+                  }`}
+                >
+                  <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent" />
                   <h3 className="text-white text-2xl md:text-3xl font-bold font-['Inter'] mb-3 tracking-tight drop-shadow-md">
                     {card.title}
                   </h3>
@@ -240,7 +250,7 @@ export function FeaturesSection() {
                     {card.features.map((feature, j) => (
                       <li key={j} className="flex items-start gap-3">
                         <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_8px_rgba(25,173,125,0.8)]" />
-                        <span className="text-sm text-white/80 leading-snug">{feature}</span>
+                        <span className="text-sm text-white/85 leading-snug">{feature}</span>
                       </li>
                     ))}
                   </ul>

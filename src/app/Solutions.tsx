@@ -89,7 +89,7 @@ export function Solutions() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="flex flex-col items-center w-full mb-16 md:mb-24"
       >
-        <div className={`px-5 py-2 rounded-full border backdrop-blur-sm text-xs font-bold tracking-[0.2em] uppercase mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'}`}>
+        <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} eyebrow`}>
           Platform Adaptability
         </div>
         <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
@@ -105,7 +105,7 @@ export function Solutions() {
         
         {/* Left Column: Navigation Cards */}
         <div className="w-full lg:w-[35%] flex flex-col gap-4">
-          <div className={`uppercase tracking-[0.2em] text-[12px] font-bold mb-4 border-b pb-4 pl-2 transition-colors duration-500 ${isLightMode ? 'text-black/40 border-black/10' : 'text-white/40 border-white/10'}`}>
+          <div className={`mb-4 border-b pb-4 pl-2 transition-colors duration-500 ${isLightMode ? 'text-black/40 border-black/10' : 'text-white/40 border-white/10'} eyebrow`}>
             Solutions By Role
           </div>
           
@@ -117,7 +117,7 @@ export function Solutions() {
                 <button
                   key={solution.id}
                   onClick={() => setActiveId(solution.id)}
-                  className={`group relative text-left w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden backdrop-blur-xl ${
+                  className={`group relative text-left w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden liquid-glass ${
                     isActive 
                       ? isLightMode 
                         ? 'bg-[#19ad7d]/10 border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]'
@@ -154,11 +154,11 @@ export function Solutions() {
 
         {/* Right Column: Dynamic Content Area */}
         <div className="w-full lg:w-[65%] mt-8 lg:mt-0 flex flex-col">
-          <div className="text-transparent uppercase tracking-[0.2em] text-[12px] font-bold mb-4 border-b border-transparent pb-4 hidden lg:block select-none">
+          <div className="text-transparent mb-4 border-b border-transparent pb-4 hidden lg:block select-none eyebrow">
             Spacer
           </div>
           
-          <div className={`relative w-full flex-1 rounded-[32px] border backdrop-blur-[32px] overflow-hidden min-h-[500px] flex items-center transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-white/60 shadow-[0_16px_64px_rgba(0,0,0,0.05)]' : 'border-white/10 bg-[rgba(11,15,20,0.65)] shadow-[0_16px_64px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.05)]'}`}>
+          <div className="relative w-full flex-1 rounded-[32px] overflow-hidden min-h-[500px] flex items-center transition-colors duration-500 liquid-glass">
             
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.15)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
@@ -219,12 +219,12 @@ export function Solutions() {
 
       {/* Solutions By Industry (Placeholder for future) */}
       <div className="w-full mt-32 flex flex-col items-center">
-        <div className="text-white/40 uppercase tracking-[0.2em] text-[12px] font-bold mb-8">
+        <div className="text-white/40 mb-8 eyebrow">
           Solutions By Industry
         </div>
         <div className="w-full max-w-4xl h-[200px] flex items-center justify-center rounded-3xl border border-dashed border-white/20 bg-[rgba(255,255,255,0.02)] backdrop-blur-md relative overflow-hidden group">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.05)_0%,transparent_100%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-          <div className="px-6 py-3 rounded-full bg-[#19ad7d]/10 border border-[#19ad7d]/20 text-[#19ad7d] text-[12px] font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(25,173,125,0.1)]">
+          <div className="px-6 py-3 rounded-full bg-[#19ad7d]/10 border border-[#19ad7d]/20 text-[#19ad7d] shadow-[0_0_20px_rgba(25,173,125,0.1)] eyebrow">
             Coming Soon
           </div>
         </div>

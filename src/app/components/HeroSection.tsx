@@ -2,12 +2,17 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue } from "motion/react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Signal, Wifi, Battery } from "lucide-react";
 import { createPortal } from "react-dom";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
 import userScreen from "@/assets/61beea51a9bcfe1555d356d42bbc0ef63df8b0d3.png";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useTheme } from "./ThemeProvider";
+
+/** iPhone 17 class (6.3") — logical points per Apple / iOS layout (402×874). */
+const IPHONE_17_W = 402;
+const IPHONE_17_H = 874;
+const IPHONE_17_ASPECT = `${IPHONE_17_W} / ${IPHONE_17_H}` as const;
 
 const SCREEN_IMAGES = [
   imgInnerScreen.src,
@@ -64,12 +69,36 @@ const HERO_LOGOS_WITH_SUMMARY = HERO_LOGOS.map((url, i) => ({
 
 import { CTAButton } from "./CTAButton";
 
+function parsePreviewHostname(raw: string): string | null {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  try {
+    let s = trimmed;
+    if (!/^https?:\/\//i.test(s)) s = `https://${s}`;
+    const u = new URL(s);
+    const host = u.hostname.replace(/^www\./i, "");
+    return host || null;
+  } catch {
+    return null;
+  }
+}
+
 export function HeroSection() {
   const { isLightMode } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
   const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
   const [isPhoneExpanded, setIsPhoneExpanded] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const [previewDomain, setPreviewDomain] = useState<string | null>(null);
+
+  const applyUrlPreview = () => {
+    const host = parsePreviewHostname(urlInput);
+    setPreviewDomain(host);
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setIsPhoneExpanded(true);
+    }
+  };
 
   const nextScreen = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -113,96 +142,41 @@ export function HeroSection() {
               exit={{ opacity: 0 }}
               onClick={() => setIsPhoneExpanded(false)}
             >
-              <div className="absolute inset-0 bg-black/60" />
+              <div className="absolute inset-0 bg-black/55 backdrop-blur-md" />
 
               <div className="absolute top-4 right-4 z-20">
                 <CloseButton onClick={() => setIsPhoneExpanded(false)} />
               </div>
 
-              <div className="absolute inset-0 flex items-center justify-center p-6">
+              {/* Fits any screen: height-first so short phones & notches stay inside the viewport */}
+              <div
+                className="absolute inset-0 box-border flex items-center justify-center px-2"
+              >
                 <motion.div
-                  layoutId="hero-phone"
-                  className="relative"
+                  className="relative w-auto max-w-[100%] max-h-full min-h-0"
                   style={{
-                    width: "min(92vw, 420px)",
-                    aspectRatio: "375 / 812",
+                    aspectRatio: IPHONE_17_ASPECT,
+                    // Use width-first sizing but cap by viewport height (no safe-area math; avoids iOS quirks).
+                    width:
+                      "min(92vw, 460px, calc((100svh - 8rem) * 402 / 874))",
+                    height: "auto",
                   }}
-                  initial={{ scale: 0.98 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0.98 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 30 }}
+                  initial={{ scale: 0.98, opacity: 0.96 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.98, opacity: 0.96 }}
+                  transition={{ type: "spring", stiffness: 280, damping: 32 }}
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <div
-                    className={`relative w-full h-full rounded-[36px] border-[3px] border-solid overflow-hidden ${
-                      isLightMode
-                        ? "border-black/20 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]"
-                        : "border-white/50 bg-black shadow-[0_24px_80px_rgba(0,0,0,0.6)]"
-                    }`}
-                  >
-                    <div
-                      className={`absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-[28px] rounded-b-[20px] z-10 ${
-                        isLightMode ? "bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)]" : "bg-black"
-                      }`}
-                    />
-
-                    <div className={`absolute inset-[12px] rounded-[24px] overflow-hidden ${isLightMode ? "bg-white" : "bg-black"}`}>
-                      <AnimatePresence>
-                        <motion.div
-                          key={currentScreenIndex}
-                          initial={{ opacity: 0, scale: 1.02 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 1 }}
-                          transition={{ duration: 0.6, ease: "easeInOut" }}
-                          className="absolute inset-0 w-full h-full"
-                        >
-                          {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
-                            <ImageWithFallback
-                              src={SCREEN_IMAGES[currentScreenIndex]}
-                              alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <img
-                              src={SCREEN_IMAGES[currentScreenIndex]}
-                              alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                              className="w-full h-full object-cover"
-                            />
-                          )}
-                        </motion.div>
-                      </AnimatePresence>
-
-                      <div className="absolute inset-0 flex items-center justify-between px-2 z-20 pointer-events-none">
-                        <button
-                          onClick={prevScreen}
-                          className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/60 text-white/90 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                        >
-                          <ChevronLeft size={20} />
-                        </button>
-                        <button
-                          onClick={nextScreen}
-                          className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/60 text-white/90 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                        >
-                          <ChevronRight size={20} />
-                        </button>
-                      </div>
-
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-[#11161d]/60 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 pointer-events-auto">
-                        {SCREEN_IMAGES.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setCurrentScreenIndex(i);
-                            }}
-                            className={`h-1.5 rounded-full transition-all duration-300 ${
-                              i === currentScreenIndex ? "bg-[#19ad7d] w-4" : "bg-white/40 w-1.5"
-                            }`}
-                            aria-label={`Go to screen ${i + 1}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                  <div className="absolute inset-0 min-h-0">
+                    <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
+                      <HeroPhoneScreenContent
+                        currentScreenIndex={currentScreenIndex}
+                        previewDomain={previewDomain}
+                        prevScreen={prevScreen}
+                        nextScreen={nextScreen}
+                        setCurrentScreenIndex={setCurrentScreenIndex}
+                      />
+                    </HeroPhoneFrame>
                   </div>
                 </motion.div>
               </div>
@@ -266,22 +240,33 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Search/URL input */}
-        <div className={`backdrop-blur-md rounded-2xl border w-full max-w-3xl overflow-hidden relative group z-30 pointer-events-auto ${isLightMode ? 'bg-black/5 border-black/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)]' : 'bg-[#11161d]/24 border-[#666]'} m-[0px]`}>
-          <div className="flex items-center w-full pl-[16px] pr-[8px] py-[0px] mx-[0px] my-[8px]">
-            <input 
-              type="url" 
-              placeholder="Enter your URL for a sneak peek"
-              className={`flex-1 bg-transparent font-['Roboto_Mono'] text-[10px] md:text-sm uppercase tracking-tight outline-none w-full truncate ${isLightMode ? 'text-brand-dark placeholder:text-black/40' : 'text-brand-light placeholder:text-white/40'}`}
-              readOnly
-            />
-            <CTAButton 
-              type="button" 
-              className="ml-2 md:ml-4 shrink-0"
-            >
-              Preview
-            </CTAButton>
+        {/* Search/URL input — real input + preview ties domain to the device mock */}
+        <div className="flex w-full max-w-3xl flex-col gap-2 z-30 pointer-events-auto">
+          <div className={`backdrop-blur-md rounded-2xl border w-full overflow-hidden relative group ${isLightMode ? 'bg-black/5 border-black/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)]' : 'bg-[#11161d]/24 border-[#666]'}`}>
+            <div className="flex items-center w-full pl-[16px] pr-[8px] mx-[0px] my-[8px]">
+              <input
+                type="url"
+                inputMode="url"
+                autoComplete="url"
+                placeholder="yoursite.com"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    applyUrlPreview();
+                  }
+                }}
+                className={`flex-1 min-w-0 bg-transparent font-['Inter'] text-[11px] md:text-sm tracking-tight outline-none placeholder:uppercase placeholder:tracking-tight ${isLightMode ? 'text-brand-dark placeholder:text-black/40' : 'text-brand-light placeholder:text-white/40'}`}
+              />
+              <CTAButton type="button" className="ml-2 md:ml-4 shrink-0" onClick={applyUrlPreview}>
+                Preview
+              </CTAButton>
+            </div>
           </div>
+          <p className={`text-center text-[11px] md:text-xs font-['Inter'] ${isLightMode ? "text-black/45" : "text-white/45"}`}>
+            See a curated Enzy experience with your domain on the mockup — no signup required.
+          </p>
         </div>
 
         {/* Device Mockup - Responsive */}
@@ -327,6 +312,13 @@ export function HeroSection() {
             >
               {/* Inner Screen */}
               <div className={`absolute left-1/2 top-[16px] lg:top-[20px] -translate-x-1/2 w-[95%] h-[92%] rounded-[16px] lg:rounded-[20px] overflow-hidden ${isLightMode ? 'bg-white shadow-[0_4px_24px_rgba(0,0,0,0.05)]' : 'bg-black'}`}>
+                {previewDomain && (
+                  <div className="pointer-events-none absolute left-1/2 top-3 z-30 max-w-[85%] -translate-x-1/2">
+                    <div className="rounded-full border border-black/10 bg-white/90 px-3 py-1 text-center font-['Inter'] text-[10px] font-medium text-[#0b0f14] shadow-md backdrop-blur-sm dark:border-white/15 dark:bg-black/60 dark:text-white">
+                      Preview · <span className="text-[#19ad7d]">{previewDomain}</span>
+                    </div>
+                  </div>
+                )}
                 <AnimatePresence>
                   <motion.div
                     key={currentScreenIndex}
@@ -387,103 +379,42 @@ export function HeroSection() {
           <AnimatePresence initial={false}>
             {!isPhoneExpanded ? (
               <motion.div
-                layoutId="hero-phone"
                 animate={{
                   y: isHovered ? -150 : 10,
                   scale: isHovered ? 1.05 : 1,
                 }}
                 transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                className="relative mx-auto md:hidden cursor-pointer pb-8"
-                style={{
-                  width: "min(85vw, 375px)",
-                  aspectRatio: "375 / 812",
-                }}
+                className="relative mx-auto mb-8 w-[min(88vw,402px)] cursor-pointer md:hidden"
+                style={{ aspectRatio: IPHONE_17_ASPECT }}
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsPhoneExpanded(true);
                 }}
               >
-                {/* Phone Frame */}
                 <div
-                  className={`relative w-full h-full rounded-[36px] border-[3px] border-solid overflow-hidden ${isLightMode ? "border-black/20 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]" : "border-white/50 bg-black"}`}
+                  className="absolute inset-0 min-h-0 transition-[filter] duration-300"
                   style={{
-                    boxShadow: isHovered
-                      ? (isLightMode
-                          ? "0px -8px 40px 0px rgba(0, 0, 0, 0.1), 0px 0px 60px 0px rgba(25, 173, 125, 0.15)"
-                          : "0px -8px 40px 0px rgba(0, 0, 0, 0.3), 0px 0px 60px 0px rgba(25, 173, 125, 0.2)")
-                      : (isLightMode
-                          ? "0px -4px 20px 0px rgba(0, 0, 0, 0.05)"
-                          : "0px -4px 20px 0px rgba(0, 0, 0, 0.2)"),
-                    transition: "box-shadow 0.4s ease-out",
+                    filter: isHovered
+                      ? "drop-shadow(0 -12px 36px rgba(25, 173, 125, 0.22))"
+                      : "none",
                   }}
                 >
-                  {/* Notch */}
-                  <div className={`absolute top-0 left-1/2 -translate-x-1/2 w-[35%] h-[28px] rounded-b-[20px] z-10 ${isLightMode ? "bg-white shadow-[0_2px_4px_rgba(0,0,0,0.05)]" : "bg-black"}`} />
-
-                  {/* Inner Screen */}
-                  <div className={`absolute inset-[12px] rounded-[24px] overflow-hidden ${isLightMode ? "bg-white shadow-[inset_0_4px_12px_rgba(0,0,0,0.05)]" : "bg-black"}`}>
-                    <AnimatePresence>
-                      <motion.div
-                        key={currentScreenIndex}
-                        initial={{ opacity: 0, scale: 1.05 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 1 }}
-                        transition={{ duration: 0.8, ease: "easeInOut" }}
-                        className="absolute inset-0 w-full h-full"
-                      >
-                        {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
-                          <ImageWithFallback
-                            src={SCREEN_IMAGES[currentScreenIndex]}
-                            alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <img
-                            src={SCREEN_IMAGES[currentScreenIndex]}
-                            alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Navigation Controls (Always visible on mobile, semi-transparent) */}
-                    <div className="absolute inset-0 flex items-center justify-between px-2 z-20 pointer-events-none">
-                      <button
-                        onClick={prevScreen}
-                        className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                      >
-                        <ChevronLeft size={20} />
-                      </button>
-                      <button
-                        onClick={nextScreen}
-                        className="pointer-events-auto p-1.5 rounded-full bg-[#11161d]/50 text-white/80 active:bg-[#19ad7d] active:text-white backdrop-blur-md transition-colors border border-white/10"
-                      >
-                        <ChevronRight size={20} />
-                      </button>
-                    </div>
-
-                    {/* Indicators */}
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-[#11161d]/50 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-white/10 pointer-events-auto">
-                      {SCREEN_IMAGES.map((_, i) => (
-                        <button
-                          key={i}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setCurrentScreenIndex(i);
-                          }}
-                          className={`h-1.5 rounded-full transition-all duration-300 ${i === currentScreenIndex ? "bg-[#19ad7d] w-4" : "bg-white/40 w-1.5"}`}
-                          aria-label={`Go to screen ${i + 1}`}
-                        />
-                      ))}
-                    </div>
-                  </div>
+                  <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
+                    <HeroPhoneScreenContent
+                      currentScreenIndex={currentScreenIndex}
+                      previewDomain={previewDomain}
+                      prevScreen={prevScreen}
+                      nextScreen={nextScreen}
+                      setCurrentScreenIndex={setCurrentScreenIndex}
+                    />
+                  </HeroPhoneFrame>
                 </div>
               </motion.div>
             ) : (
               <div
-                className="relative mx-auto md:hidden pb-8"
-                style={{ width: "min(85vw, 375px)", aspectRatio: "375 / 812" }}
+                className="relative mx-auto mb-8 md:hidden"
+                style={{ width: "min(88vw, 402px)", aspectRatio: IPHONE_17_ASPECT }}
+                aria-hidden
               />
             )}
           </AnimatePresence>
@@ -506,6 +437,165 @@ function CloseButton({ onClick }: { onClick: () => void }) {
     >
       <span className="text-[20px] leading-none select-none">×</span>
     </button>
+  );
+}
+
+/**
+ * iPhone 17–class hardware chrome: titanium-style rail, Dynamic Island, thin bezels,
+ * camera-control ridge hint, home indicator. Proportions follow 402×874 pt.
+ */
+function HeroPhoneFrame({
+  isLightMode,
+  children,
+  className = "",
+  productLabel = "iPhone 17",
+}: {
+  isLightMode: boolean;
+  children: React.ReactNode;
+  className?: string;
+  productLabel?: string;
+}) {
+  return (
+    <div
+      data-device-mockup={productLabel}
+      className={`relative h-full w-full rounded-[48px] bg-gradient-to-b from-[#f2f2f3] via-[#c9c9cd] to-[#a1a1a8] p-[2.5px] shadow-[0_32px_100px_rgba(0,0,0,0.48),0_12px_36px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.5)] dark:from-[#63636d] dark:via-[#45454f] dark:to-[#1f1f23] dark:shadow-[0_32px_100px_rgba(0,0,0,0.75),0_12px_36px_rgba(0,0,0,0.5)] ${className}`}
+    >
+      {/* Side volume / Camera Control ridge (iPhone 16/17 family) */}
+      <div
+        className="pointer-events-none absolute left-0 top-[22%] z-0 h-16 w-[3px] -translate-x-[1px] rounded-full bg-gradient-to-b from-white/35 via-white/12 to-white/5 shadow-[2px_0_6px_rgba(0,0,0,0.35)]"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute left-0 top-[38%] z-0 h-10 w-[3px] -translate-x-[1px] rounded-full bg-gradient-to-b from-white/30 via-white/10 to-white/5 shadow-[2px_0_6px_rgba(0,0,0,0.3)]"
+        aria-hidden
+      />
+
+      <div className="relative h-full w-full overflow-hidden rounded-[45px] bg-[#0a0a0a] ring-1 ring-inset ring-white/[0.16]">
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[45px] bg-[radial-gradient(120%_85%_at_50%_-25%,rgba(255,255,255,0.14),transparent_58%)]"
+          aria-hidden
+        />
+
+        {/* Status row + Dynamic Island */}
+        <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 grid grid-cols-3 items-center px-[5.25%] pt-[3.6%]">
+          <span
+            className="justify-self-start font-['Inter'] text-[13px] font-semibold tabular-nums tracking-tight text-white"
+            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.95)" }}
+          >
+            9:41
+          </span>
+          <div
+            className="justify-self-center h-[31px] w-[118px] rounded-full bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),0_3px_14px_rgba(0,0,0,0.55)]"
+            aria-hidden
+          />
+          <div className="justify-self-end flex items-center gap-0.5 pr-1 text-white">
+            <Signal size={14} strokeWidth={2.35} className="opacity-95" style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }} />
+            <Wifi size={14} strokeWidth={2.35} className="opacity-95" style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }} />
+            <Battery size={17} strokeWidth={2.35} className="opacity-95" style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }} />
+          </div>
+        </div>
+
+        <div
+          className={`absolute inset-x-[2.1%] bottom-[2.1%] top-[1.1%] overflow-hidden rounded-[32px] ${
+            isLightMode
+              ? "bg-[#050505] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06),inset_0_12px_40px_rgba(0,0,0,0.45)]"
+              : "bg-[#030303] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05),inset_0_16px_48px_rgba(0,0,0,0.72)]"
+          }`}
+        >
+          {children}
+        </div>
+
+        <div
+          className="pointer-events-none absolute bottom-[1.6%] left-1/2 z-40 h-[5px] w-[140px] -translate-x-1/2 rounded-full bg-white/[0.4] shadow-[0_1px_3px_rgba(0,0,0,0.65)]"
+          aria-hidden
+        />
+      </div>
+    </div>
+  );
+}
+
+function HeroPhoneScreenContent({
+  currentScreenIndex,
+  previewDomain,
+  prevScreen,
+  nextScreen,
+  setCurrentScreenIndex,
+}: {
+  currentScreenIndex: number;
+  previewDomain: string | null;
+  prevScreen: (e: React.MouseEvent) => void;
+  nextScreen: (e: React.MouseEvent) => void;
+  setCurrentScreenIndex: (i: number) => void;
+}) {
+  return (
+    <>
+      {previewDomain && (
+        <div className="pointer-events-none absolute left-1/2 top-2.5 z-20 max-w-[min(92%,280px)] -translate-x-1/2">
+          <div className="rounded-full border border-white/20 bg-black/55 px-3 py-1 text-center font-['Inter'] text-[10px] font-medium text-white/95 shadow-lg backdrop-blur-md">
+            Preview · <span className="text-[#8ee4c6]">{previewDomain}</span>
+          </div>
+        </div>
+      )}
+
+      <AnimatePresence>
+        <motion.div
+          key={currentScreenIndex}
+          initial={{ opacity: 0, scale: 1.03 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1 }}
+          transition={{ duration: 0.65, ease: "easeInOut" }}
+          className="absolute inset-0 h-full w-full"
+        >
+          {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
+            <ImageWithFallback
+              src={SCREEN_IMAGES[currentScreenIndex]}
+              alt={`Dashboard screen ${currentScreenIndex + 1}`}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <img
+              src={SCREEN_IMAGES[currentScreenIndex]}
+              alt={`Dashboard screen ${currentScreenIndex + 1}`}
+              className="h-full w-full object-cover"
+            />
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between px-2">
+        <button
+          type="button"
+          onClick={prevScreen}
+          className="pointer-events-auto rounded-full border border-white/12 bg-[#11161d]/60 p-1.5 text-white/90 shadow-sm backdrop-blur-md transition-colors active:bg-[#19ad7d] active:text-white"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          type="button"
+          onClick={nextScreen}
+          className="pointer-events-auto rounded-full border border-white/12 bg-[#11161d]/60 p-1.5 text-white/90 shadow-sm backdrop-blur-md transition-colors active:bg-[#19ad7d] active:text-white"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      <div className="pointer-events-auto absolute bottom-3.5 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 rounded-full border border-white/12 bg-[#11161d]/55 px-2.5 py-1.5 backdrop-blur-md">
+        {SCREEN_IMAGES.map((_, i) => (
+          <button
+            key={i}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentScreenIndex(i);
+            }}
+            className={`h-1.5 rounded-full transition-all duration-300 ${
+              i === currentScreenIndex ? "w-4 bg-[#19ad7d]" : "w-1.5 bg-white/40"
+            }`}
+            aria-label={`Go to screen ${i + 1}`}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 

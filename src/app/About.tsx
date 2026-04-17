@@ -35,7 +35,7 @@ export function About() {
         
         {/* 1. Opening Hook */}
         <FadeInSection className="flex flex-col items-center w-full mb-32">
-          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm text-xs font-bold tracking-[0.2em] uppercase mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'}`}>
+          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} eyebrow`}>
             The Engagement Problem
           </div>
           <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-[-2px] max-w-3xl mb-8 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
@@ -65,9 +65,9 @@ export function About() {
 
         {/* 3. Our Story (Condensed) */}
         <FadeInSection className="w-full mb-32">
-          <div className={`relative w-full rounded-[32px] border backdrop-blur-[32px] overflow-hidden flex flex-col md:flex-row items-stretch transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-white/60 shadow-[0_16px_64px_rgba(0,0,0,0.05)]' : 'border-white/10 bg-[rgba(11,15,20,0.65)] shadow-[0_16px_64px_rgba(0,0,0,0.4)]'}`}>
+          <div className="relative w-full rounded-[32px] overflow-hidden flex flex-col md:flex-row items-stretch transition-colors duration-500 liquid-glass">
             <div className="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center text-left">
-              <div className="text-[#19ad7d] text-xs font-bold tracking-[0.2em] uppercase mb-6">
+              <div className="text-[#19ad7d] mb-6 eyebrow">
                 Our Story
               </div>
               <h3 className={`font-['Inter'] text-3xl font-bold mb-6 leading-tight transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
@@ -118,7 +118,7 @@ export function About() {
               { stat: "40%", label: "Reduction in manual entry tasks" },
               { stat: "2.5x", label: "Faster response to critical leads" }
             ].map((item, i) => (
-              <div key={i} className={`p-8 rounded-3xl border backdrop-blur-xl flex flex-col items-center justify-center text-center group transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 hover:bg-[#19ad7d]/10' : 'border-white/10 bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(25,173,125,0.05)]'}`}>
+              <div key={i} className={`p-8 rounded-3xl flex flex-col items-center justify-center text-center group transition-colors duration-500 liquid-glass ${isLightMode ? 'hover:bg-[#19ad7d]/10' : 'hover:bg-[rgba(25,173,125,0.05)]'}`}>
                 <span className={`font-['Inter'] text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-b mb-3 transition-all duration-500 ${isLightMode ? 'from-black to-black/50 group-hover:from-[#19ad7d] group-hover:to-[#19ad7d]/80' : 'from-white to-white/50 group-hover:from-[#19ad7d] group-hover:to-[#19ad7d]/50'}`}>
                   {item.stat}
                 </span>
@@ -165,7 +165,7 @@ export function About() {
         {/* 7. Vision / Future */}
         <FadeInSection className="w-full flex flex-col md:flex-row gap-12 text-left items-center mb-40">
           <div className="w-full md:w-1/2">
-            <div className={`w-full aspect-square rounded-[32px] overflow-hidden relative border shadow-[0_16px_64px_rgba(0,0,0,0.4)] transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-white/60' : 'border-white/10 bg-[rgba(11,15,20,0.65)]'}`}>
+            <div className="w-full aspect-square rounded-[32px] overflow-hidden relative transition-colors duration-500 liquid-glass">
                <img 
                  src="https://images.unsplash.com/photo-1754039984985-ef607d80113a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2RlJTIwbW9uaXRvciUyMGRhcmslMjBvZmZpY2V8ZW58MXx8fHwxNzc1NjgwMjY5fDA&ixlib=rb-4.1.0&q=80&w=1080" 
                  alt="Future Vision" 
@@ -189,7 +189,7 @@ export function About() {
 
         {/* 8. Call to Action */}
         <FadeInSection className="w-full">
-          <div className={`relative w-full rounded-[40px] border backdrop-blur-2xl p-12 md:p-20 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 ${isLightMode ? 'border-[#19ad7d]/20 bg-[#19ad7d]/5 shadow-[0_16px_64px_rgba(25,173,125,0.05)]' : 'border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)] shadow-[0_16px_64px_rgba(25,173,125,0.15),inset_0_1px_1px_rgba(255,255,255,0.1)]'}`}>
+          <div className={`relative w-full rounded-[40px] p-12 md:p-20 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass ${isLightMode ? 'border-[#19ad7d]/20 bg-[#19ad7d]/5' : 'border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]'}`}>
             
             {/* CTA Background Effects */}
             <div className={`absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(25,173,125,0.2)_0%,transparent_70%)] transition-opacity duration-700 pointer-events-none ${isLightMode ? 'opacity-20 group-hover:opacity-40' : 'opacity-50 group-hover:opacity-100'}`} />
