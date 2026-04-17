@@ -107,7 +107,7 @@ function FeatureItem({ feature, index }: { feature: typeof FEATURES_DATA[0], ind
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 flex flex-col relative z-20 w-full"
         >
-          <div className="text-[#19ad7d] font-['Roboto_Mono'] text-sm tracking-widest mb-6 flex items-center gap-4">
+          <div className="text-[#19ad7d] font-['Inter'] font-semibold text-sm tracking-widest mb-6 flex items-center gap-4">
             <span className="w-8 h-[1px] bg-[#19ad7d]" /> {(index + 1).toString().padStart(2, '0')}
           </div>
           <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl lg:text-6xl mb-6 leading-[1.1] tracking-[-2px] transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
@@ -127,7 +127,7 @@ function FeatureItem({ feature, index }: { feature: typeof FEATURES_DATA[0], ind
           className="flex-1 w-full relative"
         >
           {/* Glassmorphism Container */}
-          <div className={`w-full aspect-[4/3] md:aspect-[4/5] lg:aspect-[4/3] relative rounded-3xl overflow-hidden border shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-md transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-white/40' : 'border-white/10 bg-[#11161d]/40'}`}>
+          <div className="w-full aspect-[4/3] md:aspect-[4/5] lg:aspect-[4/3] relative rounded-3xl overflow-hidden transition-colors duration-500 liquid-glass">
             <motion.div 
               style={{ y: yImage }}
               className="absolute -inset-[20%] w-[140%] h-[140%]"
@@ -181,7 +181,7 @@ export function Features() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center"
         >
-          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm text-xs font-bold tracking-[0.2em] uppercase mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'}`}>
+          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} eyebrow`}>
             Platform Overview
           </div>
           <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>

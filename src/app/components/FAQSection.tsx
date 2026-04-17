@@ -51,7 +51,7 @@ export function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`text-4xl md:text-5xl font-['Montserrat'] font-bold mb-6 ${isLightMode ? 'text-gray-900' : 'text-white'} font-[Inter_Variable]`}
+            className={`font-['IvyOra_Text'] text-5xl md:text-6xl tracking-[-2px] leading-[1.1] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
           >
             Frequently Asked <span className="text-[#19ad7d]">Questions</span>
           </motion.h2>
@@ -60,7 +60,7 @@ export function FAQSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className={`text-lg max-w-2xl mx-auto ${isLightMode ? 'text-gray-600' : 'text-gray-400'}`}
+            className={`font-['Inter'] text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed ${isLightMode ? 'text-black/60' : 'text-white/60'}`}
           >
             Everything you need to know about Enzy and how we can help supercharge your sales team.
           </motion.p>
@@ -77,12 +77,13 @@ export function FAQSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
-                className={`rounded-2xl border backdrop-blur-md overflow-hidden transition-colors ${
-                  isLightMode 
-                    ? 'bg-black/5 border-black/10 hover:border-[#19ad7d]/30' 
-                    : 'bg-white/5 border-white/10 hover:border-[#19ad7d]/30'
-                }`}
+                className="relative rounded-2xl overflow-hidden transition-colors liquid-glass hover:border-[#19ad7d]/35"
               >
+                <div
+                  className={`pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent transition-opacity ${
+                    isOpen ? "opacity-100" : "opacity-0"
+                  }`}
+                />
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-center justify-between p-6 text-left focus:outline-none"

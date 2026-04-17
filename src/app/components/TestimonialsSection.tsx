@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { motion, useAnimationFrame, useMotionValue, useTransform } from "motion/react";
+import { animate, motion, useAnimationFrame, useMotionValue, useTransform } from "motion/react";
 import { RotateCw, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -135,7 +135,7 @@ export function TestimonialsSection() {
           <h2 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[1.1] font-medium`}>
             Loved by leaders
           </h2>
-          <p className={`font-['Inter'] text-sm md:text-base ${isLightMode ? "text-black/60" : "text-white/60"} uppercase tracking-widest max-w-[600px]`}>
+          <p className={`font-['Inter'] text-[15px] md:text-[16px] ${isLightMode ? "text-black/60" : "text-white/60"} max-w-[600px] leading-relaxed`}>
             See what industry experts are saying about how Enzy transforms their organizations.
           </p>
         </motion.div>
@@ -157,14 +157,12 @@ export function TestimonialsSection() {
             const velocity = info.velocity.x;
             if (Math.abs(velocity) > 200) {
               const target = baseX.get() + velocity * 0.5;
-              // Animate momentum
-              import("motion/react").then(({ animate }) => {
-                animate(baseX, target, {
-                  type: "inertia",
-                  velocity: velocity,
-                  bounceStiffness: 0,
-                  bounceDamping: 0,
-                });
+              // Animate momentum (static import avoids chunk-load runtime errors)
+              animate(baseX, target, {
+                type: "inertia",
+                velocity: velocity,
+                bounceStiffness: 0,
+                bounceDamping: 0,
               });
             }
           }}
@@ -191,10 +189,10 @@ export function TestimonialsSection() {
                   
                   {/* ================= FRONT FACE ================= */}
                   <div 
-                    className={`absolute inset-0 rounded-[32px] overflow-hidden border border-solid flex flex-col shadow-xl transition-opacity duration-300 ${
-                      isLightMode 
-                        ? 'bg-white border-black/10 hover:border-[#19ad7d]/30 hover:shadow-2xl' 
-                        : 'bg-[#111116] border-white/5 hover:border-[#19ad7d]/30 hover:shadow-2xl hover:shadow-[#19ad7d]/5'
+                    className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 liquid-glass ${
+                      isLightMode
+                        ? "hover:border-[#19ad7d]/35"
+                        : "hover:border-[#19ad7d]/35"
                     } ${isFlipped ? 'opacity-0 delay-300' : 'opacity-100 z-10 delay-100'}`}
                     style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
                   >
@@ -208,7 +206,7 @@ export function TestimonialsSection() {
                     </div>
 
                     {/* Top Half: Prominent Photo */}
-                    <div className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b ${isLightMode ? 'border-black/5 bg-[#eaf4f0]' : 'border-white/5 bg-[#17312d]'}`}>
+                    <div className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b backdrop-blur-md ${isLightMode ? 'border-black/8 bg-[#eaf4f0]/85' : 'border-white/8 bg-[#17312d]/75'}`}>
                       {/* Decorative Circles behind photo */}
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full border border-[#19ad7d]/20" />
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] aspect-square rounded-full border border-[#19ad7d]/10" />
@@ -243,11 +241,7 @@ export function TestimonialsSection() {
 
                   {/* ================= BACK FACE ================= */}
                   <div 
-                    className={`absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl overflow-hidden border border-solid flex flex-col p-6 md:p-8 shadow-2xl ${
-                      isLightMode 
-                        ? 'bg-[#fafafa] border-black/10' 
-                        : 'bg-[#16161c] border-white/10'
-                    }`}
+                    className={`absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl overflow-hidden flex flex-col p-6 md:p-8 liquid-glass`}
                     style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
                   >
                     {/* Decorative quote mark */}

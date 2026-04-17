@@ -197,11 +197,7 @@ export function MainNavigation() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                className={`backdrop-blur-2xl rounded-[32px] overflow-hidden pointer-events-auto relative shadow-2xl transition-colors duration-300 ${
-                  isLightMode
-                    ? 'bg-white/50 border border-black/[0.08] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)]'
-                    : 'bg-[#0b0f14]/60 border border-white/[0.08] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5),inset_0_1px_1px_rgba(255,255,255,0.04)]'
-                }`}
+                className="rounded-[32px] overflow-hidden pointer-events-auto relative transition-colors duration-300 liquid-glass"
                 onMouseEnter={() => { if (timeoutRef.current) clearTimeout(timeoutRef.current); }}
               >
                 {/* Subtle top glow line */}
@@ -346,10 +342,8 @@ export function MainNavigation() {
       {/* Mobile Menu Toggle Button */}
       <button 
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className={`md:hidden relative z-[60] p-2.5 backdrop-blur-2xl rounded-xl border pointer-events-auto transition-transform active:scale-95 ${
-          isLightMode 
-            ? 'bg-white/50 border-black/10 text-black shadow-sm'
-            : 'bg-[#0b0f14] border-white/10 text-white'
+        className={`md:hidden relative z-[60] p-2.5 rounded-xl pointer-events-auto transition-transform active:scale-95 liquid-glass ${
+          isLightMode ? "text-black shadow-sm" : "text-white"
         }`}
       >
         <AnimatePresence mode="wait">

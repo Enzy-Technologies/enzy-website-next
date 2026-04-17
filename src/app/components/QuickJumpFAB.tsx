@@ -66,11 +66,7 @@ export function QuickJumpFAB({
             }}
             transition={{ type: "spring", bounce: 0.22, duration: 0.6 }}
             style={{ transformOrigin: "bottom right" }}
-            className={`absolute bottom-full right-0 mb-3 w-64 md:w-72 p-2 backdrop-blur-2xl rounded-2xl flex flex-col gap-1 overflow-hidden transition-colors duration-500 ${
-              isLightMode
-                ? "bg-white/75 border border-[#19ad7d]/20 shadow-[0_16px_64px_rgba(0,0,0,0.1)]"
-                : "bg-[#0b0f14]/80 border border-[#19ad7d]/20 shadow-[0_16px_64px_rgba(0,0,0,0.6)]"
-            }`}
+            className="absolute bottom-full right-0 mb-3 w-64 md:w-72 p-2 rounded-2xl flex flex-col gap-1 overflow-hidden transition-colors duration-500 liquid-glass border-[#19ad7d]/20"
             role="menu"
             aria-label={title}
             aria-describedby={menuId}
@@ -79,7 +75,7 @@ export function QuickJumpFAB({
             <div className={`p-3 border-b mb-1 transition-colors duration-500 ${isLightMode ? "border-black/5" : "border-white/5"}`}>
               <span
                 id={menuId}
-                className={`text-xs font-['Inter'] font-bold uppercase tracking-widest transition-colors duration-500 ${
+                className={`eyebrow transition-colors duration-500 ${
                   isLightMode ? "text-black/40" : "text-white/40"
                 }`}
               >
@@ -113,7 +109,7 @@ export function QuickJumpFAB({
                   >
                     {item.label}
                   </span>
-                  <span className="text-[10px] text-[#19ad7d]/50 group-hover:text-[#19ad7d] font-['Roboto_Mono'] transition-colors">
+                  <span className="text-[10px] text-[#19ad7d]/50 group-hover:text-[#19ad7d] font-['Inter'] font-semibold transition-colors">
                     {item.meta ?? (i + 1).toString().padStart(2, "0")}
                   </span>
                 </button>

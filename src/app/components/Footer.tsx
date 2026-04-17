@@ -22,7 +22,7 @@ export function Footer() {
         <h2 className={`font-['Inter'] font-bold text-4xl md:text-[52px] tracking-tight text-center ${textColor}`}>
           Connect with us
         </h2>
-        <p className={`font-['Roboto_Mono'] text-[15px] uppercase tracking-[-0.075px] text-center max-w-[600px] leading-relaxed ${mutedTextColor}`}>
+        <p className={`font-['Inter'] text-[15px] text-center max-w-[600px] leading-relaxed ${mutedTextColor}`}>
           Schedule a quick call to learn how Enzy can turn your regional data into a powerful advantage.
         </p>
         <CTAButton className="px-8 py-4 mt-2 font-semibold text-[14px]">
@@ -50,7 +50,7 @@ export function Footer() {
 
         {/* Subcategories / Links */}
         <div className="flex flex-col gap-4">
-          <h3 className={`font-['Roboto_Mono'] font-bold text-sm uppercase tracking-wider mb-2 ${textColor}`}>
+          <h3 className={`eyebrow ${textColor} mb-2`}>
             Navigation
           </h3>
           <Link href="/" className={`font-['Inter'] text-sm ${mutedTextColor} hover:text-[#19ad7d] transition-colors w-fit`}>Home</Link>
@@ -62,7 +62,7 @@ export function Footer() {
 
         {/* Legal */}
         <div className="flex flex-col gap-4">
-          <h3 className={`font-['Roboto_Mono'] font-bold text-sm uppercase tracking-wider mb-2 ${textColor}`}>
+          <h3 className={`eyebrow ${textColor} mb-2`}>
             Legal
           </h3>
           <Link href="/terms" className={`font-['Inter'] text-sm ${mutedTextColor} hover:text-[#19ad7d] transition-colors w-fit`}>Terms and Conditions</Link>
@@ -71,7 +71,7 @@ export function Footer() {
 
         {/* Contact */}
         <div className="flex flex-col gap-4">
-          <h3 className={`font-['Roboto_Mono'] font-bold text-sm uppercase tracking-wider mb-2 ${textColor}`}>
+          <h3 className={`eyebrow ${textColor} mb-2`}>
             Contact
           </h3>
           <a href="tel:855-520-ENZY" className={`font-['Inter'] text-sm ${mutedTextColor} hover:text-[#19ad7d] transition-colors w-fit`}>
@@ -85,7 +85,7 @@ export function Footer() {
 
       {/* Copyright */}
       <div className={`w-full max-w-[1500px] flex flex-col md:flex-row justify-between items-center pt-8 border-t ${borderColor}`}>
-        <div className={`flex items-center gap-4 font-['Roboto_Mono'] ${mutedTextColor} text-xs uppercase tracking-wider`}>
+        <div className={`flex items-center gap-4 font-['Inter'] ${mutedTextColor} text-xs tracking-wider`}>
           <span>© Enzy. 2026. All Rights Reserved.</span>
         </div>
       </div>
