@@ -8,20 +8,20 @@ export function BenefitsSection() {
 
   const primaryStat = {
     value: "27%",
-    label: "Lift in sales",
-    desc: "When teams use competitions, incentives, and leaderboards.",
+    label: "Sales lift",
+    desc: "When teams run competitions, incentives, and leaderboards.",
   };
 
   const secondaryStats = [
     {
       value: "180+",
-      label: "Daily interactions",
-      desc: "Performance stays visible across reps, teams, and managers.",
+      label: "Daily touchpoints",
+      desc: "Keep performance visible for reps, teams, and managers.",
     },
     {
       value: "170%",
       label: "More positive outcomes",
-      desc: "Driven by consistent activity in Enzy.",
+      desc: "When activity is consistent and expectations are clear.",
     },
   ];
 
@@ -49,7 +49,7 @@ export function BenefitsSection() {
           <p
             className={`font-['Inter'] text-[16px] md:text-[18px] max-w-[620px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}
           >
-            Enzy provides real insights, without the data overload.
+            AI highlights what changed—and what to do next.
           </p>
         </div>
 

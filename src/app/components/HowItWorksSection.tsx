@@ -15,7 +15,7 @@ export function HowItWorksSection() {
 
         
 
-        {/* Step 1: Create */}
+        {/* Step 1 */}
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 group p-[0px]">
           <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-[288px] shrink-0">
             <span className="font-['Inter'] text-lg text-black/50 font-medium">Step 1</span>
@@ -26,7 +26,7 @@ export function HowItWorksSection() {
               </div>
             </div>
             <p className="font-['Inter'] text-[15px] text-black/70 leading-relaxed">
-              Connect your stack. Enzy sits right on your tools for a smooth setup without changing your sources.
+              Connect your stack in days. Keep your sources. Enzy sits on top.
             </p>
           </div>
           <div className="w-full lg:w-[834px] lg:ml-auto h-[212px] bg-white/40 border-2 border-black/60 backdrop-blur-xl rounded-full overflow-hidden relative group-hover:border-black group-hover:bg-white/50 transition-colors duration-500 shadow-[inset_0_4px_24px_rgba(255,255,255,0.7)]">
@@ -34,7 +34,7 @@ export function HowItWorksSection() {
           </div>
         </div>
 
-        {/* Step 2: Engage */}
+        {/* Step 2 */}
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 group p-[0px]">
           <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-[288px] shrink-0">
             <span className="font-['Inter'] text-lg text-black/50 font-medium">Step 2</span>
@@ -45,7 +45,7 @@ export function HowItWorksSection() {
               </div>
             </div>
             <p className="font-['Inter'] text-[14px] text-black/70 leading-relaxed">
-              Every action becomes visible—across reps, teams, and managers. No delays. No blind spots.
+              Make activity visible—across reps, teams, and managers. No lag.
             </p>
           </div>
           <div className="w-full lg:w-[834px] lg:ml-auto h-[212px] bg-white/40 border-2 border-black/60 backdrop-blur-xl rounded-full overflow-hidden relative group-hover:border-black group-hover:bg-white/50 transition-colors duration-500 shadow-[inset_0_4px_24px_rgba(255,255,255,0.7)]">
@@ -53,7 +53,7 @@ export function HowItWorksSection() {
           </div>
         </div>
 
-        {/* Step 3: Analyze */}
+        {/* Step 3 */}
         <div className="flex flex-col lg:flex-row items-center justify-between w-full gap-8 pb-12 border-b border-black/10 group">
           <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-[288px] shrink-0">
             <span className="font-['Inter'] text-lg text-black/50 font-medium">Step 3</span>
@@ -64,7 +64,7 @@ export function HowItWorksSection() {
               </div>
             </div>
             <p className="font-['Inter'] text-[14px] text-black/70 leading-relaxed">
-              Visibility creates competition. Competition drives consistency. Consistency compounds into performance.
+              AI suggests actions. Competitions reinforce habits. Results compound.
             </p>
           </div>
           <div className="w-full lg:w-[834px] lg:ml-auto h-[212px] bg-white/40 border-2 border-black/60 backdrop-blur-xl rounded-full overflow-hidden relative group-hover:border-black group-hover:bg-white/50 transition-colors duration-500 shadow-[inset_0_4px_24px_rgba(255,255,255,0.7)]">

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowRight, BarChart2, Zap, Users, ShieldCheck, Trophy, Target } from "lucide-react";
+import { ArrowRight, Target } from "lucide-react";
 import { motion } from "motion/react";
 import Link from "next/link";
 import { useTheme } from "./components/ThemeProvider";
@@ -34,82 +34,47 @@ export function About() {
       <div className="max-w-4xl w-full px-6 flex flex-col items-center text-center">
         
         {/* 1. Opening Hook */}
-        <FadeInSection className="flex flex-col items-center w-full mb-32">
+        <FadeInSection className="flex flex-col items-center w-full mb-20 md:mb-24">
           <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} eyebrow`}>
-            The Engagement Problem
+            About Enzy
           </div>
           <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-6xl lg:text-[72px] leading-[1.1] tracking-[-2px] max-w-3xl mb-8 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
-            You don't have a data problem. You have an <span className="text-[#19ad7d]">engagement</span> problem.
+            You don’t have a data problem. You have an <span className="text-[#19ad7d]">execution</span> problem.
           </h1>
           <p className={`font-['Inter'] text-lg md:text-xl max-w-2xl leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
-            Sales teams are drowning in dashboards, yet still missing targets. Managers spend half their week chasing updates instead of coaching. You don't need another clunky tool your team hates—you need a system that actually drives behavior.
+            Enzy connects your data, highlights what changed, and helps your team take action—fast.
           </p>
         </FadeInSection>
 
-        {/* 2. The Problem */}
-        <FadeInSection className="w-full flex flex-col md:flex-row gap-12 text-left items-start mb-32">
-          <div className="w-full md:w-1/3">
-            <h2 className={`font-['Inter'] text-2xl md:text-3xl font-bold leading-tight transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
-              The gap between strategy & execution.
-            </h2>
-          </div>
-          <div className="w-full md:w-2/3 flex flex-col gap-6">
-            <p className={`font-['Inter'] text-lg leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-              Most enterprise software feels like a tax on your team's time. Reps are forced to log data into disjointed systems, draining their energy and pulling them away from what matters: selling.
-            </p>
-            <p className={`font-['Inter'] text-lg leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-              The result? High turnover, low morale, and leadership flying blind because the data is always two weeks old. Strategy gets lost in translation between the boardroom and the frontline.
-            </p>
-          </div>
-        </FadeInSection>
-
-        {/* 3. Our Story (Condensed) */}
-        <FadeInSection className="w-full mb-32">
-          <div className="relative w-full rounded-[32px] overflow-hidden flex flex-col md:flex-row items-stretch transition-colors duration-500 liquid-glass">
-            <div className="w-full md:w-1/2 p-10 md:p-14 flex flex-col justify-center text-left">
-              <div className="text-[#19ad7d] mb-6 eyebrow">
-                Our Story
+        {/* Core: what Enzy does */}
+        <FadeInSection className="w-full mb-20 md:mb-24">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            {[
+              { title: "Connect", desc: "Plug into your tools and data sources." },
+              { title: "Understand", desc: "AI summarizes what changed and why it matters." },
+              { title: "Act", desc: "Launch competitions, incentives, and messaging—fast." },
+            ].map((x) => (
+              <div key={x.title} className="relative rounded-[28px] p-7 md:p-8 liquid-glass">
+                <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent" />
+                <h3 className={`font-['Inter'] text-[18px] md:text-[20px] font-semibold tracking-tight ${isLightMode ? "text-black" : "text-white"}`}>
+                  {x.title}
+                </h3>
+                <p className={`mt-2 font-['Inter'] text-[14px] md:text-[15px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                  {x.desc}
+                </p>
               </div>
-              <h3 className={`font-['Inter'] text-3xl font-bold mb-6 leading-tight transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
-                Built by people who felt the pain.
-              </h3>
-              <p className={`font-['Inter'] text-base leading-relaxed mb-4 transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-                We spent years leading sales and operations teams. We bought all the expensive software, hoping it would fix our pipeline and motivate our reps. It didn't.
-              </p>
-              <p className={`font-['Inter'] text-base leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-                The turning point came when we realized the tools were designed for compliance, not performance. So we stopped looking for a better dashboard and decided to build an engine that actually powers human motivation.
-              </p>
-            </div>
-            <div className="w-full md:w-1/2 min-h-[300px] relative bg-black/50">
-              <img 
-                src="https://images.unsplash.com/photo-1614643738701-b3e3b4245dbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjB0ZWFtJTIwd29ya2luZyUyMGRhcmslMjBhZXN0aGV0aWN8ZW58MXx8fHwxNzc1NjgwMjYzfDA&ixlib=rb-4.1.0&q=80&w=1080" 
-                alt="Our Story" 
-                className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity"
-              />
-              <div className={`absolute inset-0 bg-gradient-to-r md:bg-gradient-to-l transition-colors duration-500 ${isLightMode ? 'from-white/60 to-transparent' : 'from-[rgba(11,15,20,0.65)] to-transparent'}`} />
-            </div>
+            ))}
           </div>
-        </FadeInSection>
-
-        {/* 4. What We Do Now */}
-        <FadeInSection className="w-full text-center max-w-3xl mx-auto mb-32">
-          <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl mb-8 tracking-[-2px] transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
-            An engine for high-performance cultures.
-          </h2>
-          <p className={`font-['Inter'] text-lg md:text-xl leading-relaxed mb-6 transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-            Enzy transforms your daily operations from a chore into a competitive advantage. We give your teams the exact insights, leaderboards, and incentives they need—right when they need them.
-          </p>
-          <p className={`font-['Inter'] text-lg md:text-xl leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-            No more nagging for updates. No more guessing what's working. Just a clear, intuitive platform that your team will actually want to open every morning.
-          </p>
         </FadeInSection>
 
         {/* 5. Proof / Credibility */}
-        <FadeInSection className="w-full mb-32">
+        <FadeInSection className="w-full mb-20 md:mb-24">
           <div className="text-center mb-12">
-            <h2 className={`font-['Inter'] text-3xl font-bold mb-4 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>The results speak for themselves.</h2>
+            <h2 className={`font-['Inter'] text-3xl font-bold mb-4 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
+              Results teams feel daily
+            </h2>
             <p className={`font-['Inter'] text-base max-w-2xl mx-auto transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
-              We measure our success by your team's output. This isn't just theory—it's driving measurable revenue growth for companies managing thousands of daily interactions.
+              Less admin work. More focus. More execution.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -131,59 +96,62 @@ export function About() {
         </FadeInSection>
 
         {/* 6. How We're Different */}
-        <FadeInSection className="w-full mb-32 text-left">
-          <h2 className={`font-['Inter'] text-3xl font-bold mb-12 text-center transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>Why this actually works.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <FadeInSection className="w-full mb-20 md:mb-24 text-left">
+          <div className="flex flex-col items-center text-center gap-4 mb-12">
+            <div className="eyebrow text-[#19ad7d]">Why it works</div>
+            <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl tracking-[-2px] transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
+              Designed for adoption and action
+            </h2>
+            <p className={`font-['Inter'] text-[15px] md:text-[16px] leading-relaxed max-w-2xl transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+              Three reasons teams keep Enzy open every day.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {[
               {
-                icon: <Users size={24} className="text-[#19ad7d]" />,
-                title: "Built for the user first.",
-                desc: "If your reps hate it, they won't use it. Enzy feels like the modern, fast consumer apps they already love."
+                title: "Built for adoption",
+                desc: "Fast, simple, and designed for daily use.",
+                bullets: ["Modern UI reps like", "Clear goals and progress", "Mobile-first"],
               },
               {
-                icon: <Zap size={24} className="text-[#19ad7d]" />,
-                title: "Zero manual entry.",
-                desc: "We pull the data you already have and turn it into actionable, real-time insights without the busywork."
+                title: "Connected data → clear signal",
+                desc: "AI highlights what changed and what to do next.",
+                bullets: ["Real-time visibility", "Summaries and suggestions", "Less admin work"],
               },
               {
-                icon: <Trophy size={24} className="text-[#19ad7d]" />,
-                title: "Engineered motivation.",
-                desc: "We don't just show numbers. We drive action through targeted competitions and intelligent incentives."
-              }
+                title: "Momentum that sticks",
+                desc: "Competitions and incentives reinforce behavior.",
+                bullets: ["Launch in minutes", "Team or individual", "Rewards and recognition"],
+              },
             ].map((diff, i) => (
-              <div key={i} className="flex flex-col gap-4">
-                <div className={`w-12 h-12 rounded-xl border flex items-center justify-center transition-colors duration-500 ${isLightMode ? 'bg-black/5 border-black/10' : 'bg-white/5 border-white/10'}`}>
-                  {diff.icon}
-                </div>
-                <h3 className={`font-['Inter'] text-xl font-bold transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>{diff.title}</h3>
-                <p className={`font-['Inter'] text-base leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>{diff.desc}</p>
+              <div
+                key={i}
+                className={`relative rounded-[28px] p-7 md:p-8 transition-colors duration-500 liquid-glass ${
+                  isLightMode ? "hover:bg-[#19ad7d]/10" : "hover:bg-[rgba(25,173,125,0.06)]"
+                }`}
+              >
+                <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent" />
+
+                <h3 className={`font-['Inter'] text-[18px] md:text-[20px] font-semibold tracking-tight transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                  {diff.title}
+                </h3>
+                <p className={`mt-2 font-['Inter'] text-[14px] md:text-[15px] leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+                  {diff.desc}
+                </p>
+
+                <ul className="mt-5 flex flex-col gap-2.5">
+                  {diff.bullets.map((b) => (
+                    <li key={b} className="flex items-start gap-3">
+                      <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_10px_rgba(25,173,125,0.55)]" />
+                      <span className={`font-['Inter'] text-[13px] md:text-[14px] leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+                        {b}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
-          </div>
-        </FadeInSection>
-
-        {/* 7. Vision / Future */}
-        <FadeInSection className="w-full flex flex-col md:flex-row gap-12 text-left items-center mb-40">
-          <div className="w-full md:w-1/2">
-            <div className="w-full aspect-square rounded-[32px] overflow-hidden relative transition-colors duration-500 liquid-glass">
-               <img 
-                 src="https://images.unsplash.com/photo-1754039984985-ef607d80113a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2RlJTIwbW9uaXRvciUyMGRhcmslMjBvZmZpY2V8ZW58MXx8fHwxNzc1NjgwMjY5fDA&ixlib=rb-4.1.0&q=80&w=1080" 
-                 alt="Future Vision" 
-                 className={`w-full h-full object-cover mix-blend-luminosity transition-all duration-500 ${isLightMode ? 'opacity-80' : 'opacity-40'}`}
-               />
-               <div className={`absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,100%)] transition-colors duration-500 ${isLightMode ? 'from-transparent to-white/40' : 'from-transparent to-[rgba(11,15,20,0.8)]'}`} />
-            </div>
-          </div>
-          <div className="w-full md:w-1/2 flex flex-col gap-6">
-            <h2 className={`font-['Inter'] text-3xl font-bold leading-tight mb-2 transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-white'}`}>
-              Where we're going.
-            </h2>
-            <p className={`font-['Inter'] text-lg leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-              The future of work isn't just about remote vs. office. It's about giving people the clarity, focus, and recognition they deserve, no matter where they sit. 
-            </p>
-            <p className={`font-['Inter'] text-lg leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-              We're building the infrastructure that will power the next generation of world-class sales and operational cultures. We're creating a world where every action is acknowledged, and every target is within reach.
-            </p>
           </div>
         </FadeInSection>
 
@@ -199,13 +167,13 @@ export function About() {
               Ready to change how your team works?
             </h2>
             <p className={`font-['Inter'] text-lg max-w-xl mx-auto mb-10 relative z-10 leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
-              Stop paying for software that slows you down. Let's talk about what Enzy can do for your numbers this quarter.
+              See the system live. Get a plan for your team this quarter.
             </p>
             <Link
               href="/solutions"
               className={`relative z-10 flex items-center gap-3 px-8 py-4 rounded-full font-['Inter'] font-bold text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_32px_rgba(25,255,255,0.2)] ${isLightMode ? 'bg-black text-white' : 'bg-white text-black'}`}
             >
-              Book a Strategy Call <ArrowRight size={18} />
+              Book a demo <ArrowRight size={18} />
             </Link>
           </div>
         </FadeInSection>

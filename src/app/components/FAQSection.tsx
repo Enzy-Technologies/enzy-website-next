@@ -11,27 +11,27 @@ interface FAQItem {
 const faqs: FAQItem[] = [
   {
     question: "What is Enzy?",
-    answer: "Enzy is a powerful sales gamification and performance management platform designed to motivate teams, track real-time metrics, and boost revenue through interactive leaderboards, challenges, and rewards."
+    answer: "Enzy is an AI performance system for sales teams. It connects your data, surfaces what changed, and helps you take action through competitions, incentives, messaging, and leaderboards."
   },
   {
     question: "What is sales gamification?",
-    answer: "Sales gamification applies game-design elements like points, badges, and leaderboards to your sales process. It turns everyday tasks into engaging competitions, driving higher motivation, better engagement, and increased performance across your sales team."
+    answer: "Gamification turns the work into clear goals and friendly competition—points, badges, leaderboards, and incentives that reinforce the behaviors that drive revenue."
   },
   {
     question: "What industries does Enzy serve?",
-    answer: "Enzy serves a wide variety of industries including SaaS, Real Estate, Solar, Telecommunications, Financial Services, and Retail. Any industry with a competitive sales or customer success team can benefit from our platform."
+    answer: "Any team that wins on consistent activity and clear goals. We’re common in field sales (solar, roofing, telecom), services, retail, and high-velocity teams."
   },
   {
     question: "Does Enzy work for D2D sales teams?",
-    answer: "Yes! Enzy is highly effective for Door-to-Door (D2D) sales teams. Our mobile-friendly platform allows field reps to update metrics on the go, see real-time leaderboards, and stay connected and motivated with the rest of the team no matter where they are."
+    answer: "Yes. Enzy is mobile-first and built for the field—live leaderboards, quick updates, and messaging that keeps reps aligned without extra admin work."
   },
   {
     question: "How long does it take to implement Enzy?",
-    answer: "Implementation is fast and straightforward. Most teams are fully onboarded and running their first competitions within 1 to 2 weeks. Our dedicated success team will help you integrate with your existing CRM and set up your initial competitions."
+    answer: "Fast. Most teams connect data and launch their first competition in 1–2 weeks. We help with integrations, setup, and rollout."
   },
   {
     question: "How much does Enzy cost?",
-    answer: "We offer flexible pricing plans based on the size of your team and the features you need. Our plans are designed to scale with your business. For detailed pricing information, please visit our pricing page or contact our sales team for a custom quote."
+    answer: "Pricing scales with team size and modules. Reach out for a quote and we’ll recommend a plan based on your workflows and goals."
   }
 ];
 
@@ -62,7 +62,7 @@ export function FAQSection() {
             transition={{ delay: 0.1 }}
             className={`font-['Inter'] text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed ${isLightMode ? 'text-black/60' : 'text-white/60'}`}
           >
-            Everything you need to know about Enzy and how we can help supercharge your sales team.
+            Quick answers about the platform, setup, and where Enzy fits.
           </motion.p>
         </div>
 

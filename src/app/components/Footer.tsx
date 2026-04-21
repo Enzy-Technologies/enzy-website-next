@@ -20,13 +20,13 @@ export function Footer() {
       {/* Centered CTA */}
       <div className={`w-full max-w-[1500px] flex flex-col items-center gap-8 pb-20 border-b mb-16 ${borderColor}`}>
         <h2 className={`font-['Inter'] font-bold text-4xl md:text-[52px] tracking-tight text-center ${textColor}`}>
-          Connect with us
+          See Enzy live
         </h2>
         <p className={`font-['Inter'] text-[15px] text-center max-w-[600px] leading-relaxed ${mutedTextColor}`}>
-          Schedule a quick call to learn how Enzy can turn your regional data into a powerful advantage.
+          A quick walkthrough of the AI Playground, competitions, and how your data connects.
         </p>
         <CTAButton className="px-8 py-4 mt-2 font-semibold text-[14px]">
-          Learn more
+          Book a demo
         </CTAButton>
       </div>
 
