@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import { ArrowRight, ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
 import imgRectangle4 from "../../imports/Component1-1/740b84f868f5f05705a6d5da233d3963bb632a44.png";
@@ -19,60 +19,60 @@ const featuresImages = [
 const cardsData = [
   {
     id: "enzy-assistant",
-    title: "Enzy Assistant",
-    description: "Generate actionable insights in real-time to empower and enable leaders, achieving synergy within your organization and retaining top talent.",
+    title: "AI Assistant",
+    description: "Ask questions about connected data. Get insights and next-best actions—instantly.",
     features: [
-      "Fully customizable to monitor any changes in the data",
-      "Message users directly from bot chats",
-      "Set push notifications to any date range",
-      "All Enzy bots are rights-protected so only designated users have access"
+      "Monitor any KPI and flag what changed",
+      "Draft messages and nudges from context",
+      "Push alerts on your schedule",
+      "Role-based access built in"
     ]
   },
   {
     id: "leaderboards",
     title: "Leaderboards",
-    description: "Experience increased accountability and engagement through our highly customizable leaderboard.",
+    description: "Make performance visible. Keep teams engaged. Drive daily momentum.",
     features: [
-      "Filter by any date range",
-      "Incorporate any KPI",
-      "Unlimited data levels",
-      "Rights-protected views",
-      "Achievement badges",
-      "Direct user messaging"
+      "Any KPI, any date range",
+      "Cohorts by region, team, role, or tenure",
+      "Drill down without losing context",
+      "Permissions for every view",
+      "Badges and milestones",
+      "Message from the leaderboard"
     ]
   },
   {
     id: "profiles",
     title: "Profiles",
-    description: "Our user profiles bring a social media-like experience to the platform, enhancing interaction and recognition within your team.",
+    description: "Give every rep a single place for performance, recognition, and progress.",
     features: [
-      "Quickly contact fellow users through a variety of methods",
-      "View badges, reports, and media associated with each user",
-      "Reports are customizable"
+      "Contact teammates in one tap",
+      "Badges, trends, and key stats",
+      "Custom reports per role"
     ]
   },
   {
     id: "competitions",
-    title: "Competitions & Incentives",
-    description: "Create high-performance culture through our custom competitions and incentives designed to motivate and align your organization.",
+    title: "Competition Builder",
+    description: "Launch competitions and incentives in minutes—aligned to the KPIs that matter.",
     features: [
-      "Quickly and easily build various competitions on your own",
-      "Create competition on the individual and group level",
-      "Automated incentive fulfillment through multiple partners",
-      "Competition creation is rights-protected to designated users"
+      "AI-assisted competition drafts",
+      "Individual or team formats",
+      "Reward fulfillment through partners",
+      "Permissions for creators and admins"
     ]
   },
   {
     id: "messaging",
     title: "Messaging",
-    description: "Centralize your team communication and enhance the way you collaborate within your organization.",
+    description: "Send announcements, nudges, and updates—without switching tools.",
     features: [
-      "Unlimited users per group message",
+      "Group messaging at any scale",
       "Announcement channels",
-      "Pin and mute message threads",
-      "Auto-create groups based on your org chart",
-      "Edit and delete messages",
-      "SMS forwarding through Twilio integration"
+      "Pin, mute, and manage threads",
+      "Auto-groups from org structure",
+      "Edit and delete controls",
+      "SMS forwarding via Twilio"
     ]
   }
 ];
@@ -84,6 +84,7 @@ export function FeaturesSection() {
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
   const [isHoveringIndex, setIsHoveringIndex] = useState<number | null>(null);
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   // Set initial scroll to center (index 2)
   useEffect(() => {
@@ -165,7 +166,7 @@ export function FeaturesSection() {
           Features
         </h1>
         <p className={`font-['Inter'] tracking-[-0.04em] text-center max-w-2xl ${isLightMode ? 'text-black/60' : 'text-white/50'} text-[18px] md:text-[22px]`}>
-          Everything you need to operate, compete, and win.
+          The system that turns connected data into actions—and results.
         </p>
       </div>
 
@@ -204,15 +205,20 @@ export function FeaturesSection() {
           {cardsData.map((card, i) => {
             const isCenter = activeIndex === i;
             const isHovering = isHoveringIndex === i;
-            const showDetails = isCenter || isHovering;
+            const isExpanded = expandedIndex === i;
+            const showDetails = isHovering || isExpanded;
 
             return (
-              <div 
+              <button
                 key={card.id}
                 onMouseEnter={() => setIsHoveringIndex(i)}
                 onMouseLeave={() => setIsHoveringIndex(null)}
-                onClick={() => scrollToCard(i)}
-                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
+                onClick={() => {
+                  scrollToCard(i);
+                  setExpandedIndex((prev) => (prev === i ? null : i));
+                }}
+                type="button"
+                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
                   ${isCenter ? 'ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]' : 'opacity-60 hover:opacity-90'}
                 `}
               >
@@ -232,7 +238,7 @@ export function FeaturesSection() {
 
                 {/* Frosted content sheet */}
                 <div
-                  className={`absolute bottom-0 left-0 right-0 flex flex-col border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[28px] ${
+                  className={`absolute bottom-0 left-0 right-0 flex flex-col text-left border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[28px] ${
                     showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
                   }`}
                 >
@@ -255,7 +261,7 @@ export function FeaturesSection() {
                     ))}
                   </ul>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>

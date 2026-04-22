@@ -6,23 +6,23 @@ export interface PageSEO {
 
 export const SEO_CONFIG: Record<string, PageSEO> = {
   home: {
-    title: "Enzy - The Operating System for High-Performance Sales Teams",
-    description: "Transform your sales team with Enzy's AI-powered platform. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
+    title: "Enzy - AI operating system for sales teams",
+    description: "Connect your data, get real-time insights, and take action faster with Enzy’s AI-powered performance system—competitions, incentives, messaging, and leaderboards.",
   },
   features: {
-    title: "Features - Enzy Sales Platform",
-    description: "Discover Enzy's powerful features: AI-powered insights, automated workflows, real-time analytics, and seamless integrations that supercharge your sales team's performance.",
+    title: "Features - Enzy platform",
+    description: "Explore the system: AI assistant, competitions, incentives, messaging, leaderboards, and integrations—built to drive daily execution.",
   },
   solutions: {
-    title: "Solutions - Enzy for Sales Teams",
-    description: "Tailored solutions for modern sales teams. From startup scaling to enterprise management, Enzy adapts to your workflow and drives measurable results.",
+    title: "Solutions - Enzy for your team",
+    description: "See how Enzy fits your role—from reps to leaders to ops—turning connected data into actions and outcomes.",
   },
   resources: {
-    title: "Resources - Enzy Learning Center",
-    description: "Explore guides, case studies, and best practices to maximize your sales team's potential with Enzy. Learn from industry leaders and success stories.",
+    title: "Resources - Enzy",
+    description: "Guides, playbooks, and customer stories for building momentum, running competitions, and improving performance.",
   },
   about: {
-    title: "About Enzy - Our Mission & Team",
-    description: "Learn about Enzy's mission to empower high-performance sales teams with cutting-edge technology. Meet our team and discover our vision for the future of sales.",
+    title: "About Enzy",
+    description: "Why Enzy exists: a simpler, AI-first way to drive daily execution, engagement, and results.",
   },
 };

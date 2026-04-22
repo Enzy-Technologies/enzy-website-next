@@ -17,10 +17,10 @@ export function SpecsSection() {
             Specs
           </h2>
           <h3 className={`font-['Inter'] font-bold text-4xl sm:text-5xl md:text-[60px] tracking-[-2px] md:tracking-[-3px] leading-[1.1] md:leading-[0.9] text-center ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
-            Why Choose Enzy?
+            Built for daily execution
           </h3>
           <p className={`font-['Inter'] text-[13px] md:text-[15px] text-center leading-relaxed max-w-[600px] ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
-            Not just another sales tool. Enzy is built for daily use — real behavior, real competition, real results.
+            Not another dashboard. Enzy is a system for action—visibility, competition, and AI guidance.
           </p>
           <div className="mt-2 md:mt-4">
             <CTAButton href="#">

@@ -2,24 +2,430 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimationFrame, useMotionValue } from "motion/react";
-import { ChevronLeft, ChevronRight, Signal, Wifi, Battery } from "lucide-react";
+import { Sparkles, Signal, Wifi, Battery } from "lucide-react";
 import { createPortal } from "react-dom";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
 import userScreen from "@/assets/61beea51a9bcfe1555d356d42bbc0ef63df8b0d3.png";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useTheme } from "./ThemeProvider";
+import * as Dialog from "@radix-ui/react-dialog";
+import { CTAButton } from "./CTAButton";
 
 /** iPhone 17 class (6.3") — logical points per Apple / iOS layout (402×874). */
 const IPHONE_17_W = 402;
 const IPHONE_17_H = 874;
 const IPHONE_17_ASPECT = `${IPHONE_17_W} / ${IPHONE_17_H}` as const;
 
-const SCREEN_IMAGES = [
-  imgInnerScreen.src,
-  userScreen.src,
-  "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXJrJTIwdGVjaCUyMGRhc2hib2FyZCUyMFVJfGVufDF8fHx8MTc3NTU4OTg5OHww&ixlib=rb-4.1.0&q=80&w=1080",
-  "https://images.unsplash.com/photo-1770012977129-19f856a1f935?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXRhJTIwYW5hbHl0aWNzJTIwVUl8ZW58MXx8fHwxNzc1NTg5OTAzfDA&ixlib=rb-4.1.0&q=80&w=1080"
+type AssistantPrompt = {
+  id: "build-competition" | "todays-sales-stats" | "automated-event-messaging";
+  label: string;
+};
+
+type AssistantFlowId = AssistantPrompt["id"];
+
+type QuickReply = {
+  id: string;
+  label: string;
+};
+
+type ChatMessage = {
+  id: string;
+  role: "assistant" | "user";
+  text: string;
+  quickReplies?: QuickReply[];
+};
+
+type AssistantDemoState =
+  | {
+      mode: "start";
+      messages: ChatMessage[];
+    }
+  | {
+      mode: "flow";
+      flowId: AssistantFlowId;
+      step: number;
+      selections: Record<string, string>;
+      messages: ChatMessage[];
+    };
+
+const ASSISTANT_START = "How can I help increase revenue?";
+
+const ASSISTANT_PROMPTS: AssistantPrompt[] = [
+  { id: "build-competition", label: "Build a competition" },
+  { id: "todays-sales-stats", label: "Give me today's sale stats" },
+  { id: "automated-event-messaging", label: "Set up automated event messaging" },
 ];
+
+function newId(prefix: string) {
+  return `${prefix}-${Math.random().toString(16).slice(2)}`;
+}
+
+type ActionCard = {
+  id: string;
+  title: string;
+  status: "ready" | "in_progress" | "queued";
+  detail: string;
+};
+
+function downloadTextFile(filename: string, text: string) {
+  try {
+    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch {
+    // no-op (demo-only affordance)
+  }
+}
+
+function initialDemoState(): AssistantDemoState {
+  return {
+    mode: "start",
+    messages: [
+      {
+        id: newId("m"),
+        role: "assistant",
+        text: ASSISTANT_START,
+        quickReplies: ASSISTANT_PROMPTS.map((p) => ({ id: p.id, label: p.label })),
+      },
+    ],
+  };
+}
+
+const CONNECTED_SOURCES = [
+  { id: "salesforce", label: "Salesforce", status: "connected" as const },
+  { id: "slack", label: "Slack", status: "connected" as const },
+  { id: "snowflake", label: "Warehouse", status: "connected" as const },
+  { id: "calendar", label: "Calendar", status: "connected" as const },
+];
+
+function getActionCards(demoState: AssistantDemoState): ActionCard[] {
+  if (demoState.mode === "start") {
+    return [
+      {
+        id: "insights",
+        title: "Insight summary",
+        status: "queued",
+        detail: "Ask a question to summarize today’s performance.",
+      },
+      {
+        id: "actions",
+        title: "Suggested actions",
+        status: "queued",
+        detail: "Get next-best steps, nudges, and alerts.",
+      },
+      {
+        id: "generate",
+        title: "Generated outputs",
+        status: "queued",
+        detail: "Competitions, incentives, messages, and assets.",
+      },
+    ];
+  }
+
+  const { flowId, step, selections } = demoState;
+
+  if (flowId === "build-competition") {
+    const kpi = selections.kpi ?? "revenue";
+    const duration = selections.duration ?? "7";
+    const mode = selections.mode ?? "individual";
+    const title =
+      kpi === "demos"
+        ? "Demo Sprint"
+        : kpi === "close_rate"
+          ? "Close Rate Challenge"
+          : kpi === "leads"
+            ? "Pipeline Builder"
+            : "Revenue Sprint";
+
+    return [
+      {
+        id: "draft",
+        title: "Competition draft",
+        status: step >= 3 ? "ready" : "in_progress",
+        detail:
+          step >= 3
+            ? `“${title}” · ${duration} days · ${mode === "team" ? "Teams" : "Individual"}`
+            : "Selecting KPI, duration, and format…",
+      },
+      {
+        id: "incentives",
+        title: "Incentives",
+        status: step >= 3 ? "ready" : "queued",
+        detail: step >= 3 ? "Default: $250 · $150 · $100" : "Will recommend rewards once draft is ready.",
+      },
+      {
+        id: "assets",
+        title: "Launch assets",
+        status: step >= 4 ? "ready" : "queued",
+        detail: step >= 4 ? "Banners, badges, and announcement copy" : "Generate after confirmation.",
+      },
+    ];
+  }
+
+  if (flowId === "todays-sales-stats") {
+    const crm = selections.crm ?? "salesforce";
+    const scope = selections.scope ?? "company";
+    return [
+      {
+        id: "stats",
+        title: "Today’s stats",
+        status: step >= 2 ? "ready" : "in_progress",
+        detail:
+          step >= 2
+            ? `${crm === "hubspot" ? "HubSpot" : crm === "other" ? "Your CRM" : "Salesforce"} · ${
+                scope === "region" ? "By region" : scope === "team" ? "By team" : "Company-wide"
+              }`
+            : "Choosing CRM + scope…",
+      },
+      {
+        id: "levers",
+        title: "Biggest levers",
+        status: step >= 3 ? "ready" : "queued",
+        detail: step >= 3 ? "Nudges, mini-competition, manager alerts" : "Unlock after the snapshot.",
+      },
+      {
+        id: "execute",
+        title: "Execute next step",
+        status: step >= 3 ? "in_progress" : "queued",
+        detail: step >= 3 ? "Pick: draft messages / build mini-comp / alerts" : "—",
+      },
+    ];
+  }
+
+  // automated-event-messaging
+  const trigger = selections.trigger ?? "demo_booked";
+  const channel = selections.channel ?? "slack";
+  const audience = selections.audience ?? "both";
+  const triggerLabel =
+    trigger === "stage_proposal"
+      ? "Moved to Proposal"
+      : trigger === "no_activity_48h"
+        ? "No activity 48h"
+        : "Demo booked";
+
+  return [
+    {
+      id: "automation",
+      title: "Automation",
+      status: step >= 3 ? "ready" : "in_progress",
+      detail: step >= 3 ? `${triggerLabel} → ${channel.toUpperCase()} → ${audience}` : "Choosing trigger, channel, and recipients…",
+    },
+    {
+      id: "copy",
+      title: "Message copy",
+      status: step >= 4 ? "ready" : "queued",
+      detail: step >= 4 ? "AI-drafted with context + next step" : "Generate after automation draft.",
+    },
+    {
+      id: "go_live",
+      title: "Go live",
+      status: step >= 4 ? "in_progress" : "queued",
+      detail: step >= 4 ? "Choose tone, test, and enable" : "—",
+    },
+  ];
+}
+
+function flowStepPrompt(flowId: AssistantFlowId, step: number, selections: Record<string, string>) {
+  if (flowId === "build-competition") {
+    if (step === 0) {
+      return {
+        assistant: "Great. What should we optimize for?",
+        quickReplies: [
+          { id: "kpi:revenue", label: "Revenue ($ collected)" },
+          { id: "kpi:demos", label: "Demos booked" },
+          { id: "kpi:close_rate", label: "Close rate" },
+          { id: "kpi:leads", label: "Leads created" },
+        ],
+      };
+    }
+    if (step === 1) {
+      return {
+        assistant: "Nice. How long should the sprint run?",
+        quickReplies: [
+          { id: "duration:3", label: "3 days" },
+          { id: "duration:7", label: "7 days" },
+          { id: "duration:14", label: "14 days" },
+        ],
+      };
+    }
+    if (step === 2) {
+      return {
+        assistant: "Should this be individual or team-based?",
+        quickReplies: [
+          { id: "mode:individual", label: "Individual" },
+          { id: "mode:team", label: "Teams" },
+        ],
+      };
+    }
+    if (step === 3) {
+      const kpi = selections.kpi ?? "revenue";
+      const duration = selections.duration ?? "7";
+      const mode = selections.mode ?? "individual";
+      const title =
+        kpi === "demos"
+          ? "Demo Sprint"
+          : kpi === "close_rate"
+            ? "Close Rate Challenge"
+            : kpi === "leads"
+              ? "Pipeline Builder"
+              : "Revenue Sprint";
+      const scoring =
+        kpi === "demos"
+          ? "1 point per demo booked"
+          : kpi === "close_rate"
+            ? "win rate uplift vs baseline"
+            : kpi === "leads"
+              ? "1 point per qualified lead"
+              : "$ collected";
+      return {
+        assistant:
+          `Done. Here’s a launch-ready draft:\n\n` +
+          `- Competition: “${title}” (${duration} days)\n` +
+          `- Format: ${mode === "team" ? "Teams" : "Individual"}\n` +
+          `- Scoring: ${scoring}\n` +
+          `- Guardrails: minimum 10 opportunities touched\n` +
+          `- Incentives (default): 1st $250 · 2nd $150 · 3rd $100\n\n` +
+          `Want me to generate the announcement message + banner images next?`,
+        quickReplies: [
+          { id: "next:assets_yes", label: "Generate assets" },
+          { id: "next:assets_no", label: "Skip for now" },
+        ],
+      };
+    }
+    // step 4 (assets)
+    return {
+      assistant:
+        "Awesome — I’ll generate:\n- 3 banner image options\n- 6 achievement badges\n- A launch announcement message\n- A Slack/Teams nudge template\n\nAnything you want the theme to be (e.g., “Spring sprint”, “Beat last week”, “Team vs team”)?",
+      quickReplies: [
+        { id: "theme:spring", label: "Spring sprint" },
+        { id: "theme:beat_last_week", label: "Beat last week" },
+        { id: "theme:team_vs_team", label: "Team vs team" },
+      ],
+    };
+  }
+
+  if (flowId === "todays-sales-stats") {
+    if (step === 0) {
+      return {
+        assistant: "Which system should I pull today’s stats from?",
+        quickReplies: [
+          { id: "crm:salesforce", label: "Salesforce" },
+          { id: "crm:hubspot", label: "HubSpot" },
+          { id: "crm:other", label: "Other CRM" },
+        ],
+      };
+    }
+    if (step === 1) {
+      return {
+        assistant: "Got it. What scope should I summarize?",
+        quickReplies: [
+          { id: "scope:company", label: "Company-wide" },
+          { id: "scope:region", label: "By region" },
+          { id: "scope:team", label: "By team" },
+        ],
+      };
+    }
+    if (step === 2) {
+      const scope = selections.scope ?? "company";
+      return {
+        assistant:
+          `Here’s today so far (${scope === "company" ? "company-wide" : scope === "region" ? "by region" : "by team"}):\n\n` +
+          `- Revenue: $128,450 (64% to goal)\n` +
+          `- Demos booked: 19 (+12% WoW)\n` +
+          `- New opps: 31\n` +
+          `- Stalled deals (48h no activity): 14\n\n` +
+          `Want suggested actions for the biggest levers?`,
+        quickReplies: [
+          { id: "actions:yes", label: "Suggest actions" },
+          { id: "actions:no", label: "Not now" },
+        ],
+      };
+    }
+    // step 3 actions
+    return {
+      assistant:
+        "Top suggested actions:\n\n1) Nudge reps with stalled deals (48h+) — I can draft messages.\n2) Launch a 48-hour “Demo Push” mini-competition.\n3) Alert managers about 3 at-risk regions/teams.\n\nWhat should I do first?",
+      quickReplies: [
+        { id: "do:draft_messages", label: "Draft the messages" },
+        { id: "do:mini_comp", label: "Build mini-competition" },
+        { id: "do:manager_alerts", label: "Set manager alerts" },
+      ],
+    };
+  }
+
+  // automated-event-messaging
+  if (step === 0) {
+    return {
+      assistant: "Which event should trigger the automation?",
+      quickReplies: [
+        { id: "trigger:demo_booked", label: "Demo booked" },
+        { id: "trigger:stage_proposal", label: "Moved to Proposal" },
+        { id: "trigger:no_activity_48h", label: "No activity in 48h" },
+      ],
+    };
+  }
+  if (step === 1) {
+    return {
+      assistant: "Where should I send it?",
+      quickReplies: [
+        { id: "channel:slack", label: "Slack" },
+        { id: "channel:teams", label: "Teams" },
+        { id: "channel:sms", label: "SMS" },
+      ],
+    };
+  }
+  if (step === 2) {
+    return {
+      assistant: "Who should receive the message?",
+      quickReplies: [
+        { id: "audience:rep", label: "Rep" },
+        { id: "audience:manager", label: "Manager" },
+        { id: "audience:both", label: "Both" },
+      ],
+    };
+  }
+  if (step === 3) {
+    const trigger = selections.trigger ?? "demo_booked";
+    const channel = selections.channel ?? "slack";
+    const audience = selections.audience ?? "both";
+    const triggerLabel =
+      trigger === "stage_proposal"
+        ? "Deal moved to Proposal"
+        : trigger === "no_activity_48h"
+          ? "No activity in 48 hours"
+          : "Demo booked";
+    const channelLabel = channel.toUpperCase();
+    const audienceLabel = audience === "rep" ? "Rep" : audience === "manager" ? "Manager" : "Rep + Manager";
+    return {
+      assistant:
+        `Perfect. Here’s the automation draft:\n\n` +
+        `- Trigger: ${triggerLabel}\n` +
+        `- Channel: ${channelLabel}\n` +
+        `- Recipients: ${audienceLabel}\n` +
+        `- Message: AI-drafted with deal context + next step suggestion\n\n` +
+        `Want me to generate the exact message copy now?`,
+      quickReplies: [
+        { id: "copy:yes", label: "Generate copy" },
+        { id: "copy:no", label: "Skip" },
+      ],
+    };
+  }
+
+  return {
+    assistant:
+      "Here’s a first message draft:\n\n“Quick update: I noticed {event}. Suggested next step: {action}. Reply YES to confirm, or I can adjust.”\n\nWant it more direct, more upbeat, or more formal?",
+    quickReplies: [
+      { id: "tone:direct", label: "Direct" },
+      { id: "tone:upbeat", label: "Upbeat" },
+      { id: "tone:formal", label: "Formal" },
+    ],
+  };
+}
 
 const HERO_LOGOS = [
   "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/68b08e93f61e6330bcf4e263_foxpest.png",
@@ -67,48 +473,13 @@ const HERO_LOGOS_WITH_SUMMARY = HERO_LOGOS.map((url, i) => ({
   summary: SUMMARIES[i % SUMMARIES.length]
 }));
 
-import { CTAButton } from "./CTAButton";
-
-function parsePreviewHostname(raw: string): string | null {
-  const trimmed = raw.trim();
-  if (!trimmed) return null;
-  try {
-    let s = trimmed;
-    if (!/^https?:\/\//i.test(s)) s = `https://${s}`;
-    const u = new URL(s);
-    const host = u.hostname.replace(/^www\./i, "");
-    return host || null;
-  } catch {
-    return null;
-  }
-}
-
 export function HeroSection() {
   const { isLightMode } = useTheme();
   const [isHovered, setIsHovered] = useState(false);
-  const [currentScreenIndex, setCurrentScreenIndex] = useState(0);
   const [isPhoneExpanded, setIsPhoneExpanded] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const [urlInput, setUrlInput] = useState("");
-  const [previewDomain, setPreviewDomain] = useState<string | null>(null);
-
-  const applyUrlPreview = () => {
-    const host = parsePreviewHostname(urlInput);
-    setPreviewDomain(host);
-    if (typeof window !== "undefined" && window.innerWidth < 768) {
-      setIsPhoneExpanded(true);
-    }
-  };
-
-  const nextScreen = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentScreenIndex((prev) => (prev + 1) % SCREEN_IMAGES.length);
-  };
-
-  const prevScreen = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setCurrentScreenIndex((prev) => (prev - 1 + SCREEN_IMAGES.length) % SCREEN_IMAGES.length);
-  };
+  const [demoState, setDemoState] = useState<AssistantDemoState>(() => initialDemoState());
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -170,11 +541,8 @@ export function HeroSection() {
                   <div className="absolute inset-0 min-h-0">
                     <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
                       <HeroPhoneScreenContent
-                        currentScreenIndex={currentScreenIndex}
-                        previewDomain={previewDomain}
-                        prevScreen={prevScreen}
-                        nextScreen={nextScreen}
-                        setCurrentScreenIndex={setCurrentScreenIndex}
+                        demoState={demoState}
+                        setDemoState={setDemoState}
                       />
                     </HeroPhoneFrame>
                   </div>
@@ -192,15 +560,15 @@ export function HeroSection() {
         {/* Header Content */}
         <div className="flex flex-col items-center w-full gap-6 md:gap-10">
         <h1 className={`font-['IvyOra_Text'] font-medium leading-[1.1] tracking-[-2px] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}>
-          The Operating System<br />
-          for High-Performance<br />
-          Sales Teams
+          Your AI operating system<br />
+          for high-performance<br />
+          sales teams
         </h1>
         
         {/* Brands Partnerships Section */}
         <div className="w-full mt-2 mb-4 md:mt-4 md:mb-8 z-20 flex flex-col items-center pointer-events-auto">
           <p className={`font-['Inter'] tracking-[-0.04em] text-center ${isLightMode ? 'text-black/100' : 'text-white/50'} text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px] p-[0px] mx-[24px] mt-[0px] mb-[24px]`}>
-            A real-time system to operate, compete, and win every day.
+            Connect your data. Get insights. Take action — fast.
           </p>
           
           <div className="flex flex-col gap-6 md:gap-12 w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[16px]" style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
@@ -240,32 +608,13 @@ export function HeroSection() {
           </div>
         </div>
 
-        {/* Search/URL input — real input + preview ties domain to the device mock */}
+        {/* Master feature copy (single concept: AI Playground) */}
         <div className="flex w-full max-w-3xl flex-col gap-2 z-30 pointer-events-auto">
-          <div className={`backdrop-blur-md rounded-2xl border w-full overflow-hidden relative group ${isLightMode ? 'bg-black/5 border-black/20 shadow-[0_8px_32px_rgba(0,0,0,0.05)]' : 'bg-[#11161d]/24 border-[#666]'}`}>
-            <div className="flex items-center w-full pl-[16px] pr-[8px] mx-[0px] my-[8px]">
-              <input
-                type="url"
-                inputMode="url"
-                autoComplete="url"
-                placeholder="yoursite.com"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    applyUrlPreview();
-                  }
-                }}
-                className={`flex-1 min-w-0 bg-transparent font-['Inter'] text-[11px] md:text-sm tracking-tight outline-none placeholder:uppercase placeholder:tracking-tight ${isLightMode ? 'text-brand-dark placeholder:text-black/40' : 'text-brand-light placeholder:text-white/40'}`}
-              />
-              <CTAButton type="button" className="ml-2 md:ml-4 shrink-0" onClick={applyUrlPreview}>
-                Preview
-              </CTAButton>
-            </div>
-          </div>
-          <p className={`text-center text-[11px] md:text-xs font-['Inter'] ${isLightMode ? "text-black/45" : "text-white/45"}`}>
-            See a curated Enzy experience with your domain on the mockup — no signup required.
+          <p className={`text-center font-['Inter'] text-[13px] md:text-[14px] tracking-tight ${isLightMode ? "text-black/55" : "text-white/60"}`}>
+            AI Playground: ask, decide, generate.
+          </p>
+          <p className={`text-center text-[11px] md:text-xs font-['Inter'] ${isLightMode ? "text-black/40" : "text-white/45"}`}>
+            Tap a prompt to explore. Expand to complete the workflow.
           </p>
         </div>
 
@@ -312,64 +661,58 @@ export function HeroSection() {
             >
               {/* Inner Screen */}
               <div className={`absolute left-1/2 top-[16px] lg:top-[20px] -translate-x-1/2 w-[95%] h-[92%] rounded-[16px] lg:rounded-[20px] overflow-hidden ${isLightMode ? 'bg-white shadow-[0_4px_24px_rgba(0,0,0,0.05)]' : 'bg-black'}`}>
-                {previewDomain && (
-                  <div className="pointer-events-none absolute left-1/2 top-3 z-30 max-w-[85%] -translate-x-1/2">
-                    <div className="rounded-full border border-black/10 bg-white/90 px-3 py-1 text-center font-['Inter'] text-[10px] font-medium text-[#0b0f14] shadow-md backdrop-blur-sm dark:border-white/15 dark:bg-black/60 dark:text-white">
-                      Preview · <span className="text-[#19ad7d]">{previewDomain}</span>
-                    </div>
-                  </div>
-                )}
-                <AnimatePresence>
-                  <motion.div
-                    key={currentScreenIndex}
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="absolute inset-0 w-full h-full"
-                  >
-                    {SCREEN_IMAGES[currentScreenIndex].startsWith('http') ? (
-                      <ImageWithFallback 
-                        src={SCREEN_IMAGES[currentScreenIndex]} 
-                        alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src={SCREEN_IMAGES[currentScreenIndex]}
-                        alt={`Dashboard Screen ${currentScreenIndex + 1}`}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-                
-                {/* Navigation Controls (Visible on Hover) */}
-                <div className="absolute inset-0 flex items-center justify-between px-4 md:px-6 opacity-0 group-hover/screen:opacity-100 transition-opacity duration-300 z-20 pointer-events-none">
-                  <button 
-                    onClick={prevScreen} 
-                    className="pointer-events-auto p-2 md:p-3 rounded-full bg-[#11161d]/60 text-white hover:bg-[#19ad7d] backdrop-blur-md transition-colors border border-white/10"
-                  >
-                    <ChevronLeft size={24} />
-                  </button>
-                  <button 
-                    onClick={nextScreen} 
-                    className="pointer-events-auto p-2 md:p-3 rounded-full bg-[#11161d]/60 text-white hover:bg-[#19ad7d] backdrop-blur-md transition-colors border border-white/10"
-                  >
-                    <ChevronRight size={24} />
-                  </button>
+                <div className="absolute inset-0">
+                  <img
+                    src={userScreen.src}
+                    alt=""
+                    className="h-full w-full object-cover opacity-40"
+                    aria-hidden
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/70" aria-hidden />
                 </div>
-                
-                {/* Indicators */}
-                <div className="absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20 bg-[#11161d]/60 backdrop-blur-md px-3 py-2 rounded-full border border-white/10 pointer-events-auto opacity-0 group-hover/screen:opacity-100 transition-opacity duration-300">
-                  {SCREEN_IMAGES.map((_, i) => (
-                    <button 
-                      key={i} 
-                      onClick={(e) => { e.stopPropagation(); setCurrentScreenIndex(i); }}
-                      className={`h-2 rounded-full transition-all duration-300 ${i === currentScreenIndex ? 'bg-[#19ad7d] w-6' : 'bg-white/40 hover:bg-white/80 w-2'}`} 
-                      aria-label={`Go to screen ${i + 1}`}
+
+                <div className="relative h-full w-full">
+                  <div className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
+                    <Sparkles size={14} className="text-[#19ad7d]" />
+                    <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Playground</span>
+                  </div>
+
+                  <div className="absolute right-4 top-4 z-20">
+                    <CTAButton
+                      type="button"
+                      className="!px-3 !py-2 !text-[12px]"
+                      onClick={(e: any) => {
+                        e?.stopPropagation?.();
+                        setDemoState((s) => (s.mode === "start" ? s : s));
+                        setIsAiModalOpen(true);
+                      }}
+                    >
+                      Expand
+                    </CTAButton>
+                  </div>
+
+                  <div className="absolute left-4 right-4 top-14 z-20 flex flex-wrap gap-2">
+                    {CONNECTED_SOURCES.map((s) => (
+                      <div
+                        key={s.id}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 backdrop-blur-md"
+                      >
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
+                        <span className="font-['Inter'] text-[10px] tracking-tight text-white/80">
+                          {s.label}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="absolute inset-x-4 bottom-4 top-[92px] z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
+                    <HeroAssistantDemo
+                      demoState={demoState}
+                      isLightMode={false}
+                      setDemoState={setDemoState}
+                      showActionPanel
                     />
-                  ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -401,11 +744,8 @@ export function HeroSection() {
                 >
                   <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
                     <HeroPhoneScreenContent
-                      currentScreenIndex={currentScreenIndex}
-                      previewDomain={previewDomain}
-                      prevScreen={prevScreen}
-                      nextScreen={nextScreen}
-                      setCurrentScreenIndex={setCurrentScreenIndex}
+                      demoState={demoState}
+                      setDemoState={setDemoState}
                     />
                   </HeroPhoneFrame>
                 </div>
@@ -422,6 +762,13 @@ export function HeroSection() {
 
         </div>
       </section>
+      <AiAssistantModal
+        open={isAiModalOpen}
+        onOpenChange={setIsAiModalOpen}
+        isLightMode={isLightMode}
+        demoState={demoState}
+        setDemoState={setDemoState}
+      />
       {phoneOverlay}
     </>
   );
@@ -515,87 +862,362 @@ function HeroPhoneFrame({
 }
 
 function HeroPhoneScreenContent({
-  currentScreenIndex,
-  previewDomain,
-  prevScreen,
-  nextScreen,
-  setCurrentScreenIndex,
+  demoState,
+  setDemoState,
 }: {
-  currentScreenIndex: number;
-  previewDomain: string | null;
-  prevScreen: (e: React.MouseEvent) => void;
-  nextScreen: (e: React.MouseEvent) => void;
-  setCurrentScreenIndex: (i: number) => void;
+  demoState: AssistantDemoState;
+  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
 }) {
   return (
-    <>
-      {previewDomain && (
-        <div className="pointer-events-none absolute left-1/2 top-2.5 z-20 max-w-[min(92%,280px)] -translate-x-1/2">
-          <div className="rounded-full border border-white/20 bg-black/55 px-3 py-1 text-center font-['Inter'] text-[10px] font-medium text-white/95 shadow-lg backdrop-blur-md">
-            Preview · <span className="text-[#8ee4c6]">{previewDomain}</span>
+    <div className="relative h-full w-full">
+      <div className="absolute inset-0">
+        <img
+          src={imgInnerScreen.src}
+          alt=""
+          className="h-full w-full object-cover opacity-55"
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/35 to-black/70" aria-hidden />
+      </div>
+
+      <div className="absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
+        <Sparkles size={13} className="text-[#19ad7d]" />
+        <span className="font-['Inter'] text-[10px] font-medium tracking-tight">AI Playground</span>
+      </div>
+
+      <div className="absolute inset-x-3 bottom-3 top-12 z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
+        <HeroAssistantDemo demoState={demoState} isLightMode={false} setDemoState={setDemoState} />
+      </div>
+    </div>
+  );
+}
+
+function HeroAssistantDemo({
+  demoState,
+  isLightMode,
+  setDemoState,
+  showActionPanel = false,
+}: {
+  demoState: AssistantDemoState;
+  isLightMode: boolean;
+  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
+  showActionPanel?: boolean;
+}) {
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const onQuickReply = (qr: QuickReply) => {
+    setDemoState((prev) => {
+      // Start a new flow
+      if (prev.mode === "start") {
+        const flowId = qr.id as AssistantFlowId;
+        const step0 = flowStepPrompt(flowId, 0, {});
+        return {
+          mode: "flow",
+          flowId,
+          step: 0,
+          selections: {},
+          messages: [
+            ...prev.messages.map((m) => ({ ...m, quickReplies: undefined })), // lock the initial choices once selected
+            { id: newId("m"), role: "user", text: ASSISTANT_PROMPTS.find((p) => p.id === flowId)?.label ?? qr.label },
+            {
+              id: newId("m"),
+              role: "assistant",
+              text: step0.assistant,
+              quickReplies: step0.quickReplies,
+            },
+          ],
+        };
+      }
+
+      // Flow mode
+      if (prev.mode === "flow") {
+        // global actions
+        if (qr.id === "action:start_over") return initialDemoState();
+
+        const [key, raw] = qr.id.split(":");
+        const nextSelections =
+          raw && key
+            ? {
+                ...prev.selections,
+                [key]: raw,
+              }
+            : { ...prev.selections };
+
+        const nextStep = prev.step + 1;
+        const prompt = flowStepPrompt(prev.flowId, nextStep, nextSelections);
+
+        return {
+          ...prev,
+          step: nextStep,
+          selections: nextSelections,
+          messages: [
+            ...prev.messages.map((m) => ({ ...m, quickReplies: undefined })), // lock previous options
+            { id: newId("m"), role: "user", text: qr.label },
+            {
+              id: newId("m"),
+              role: "assistant",
+              text: prompt.assistant,
+              quickReplies: [
+                ...(prompt.quickReplies ?? []),
+                { id: "action:start_over", label: "Start over" },
+              ],
+            },
+          ],
+        };
+      }
+
+      return prev;
+    });
+  };
+
+  useEffect(() => {
+    if (!copiedId) return;
+    const t = window.setTimeout(() => setCopiedId(null), 1100);
+    return () => window.clearTimeout(t);
+  }, [copiedId]);
+
+  const copyCard = async (c: ActionCard) => {
+    const text = `${c.title}\n${c.detail}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedId(c.id);
+    } catch {
+      // fallback: select-copy isn’t worth it for this demo
+    }
+  };
+
+  return (
+    <div className="absolute inset-0">
+      {/* subtle “app” background */}
+      <div className="absolute inset-0">
+        <img
+          src={imgInnerScreen.src}
+          alt=""
+          className="h-full w-full object-cover opacity-55"
+          aria-hidden
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/60" aria-hidden />
+      </div>
+
+      <div className="relative h-full w-full p-4 md:p-6">
+        <div className="flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/90 backdrop-blur-md">
+            <Sparkles size={14} className="text-[#19ad7d]" />
+            <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Assistant</span>
+          </div>
+          <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/75 backdrop-blur-md">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
+            <span className="font-['Inter'] text-[10px] tracking-tight">Connected data</span>
           </div>
         </div>
-      )}
 
-      <AnimatePresence>
-        <motion.div
-          key={currentScreenIndex}
-          initial={{ opacity: 0, scale: 1.03 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 1 }}
-          transition={{ duration: 0.65, ease: "easeInOut" }}
-          className="absolute inset-0 h-full w-full"
-        >
-          {SCREEN_IMAGES[currentScreenIndex].startsWith("http") ? (
-            <ImageWithFallback
-              src={SCREEN_IMAGES[currentScreenIndex]}
-              alt={`Dashboard screen ${currentScreenIndex + 1}`}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <img
-              src={SCREEN_IMAGES[currentScreenIndex]}
-              alt={`Dashboard screen ${currentScreenIndex + 1}`}
-              className="h-full w-full object-cover"
-            />
+        <div className="mt-4 flex h-[calc(100%-3.25rem)] gap-4">
+          {/* Chat */}
+          <div className={`min-w-0 flex-1 ${showActionPanel ? "md:flex-[1.6]" : ""}`}>
+            <div className="h-full overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex flex-col gap-3 pb-4">
+                {demoState.messages.map((m) => {
+                  const isUser = m.role === "user";
+                  const bubbleBase =
+                    "max-w-[92%] rounded-2xl px-3.5 py-3 text-left backdrop-blur-md";
+                  const bubbleClass = isUser
+                    ? "ml-auto bg-[#19ad7d] text-white shadow-[0_10px_30px_rgba(25,173,125,0.22)]"
+                    : "border border-white/10 bg-white/10 text-white/90";
+
+                  return (
+                    <div key={m.id} className={`${bubbleBase} ${bubbleClass}`}>
+                      <div className="font-['Inter'] text-[12px] leading-relaxed tracking-tight whitespace-pre-line">
+                        {m.text}
+                      </div>
+
+                      {m.quickReplies && m.quickReplies.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {m.quickReplies.map((qr) => (
+                            <button
+                              key={qr.id}
+                              type="button"
+                              onClick={() => onQuickReply(qr)}
+                              className="pointer-events-auto rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-left font-['Inter'] text-[11px] tracking-tight text-white/85 transition-colors hover:bg-black/35 active:bg-[#19ad7d]/80"
+                            >
+                              {qr.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Action Panel */}
+          {showActionPanel && (
+            <div className="hidden md:flex w-[280px] lg:w-[320px] shrink-0 flex-col gap-3">
+              <div className="rounded-2xl border border-white/10 bg-black/25 p-3 backdrop-blur-md">
+                <div className="flex items-center justify-between">
+                  <div className="font-['Inter'] text-[12px] font-semibold tracking-tight text-white/90">
+                    Outputs
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDemoState(initialDemoState())}
+                    className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/75 hover:bg-black/30 active:bg-black/40"
+                  >
+                    Reset
+                  </button>
+                </div>
+                <div className="mt-2 space-y-2">
+                  {getActionCards(demoState).map((c) => (
+                    <motion.div
+                      key={`${c.id}-${c.status}`}
+                      initial={
+                        c.status === "ready"
+                          ? { opacity: 0, y: 6, boxShadow: "0 0 0 rgba(25,173,125,0)" }
+                          : { opacity: 1, y: 0 }
+                      }
+                      animate={
+                        c.status === "ready"
+                          ? {
+                              opacity: 1,
+                              y: 0,
+                              boxShadow: "0 0 0 rgba(25,173,125,0)",
+                            }
+                          : { opacity: 1, y: 0 }
+                      }
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className={`rounded-2xl border p-3 ${
+                        c.status === "ready"
+                          ? "border-[#19ad7d]/30 bg-[#19ad7d]/[0.08]"
+                          : "border-white/10 bg-white/5"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`h-2 w-2 rounded-full ${
+                            c.status === "ready"
+                              ? "bg-[#19ad7d]"
+                              : c.status === "in_progress"
+                                ? "bg-[#19ad7d]/60"
+                                : "bg-white/25"
+                          }`}
+                        />
+                        <div className="font-['Inter'] text-[11px] font-semibold tracking-tight text-white/90">
+                          {c.title}
+                        </div>
+                        {c.status === "ready" && (
+                          <span className="ml-auto rounded-full border border-white/10 bg-black/20 px-2 py-0.5 font-['Inter'] text-[10px] tracking-tight text-white/70">
+                            Ready
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 font-['Inter'] text-[11px] leading-snug tracking-tight text-white/70">
+                        {c.detail}
+                      </div>
+
+                      {c.status === "ready" && (
+                        <div className="mt-2 flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => copyCard(c)}
+                            className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/80 hover:bg-black/35 active:bg-black/45"
+                          >
+                            {copiedId === c.id ? "Copied" : "Copy"}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              downloadTextFile(
+                                `${c.id}.txt`,
+                                `${c.title}\n\n${c.detail}\n\n(Generated in Enzy AI Playground demo)`
+                              )
+                            }
+                            className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/80 hover:bg-black/35 active:bg-black/45"
+                          >
+                            Download
+                          </button>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-md">
+                <div className="font-['Inter'] text-[11px] font-semibold tracking-tight text-white/90">
+                  Why it converts
+                </div>
+                <div className="mt-1 font-['Inter'] text-[11px] leading-snug tracking-tight text-white/70">
+                  Users can see tangible artifacts appear — not just chat. The panel updates as the AI drafts real work.
+                </div>
+              </div>
+            </div>
           )}
-        </motion.div>
-      </AnimatePresence>
-
-      <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-between px-2">
-        <button
-          type="button"
-          onClick={prevScreen}
-          className="pointer-events-auto rounded-full border border-white/12 bg-[#11161d]/60 p-1.5 text-white/90 shadow-sm backdrop-blur-md transition-colors active:bg-[#19ad7d] active:text-white"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          type="button"
-          onClick={nextScreen}
-          className="pointer-events-auto rounded-full border border-white/12 bg-[#11161d]/60 p-1.5 text-white/90 shadow-sm backdrop-blur-md transition-colors active:bg-[#19ad7d] active:text-white"
-        >
-          <ChevronRight size={20} />
-        </button>
+        </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="pointer-events-auto absolute bottom-3.5 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 rounded-full border border-white/12 bg-[#11161d]/55 px-2.5 py-1.5 backdrop-blur-md">
-        {SCREEN_IMAGES.map((_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setCurrentScreenIndex(i);
-            }}
-            className={`h-1.5 rounded-full transition-all duration-300 ${
-              i === currentScreenIndex ? "w-4 bg-[#19ad7d]" : "w-1.5 bg-white/40"
-            }`}
-            aria-label={`Go to screen ${i + 1}`}
-          />
-        ))}
-      </div>
-    </>
+function AiAssistantModal({
+  open,
+  onOpenChange,
+  isLightMode,
+  demoState,
+  setDemoState,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  isLightMode: boolean;
+  demoState: AssistantDemoState;
+  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
+}) {
+  return (
+    <Dialog.Root open={open} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="fixed inset-0 z-[9998] bg-black/55 backdrop-blur-md" />
+        <Dialog.Content
+          className={`fixed left-1/2 top-1/2 z-[9999] w-[min(94vw,860px)] -translate-x-1/2 -translate-y-1/2 rounded-[28px] border shadow-[0_30px_120px_rgba(0,0,0,0.55)] outline-none ${
+            isLightMode ? "bg-[#0b0f14] border-white/10" : "bg-[#0b0f14] border-white/10"
+          }`}
+        >
+          <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#19ad7d]/15 ring-1 ring-inset ring-[#19ad7d]/35">
+                <Sparkles size={16} className="text-[#19ad7d]" />
+              </span>
+              <div className="flex flex-col">
+                <Dialog.Title className="font-['Inter'] text-sm font-semibold tracking-tight text-white">
+                  Meet your new AI Assistant
+                </Dialog.Title>
+                <Dialog.Description className="font-['Inter'] text-xs tracking-tight text-white/60">
+                  Pick prompts and continue the workflow end-to-end.
+                </Dialog.Description>
+              </div>
+            </div>
+
+            <Dialog.Close asChild>
+              <button
+                type="button"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 text-white/80 transition-colors hover:bg-white/10 active:bg-white/15"
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </Dialog.Close>
+          </div>
+
+          <div className="relative h-[min(72vh,640px)]">
+            <HeroAssistantDemo
+              demoState={demoState}
+              isLightMode={false}
+              setDemoState={setDemoState}
+              showActionPanel
+            />
+          </div>
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
   );
 }
 

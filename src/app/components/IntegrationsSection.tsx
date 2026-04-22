@@ -123,7 +123,7 @@ export function IntegrationsSection() {
                 isLightMode ? "text-[#0b0f14]" : "text-[#f5f7fa]"
               }`}
             >
-              Plug N'Play
+              Plug & Play
             </h2>
           </div>
           <p
@@ -131,7 +131,7 @@ export function IntegrationsSection() {
               isLightMode ? "text-black/75" : "text-white/75"
             }`}
           >
-            Enzy plugs directly into your existing ecosystem, so everything runs smoothly from day one. And if the integration you need isn’t there yet, we’ll build it.
+            Connect your tools once. Enzy keeps data flowing in real time. Missing an integration? We’ll add it.
           </p>
         </div>
 

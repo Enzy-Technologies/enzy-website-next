@@ -10,78 +10,68 @@ import { CTAButton } from './CTAButton';
 
 const MENU_ITEMS = [
   { id: 'features', label: 'System', path: '/features' },
-  { id: 'solutions', label: 'Use Cases', path: '/solutions' },
-  { id: 'resources', label: 'Learn', path: '/resources' },
-  { id: 'about', label: 'Company', path: '/about' },
+  { id: 'solutions', label: 'Solutions', path: '/solutions' },
+  { id: 'resources', label: 'Resources', path: '/resources' },
+  { id: 'about', label: 'About', path: '/about' },
 ];
 
 const SYSTEM_SECTIONS = [
   {
-    title: "Visibility",
-    desc: "See what your team is doing—live.",
-    items: ["Activity tracking", "Real-time dashboards", "Reporting"]
+    title: "Work",
+    desc: "Move the day forward.",
+    items: ["Map", "Leads", "Calendar", "Tasks", "Library", "Recruit"],
   },
   {
-    title: "Competition",
-    desc: "Turn performance into pressure.",
-    items: ["Leaderboards", "Incentives", "Rankings", "Streaks"]
+    title: "Perform",
+    desc: "Make execution visible.",
+    items: ["Leaderboards", "Incentives", "Goals", "Profiles", "Chat"],
   },
   {
-    title: "Execution",
-    desc: "Remove friction from doing the work.",
-    items: ["Messaging", "Scheduling", "Media library", "Digital business cards"]
+    title: "AI",
+    desc: "Ask. Decide. Generate.",
+    items: ["AI Assistant"],
   },
-  {
-    title: "Momentum",
-    desc: "Where activity becomes performance.",
-    items: ["Streak tracking", "Progress visualization", "Performance trends"]
-  },
-  {
-    title: "Integrations",
-    desc: "Plug into your existing stack.",
-    items: ["CRM integrations", "Data sync", "Real-time ingestion"]
-  }
 ];
 
 const USE_CASES = [
   {
     title: "For Reps",
-    desc: "Stay consistent. Compete daily. Win more."
+    desc: "Stay consistent. Win more."
   },
   {
     title: "For Leaders",
-    desc: "See performance in real time. Drive results."
+    desc: "See signal. Drive action."
   },
   {
     title: "For Solar",
-    desc: "Maximize field activity. Book more installs."
+    desc: "Drive field activity. Book more."
   },
   {
     title: "For Roofing",
-    desc: "Turn field effort into predictable revenue."
+    desc: "Turn effort into revenue."
   }
 ];
 
 const LEARN_ITEMS = [
   {
     title: "Insights",
-    desc: "Perspectives on sales performance and momentum."
+    desc: "What to measure. What to change."
   },
   {
     title: "Playbooks",
-    desc: "Proven systems to drive behavior and results."
+    desc: "Repeatable setups."
   },
   {
     title: "Customer Stories",
-    desc: "How teams are building momentum with Enzy."
+    desc: "Real rollouts. Real results."
   },
   {
     title: "Guides",
-    desc: "Deep dives into performance systems and workflows."
+    desc: "Integrations + workflows."
   },
   {
     title: "Compare",
-    desc: "See how Enzy stacks up."
+    desc: "Side-by-side comparisons."
   }
 ];
 
@@ -208,11 +198,11 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
                         <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
-                            See how Enzy drives performance in real time.
+                            See what Enzy does—fast.
                         </h3>
                         <div className="mt-4">
                             <Link href="/features" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Explore the System <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                Explore the system <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                     </motion.div>
@@ -253,11 +243,11 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
                         <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
-                            Built for the field. Engineered for growth.
+                            Built for action. Built to scale.
                         </h3>
                         <div className="mt-4">
                             <Link href="/solutions" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Explore Use Cases <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
+                                Explore solutions <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
                             </Link>
                         </div>
                     </motion.div>
@@ -296,11 +286,11 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
                         <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
-                            Everything you need to build momentum and drive performance.
+                            Learn the playbooks that work.
                         </h3>
                         <div className="mt-4">
                             <Link href="/resources" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                View All Resources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
+                                Browse resources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
                             </Link>
                         </div>
                     </motion.div>
@@ -428,9 +418,9 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See how Enzy drives performance in real time.</p>
+                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See what Enzy does—fast.</p>
                                     <Link href="/features" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        View All Features <ArrowRight size={12} />
+                                        Explore platform <ArrowRight size={12} />
                                     </Link>
                                 </motion.div>
 
@@ -472,9 +462,9 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Built for the field. Engineered for growth.</p>
+                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Built for action. Built to scale.</p>
                                     <Link href="/solutions" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        Explore Use Cases <ArrowRight size={12} />
+                                        Explore solutions <ArrowRight size={12} />
                                     </Link>
                                 </motion.div>
 
@@ -513,9 +503,9 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Everything you need to build momentum and drive performance.</p>
+                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Learn the playbooks that work.</p>
                                     <Link href="/resources" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        View All Resources <ArrowRight size={12} strokeWidth={2.5} />
+                                        Browse resources <ArrowRight size={12} strokeWidth={2.5} />
                                     </Link>
                                 </motion.div>
 
@@ -576,7 +566,7 @@ export function MainNavigation() {
                 </button>
 
                 <CTAButton href="#" className="w-full py-4 font-semibold text-[14px]">
-                  Learn more
+                  Book a demo
                 </CTAButton>
               </motion.div>
 

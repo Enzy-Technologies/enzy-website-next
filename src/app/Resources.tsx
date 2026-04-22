@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, ArrowRight } from "lucide-react";
 import { useTheme } from "./components/ThemeProvider";
+import { CTAButton } from "./components/CTAButton";
 
 import imgInsightsBg from "@/assets/fe07aab853fa3e439a789e527dbd50601d1228f8.png";
 import imgPlaybooksBg from "@/assets/04f7043b15b6e1aecfd7c7b8261277090632e920.png";
@@ -17,29 +18,29 @@ const LEARN_DATA = [
   {
     id: "insights",
     title: "Insights",
-    desc: "Perspectives on sales performance and momentum.",
+    desc: "What to measure. What to change. What to do next.",
     colSpan: "col-span-12",
     bgImage: imgInsightsBg.src,
     textColor: "text-black",
     descColor: "text-black/70",
     layoutStyle: "tile1",
-    content: "Deep dive into performance metrics and what truly drives sales momentum in modern teams. Here we explore behavioral science, daily habits, and organizational structures that win. Our insights are driven by millions of data points from field sales teams, breaking down exactly what separates top performers from the rest. Access reports, trend analysis, and expert commentary to stay ahead of the curve."
+    content: "Short reads on what drives performance.\n\n- The KPIs that actually predict outcomes\n- What top teams do daily\n- How to turn signal into action"
   },
   {
     id: "playbooks",
     title: "Playbooks",
-    desc: "Proven systems to drive behavior and results.",
+    desc: "Repeatable setups you can run this week.",
     colSpan: "col-span-12 lg:col-span-7",
     bgImage: imgPlaybooksBg.src,
     textColor: "text-black",
     descColor: "text-black/70",
     layoutStyle: "tile2",
-    content: "Step-by-step guides to implementing Enzy in your team. Learn how to set up leaderboards, automate incentives, and structure daily competitions that actually work. Playbooks provide actionable frameworks that you can deploy today, whether you're managing a team of 10 or scaling a nationwide force of 1,000+ reps."
+    content: "Step-by-step guides.\n\n- Launch a leaderboard\n- Build a competition\n- Set incentives and rewards\n- Roll out messaging and nudges"
   },
   {
     id: "stories",
     title: "Customer Stories",
-    desc: "How teams are building momentum with Enzy.",
+    desc: "Real teams. Real rollouts. Real results.",
     colSpan: "col-span-12 lg:col-span-5",
     bgImage: null,
     bottomImage: imgStoriesBottom.src,
@@ -48,31 +49,31 @@ const LEARN_DATA = [
     customBg:
       "liquid-glass bg-[rgba(17,17,19,0.55)] border-white/12",
     layoutStyle: "tile3",
-    content: "See how top solar and roofing teams increased their appointment set rates by 40% in just two months using real-time leaderboards and automated field tracking. Read our collection of case studies featuring organizations that transformed their culture from complacent to competitive overnight."
+    content: "Quick case studies.\n\n- What they set up\n- What changed\n- What improved (and how fast)"
   },
   {
     id: "guides",
     title: "Guides",
-    desc: "Deep dives into performance systems and workflows.",
+    desc: "Setup, integrations, and advanced workflows.",
     colSpan: "col-span-12 lg:col-span-6",
     bgImage: imgGuidesBg.src,
     innerImage: imgGuidesInner.src,
     textColor: "text-white",
     descColor: "text-white/80",
     layoutStyle: "tile4",
-    content: "Comprehensive documentation on integrating your CRM, setting up custom webhooks, and advanced reporting configurations. From initial setup to advanced workflow automation, our guides ensure your technical infrastructure supports your operational goals."
+    content: "Technical deep dives.\n\n- Connect CRM + sources\n- Configure permissions\n- Automate events and messages\n- Build advanced reports"
   },
   {
     id: "compare",
     title: "Compare",
-    desc: "See how Enzy stacks up.",
+    desc: "A clear look at alternatives.",
     colSpan: "col-span-12 lg:col-span-6",
     bgImage: imgCompareBg.src,
     innerImage: imgCompareInner.src,
     textColor: "text-black",
     descColor: "text-black/70",
     layoutStyle: "tile5",
-    content: "A detailed breakdown of Enzy vs legacy gamification platforms. See why real-time architecture and field-first design make the difference. Compare features, pricing structures, and implementation timelines to make an informed decision for your team."
+    content: "Side-by-side comparisons.\n\n- What you get with Enzy\n- Where legacy tools fall short\n- What implementation looks like"
   }
 ];
 
@@ -132,15 +133,35 @@ export function Resources() {
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 z-20">
-        <div className="max-w-7xl mx-auto w-full mb-16">
-        <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-tight tracking-[-2px] text-center transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
-          Learn <span className="text-[#19ad7d]">More</span>
-        </h1>
-        <p className={`font-['Inter'] text-sm md:text-base mt-6 max-w-2xl mx-auto text-center transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
-          Dive into proven systems, expert playbooks, and everything you need to build momentum in your team.
-        </p>
-      </div>
+      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col items-center w-full mb-16"
+        >
+          <div
+            className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${
+              isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"
+            } eyebrow`}
+          >
+            Resources
+          </div>
+          <h1
+            className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
+              isLightMode ? "text-black" : "text-[#f5f7fa]"
+            }`}
+          >
+            Learn in <span className="text-[#19ad7d]">minutes</span>
+          </h1>
+          <p
+            className={`font-['Inter'] text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
+              isLightMode ? "text-black/60" : "text-white/60"
+            }`}
+          >
+            Skimmable playbooks, guides, and stories you can apply immediately.
+          </p>
+        </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 w-full max-w-[1200px] mx-auto">
         {LEARN_DATA.map((item) => (
@@ -191,26 +212,35 @@ export function Resources() {
                 </div>
 
                 {/* Right/Bottom Half: Expanded Content */}
-                <div className="flex-1 w-full md:w-1/2 h-[60%] md:h-full border-l border-black/8 bg-white/92 p-8 backdrop-blur-xl dark:border-white/10 dark:bg-[#0b0f14]/92 md:p-12 flex flex-col relative z-20 overflow-y-auto">
+                <div
+                  className={`flex-1 w-full md:w-1/2 h-[60%] md:h-full border-l p-8 backdrop-blur-xl md:p-12 flex flex-col relative z-20 overflow-y-auto ${
+                    isLightMode
+                      ? "border-black/10 bg-white/92 text-black"
+                      : "border-white/10 bg-[#0b0f14]/92 text-white"
+                  }`}
+                >
                   <button
                     onClick={() => setSelectedId(null)}
-                    className="absolute top-6 right-6 p-2 rounded-full bg-black/5 dark:bg-white/10 hover:bg-black/10 dark:hover:bg-white/20 transition-colors text-black dark:text-white"
+                    className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${
+                      isLightMode
+                        ? "bg-black/5 hover:bg-black/10 text-black"
+                        : "bg-white/10 hover:bg-white/20 text-white"
+                    }`}
                   >
                     <X size={20} />
                   </button>
 
-                  <h2 className="font-['IvyOra_Text'] font-medium text-4xl md:text-5xl tracking-[-2px] text-black dark:text-white mb-6 mt-4">
+                  <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl tracking-[-2px] mb-6 mt-4 ${isLightMode ? "text-black" : "text-white"}`}>
                     {selectedItem.title}
                   </h2>
-                  <p className="font-['Inter'] text-lg text-black/60 dark:text-white/60 mb-8 leading-relaxed">
+                  <p className={`font-['Inter'] text-base md:text-[17px] mb-8 leading-relaxed whitespace-pre-line ${isLightMode ? "text-black/65" : "text-white/65"}`}>
                     {selectedItem.content}
                   </p>
 
                   <div className="mt-auto pt-8">
-                    <button className="group flex items-center justify-center w-full sm:w-auto px-8 py-4 rounded-xl bg-[#19ad7d] text-white font-['Inter'] font-semibold text-sm transition-transform active:scale-95 hover:bg-[#15946b]">
-                      Explore {selectedItem.title}
-                      <ArrowRight size={16} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                    </button>
+                    <CTAButton href="#" className="w-full sm:w-auto px-8 py-4 font-semibold text-[14px]">
+                      Open {selectedItem.title} <ArrowRight size={16} className="ml-2" />
+                    </CTAButton>
                   </div>
                 </div>
               </motion.div>

@@ -10,37 +10,37 @@ const SOLUTIONS_DATA = [
   {
     id: 'sales-teams',
     role: 'Sales Teams',
-    tagline: 'Empower your sales teams with custom-built tools and insights.',
-    title: 'Overcoming Sales Challenges',
-    description: 'Sales teams face several challenges that can hinder their success, including high sales rep turnover, low lead conversion rates, and inefficient time management—all of which Enzy aims to solve.',
+    tagline: 'Daily visibility + AI-guided action.',
+    title: 'Turn activity into outcomes',
+    description: 'Enzy connects your sales data, flags what changed, and suggests next-best actions—then reinforces execution with competitions and incentives.',
     stats: [
-      { value: '30%', label: 'Average industry turnover rate of 30% annually' },
-      { value: '5%', label: 'Just 5% of initial leads convert to a sale' },
-      { value: '35%', label: "Only 35% of sales reps' time is spent actively selling" }
+      { value: 'Live', label: 'Performance visibility across reps and teams' },
+      { value: 'Faster', label: 'Suggested actions when KPIs move' },
+      { value: 'Less admin', label: 'More time spent selling' }
     ]
   },
   {
     id: 'operations',
     role: 'Operations',
-    tagline: 'Streamline daily processes and optimize resource management.',
-    title: 'Overcoming Operations Challenges',
-    description: 'Operations teams frequently encounter challenges that affect their productivity and morale, such as high turnover rates and low employee engagement. Additionally, businesses often struggle to collect valuable feedback from customer interactions—all of which Enzy aims to solve.',
+    tagline: 'One system. Fewer handoffs.',
+    title: 'Run operations with clarity',
+    description: 'Make goals, performance, and communication easy to see. Enzy keeps teams aligned with messaging, dashboards, and AI summaries.',
     stats: [
-      { value: '20%', label: 'Average industry turnover rate of 20% annually.' },
-      { value: '15%', label: 'Only 15% of employees are actively engaged with their work.' },
-      { value: '10%', label: 'Less than 10% of customer interactions result in feedback collection' }
+      { value: 'Aligned', label: 'Shared visibility across teams and leaders' },
+      { value: 'Engaged', label: 'Clear goals + friendly competition' },
+      { value: 'Actionable', label: 'Feedback you can use' }
     ]
   },
   {
     id: 'executive-leadership',
     role: 'Executive Leadership',
-    tagline: 'Gain crystal-clear visibility into high-level performance metrics.',
-    title: 'Driving Strategic Decisions',
-    description: 'Executives need clear, actionable insights without drowning in raw data. Enzy provides high-level dashboards and predictive analytics to steer the organization with absolute confidence.',
+    tagline: 'Less reporting. More direction.',
+    title: 'Lead with signal, not noise',
+    description: 'Get AI summaries, trends, and risks—plus the actions to move the numbers. Keep strategy tied to execution.',
     stats: [
-      { value: '360°', label: 'Comprehensive view of organizational health' },
-      { value: 'Live', label: 'Real-time access to critical performance metrics' },
-      { value: '50%', label: 'Faster strategic alignment across departments' }
+      { value: 'Signal', label: 'What changed + why it matters' },
+      { value: 'Now', label: 'Real-time KPIs across the org' },
+      { value: 'Aligned', label: 'Teams pulling in the same direction' }
     ]
   }
 ];
@@ -96,7 +96,7 @@ export function Solutions() {
           Tailored <span className="text-[#19ad7d]">Solutions</span>
         </h1>
         <p className={`font-['Inter'] text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/60' : 'text-white/50'}`}>
-          Explore how Enzy adapts to meet the specific needs of your role or industry. Powerful capabilities engineered for your precise workflow.
+          Pick your role. See how Enzy turns connected data into actions you can launch.
         </p>
       </motion.div>
 
