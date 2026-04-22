@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence, useAnimationFrame, useMotionValue } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Sparkles, Signal, Wifi, Battery } from "lucide-react";
 import { createPortal } from "react-dom";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
@@ -571,37 +571,26 @@ export function HeroSection() {
             Connect your data. Get insights. Take action — fast.
           </p>
           
-          <div className="flex flex-col gap-6 md:gap-12 w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[16px]" style={{ maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)', WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)' }}>
-            {/* Row 1 (Scrolls Left) */}
+          <div
+            className="w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[10px]"
+            style={{
+              maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+              WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+            }}
+          >
+            {/* Single row (slower) */}
             <motion.div
-              className="flex items-center whitespace-nowrap min-w-max pt-6 md:pt-8"
+              className="flex items-center whitespace-nowrap min-w-max py-6"
               animate={{ x: ["0%", "-50%"] }}
-              transition={{ repeat: Infinity, ease: "linear", duration: 80 }}
+              transition={{ repeat: Infinity, ease: "linear", duration: 100 }}
             >
               {[...HERO_LOGOS_WITH_SUMMARY, ...HERO_LOGOS_WITH_SUMMARY].map((logo, i) => (
-                <LogoItem 
-                  key={`row1-${i}`}
+                <LogoItem
+                  key={`row-${i}`}
                   logo={logo}
                   index={i}
                   isLightMode={isLightMode}
-                  row="top"
-                />
-              ))}
-            </motion.div>
-            
-            {/* Row 2 (Scrolls Right) */}
-            <motion.div
-              className="flex items-center whitespace-nowrap min-w-max pb-6 md:pb-8"
-              animate={{ x: ["-50%", "0%"] }}
-              transition={{ repeat: Infinity, ease: "linear", duration: 80 }}
-            >
-              {[...HERO_LOGOS_WITH_SUMMARY].reverse().concat([...HERO_LOGOS_WITH_SUMMARY].reverse()).map((logo, i) => (
-                <LogoItem 
-                  key={`row2-${i}`}
-                  logo={logo}
-                  index={i}
-                  isLightMode={isLightMode}
-                  row="bottom"
+                  row={i % 2 === 0 ? "top" : "bottom"}
                 />
               ))}
             </motion.div>
@@ -1222,62 +1211,26 @@ function AiAssistantModal({
 }
 
 function LogoItem({ logo, index, isLightMode, row }: { logo: { url: string, summary: string }, index: number, isLightMode: boolean, row: 'top' | 'bottom' }) {
-  const ref = useRef<HTMLDivElement>(null);
-  
-  const opacity = useMotionValue(0);
-  const scale = useMotionValue(0.95);
-  const y = useMotionValue(row === 'top' ? 8 : -8);
-  const logoOpacity = useMotionValue(0.3);
-  const logoScale = useMotionValue(1);
-
-  useAnimationFrame(() => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const windowCenterX = window.innerWidth / 2;
-    // Check if the center of this element is within +/- 150px of the screen center
-    const elementCenterX = rect.left + rect.width / 2;
-    const distanceToCenter = Math.abs(elementCenterX - windowCenterX);
-    
-    // Smooth threshold for fading in the center
-    const threshold = 150;
-    const progress = Math.max(0, Math.min(1, distanceToCenter / threshold));
-    const visibility = 1 - progress; // 1 at center, 0 outside
-    
-    // Smooth interpolation
-    opacity.set(opacity.get() + (visibility - opacity.get()) * 0.15);
-    scale.set(scale.get() + ((0.95 + visibility * 0.05) - scale.get()) * 0.15);
-    
-    const targetY = row === 'top' ? (1 - visibility) * 8 : (1 - visibility) * -8;
-    y.set(y.get() + (targetY - y.get()) * 0.15);
-    
-    logoOpacity.set(logoOpacity.get() + ((0.3 + visibility * 0.7) - logoOpacity.get()) * 0.15);
-    logoScale.set(logoScale.get() + ((1 + visibility * 0.05) - logoScale.get()) * 0.15);
-  });
-
   return (
-    <div 
-      ref={ref}
-      className="relative flex flex-col items-center justify-center mr-16 md:mr-32"
-    >
-      <motion.div
-        style={{ opacity, scale, y }}
-        className={`absolute ${row === 'top' ? '-top-8' : '-bottom-8'} px-3 py-1 rounded-full text-[10px] md:text-[11px] font-['Inter'] font-medium tracking-tight whitespace-nowrap z-10 border backdrop-blur-sm pointer-events-none
-          ${isLightMode ? 'bg-white/90 text-[#19ad7d] border-black/10 shadow-[0_2px_8px_rgba(0,0,0,0.05)]' : 'bg-[#11161d]/90 text-[#19ad7d] border-white/10 shadow-[0_2px_8px_rgba(0,0,0,0.2)]'}
+    <div className="relative flex flex-col items-center justify-center mr-16 md:mr-32">
+      <div
+        className={`absolute ${row === 'top' ? '-top-9' : '-bottom-9'} px-3.5 py-1.5 rounded-full text-[11px] md:text-[12px] font-['Inter'] font-semibold tracking-tight whitespace-nowrap z-10 border backdrop-blur-md pointer-events-none
+          ${isLightMode ? 'bg-white/90 text-[#0b0f14] border-black/10 shadow-[0_8px_22px_rgba(0,0,0,0.08)]' : 'bg-black/60 text-white/95 border-white/10 shadow-[0_10px_28px_rgba(0,0,0,0.45)]'}
         `}
       >
-        {logo.summary}
-      </motion.div>
-      <motion.div 
-        style={{ opacity: logoOpacity, scale: logoScale }}
-        className={`marquee-logo-item relative flex items-center justify-center ${isLightMode ? 'brightness-0' : 'brightness-0 invert'} hover:!opacity-100`}
+        <span className="text-[#19ad7d]">•</span>{" "}
+        <span className="text-inherit">{logo.summary}</span>
+      </div>
+      <div
+        className={`marquee-logo-item relative flex items-center justify-center opacity-80 ${isLightMode ? 'brightness-0' : 'brightness-0 invert'} hover:!opacity-100 transition-opacity duration-200`}
       >
-        <img 
-          src={logo.url} 
-          alt={`Partner Logo ${index}`} 
+        <img
+          src={logo.url}
+          alt={`Partner Logo ${index}`}
           className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
           loading="lazy"
         />
-      </motion.div>
+      </div>
     </div>
   );
 }
