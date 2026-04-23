@@ -16,11 +16,14 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLightMode, setIsLightMode] = useState(() => {
-    if (typeof window !== 'undefined') {
-      // Force reset to light mode default, clearing any previously stored 'dark' preference
-      localStorage.setItem('enzy-theme', 'light');
-    }
-    return true; // light by default
+    if (typeof window === 'undefined') return false; // default to dark on first render
+
+    const stored = localStorage.getItem('enzy-theme');
+    if (stored === 'light') return true;
+    if (stored === 'dark') return false;
+
+    // No stored preference: default to dark
+    return false;
   });
 
   useEffect(() => {
