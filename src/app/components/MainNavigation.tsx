@@ -329,13 +329,25 @@ export function MainNavigation() {
         </div>
       </div>
 
-      {/* Mobile Menu Toggle Button */}
-      <button 
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        className={`md:hidden relative z-[60] p-2.5 rounded-xl pointer-events-auto transition-transform active:scale-95 liquid-glass ${
-          isLightMode ? "text-black shadow-sm" : "text-white"
-        }`}
-      >
+      {/* Mobile header controls (theme + menu) */}
+      <div className="md:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
+        <button
+          onClick={toggleTheme}
+          className={`p-2.5 rounded-xl border backdrop-blur-md transition-colors liquid-glass ${
+            isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'
+          }`}
+          aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
+        >
+          {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+        </button>
+
+        <button 
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className={`relative p-2.5 rounded-xl pointer-events-auto transition-transform active:scale-95 liquid-glass ${
+            isLightMode ? "text-black shadow-sm" : "text-white"
+          }`}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+        >
         <AnimatePresence mode="wait">
           <motion.div
             key={mobileMenuOpen ? "close" : "open"}
@@ -348,6 +360,7 @@ export function MainNavigation() {
           </motion.div>
         </AnimatePresence>
       </button>
+      </div>
 
       {/* Mobile Fullscreen Overlay */}
       <AnimatePresence>
@@ -546,29 +559,7 @@ export function MainNavigation() {
                 </motion.div>
               ))}
 
-              {/* Mobile CTA Button & Theme Toggle */}
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-                className="mt-12 flex flex-col gap-4"
-              >
-                <button 
-                  onClick={toggleTheme}
-                  className={`w-full flex justify-between items-center px-4 py-4 rounded-xl border transition-colors ${
-                    isLightMode 
-                      ? 'bg-black/[0.03] border-black/5 text-black hover:bg-black/[0.08] hover:border-[#19ad7d]/30' 
-                      : 'bg-white/[0.03] border-white/5 text-white hover:bg-white/[0.08] hover:border-[#19ad7d]/30'
-                  }`}
-                >
-                  <span className="font-semibold text-[14px] font-['Inter']">{isLightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}</span>
-                  {isLightMode ? <Moon size={20} /> : <Sun size={20} />}
-                </button>
 
-                <CTAButton href="#" className="w-full py-4 font-semibold text-[14px]">
-                  Book a demo
-                </CTAButton>
-              </motion.div>
 
             </div>
           </motion.div>
