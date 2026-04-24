@@ -238,7 +238,7 @@ export function Resources() {
                   </p>
 
                   <div className="mt-auto pt-8">
-                    <CTAButton href="#" className="w-full sm:w-auto px-8 py-4 font-semibold text-[14px]">
+                    <CTAButton href="#" variant="primary" className="w-full sm:w-auto px-8 py-4 font-semibold text-[14px]">
                       Open {selectedItem.title} <ArrowRight size={16} className="ml-2" />
                     </CTAButton>
                   </div>

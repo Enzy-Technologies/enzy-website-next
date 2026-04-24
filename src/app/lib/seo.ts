@@ -7,6 +7,11 @@ export type SeoInput = {
   path: string
   imagePath?: string
   type?: "website" | "article"
+  /**
+   * Paid / campaign landings: keep out of organic indexes while remaining shareable via ads & direct links.
+   * Sets noindex,follow so crawlers discover links but don’t surface the URL in search results.
+   */
+  hiddenFromSearchEngines?: boolean
 }
 
 export function buildMetadata(input: SeoInput): Metadata {
@@ -15,22 +20,33 @@ export function buildMetadata(input: SeoInput): Metadata {
   const imagePath = input.imagePath ?? defaultOgImagePath
   const imageUrl = new URL(imagePath, metadataBase)
 
+  const robots = input.hiddenFromSearchEngines
+    ? ({
+        index: false,
+        follow: true,
+        googleBot: {
+          index: false,
+          follow: true,
+        },
+      } satisfies Metadata["robots"])
+    : ({
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+          "max-video-preview": -1,
+        },
+      } satisfies Metadata["robots"])
+
   return {
     metadataBase,
     title: input.title,
     description: input.description,
     alternates: { canonical },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-        "max-video-preview": -1,
-      },
-    },
+    robots,
     openGraph: {
       type: input.type ?? "website",
       siteName,
