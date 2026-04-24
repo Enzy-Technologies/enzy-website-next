@@ -6,6 +6,7 @@ import { ThemeProvider } from "./components/ThemeProvider"
 import { SiteShell } from "./components/SiteShell"
 import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
+import { defaultOgImagePath, siteName, siteUrl } from "./lib/site"
 
 export const metadata: Metadata = {
   ...buildMetadata({
@@ -21,12 +22,25 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const logoUrl =
+    defaultOgImagePath.startsWith("http") ? defaultOgImagePath : `${siteUrl}${defaultOgImagePath.startsWith("/") ? "" : "/"}${defaultOgImagePath}`
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
+    name: siteName,
+    url: siteUrl,
+    publisher: { "@id": `${siteUrl}/#organization` },
+  }
+
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Enzy",
-    url: "https://enzy.co",
-    logo: "https://enzy.co/logo.png",
+    "@id": `${siteUrl}/#organization`,
+    name: siteName,
+    url: siteUrl,
+    logo: logoUrl,
     description: "The Operating System for High-Performance Sales Teams",
     contactPoint: {
       "@type": "ContactPoint",
@@ -39,14 +53,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const softwareApplicationSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "Enzy",
+    name: siteName,
     applicationCategory: "BusinessApplication",
     operatingSystem: "Web",
     offers: {
       "@type": "Offer",
       price: "0",
       priceCurrency: "USD",
+      availability: "https://schema.org/OnlineOnly",
     },
+    publisher: { "@id": `${siteUrl}/#organization` },
   }
 
   return (
@@ -74,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />
         <ThemeProvider>

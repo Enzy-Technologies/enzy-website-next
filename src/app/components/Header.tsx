@@ -56,7 +56,7 @@ export function Header() {
             {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
           </button>
 
-          <CTAButton href="/about" className="z-50">
+          <CTAButton href="/about" variant="secondary" className="z-50">
             Learn more
           </CTAButton>
         </div>

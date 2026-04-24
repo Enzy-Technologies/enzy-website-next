@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles, Signal, Wifi, Battery } from "lucide-react";
+import { ArrowRight, Sparkles, Signal, Wifi, Battery } from "lucide-react";
 import { createPortal } from "react-dom";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
 import userScreen from "@/assets/61beea51a9bcfe1555d356d42bbc0ef63df8b0d3.png";
 import { useTheme } from "./ThemeProvider";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CTAButton } from "./CTAButton";
+import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 
 /** iPhone 17 class (6.3") — logical points per Apple / iOS layout (402×874). */
 const IPHONE_17_W = 402;
@@ -47,13 +48,74 @@ type AssistantDemoState =
       messages: ChatMessage[];
     };
 
-const ASSISTANT_START = "How can I help increase revenue?";
+type HeroScenarioKey = "field" | "virtual" | "ops";
 
-const ASSISTANT_PROMPTS: AssistantPrompt[] = [
-  { id: "build-competition", label: "Build a competition" },
-  { id: "todays-sales-stats", label: "Give me today's sale stats" },
-  { id: "automated-event-messaging", label: "Set up automated event messaging" },
-];
+type HeroScenario = {
+  key: HeroScenarioKey;
+  label: string;
+  /** Outcome-led line shown under the hero CTAs. */
+  outcomeLine: string;
+  /** AI demo's first assistant message. */
+  assistantStart: string;
+  /** Copy for the 3 quick-reply prompts (flow ids stay the same). */
+  promptLabels: Record<AssistantFlowId, string>;
+  /** Connected source labels shown in the mock UI. */
+  sources: readonly { id: string; label: string; status: "connected" }[];
+};
+
+const HERO_SCENARIOS: readonly HeroScenario[] = [
+  {
+    key: "field",
+    label: "Field sales",
+    outcomeLine: "Between visits → daily plan + coaching nudges.",
+    assistantStart: "What changed since yesterday, and what should reps do next?",
+    promptLabels: {
+      "build-competition": "Launch a rep sprint for stops + demos",
+      "todays-sales-stats": "Summarize today’s field activity",
+      "automated-event-messaging": "Draft a post-visit follow-up message",
+    },
+    sources: [
+      { id: "crm", label: "Salesforce", status: "connected" },
+      { id: "maps", label: "Territory/Maps", status: "connected" },
+      { id: "warehouse", label: "Warehouse", status: "connected" },
+      { id: "calendar", label: "Calendar", status: "connected" },
+    ],
+  },
+  {
+    key: "virtual",
+    label: "Virtual sales",
+    outcomeLine: "Pipeline signal → follow-ups + next steps.",
+    assistantStart: "What should we do today to move pipeline forward?",
+    promptLabels: {
+      "build-competition": "Run a pipeline-builder sprint",
+      "todays-sales-stats": "Show today’s pipeline movement",
+      "automated-event-messaging": "Write a 3-touch follow-up sequence",
+    },
+    sources: [
+      { id: "crm", label: "HubSpot/CRM", status: "connected" },
+      { id: "email", label: "Email", status: "connected" },
+      { id: "calendar", label: "Calendar", status: "connected" },
+      { id: "warehouse", label: "Warehouse", status: "connected" },
+    ],
+  },
+  {
+    key: "ops",
+    label: "Sales ops",
+    outcomeLine: "What changed → actions + assets shipped.",
+    assistantStart: "What changed across the team, and what actions should we trigger?",
+    promptLabels: {
+      "build-competition": "Generate a new incentive plan",
+      "todays-sales-stats": "Summarize KPIs and deltas",
+      "automated-event-messaging": "Draft a manager coaching message",
+    },
+    sources: [
+      { id: "crm", label: "CRM", status: "connected" },
+      { id: "slack", label: "Slack", status: "connected" },
+      { id: "bi", label: "BI/Sheets", status: "connected" },
+      { id: "warehouse", label: "Warehouse", status: "connected" },
+    ],
+  },
+] as const;
 
 function newId(prefix: string) {
   return `${prefix}-${Math.random().toString(16).slice(2)}`;
@@ -82,26 +144,25 @@ function downloadTextFile(filename: string, text: string) {
   }
 }
 
-function initialDemoState(): AssistantDemoState {
+function initialDemoState(scenario: HeroScenario): AssistantDemoState {
+  const prompts: AssistantPrompt[] = [
+    { id: "build-competition", label: scenario.promptLabels["build-competition"] },
+    { id: "todays-sales-stats", label: scenario.promptLabels["todays-sales-stats"] },
+    { id: "automated-event-messaging", label: scenario.promptLabels["automated-event-messaging"] },
+  ];
+
   return {
     mode: "start",
     messages: [
       {
         id: newId("m"),
         role: "assistant",
-        text: ASSISTANT_START,
-        quickReplies: ASSISTANT_PROMPTS.map((p) => ({ id: p.id, label: p.label })),
+        text: scenario.assistantStart,
+        quickReplies: prompts.map((p) => ({ id: p.id, label: p.label })),
       },
     ],
   };
 }
-
-const CONNECTED_SOURCES = [
-  { id: "salesforce", label: "Salesforce", status: "connected" as const },
-  { id: "slack", label: "Slack", status: "connected" as const },
-  { id: "snowflake", label: "Warehouse", status: "connected" as const },
-  { id: "calendar", label: "Calendar", status: "connected" as const },
-];
 
 function getActionCards(demoState: AssistantDemoState): ActionCard[] {
   if (demoState.mode === "start") {
@@ -475,15 +536,41 @@ const HERO_LOGOS_WITH_SUMMARY = HERO_LOGOS.map((url, i) => ({
 
 export function HeroSection() {
   const { isLightMode } = useTheme();
+  const [scenarioKey, setScenarioKey] = useState<HeroScenarioKey>("field");
+  const scenario = HERO_SCENARIOS.find((s) => s.key === scenarioKey) ?? HERO_SCENARIOS[0];
   const [isHovered, setIsHovered] = useState(false);
   const [isPhoneExpanded, setIsPhoneExpanded] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const [demoState, setDemoState] = useState<AssistantDemoState>(() => initialDemoState());
+  const [demoState, setDemoState] = useState<AssistantDemoState>(() => initialDemoState(scenario));
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
   }, []);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => setPrefersReducedMotion(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
+    // When the user chooses a scenario, retarget the AI demo to feel purpose-built.
+    setDemoState(initialDemoState(scenario));
+    // Close any expanded views so the user sees the refreshed prompts.
+    setIsAiModalOpen(false);
+    setIsPhoneExpanded(false);
+  }, [scenarioKey]);
+
+  const scrollToExplore = () => {
+    document.getElementById("hero-explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
+      window.setTimeout(() => setIsPhoneExpanded(true), 450);
+    }
+  };
 
   useEffect(() => {
     if (!isPhoneExpanded) return;
@@ -541,7 +628,9 @@ export function HeroSection() {
                   <div className="absolute inset-0 min-h-0">
                     <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
                       <HeroPhoneScreenContent
+                        key={scenarioKey}
                         demoState={demoState}
+                        scenario={scenario}
                         setDemoState={setDemoState}
                       />
                     </HeroPhoneFrame>
@@ -559,56 +648,121 @@ export function HeroSection() {
       <section className="relative flex flex-col items-center w-full px-4 pt-8 md:pt-16 lg:pt-24 max-w-7xl mx-auto pointer-events-none">
         {/* Header Content */}
         <div className="flex flex-col items-center w-full gap-6 md:gap-10">
-        <h1 className={`font-['IvyOra_Text'] font-medium leading-[1.1] tracking-[-2px] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} text-[32px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}>
+        <h1 className={`font-['IvyOra_Text'] font-medium leading-[1.05] tracking-[-2px] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? 'text-brand-dark' : 'text-brand-light'} text-[40px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}>
           Your AI operating system<br />
           for high-performance<br />
           sales teams
         </h1>
-        
-        {/* Brands Partnerships Section */}
-        <div className="w-full mt-2 mb-4 md:mt-4 md:mb-8 z-20 flex flex-col items-center pointer-events-auto">
-          <p className={`font-['Inter'] tracking-[-0.04em] text-center ${isLightMode ? 'text-black/100' : 'text-white/50'} text-[16px] sm:text-[18px] md:text-[20px] lg:text-[24px] p-[0px] mx-[24px] mt-[0px] mb-[24px]`}>
-            Connect your data. Get insights. Take action — fast.
-          </p>
-          
-          <div
-            className="w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[10px]"
-            style={{
-              maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-              WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-            }}
+
+        <p className={`font-['Inter'] tracking-[-0.03em] text-center pointer-events-auto max-w-2xl mx-auto px-4 ${isLightMode ? "text-black/75" : "text-white/60"} text-[17px] sm:text-[18px] md:text-[19px] leading-relaxed`}>
+          Connect your data. Get insights. Take action — fast.
+        </p>
+
+        {/* Demo-first: primary = Enzy green (Specs), secondary = outline */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 w-full max-w-lg sm:max-w-none pointer-events-auto px-4 mt-2">
+          <CTAButton
+            href={BOOK_DEMO_HREF}
+            variant="primary"
+            className="w-full sm:w-auto justify-center rounded-[22px] px-10 sm:px-12 py-4 sm:py-[18px] gap-2.5 font-semibold tracking-tight text-[16px] sm:text-[17px] hover:scale-[1.02] hover:!opacity-100 shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
           >
-            {/* Single row (slower) */}
-            <motion.div
-              className="flex items-center whitespace-nowrap min-w-max py-6"
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ repeat: Infinity, ease: "linear", duration: 100 }}
-            >
-              {[...HERO_LOGOS_WITH_SUMMARY, ...HERO_LOGOS_WITH_SUMMARY].map((logo, i) => (
+            Book a demo <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
+          </CTAButton>
+          <CTAButton
+            type="button"
+            variant="secondary"
+            onClick={scrollToExplore}
+            className="w-full sm:w-auto justify-center rounded-[22px] px-10 sm:px-12 py-4 sm:py-[18px] font-semibold text-[16px] sm:text-[17px] tracking-tight"
+          >
+            Try {scenario.label} scenario
+          </CTAButton>
+        </div>
+
+        {/* Brands Partnerships Section (directly under CTAs) */}
+        <div className="w-full mt-5 mb-2 md:mt-7 md:mb-6 z-20 flex flex-col items-center pointer-events-auto">
+          {prefersReducedMotion ? (
+            <div className="flex flex-wrap justify-center gap-x-10 gap-y-12 py-8 px-2 max-w-5xl">
+              {HERO_LOGOS_WITH_SUMMARY.slice(0, 10).map((logo, i) => (
                 <LogoItem
-                  key={`row-${i}`}
+                  key={`static-${i}`}
                   logo={logo}
                   index={i}
                   isLightMode={isLightMode}
                   row={i % 2 === 0 ? "top" : "bottom"}
                 />
               ))}
-            </motion.div>
-          </div>
+            </div>
+          ) : (
+            <div
+              className="w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[10px]"
+              style={{
+                maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+                WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+              }}
+            >
+              <motion.div
+                className="flex items-center whitespace-nowrap min-w-max py-6"
+                animate={{ x: ["0%", "-50%"] }}
+                transition={{ repeat: Infinity, ease: "linear", duration: 100 }}
+              >
+                {[...HERO_LOGOS_WITH_SUMMARY, ...HERO_LOGOS_WITH_SUMMARY].map((logo, i) => (
+                  <LogoItem
+                    key={`row-${i}`}
+                    logo={logo}
+                    index={i}
+                    isLightMode={isLightMode}
+                    row={i % 2 === 0 ? "top" : "bottom"}
+                  />
+                ))}
+              </motion.div>
+            </div>
+          )}
         </div>
 
+        <p
+          className={`mt-2 font-['Inter'] text-center text-[13px] md:text-[14px] max-w-2xl px-4 ${
+            isLightMode ? "text-black/45" : "text-white/45"
+          }`}
+        >
+          Connects to your CRM + comms stack. Live in 1–2 weeks for most teams.
+        </p>
+
+        {/* Guided choice (Redo-style): pick a scenario, then explore the AI with relevant prompts */}
+        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 pointer-events-auto px-4">
+          {HERO_SCENARIOS.map((s) => {
+            const active = s.key === scenarioKey;
+            return (
+              <button
+                key={s.key}
+                type="button"
+                onClick={() => setScenarioKey(s.key)}
+                className={`rounded-full px-4 py-2 text-[13px] md:text-[14px] font-['Inter'] font-semibold tracking-tight transition-colors border backdrop-blur-md ${
+                  active
+                    ? "border-[#19ad7d]/35 bg-[#19ad7d]/15 text-[#19ad7d]"
+                    : isLightMode
+                      ? "border-black/10 bg-white/70 text-black/65 hover:text-black hover:border-black/20"
+                      : "border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20"
+                }`}
+                aria-pressed={active}
+              >
+                {s.label}
+              </button>
+            );
+          })}
+        </div>
+        
         {/* Master feature copy (single concept: AI Playground) */}
-        <div className="flex w-full max-w-3xl flex-col gap-2 z-30 pointer-events-auto">
-          <p className={`text-center font-['Inter'] text-[13px] md:text-[14px] tracking-tight ${isLightMode ? "text-black/55" : "text-white/60"}`}>
-            AI Playground: ask, decide, generate.
+        <div className="flex w-full max-w-3xl flex-col gap-1.5 z-30 pointer-events-auto px-4">
+          <p className={`text-center font-['Inter'] text-[14px] md:text-[15px] font-medium tracking-tight ${isLightMode ? "text-black/60" : "text-white/65"}`}>
+            {scenario.outcomeLine}
           </p>
-          <p className={`text-center text-[11px] md:text-xs font-['Inter'] ${isLightMode ? "text-black/40" : "text-white/45"}`}>
-            Tap a prompt to explore. Expand to complete the workflow.
+          <p className={`text-center text-[12px] md:text-[13px] font-['Inter'] leading-snug ${isLightMode ? "text-black/45" : "text-white/50"}`}>
+            Tap a prompt to explore. Use Expand for the full workflow.
           </p>
         </div>
 
         {/* Device Mockup - Responsive */}
         <motion.div
+          id="hero-explore"
           initial={{ opacity: 0, y: 50, zIndex: 10 }}
           animate={{ 
             opacity: 1, 
@@ -620,7 +774,7 @@ export function HeroSection() {
             duration: 1,
             zIndex: { delay: isHovered ? 0 : 0.6 }
           }}
-          className="relative w-full transition-all duration-300 pointer-events-auto m-[0px]"
+          className="relative w-full transition-all duration-300 pointer-events-auto m-[0px] scroll-mt-24 md:scroll-mt-28"
           onMouseEnter={() => { if (window.innerWidth > 768) setIsHovered(true); }}
           onMouseLeave={() => { if (window.innerWidth > 768) setIsHovered(false); }}
         >
@@ -668,6 +822,7 @@ export function HeroSection() {
 
                   <div className="absolute right-4 top-4 z-20">
                     <CTAButton
+                      variant="primary"
                       type="button"
                       className="!px-3 !py-2 !text-[12px]"
                       onClick={(e: any) => {
@@ -681,7 +836,7 @@ export function HeroSection() {
                   </div>
 
                   <div className="absolute left-4 right-4 top-14 z-20 flex flex-wrap gap-2">
-                    {CONNECTED_SOURCES.map((s) => (
+                    {scenario.sources.map((s) => (
                       <div
                         key={s.id}
                         className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 backdrop-blur-md"
@@ -697,6 +852,7 @@ export function HeroSection() {
                   <div className="absolute inset-x-4 bottom-4 top-[92px] z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
                     <HeroAssistantDemo
                       demoState={demoState}
+                      scenario={scenario}
                       isLightMode={false}
                       setDemoState={setDemoState}
                       showActionPanel
@@ -733,7 +889,9 @@ export function HeroSection() {
                 >
                   <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
                     <HeroPhoneScreenContent
+                      key={scenarioKey}
                       demoState={demoState}
+                      scenario={scenario}
                       setDemoState={setDemoState}
                     />
                   </HeroPhoneFrame>
@@ -755,6 +913,7 @@ export function HeroSection() {
         open={isAiModalOpen}
         onOpenChange={setIsAiModalOpen}
         isLightMode={isLightMode}
+        scenario={scenario}
         demoState={demoState}
         setDemoState={setDemoState}
       />
@@ -852,9 +1011,11 @@ function HeroPhoneFrame({
 
 function HeroPhoneScreenContent({
   demoState,
+  scenario,
   setDemoState,
 }: {
   demoState: AssistantDemoState;
+  scenario: HeroScenario;
   setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
 }) {
   return (
@@ -875,7 +1036,7 @@ function HeroPhoneScreenContent({
       </div>
 
       <div className="absolute inset-x-3 bottom-3 top-12 z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
-        <HeroAssistantDemo demoState={demoState} isLightMode={false} setDemoState={setDemoState} />
+        <HeroAssistantDemo demoState={demoState} scenario={scenario} isLightMode={false} setDemoState={setDemoState} />
       </div>
     </div>
   );
@@ -883,14 +1044,18 @@ function HeroPhoneScreenContent({
 
 function HeroAssistantDemo({
   demoState,
+  scenario,
   isLightMode,
   setDemoState,
   showActionPanel = false,
+  variant = "full",
 }: {
   demoState: AssistantDemoState;
+  scenario: HeroScenario;
   isLightMode: boolean;
   setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
   showActionPanel?: boolean;
+  variant?: "full" | "phone";
 }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -907,7 +1072,7 @@ function HeroAssistantDemo({
           selections: {},
           messages: [
             ...prev.messages.map((m) => ({ ...m, quickReplies: undefined })), // lock the initial choices once selected
-            { id: newId("m"), role: "user", text: ASSISTANT_PROMPTS.find((p) => p.id === flowId)?.label ?? qr.label },
+            { id: newId("m"), role: "user", text: scenario.promptLabels[flowId] ?? qr.label },
             {
               id: newId("m"),
               role: "assistant",
@@ -921,7 +1086,7 @@ function HeroAssistantDemo({
       // Flow mode
       if (prev.mode === "flow") {
         // global actions
-        if (qr.id === "action:start_over") return initialDemoState();
+        if (qr.id === "action:start_over") return initialDemoState(scenario);
 
         const [key, raw] = qr.id.split(":");
         const nextSelections =
@@ -975,47 +1140,62 @@ function HeroAssistantDemo({
     }
   };
 
+  const isPhone = variant === "phone";
+  const messages = isPhone ? demoState.messages.slice(-5) : demoState.messages;
+
   return (
     <div className="absolute inset-0">
-      {/* subtle “app” background */}
-      <div className="absolute inset-0">
-        <img
-          src={imgInnerScreen.src}
-          alt=""
-          className="h-full w-full object-cover opacity-55"
-          aria-hidden
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/60" aria-hidden />
-      </div>
-
-      <div className="relative h-full w-full p-4 md:p-6">
-        <div className="flex items-center justify-between">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/90 backdrop-blur-md">
-            <Sparkles size={14} className="text-[#19ad7d]" />
-            <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Assistant</span>
-          </div>
-          <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/75 backdrop-blur-md">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
-            <span className="font-['Inter'] text-[10px] tracking-tight">Connected data</span>
-          </div>
+      {/* subtle “app” background (phone shell already supplies a background) */}
+      {!isPhone ? (
+        <div className="absolute inset-0">
+          <img
+            src={imgInnerScreen.src}
+            alt=""
+            className="h-full w-full object-cover opacity-55"
+            aria-hidden
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/60" aria-hidden />
         </div>
+      ) : null}
 
-        <div className="mt-4 flex h-[calc(100%-3.25rem)] gap-4">
+      <div className={`relative h-full w-full ${isPhone ? "p-3" : "p-4 md:p-6"}`}>
+        {isPhone ? (
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-white/90 backdrop-blur-md">
+              <Sparkles size={13} className="text-[#19ad7d]" />
+              <span className="font-['Inter'] text-[10px] font-medium tracking-tight">Enzy AI</span>
+            </div>
+            <div className="font-['Inter'] text-[10px] font-semibold tracking-tight text-white/55">{scenario.label}</div>
+          </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/90 backdrop-blur-md">
+              <Sparkles size={14} className="text-[#19ad7d]" />
+              <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Assistant</span>
+            </div>
+            <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/75 backdrop-blur-md">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
+              <span className="font-['Inter'] text-[10px] tracking-tight">Connected data</span>
+            </div>
+          </div>
+        )}
+
+        <div className={`${isPhone ? "mt-2 h-[calc(100%-2.25rem)]" : "mt-4 flex h-[calc(100%-3.25rem)] gap-4"}`}>
           {/* Chat */}
-          <div className={`min-w-0 flex-1 ${showActionPanel ? "md:flex-[1.6]" : ""}`}>
+          <div className={`${isPhone ? "h-full" : `min-w-0 flex-1 ${showActionPanel ? "md:flex-[1.6]" : ""}`}`}>
             <div className="h-full overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div className="flex flex-col gap-3 pb-4">
-                {demoState.messages.map((m) => {
+              <div className={`flex flex-col ${isPhone ? "gap-2.5 pb-3" : "gap-3 pb-4"}`}>
+                {messages.map((m) => {
                   const isUser = m.role === "user";
                   const bubbleBase =
-                    "max-w-[92%] rounded-2xl px-3.5 py-3 text-left backdrop-blur-md";
+                    `max-w-[92%] rounded-2xl ${isPhone ? "px-3 py-2.5" : "px-3.5 py-3"} text-left backdrop-blur-md`;
                   const bubbleClass = isUser
                     ? "ml-auto bg-[#19ad7d] text-white shadow-[0_10px_30px_rgba(25,173,125,0.22)]"
                     : "border border-white/10 bg-white/10 text-white/90";
 
                   return (
                     <div key={m.id} className={`${bubbleBase} ${bubbleClass}`}>
-                      <div className="font-['Inter'] text-[12px] leading-relaxed tracking-tight whitespace-pre-line">
+                      <div className={`font-['Inter'] ${isPhone ? "text-[11px] leading-snug" : "text-[12px] leading-relaxed"} tracking-tight whitespace-pre-line`}>
                         {m.text}
                       </div>
 
@@ -1026,7 +1206,7 @@ function HeroAssistantDemo({
                               key={qr.id}
                               type="button"
                               onClick={() => onQuickReply(qr)}
-                              className="pointer-events-auto rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-left font-['Inter'] text-[11px] tracking-tight text-white/85 transition-colors hover:bg-black/35 active:bg-[#19ad7d]/80"
+                              className={`pointer-events-auto rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-left font-['Inter'] ${isPhone ? "text-[10px]" : "text-[11px]"} tracking-tight text-white/85 transition-colors hover:bg-black/35 active:bg-[#19ad7d]/80`}
                             >
                               {qr.label}
                             </button>
@@ -1041,7 +1221,7 @@ function HeroAssistantDemo({
           </div>
 
           {/* Action Panel */}
-          {showActionPanel && (
+          {showActionPanel && !isPhone && (
             <div className="hidden md:flex w-[280px] lg:w-[320px] shrink-0 flex-col gap-3">
               <div className="rounded-2xl border border-white/10 bg-black/25 p-3 backdrop-blur-md">
                 <div className="flex items-center justify-between">
@@ -1050,7 +1230,7 @@ function HeroAssistantDemo({
                   </div>
                   <button
                     type="button"
-                    onClick={() => setDemoState(initialDemoState())}
+                    onClick={() => setDemoState(initialDemoState(scenario))}
                     className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/75 hover:bg-black/30 active:bg-black/40"
                   >
                     Reset
@@ -1152,12 +1332,14 @@ function AiAssistantModal({
   open,
   onOpenChange,
   isLightMode,
+  scenario,
   demoState,
   setDemoState,
 }: {
   open: boolean;
   onOpenChange: (v: boolean) => void;
   isLightMode: boolean;
+  scenario: HeroScenario;
   demoState: AssistantDemoState;
   setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
 }) {
@@ -1199,6 +1381,7 @@ function AiAssistantModal({
           <div className="relative h-[min(72vh,640px)]">
             <HeroAssistantDemo
               demoState={demoState}
+              scenario={scenario}
               isLightMode={false}
               setDemoState={setDemoState}
               showActionPanel

@@ -3,8 +3,9 @@
 import React from "react";
 import { ArrowRight, Target } from "lucide-react";
 import { motion } from "motion/react";
-import Link from "next/link";
 import { useTheme } from "./components/ThemeProvider";
+import { CTAButton } from "./components/CTAButton";
+import { BOOK_DEMO_HREF } from "./lib/booking";
 import { TestimonialsSection } from "./components/TestimonialsSection";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 
@@ -417,12 +418,13 @@ export function About() {
               <p className={`font-['Inter'] text-lg max-w-xl mx-auto mb-10 relative z-10 leading-relaxed transition-colors duration-500 ${isLightMode ? 'text-black/70' : 'text-white/70'}`}>
                 See the system live. Get a plan for your team this quarter.
               </p>
-              <Link
-                href="/solutions"
-                className={`relative z-10 flex items-center gap-3 px-8 py-4 rounded-full font-['Inter'] font-bold text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all duration-300 shadow-[0_0_32px_rgba(25,255,255,0.2)] ${isLightMode ? 'bg-black text-white' : 'bg-white text-black'}`}
+              <CTAButton
+                href={BOOK_DEMO_HREF}
+                variant="primary"
+                className="relative z-10 gap-3 px-8 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:scale-105 hover:!opacity-100 shadow-[0_0_28px_rgba(25,173,125,0.35)]"
               >
-                Book a demo <ArrowRight size={18} />
-              </Link>
+                Book a demo <ArrowRight size={18} aria-hidden />
+              </CTAButton>
             </div>
           </FadeInSection>
 

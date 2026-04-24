@@ -1,3 +1,7 @@
+/**
+ * App shell / forms — Radix-friendly defaults.
+ * Marketing CTAs site-wide: use `CTAButton` (`primary` | `secondary`) from `@/app/components/CTAButton`.
+ */
 import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";

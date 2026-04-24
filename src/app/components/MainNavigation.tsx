@@ -6,7 +6,6 @@ import { ChevronDown, ArrowRight, ArrowUpRight, Menu, X, Sun, Moon } from 'lucid
 import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';
-import { CTAButton } from './CTAButton';
 
 const MENU_ITEMS = [
   { id: 'features', label: 'System', path: '/features' },
@@ -333,8 +332,8 @@ export function MainNavigation() {
       <div className="md:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
         <button
           onClick={toggleTheme}
-          className={`p-2.5 rounded-xl border backdrop-blur-md transition-colors liquid-glass ${
-            isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'
+          className={`p-2.5 transition-colors active:scale-95 ${
+            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
           }`}
           aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
         >

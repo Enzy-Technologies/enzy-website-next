@@ -23,7 +23,7 @@ export function SpecsSection() {
             Not another dashboard. Enzy is a system for action—visibility, competition, and AI guidance.
           </p>
           <div className="mt-2 md:mt-4">
-            <CTAButton href="#">
+            <CTAButton href="#" variant="primary">
               Discover More
             </CTAButton>
           </div>
