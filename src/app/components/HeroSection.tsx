@@ -7,6 +7,7 @@ import { useTheme } from "./ThemeProvider";
 import { ArrowRight, Battery, Signal, Sparkles, Wifi } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CTAButton } from "./CTAButton";
+import { LogosMarquee } from "./LogosMarquee";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 
 /** iPhone 17 class (6.3") — logical points per Apple / iOS layout (402×874). */
@@ -582,17 +583,28 @@ export function HeroSection() {
           {prefersReducedMotion ? (
             <div className="flex flex-wrap justify-center gap-x-10 gap-y-12 py-8 px-2 max-w-5xl">
               {HERO_LOGOS_WITH_SUMMARY.slice(0, 10).map((logo, i) => (
-                <LogoItem
+                <div
                   key={`static-${i}`}
-                  logo={logo}
-                  index={i}
-                  isLightMode={isLightMode}
-                  row={i % 2 === 0 ? "top" : "bottom"}
-                />
+                  className={`relative flex items-center justify-center opacity-80 ${
+                    isLightMode ? "brightness-0" : "brightness-0 invert"
+                  }`}
+                >
+                  <img
+                    src={logo.url}
+                    alt=""
+                    className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
+                    loading="lazy"
+                    draggable={false}
+                  />
+                </div>
               ))}
             </div>
           ) : (
-            <LogosMarquee isLightMode={isLightMode} prefersReducedMotion={prefersReducedMotion} />
+            <LogosMarquee
+              logos={HERO_LOGOS_WITH_SUMMARY}
+              isLightMode={isLightMode}
+              prefersReducedMotion={prefersReducedMotion}
+            />
           )}
         </div>
 
@@ -1077,332 +1089,5 @@ function AiAssistantModal({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
-}
-
-function LogosMarquee({
-  isLightMode,
-  prefersReducedMotion,
-}: {
-  isLightMode: boolean;
-  prefersReducedMotion: boolean;
-}) {
-  const base = useMemo(() => HERO_LOGOS_WITH_SUMMARY.map((l, i) => ({ ...l, _id: `logo-${i}` })), []);
-  const summaryById = useMemo(() => new Map(base.map((l) => [l._id, l.summary])), [base]);
-  const logoUrlById = useMemo(() => new Map(base.map((l) => [l._id, l.url])), [base]);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const rafRef = useRef<number | null>(null);
-  /** Logo horizontal midpoint per marquee tile — card opens when this crosses viewport center. */
-  const prevCenterRef = useRef<Map<number, number>>(new Map());
-  const prevRightRef = useRef<Map<number, number>>(new Map());
-  /** Which marquee instance index “owns” the open drawer (for hiding that tile). */
-  const displayedInstanceRef = useRef<number | null>(null);
-  const closeHighlightTimerRef = useRef<number | null>(null);
-  const resumeScrollTimerRef = useRef<number | null>(null);
-  const scrollFrozenRef = useRef(false);
-
-  const CLOSE_DRAWER_ANIM_MS = 420;
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  /** Pauses marquee CSS animation while highlight is shown + until collapse finishes. */
-  const [scrollFrozen, setScrollFrozen] = useState(false);
-
-  useEffect(() => {
-    scrollFrozenRef.current = scrollFrozen;
-  }, [scrollFrozen]);
-  const [highlightText, setHighlightText] = useState<string | null>(null);
-  /** Which duplicated marquee tile index is shown in the drawer (hide that tile in the track). */
-  const [drawerInstance, setDrawerInstance] = useState<number | null>(null);
-  const [drawerLogoUrl, setDrawerLogoUrl] = useState<string | null>(null);
-  /** Keys text updates when the same drawer session switches to another logo mid-scroll. */
-  const [highlightTick, setHighlightTick] = useState(0);
-
-  useEffect(() => {
-    return () => {
-      if (closeHighlightTimerRef.current) window.clearTimeout(closeHighlightTimerRef.current);
-      if (resumeScrollTimerRef.current) window.clearTimeout(resumeScrollTimerRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (prefersReducedMotion) return;
-
-    const tick = () => {
-      const el = containerRef.current;
-      if (el) {
-        const centerX = window.innerWidth / 2;
-        const nodes = el.querySelectorAll<HTMLElement>("[data-enzy-marquee-instance]");
-
-        const opening: {
-          instance: number;
-          logoId: string;
-          rect: DOMRect;
-          prevRight: number | undefined;
-        }[] = [];
-
-        nodes.forEach((node) => {
-          const instance = Number(node.dataset.enzyMarqueeInstance);
-          if (Number.isNaN(instance)) return;
-
-          const rect = node.getBoundingClientRect();
-          const left = rect.left;
-          const right = rect.right;
-          const cxLogo = (left + right) / 2;
-
-          const prevCx = prevCenterRef.current.get(instance);
-          const prevR = prevRightRef.current.get(instance);
-
-          // Track moves left: open highlight only once the logo’s horizontal center crosses viewport center.
-          if (
-            !scrollFrozenRef.current &&
-            prevCx !== undefined &&
-            prevCx > centerX &&
-            cxLogo <= centerX
-          ) {
-            const logoId = node.dataset.enzyLogoId ?? "";
-            if (logoId) opening.push({ instance, logoId, rect, prevRight: prevR });
-          }
-
-          prevCenterRef.current.set(instance, cxLogo);
-          prevRightRef.current.set(instance, right);
-        });
-
-        if (opening.length > 0 && !scrollFrozenRef.current) {
-          const { instance, logoId, rect, prevRight } = opening[opening.length - 1];
-          const text = summaryById.get(logoId) ?? null;
-          const url = logoUrlById.get(logoId) ?? null;
-          if (text && url) {
-            if (closeHighlightTimerRef.current) window.clearTimeout(closeHighlightTimerRef.current);
-            if (resumeScrollTimerRef.current) window.clearTimeout(resumeScrollTimerRef.current);
-
-            // Distance for trailing edge to reach center (px). Sampled before scroll freezes.
-            const dist = rect.right - centerX;
-            const pxPerFrame =
-              prevRight !== undefined ? Math.max(prevRight - rect.right, 0.08) : 6;
-            const frames = dist > 2 ? dist / pxPerFrame : 0;
-            const holdMs = Math.round(
-              Math.min(14_000, Math.max(520, frames * (1000 / 60)))
-            );
-
-            displayedInstanceRef.current = instance;
-            setHighlightText(text);
-            setDrawerLogoUrl(url);
-            setDrawerInstance(instance);
-            setHighlightTick((n) => n + 1);
-            setDrawerOpen(true);
-            setScrollFrozen(true);
-            scrollFrozenRef.current = true;
-
-            closeHighlightTimerRef.current = window.setTimeout(() => {
-              closeHighlightTimerRef.current = null;
-              setDrawerOpen(false);
-
-              resumeScrollTimerRef.current = window.setTimeout(() => {
-                resumeScrollTimerRef.current = null;
-                displayedInstanceRef.current = null;
-                setDrawerInstance(null);
-                setDrawerLogoUrl(null);
-                setHighlightText(null);
-                scrollFrozenRef.current = false;
-                setScrollFrozen(false);
-              }, CLOSE_DRAWER_ANIM_MS);
-            }, holdMs);
-          }
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [prefersReducedMotion, summaryById, logoUrlById]);
-
-  if (prefersReducedMotion) {
-    const sample = base[0]?.summary ?? "Connects to your stack.";
-    const firstLogo = base[0];
-    return (
-      <div className="enzy-marquee relative w-full max-w-[100vw] overflow-visible px-3 pb-12 pt-4 sm:px-5">
-        <div className="pointer-events-none absolute left-1/2 top-0 z-20 flex w-[min(72vw,260px)] sm:w-[min(64vw,280px)] -translate-x-1/2 justify-center">
-          <div
-            className={`liquid-glass mt-1 flex min-h-[112px] max-w-full flex-col items-center justify-center gap-2.5 rounded-2xl border px-4 pb-6 pt-5 text-center shadow-lg sm:px-5 ${
-              isLightMode
-                ? "border-black/10 text-[#0b0f14] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
-                : "border-white/10 text-white/95 shadow-[0_14px_50px_rgba(0,0,0,0.45)]"
-            }`}
-          >
-            {firstLogo ? (
-              <img
-                src={firstLogo.url}
-                alt=""
-                className={`max-h-8 w-auto object-contain md:max-h-10 ${
-                  isLightMode ? "brightness-0" : "brightness-0 invert"
-                }`}
-                draggable={false}
-              />
-            ) : null}
-            <div className="flex w-full items-center justify-center gap-2">
-              <span className="text-[#19ad7d]">•</span>
-              <span className="font-['Inter'] text-[12px] font-semibold tracking-tight">{sample}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 whitespace-normal px-4 py-8">
-          {base.map((logo, i) => (
-            <div
-              key={`static-${logo._id}-${i}`}
-              className={`relative flex items-center justify-center opacity-80 ${
-                isLightMode ? "brightness-0" : "brightness-0 invert"
-              }`}
-            >
-              <img
-                src={logo.url}
-                alt=""
-                className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
-                loading="lazy"
-                draggable={false}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      className="enzy-marquee relative w-full max-w-[100vw] overflow-visible px-3 pb-12 pt-4 sm:px-5"
-      style={{
-        ["--enzy-marquee-duration" as any]: "180s",
-      }}
-    >
-      {/* Center card: only mounted in layout when frozen — no sliver before first open / after full dismiss */}
-      <div
-        className={`pointer-events-none absolute left-1/2 top-0 z-20 flex -translate-x-1/2 justify-center transition-[opacity,visibility] duration-150 ${
-          scrollFrozen
-            ? "visible w-[min(72vw,260px)] opacity-100 sm:w-[min(64vw,280px)]"
-            : "invisible h-0 max-h-0 w-0 max-w-0 overflow-hidden opacity-0"
-        }`}
-      >
-        <div
-          className={`w-full overflow-visible rounded-2xl border shadow-lg ${
-            isLightMode
-              ? "border-black/12 bg-black/[0.02] shadow-[0_14px_44px_rgba(0,0,0,0.1)]"
-              : "border-white/12 bg-white/[0.03] shadow-[0_16px_50px_rgba(0,0,0,0.5)]"
-          }`}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92, y: 18 }}
-            animate={
-              drawerOpen
-                ? { opacity: 1, scale: 1, y: 0 }
-                : { opacity: 0, scale: 0.93, y: 14 }
-            }
-            transition={
-              drawerOpen
-                ? {
-                    type: "spring",
-                    stiffness: 260,
-                    damping: 22,
-                    mass: 0.85,
-                  }
-                : {
-                    duration: 0.3,
-                    ease: [0.4, 0, 0.2, 1],
-                  }
-            }
-            style={{ transformOrigin: "50% 50%" }}
-            className="will-change-transform"
-          >
-            <div
-              className={`liquid-glass flex min-h-[112px] flex-col items-center justify-center gap-2.5 rounded-2xl border-0 px-4 pb-6 pt-5 sm:px-5 ${
-                isLightMode ? "text-[#0b0f14]" : "text-white/95"
-              }`}
-              aria-live={scrollFrozen && drawerLogoUrl ? "polite" : "off"}
-              aria-atomic="true"
-            >
-              <AnimatePresence mode="wait">
-                {drawerLogoUrl ? (
-                  <motion.div
-                    key={`${highlightTick}-${drawerLogoUrl}`}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex w-full shrink-0 justify-center"
-                  >
-                    <img
-                      src={drawerLogoUrl}
-                      alt=""
-                      className={`max-h-9 w-auto object-contain md:max-h-11 ${
-                        isLightMode ? "brightness-0" : "brightness-0 invert"
-                      }`}
-                      draggable={false}
-                    />
-                  </motion.div>
-                ) : null}
-              </AnimatePresence>
-              <div className="flex w-full max-w-[min(100%,15rem)] items-center justify-center gap-2 px-0.5 text-center leading-snug">
-                <span className="shrink-0 text-[#19ad7d]" aria-hidden>
-                  •
-                </span>
-                <div className="min-w-0">
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={`${highlightTick}-${highlightText ?? ""}`}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                      className="block font-['Inter'] text-[12px] font-semibold tracking-tight"
-                    >
-                      {highlightText ?? "\u00a0"}
-                    </motion.span>
-                  </AnimatePresence>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Mask only the scrolling strip so the center highlight card isn’t clipped (shadow + blur). */}
-      <div
-        className="relative w-full overflow-x-hidden"
-        style={{
-          maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-          WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-        }}
-      >
-        <div
-          className={`enzy-marquee-track items-center whitespace-nowrap py-6 ${scrollFrozen ? "is-paused" : ""}`}
-        >
-          {/* two copies for seamless loop */}
-          {[...base, ...base].map((logo, i) => (
-            <div
-              key={`${logo._id}-${i}`}
-              data-enzy-marquee-instance={i}
-              data-enzy-logo-id={logo._id}
-              className={`marquee-logo-item relative flex items-center justify-center mr-16 md:mr-32 transition-opacity duration-200 ${
-                scrollFrozen && drawerInstance === i ? "opacity-0" : "opacity-80"
-              } ${isLightMode ? "brightness-0" : "brightness-0 invert"}`}
-            >
-              <img
-                src={logo.url}
-                alt={`Partner Logo ${i}`}
-                className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
-                loading="lazy"
-                draggable={false}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 }
