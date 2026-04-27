@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from "motion/react";
-import { ArrowRight, Sparkles, Signal, Wifi, Battery } from "lucide-react";
-import { createPortal } from "react-dom";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
-import userScreen from "@/assets/61beea51a9bcfe1555d356d42bbc0ef63df8b0d3.png";
 import { useTheme } from "./ThemeProvider";
+import { ArrowRight, Battery, Signal, Sparkles, Wifi } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
@@ -536,18 +534,7 @@ const HERO_LOGOS_WITH_SUMMARY = HERO_LOGOS.map((url, i) => ({
 
 export function HeroSection() {
   const { isLightMode } = useTheme();
-  const [scenarioKey, setScenarioKey] = useState<HeroScenarioKey>("field");
-  const scenario = HERO_SCENARIOS.find((s) => s.key === scenarioKey) ?? HERO_SCENARIOS[0];
-  const [isHovered, setIsHovered] = useState(false);
-  const [isPhoneExpanded, setIsPhoneExpanded] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-  const [demoState, setDemoState] = useState<AssistantDemoState>(() => initialDemoState(scenario));
-  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -556,92 +543,6 @@ export function HeroSection() {
     mq.addEventListener("change", apply);
     return () => mq.removeEventListener("change", apply);
   }, []);
-
-  useEffect(() => {
-    // When the user chooses a scenario, retarget the AI demo to feel purpose-built.
-    setDemoState(initialDemoState(scenario));
-    // Close any expanded views so the user sees the refreshed prompts.
-    setIsAiModalOpen(false);
-    setIsPhoneExpanded(false);
-  }, [scenarioKey]);
-
-  const scrollToExplore = () => {
-    document.getElementById("hero-explore")?.scrollIntoView({ behavior: "smooth", block: "start" });
-    if (typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches) {
-      window.setTimeout(() => setIsPhoneExpanded(true), 450);
-    }
-  };
-
-  useEffect(() => {
-    if (!isPhoneExpanded) return;
-
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setIsPhoneExpanded(false);
-    };
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [isPhoneExpanded]);
-
-  const phoneOverlay =
-    hasMounted && isPhoneExpanded
-      ? createPortal(
-          <AnimatePresence>
-            <motion.div
-              className="fixed inset-0 z-[9999] md:hidden pointer-events-auto"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsPhoneExpanded(false)}
-            >
-              <div className="absolute inset-0 bg-black/55 backdrop-blur-md" />
-
-              <div className="absolute top-4 right-4 z-20">
-                <CloseButton onClick={() => setIsPhoneExpanded(false)} />
-              </div>
-
-              {/* Fits any screen: height-first so short phones & notches stay inside the viewport */}
-              <div
-                className="absolute inset-0 box-border flex items-center justify-center px-2"
-              >
-                <motion.div
-                  className="relative w-auto max-w-[100%] max-h-full min-h-0"
-                  style={{
-                    aspectRatio: IPHONE_17_ASPECT,
-                    // Use width-first sizing but cap by viewport height (no safe-area math; avoids iOS quirks).
-                    width:
-                      "min(92vw, 460px, calc((100svh - 8rem) * 402 / 874))",
-                    height: "auto",
-                  }}
-                  initial={{ scale: 0.98, opacity: 0.96 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.98, opacity: 0.96 }}
-                  transition={{ type: "spring", stiffness: 280, damping: 32 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <div className="absolute inset-0 min-h-0">
-                    <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
-                      <HeroPhoneScreenContent
-                        key={scenarioKey}
-                        demoState={demoState}
-                        scenario={scenario}
-                        setDemoState={setDemoState}
-                      />
-                    </HeroPhoneFrame>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
-          </AnimatePresence>,
-          document.body
-        )
-      : null;
 
   return (
     <>
@@ -668,12 +569,11 @@ export function HeroSection() {
             Book a demo <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
           </CTAButton>
           <CTAButton
-            type="button"
             variant="secondary"
-            onClick={scrollToExplore}
+            href="/playground"
             className="w-full sm:w-auto justify-center rounded-[22px] px-10 sm:px-12 py-4 sm:py-[18px] font-semibold text-[16px] sm:text-[17px] tracking-tight"
           >
-            Try {scenario.label} scenario
+            Open Playground
           </CTAButton>
         </div>
 
@@ -692,29 +592,7 @@ export function HeroSection() {
               ))}
             </div>
           ) : (
-            <div
-              className="w-full max-w-[100vw] overflow-hidden relative px-[0px] py-[10px]"
-              style={{
-                maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-                WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
-              }}
-            >
-              <motion.div
-                className="flex items-center whitespace-nowrap min-w-max py-6"
-                animate={{ x: ["0%", "-50%"] }}
-                transition={{ repeat: Infinity, ease: "linear", duration: 100 }}
-              >
-                {[...HERO_LOGOS_WITH_SUMMARY, ...HERO_LOGOS_WITH_SUMMARY].map((logo, i) => (
-                  <LogoItem
-                    key={`row-${i}`}
-                    logo={logo}
-                    index={i}
-                    isLightMode={isLightMode}
-                    row={i % 2 === 0 ? "top" : "bottom"}
-                  />
-                ))}
-              </motion.div>
-            </div>
+            <LogosMarquee isLightMode={isLightMode} prefersReducedMotion={prefersReducedMotion} />
           )}
         </div>
 
@@ -725,199 +603,8 @@ export function HeroSection() {
         >
           Connects to your CRM + comms stack. Live in 1–2 weeks for most teams.
         </p>
-
-        {/* Guided choice (Redo-style): pick a scenario, then explore the AI with relevant prompts */}
-        <div className="mt-5 flex flex-wrap items-center justify-center gap-2.5 pointer-events-auto px-4">
-          {HERO_SCENARIOS.map((s) => {
-            const active = s.key === scenarioKey;
-            return (
-              <button
-                key={s.key}
-                type="button"
-                onClick={() => setScenarioKey(s.key)}
-                className={`rounded-full px-4 py-2 text-[13px] md:text-[14px] font-['Inter'] font-semibold tracking-tight transition-colors border backdrop-blur-md ${
-                  active
-                    ? "border-[#19ad7d]/35 bg-[#19ad7d]/15 text-[#19ad7d]"
-                    : isLightMode
-                      ? "border-black/10 bg-white/70 text-black/65 hover:text-black hover:border-black/20"
-                      : "border-white/10 bg-white/5 text-white/70 hover:text-white hover:border-white/20"
-                }`}
-                aria-pressed={active}
-              >
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-        
-        {/* Master feature copy (single concept: AI Playground) */}
-        <div className="flex w-full max-w-3xl flex-col gap-1.5 z-30 pointer-events-auto px-4">
-          <p className={`text-center font-['Inter'] text-[14px] md:text-[15px] font-medium tracking-tight ${isLightMode ? "text-black/60" : "text-white/65"}`}>
-            {scenario.outcomeLine}
-          </p>
-          <p className={`text-center text-[12px] md:text-[13px] font-['Inter'] leading-snug ${isLightMode ? "text-black/45" : "text-white/50"}`}>
-            Tap a prompt to explore. Use Expand for the full workflow.
-          </p>
-        </div>
-
-        {/* Device Mockup - Responsive */}
-        <motion.div
-          id="hero-explore"
-          initial={{ opacity: 0, y: 50, zIndex: 10 }}
-          animate={{ 
-            opacity: 1, 
-            y: 0,
-            zIndex: isHovered ? 50 : 10 
-          }}
-          transition={{ 
-            delay: 0.4, 
-            duration: 1,
-            zIndex: { delay: isHovered ? 0 : 0.6 }
-          }}
-          className="relative w-full transition-all duration-300 pointer-events-auto m-[0px] scroll-mt-24 md:scroll-mt-28"
-          onMouseEnter={() => { if (window.innerWidth > 768) setIsHovered(true); }}
-          onMouseLeave={() => { if (window.innerWidth > 768) setIsHovered(false); }}
-        >
-          {/* Desktop/Tablet - iPad */}
-          <motion.div
-            animate={{
-              y: isHovered ? -300 : 0,
-              scale: isHovered ? 1.02 : 1,
-            }}
-            transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-            className="relative mx-auto hidden md:block cursor-pointer"
-            style={{
-              width: 'min(90vw, 900px)',
-              aspectRatio: '907 / 644',
-            }}
-            onClick={() => setIsHovered(!isHovered)}
-          >
-            {/* iPad Frame */}
-            <div
-              className={`relative w-full h-full rounded-[24px] lg:rounded-[32px] border-2 lg:border-[3px] border-solid overflow-hidden group/screen ${isLightMode ? 'border-black/20 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.15)]' : 'border-white/50 bg-black'}`}
-              style={{ 
-                boxShadow: isHovered 
-                  ? (isLightMode ? '0px -8px 40px 0px rgba(0, 0, 0, 0.1), 0px 0px 60px 0px rgba(25, 173, 125, 0.15)' : '0px -8px 40px 0px rgba(0, 0, 0, 0.3), 0px 0px 60px 0px rgba(25, 173, 125, 0.2)')
-                  : (isLightMode ? '0px -4px 20px 0px rgba(0, 0, 0, 0.05)' : '0px -4px 20px 0px rgba(0, 0, 0, 0.2)'),
-                transition: 'box-shadow 0.4s ease-out'
-              }}
-            >
-              {/* Inner Screen */}
-              <div className={`absolute left-1/2 top-[16px] lg:top-[20px] -translate-x-1/2 w-[95%] h-[92%] rounded-[16px] lg:rounded-[20px] overflow-hidden ${isLightMode ? 'bg-white shadow-[0_4px_24px_rgba(0,0,0,0.05)]' : 'bg-black'}`}>
-                <div className="absolute inset-0">
-                  <img
-                    src={userScreen.src}
-                    alt=""
-                    className="h-full w-full object-cover opacity-40"
-                    aria-hidden
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/35 to-black/70" aria-hidden />
-                </div>
-
-                <div className="relative h-full w-full">
-                  <div className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
-                    <Sparkles size={14} className="text-[#19ad7d]" />
-                    <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Playground</span>
-                  </div>
-
-                  <div className="absolute right-4 top-4 z-20">
-                    <CTAButton
-                      variant="primary"
-                      type="button"
-                      className="!px-3 !py-2 !text-[12px]"
-                      onClick={(e: any) => {
-                        e?.stopPropagation?.();
-                        setDemoState((s) => (s.mode === "start" ? s : s));
-                        setIsAiModalOpen(true);
-                      }}
-                    >
-                      Expand
-                    </CTAButton>
-                  </div>
-
-                  <div className="absolute left-4 right-4 top-14 z-20 flex flex-wrap gap-2">
-                    {scenario.sources.map((s) => (
-                      <div
-                        key={s.id}
-                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 backdrop-blur-md"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
-                        <span className="font-['Inter'] text-[10px] tracking-tight text-white/80">
-                          {s.label}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="absolute inset-x-4 bottom-4 top-[92px] z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
-                    <HeroAssistantDemo
-                      demoState={demoState}
-                      scenario={scenario}
-                      isLightMode={false}
-                      setDemoState={setDemoState}
-                      showActionPanel
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Mobile - Phone */}
-          <AnimatePresence initial={false}>
-            {!isPhoneExpanded ? (
-              <motion.div
-                animate={{
-                  y: isHovered ? -150 : 10,
-                  scale: isHovered ? 1.05 : 1,
-                }}
-                transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
-                className="relative mx-auto mb-8 w-[min(88vw,402px)] cursor-pointer md:hidden"
-                style={{ aspectRatio: IPHONE_17_ASPECT }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsPhoneExpanded(true);
-                }}
-              >
-                <div
-                  className="absolute inset-0 min-h-0 transition-[filter] duration-300"
-                  style={{
-                    filter: isHovered
-                      ? "drop-shadow(0 -12px 36px rgba(25, 173, 125, 0.22))"
-                      : "none",
-                  }}
-                >
-                  <HeroPhoneFrame isLightMode={isLightMode} productLabel="iPhone 17">
-                    <HeroPhoneScreenContent
-                      key={scenarioKey}
-                      demoState={demoState}
-                      scenario={scenario}
-                      setDemoState={setDemoState}
-                    />
-                  </HeroPhoneFrame>
-                </div>
-              </motion.div>
-            ) : (
-              <div
-                className="relative mx-auto mb-8 md:hidden"
-                style={{ width: "min(88vw, 402px)", aspectRatio: IPHONE_17_ASPECT }}
-                aria-hidden
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
-
         </div>
       </section>
-      <AiAssistantModal
-        open={isAiModalOpen}
-        onOpenChange={setIsAiModalOpen}
-        isLightMode={isLightMode}
-        scenario={scenario}
-        demoState={demoState}
-        setDemoState={setDemoState}
-      />
-      {phoneOverlay}
     </>
   );
 }
@@ -1393,26 +1080,328 @@ function AiAssistantModal({
   );
 }
 
-function LogoItem({ logo, index, isLightMode, row }: { logo: { url: string, summary: string }, index: number, isLightMode: boolean, row: 'top' | 'bottom' }) {
-  return (
-    <div className="relative flex flex-col items-center justify-center mr-16 md:mr-32">
-      <div
-        className={`absolute ${row === 'top' ? '-top-9' : '-bottom-9'} px-3.5 py-1.5 rounded-full text-[11px] md:text-[12px] font-['Inter'] font-semibold tracking-tight whitespace-nowrap z-10 border backdrop-blur-md pointer-events-none
-          ${isLightMode ? 'bg-white/90 text-[#0b0f14] border-black/10 shadow-[0_8px_22px_rgba(0,0,0,0.08)]' : 'bg-black/60 text-white/95 border-white/10 shadow-[0_10px_28px_rgba(0,0,0,0.45)]'}
-        `}
-      >
-        <span className="text-[#19ad7d]">•</span>{" "}
-        <span className="text-inherit">{logo.summary}</span>
+function LogosMarquee({
+  isLightMode,
+  prefersReducedMotion,
+}: {
+  isLightMode: boolean;
+  prefersReducedMotion: boolean;
+}) {
+  const base = useMemo(() => HERO_LOGOS_WITH_SUMMARY.map((l, i) => ({ ...l, _id: `logo-${i}` })), []);
+  const summaryById = useMemo(() => new Map(base.map((l) => [l._id, l.summary])), [base]);
+  const logoUrlById = useMemo(() => new Map(base.map((l) => [l._id, l.url])), [base]);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const rafRef = useRef<number | null>(null);
+  /** Logo horizontal midpoint per marquee tile — card opens when this crosses viewport center. */
+  const prevCenterRef = useRef<Map<number, number>>(new Map());
+  const prevRightRef = useRef<Map<number, number>>(new Map());
+  /** Which marquee instance index “owns” the open drawer (for hiding that tile). */
+  const displayedInstanceRef = useRef<number | null>(null);
+  const closeHighlightTimerRef = useRef<number | null>(null);
+  const resumeScrollTimerRef = useRef<number | null>(null);
+  const scrollFrozenRef = useRef(false);
+
+  const CLOSE_DRAWER_ANIM_MS = 420;
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  /** Pauses marquee CSS animation while highlight is shown + until collapse finishes. */
+  const [scrollFrozen, setScrollFrozen] = useState(false);
+
+  useEffect(() => {
+    scrollFrozenRef.current = scrollFrozen;
+  }, [scrollFrozen]);
+  const [highlightText, setHighlightText] = useState<string | null>(null);
+  /** Which duplicated marquee tile index is shown in the drawer (hide that tile in the track). */
+  const [drawerInstance, setDrawerInstance] = useState<number | null>(null);
+  const [drawerLogoUrl, setDrawerLogoUrl] = useState<string | null>(null);
+  /** Keys text updates when the same drawer session switches to another logo mid-scroll. */
+  const [highlightTick, setHighlightTick] = useState(0);
+
+  useEffect(() => {
+    return () => {
+      if (closeHighlightTimerRef.current) window.clearTimeout(closeHighlightTimerRef.current);
+      if (resumeScrollTimerRef.current) window.clearTimeout(resumeScrollTimerRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+
+    const tick = () => {
+      const el = containerRef.current;
+      if (el) {
+        const centerX = window.innerWidth / 2;
+        const nodes = el.querySelectorAll<HTMLElement>("[data-enzy-marquee-instance]");
+
+        const opening: {
+          instance: number;
+          logoId: string;
+          rect: DOMRect;
+          prevRight: number | undefined;
+        }[] = [];
+
+        nodes.forEach((node) => {
+          const instance = Number(node.dataset.enzyMarqueeInstance);
+          if (Number.isNaN(instance)) return;
+
+          const rect = node.getBoundingClientRect();
+          const left = rect.left;
+          const right = rect.right;
+          const cxLogo = (left + right) / 2;
+
+          const prevCx = prevCenterRef.current.get(instance);
+          const prevR = prevRightRef.current.get(instance);
+
+          // Track moves left: open highlight only once the logo’s horizontal center crosses viewport center.
+          if (
+            !scrollFrozenRef.current &&
+            prevCx !== undefined &&
+            prevCx > centerX &&
+            cxLogo <= centerX
+          ) {
+            const logoId = node.dataset.enzyLogoId ?? "";
+            if (logoId) opening.push({ instance, logoId, rect, prevRight: prevR });
+          }
+
+          prevCenterRef.current.set(instance, cxLogo);
+          prevRightRef.current.set(instance, right);
+        });
+
+        if (opening.length > 0 && !scrollFrozenRef.current) {
+          const { instance, logoId, rect, prevRight } = opening[opening.length - 1];
+          const text = summaryById.get(logoId) ?? null;
+          const url = logoUrlById.get(logoId) ?? null;
+          if (text && url) {
+            if (closeHighlightTimerRef.current) window.clearTimeout(closeHighlightTimerRef.current);
+            if (resumeScrollTimerRef.current) window.clearTimeout(resumeScrollTimerRef.current);
+
+            // Distance for trailing edge to reach center (px). Sampled before scroll freezes.
+            const dist = rect.right - centerX;
+            const pxPerFrame =
+              prevRight !== undefined ? Math.max(prevRight - rect.right, 0.08) : 6;
+            const frames = dist > 2 ? dist / pxPerFrame : 0;
+            const holdMs = Math.round(
+              Math.min(14_000, Math.max(520, frames * (1000 / 60)))
+            );
+
+            displayedInstanceRef.current = instance;
+            setHighlightText(text);
+            setDrawerLogoUrl(url);
+            setDrawerInstance(instance);
+            setHighlightTick((n) => n + 1);
+            setDrawerOpen(true);
+            setScrollFrozen(true);
+            scrollFrozenRef.current = true;
+
+            closeHighlightTimerRef.current = window.setTimeout(() => {
+              closeHighlightTimerRef.current = null;
+              setDrawerOpen(false);
+
+              resumeScrollTimerRef.current = window.setTimeout(() => {
+                resumeScrollTimerRef.current = null;
+                displayedInstanceRef.current = null;
+                setDrawerInstance(null);
+                setDrawerLogoUrl(null);
+                setHighlightText(null);
+                scrollFrozenRef.current = false;
+                setScrollFrozen(false);
+              }, CLOSE_DRAWER_ANIM_MS);
+            }, holdMs);
+          }
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [prefersReducedMotion, summaryById, logoUrlById]);
+
+  if (prefersReducedMotion) {
+    const sample = base[0]?.summary ?? "Connects to your stack.";
+    const firstLogo = base[0];
+    return (
+      <div className="enzy-marquee relative w-full max-w-[100vw] overflow-visible px-3 pb-12 pt-4 sm:px-5">
+        <div className="pointer-events-none absolute left-1/2 top-0 z-20 flex w-[min(72vw,260px)] sm:w-[min(64vw,280px)] -translate-x-1/2 justify-center">
+          <div
+            className={`liquid-glass mt-1 flex min-h-[112px] max-w-full flex-col items-center justify-center gap-2.5 rounded-2xl border px-4 pb-6 pt-5 text-center shadow-lg sm:px-5 ${
+              isLightMode
+                ? "border-black/10 text-[#0b0f14] shadow-[0_12px_40px_rgba(0,0,0,0.08)]"
+                : "border-white/10 text-white/95 shadow-[0_14px_50px_rgba(0,0,0,0.45)]"
+            }`}
+          >
+            {firstLogo ? (
+              <img
+                src={firstLogo.url}
+                alt=""
+                className={`max-h-8 w-auto object-contain md:max-h-10 ${
+                  isLightMode ? "brightness-0" : "brightness-0 invert"
+                }`}
+                draggable={false}
+              />
+            ) : null}
+            <div className="flex w-full items-center justify-center gap-2">
+              <span className="text-[#19ad7d]">•</span>
+              <span className="font-['Inter'] text-[12px] font-semibold tracking-tight">{sample}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 whitespace-normal px-4 py-8">
+          {base.map((logo, i) => (
+            <div
+              key={`static-${logo._id}-${i}`}
+              className={`relative flex items-center justify-center opacity-80 ${
+                isLightMode ? "brightness-0" : "brightness-0 invert"
+              }`}
+            >
+              <img
+                src={logo.url}
+                alt=""
+                className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
+                loading="lazy"
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      className="enzy-marquee relative w-full max-w-[100vw] overflow-visible px-3 pb-12 pt-4 sm:px-5"
+      style={{
+        ["--enzy-marquee-duration" as any]: "180s",
+      }}
+    >
+      {/* Center card: only mounted in layout when frozen — no sliver before first open / after full dismiss */}
       <div
-        className={`marquee-logo-item relative flex items-center justify-center opacity-80 ${isLightMode ? 'brightness-0' : 'brightness-0 invert'} hover:!opacity-100 transition-opacity duration-200`}
+        className={`pointer-events-none absolute left-1/2 top-0 z-20 flex -translate-x-1/2 justify-center transition-[opacity,visibility] duration-150 ${
+          scrollFrozen
+            ? "visible w-[min(72vw,260px)] opacity-100 sm:w-[min(64vw,280px)]"
+            : "invisible h-0 max-h-0 w-0 max-w-0 overflow-hidden opacity-0"
+        }`}
       >
-        <img
-          src={logo.url}
-          alt={`Partner Logo ${index}`}
-          className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
-          loading="lazy"
-        />
+        <div
+          className={`w-full overflow-visible rounded-2xl border shadow-lg ${
+            isLightMode
+              ? "border-black/12 bg-black/[0.02] shadow-[0_14px_44px_rgba(0,0,0,0.1)]"
+              : "border-white/12 bg-white/[0.03] shadow-[0_16px_50px_rgba(0,0,0,0.5)]"
+          }`}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92, y: 18 }}
+            animate={
+              drawerOpen
+                ? { opacity: 1, scale: 1, y: 0 }
+                : { opacity: 0, scale: 0.93, y: 14 }
+            }
+            transition={
+              drawerOpen
+                ? {
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 22,
+                    mass: 0.85,
+                  }
+                : {
+                    duration: 0.3,
+                    ease: [0.4, 0, 0.2, 1],
+                  }
+            }
+            style={{ transformOrigin: "50% 50%" }}
+            className="will-change-transform"
+          >
+            <div
+              className={`liquid-glass flex min-h-[112px] flex-col items-center justify-center gap-2.5 rounded-2xl border-0 px-4 pb-6 pt-5 sm:px-5 ${
+                isLightMode ? "text-[#0b0f14]" : "text-white/95"
+              }`}
+              aria-live={scrollFrozen && drawerLogoUrl ? "polite" : "off"}
+              aria-atomic="true"
+            >
+              <AnimatePresence mode="wait">
+                {drawerLogoUrl ? (
+                  <motion.div
+                    key={`${highlightTick}-${drawerLogoUrl}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex w-full shrink-0 justify-center"
+                  >
+                    <img
+                      src={drawerLogoUrl}
+                      alt=""
+                      className={`max-h-9 w-auto object-contain md:max-h-11 ${
+                        isLightMode ? "brightness-0" : "brightness-0 invert"
+                      }`}
+                      draggable={false}
+                    />
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+              <div className="flex w-full max-w-[min(100%,15rem)] items-center justify-center gap-2 px-0.5 text-center leading-snug">
+                <span className="shrink-0 text-[#19ad7d]" aria-hidden>
+                  •
+                </span>
+                <div className="min-w-0">
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={`${highlightTick}-${highlightText ?? ""}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                      className="block font-['Inter'] text-[12px] font-semibold tracking-tight"
+                    >
+                      {highlightText ?? "\u00a0"}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Mask only the scrolling strip so the center highlight card isn’t clipped (shadow + blur). */}
+      <div
+        className="relative w-full overflow-x-hidden"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+        }}
+      >
+        <div
+          className={`enzy-marquee-track items-center whitespace-nowrap py-6 ${scrollFrozen ? "is-paused" : ""}`}
+        >
+          {/* two copies for seamless loop */}
+          {[...base, ...base].map((logo, i) => (
+            <div
+              key={`${logo._id}-${i}`}
+              data-enzy-marquee-instance={i}
+              data-enzy-logo-id={logo._id}
+              className={`marquee-logo-item relative flex items-center justify-center mr-16 md:mr-32 transition-opacity duration-200 ${
+                scrollFrozen && drawerInstance === i ? "opacity-0" : "opacity-80"
+              } ${isLightMode ? "brightness-0" : "brightness-0 invert"}`}
+            >
+              <img
+                src={logo.url}
+                alt={`Partner Logo ${i}`}
+                className="max-h-6 md:max-h-10 w-auto object-contain pointer-events-none"
+                loading="lazy"
+                draggable={false}
+              />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
