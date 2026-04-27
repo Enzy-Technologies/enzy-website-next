@@ -146,15 +146,20 @@ export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVa
     : "shadow-[0_-28px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/10";
 
   return (
-    <section className="relative z-20 w-full flex justify-center -mt-[320px] md:-mt-[420px] lg:-mt-[560px] px-[16px] py-0">
+    <section className="relative z-20 w-full flex justify-center mt-10 md:mt-14 lg:mt-16 px-[16px] py-0">
       <div
-        className={`w-full rounded-t-[40px] md:rounded-t-[60px] lg:rounded-t-[80px] overflow-hidden ${homeOuterLift} transition-colors duration-500`}
+        className={`w-full rounded-[40px] md:rounded-[60px] lg:rounded-[80px] overflow-hidden ${homeOuterLift} transition-colors duration-500 ring-1 ${
+          isLightMode ? "ring-[#19ad7d]/18" : "ring-[#19ad7d]/20"
+        }`}
       >
         <div
-          className={`liquid-glass !shadow-none ${homeInset} px-[16px] py-[64px] border-t transition-colors duration-500 ${
-            isLightMode ? "border-white/60" : "border-white/10"
+          className={`relative liquid-glass !shadow-none ${homeInset} px-[16px] py-[64px] transition-colors duration-500 border ${
+            isLightMode
+              ? "!bg-white/25 border-[#19ad7d]/18"
+              : "!bg-white/[0.05] border-[#19ad7d]/18"
           }`}
         >
+          <div className="pointer-events-none absolute left-10 right-10 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent rounded-full" />
           <div className="w-full max-w-[1280px] mx-auto flex flex-col items-start gap-12 relative">
             {steps.map((s) => (
               <div

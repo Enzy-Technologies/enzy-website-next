@@ -283,4 +283,39 @@
     opacity: 0.20;
     mix-blend-mode: screen;
   }
+
+  /* Ultra-smooth marquee (redo-style) */
+  @keyframes enzy-marquee {
+    from {
+      transform: translate3d(0, 0, 0);
+    }
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .enzy-marquee {
+    position: relative;
+    /* Let highlight card shadows paint outside; scope overflow/mask to the track row in markup. */
+    overflow: visible;
+  }
+
+  .enzy-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    transform: translate3d(0, 0, 0);
+    animation: enzy-marquee var(--enzy-marquee-duration, 160s) linear infinite;
+  }
+
+  .enzy-marquee-track.is-paused {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .enzy-marquee-track {
+      animation: none;
+      transform: none;
+    }
+  }
 }
