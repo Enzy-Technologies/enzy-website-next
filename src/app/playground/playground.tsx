@@ -226,7 +226,7 @@ export function Playground() {
                 <CTAButton
                   type="button"
                   variant="primary"
-                  className="w-full sm:w-auto justify-center rounded-[18px] px-8 py-4 font-semibold text-[15px] tracking-tight"
+                  className="w-full sm:w-auto justify-center rounded-full px-8 py-4 font-semibold text-[15px] tracking-tight"
                   onClick={() => {
                     document.getElementById("playground-experience")?.scrollIntoView({ behavior: "smooth", block: "start" });
                   }}

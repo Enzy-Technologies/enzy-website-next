@@ -110,7 +110,7 @@ export function HeroPlaygroundExperience({
             <CTAButton
               type="button"
               variant="secondary"
-              className="rounded-[16px] px-6 py-3 text-[14px] font-semibold tracking-tight"
+              className="rounded-full px-6 py-3 text-[14px] font-semibold tracking-tight"
               onClick={() => setDemoState(initialDemoState(scenario))}
             >
               Reset
@@ -118,7 +118,7 @@ export function HeroPlaygroundExperience({
             <CTAButton
               type="button"
               variant="primary"
-              className="rounded-[16px] px-6 py-3 text-[14px] font-semibold tracking-tight"
+              className="rounded-full px-6 py-3 text-[14px] font-semibold tracking-tight"
               onClick={() => setIsAiModalOpen(true)}
             >
               Expand <ArrowRight size={16} strokeWidth={2.25} />

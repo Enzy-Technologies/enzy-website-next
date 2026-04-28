@@ -1,41 +1,105 @@
 "use client";
 
 import React from "react";
-import createImg from "@/assets/e66ef56f0b767b50b8860584a5fa19bd69be614e.png";
+import type { StaticImageData } from "next/image";
+import integrateImgLight from "@/assets/how-it-works-integrate-light.png";
+import integrateImgDark from "@/assets/how-it-works-integrate-dark.png";
 import engageImg from "@/assets/34d961d0ab311afc7564d03f49aed88b4a54a35f.png";
 import analyzeImg from "@/assets/818a5b0370e47250af5f3233218b98f9533f97ef.png";
 import { useTheme } from "@/app/components/ThemeProvider";
 
-const steps = [
+type HowItWorksStep = {
+  step: string;
+  title: string;
+  body: React.ReactNode;
+  img: StaticImageData;
+  imgDark?: StaticImageData;
+  alt: string;
+  withBorderBottom: boolean;
+};
+
+const steps: HowItWorksStep[] = [
   {
     step: "Step 1",
     title: "Integrate",
-    body: "Connect your stack in days. Keep your sources. Enzy sits on top.",
-    img: createImg,
-    alt: "Create Dashboard",
+    body: (
+      <>
+        Most organizations sit on valuable data, but it’s scattered across
+        systems and teams. Enzy brings it all together into a connected
+        performance data lake: a complete view of how work actually gets done.
+      </>
+    ),
+    img: integrateImgLight,
+    imgDark: integrateImgDark,
+    alt: "Connect your stack",
     withBorderBottom: false,
   },
   {
     step: "Step 2",
     title: "Activate",
-    body: "Make activity visible—across reps, teams, and managers. No lag.",
+    body: (
+      <div className="flex flex-col gap-3">
+        <p className="m-0">
+          Data only matters if it drives decisions.
+        </p>
+        <ul className="m-0 pl-5 list-disc space-y-1.5">
+          <li>
+            <span className="font-medium">Insights &amp; coaching:</span>{" "}
+            replicate top performer behavior
+          </li>
+          <li>
+            <span className="font-medium">Workflows:</span> automate real-time
+            execution
+          </li>
+          <li>
+            <span className="font-medium">Reporting:</span> see what’s working
+          </li>
+          <li>
+            <span className="font-medium">Messaging:</span> target teams with
+            precision
+          </li>
+          <li>
+            <span className="font-medium">Incentives:</span> align pay with
+            outcomes
+          </li>
+        </ul>
+        <p className="m-0">
+          We don’t just show performance—we help you improve it.
+        </p>
+      </div>
+    ),
     img: engageImg,
     alt: "Engage Audience",
     withBorderBottom: false,
   },
   {
     step: "Step 3",
-    title: "Drive Momentum",
-    body: "AI suggests actions. Competitions reinforce habits. Results compound.",
+    title: "Create Momentum",
+    body: (
+      <div className="flex flex-col gap-3">
+        <p className="m-0">
+          Every company operates differently. Because we deeply understand your
+          performance data, Enzy adapts to your specific needs—whether that’s
+          sales, field operations, customer success, or beyond.
+        </p>
+        <p className="m-0">
+          Our platform becomes your AI-powered operating layer for performance.
+        </p>
+      </div>
+    ),
     img: analyzeImg,
     alt: "Analyze Results",
     withBorderBottom: true,
   },
-] as const;
+] as HowItWorksStep[];
 
 type HowItWorksVariant = "home" | "landing";
 
-export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVariant }) {
+export function HowItWorksSection({
+  variant = "home",
+}: {
+  variant?: HowItWorksVariant;
+}) {
   const { isLightMode } = useTheme();
   const isLanding = variant === "landing";
 
@@ -44,8 +108,8 @@ export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVa
     const textTitle = isLightMode ? "text-brand-dark" : "text-white";
     const textBody = isLightMode ? "text-black/70" : "text-white/70";
     const iconBtn = isLightMode
-      ? "bg-white border border-black/5 text-brand-dark shadow-xl"
-      : "bg-white/5 border border-white/10 text-white shadow-xl";
+      ? "liquid-glass !bg-white/50 border border-black/10 text-brand-dark shadow-[0_22px_70px_rgba(0,0,0,0.12)]"
+      : "liquid-glass !bg-white/[0.07] border border-white/15 text-white shadow-[0_26px_80px_rgba(0,0,0,0.6)]";
     const imageShell = isLightMode
       ? "bg-white/40 border-2 border-black/60 backdrop-blur-xl shadow-[inset_0_4px_24px_rgba(255,255,255,0.7)] group-hover:border-black group-hover:bg-white/50"
       : "bg-white/[0.04] border border-white/15 backdrop-blur-xl shadow-[inset_0_4px_24px_rgba(0,0,0,0.35)] group-hover:border-white/25 group-hover:bg-white/[0.07]";
@@ -81,42 +145,64 @@ export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVa
               >
                 Three moves. One system.
               </h2>
-              <p className={`mt-4 font-['Inter'] text-[15px] md:text-[16px] leading-relaxed ${textBody}`}>
-                No rip-and-replace. Enzy sits on your data and turns it into daily execution.
+              <p
+                className={`mt-4 font-['Inter'] text-[15px] md:text-[16px] leading-relaxed ${textBody}`}
+              >
+                No rip-and-replace. Enzy sits on your data and turns it into
+                daily execution.
               </p>
             </div>
 
             {steps.map((s) => (
               <div
                 key={s.title}
-                className={`flex flex-col lg:flex-row items-center justify-between w-full gap-8 group p-0 ${
+                className={`flex flex-col xl:flex-row items-center justify-between w-full gap-8 group p-0 ${
                   s.withBorderBottom ? `pb-12 border-b ${sectionBorder}` : ""
                 }`}
               >
-                <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-[288px] shrink-0 text-left">
-                  <span className={`font-['Inter'] text-lg ${textMuted} font-medium`}>{s.step}</span>
+                <div className="flex flex-col gap-4 lg:gap-6 w-full xl:w-[288px] shrink-0 text-left">
+                  <span
+                    className={`font-['Inter'] text-lg ${textMuted} font-medium`}
+                  >
+                    {s.step}
+                  </span>
                   <div className="flex items-center gap-4">
-                    <h3 className={`font-['Inter'] text-4xl sm:text-5xl md:text-[56px] ${textTitle} tracking-[-2px] font-bold`}>
+                    <h3
+                      className={`font-['Inter'] text-4xl sm:text-5xl md:text-[56px] ${textTitle} tracking-[-2px] font-bold`}
+                    >
                       {s.title}
                     </h3>
                     <div
                       className={`w-[72px] h-[72px] md:w-[80px] md:h-[80px] shrink-0 flex items-center justify-center rounded-full group-hover:scale-105 transition-transform duration-500 ${iconBtn}`}
                     >
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="28"
+                        height="28"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M7 7h10v10" />
                         <path d="M7 17 17 7" />
                       </svg>
                     </div>
                   </div>
-                  <p className={`font-['Inter'] text-[15px] leading-relaxed ${textBody}`}>{s.body}</p>
+                  <p
+                    className={`font-['Inter'] text-[15px] leading-relaxed ${textBody}`}
+                  >
+                    {s.body}
+                  </p>
                 </div>
                 <div
-                  className={`w-full lg:w-[834px] lg:ml-auto h-[200px] md:h-[212px] rounded-full overflow-hidden relative transition-colors duration-500 ${imageShell}`}
+                  className={`w-full min-w-0 xl:ml-auto xl:max-w-[834px] h-[200px] md:h-[212px] rounded-full overflow-hidden relative transition-colors duration-500 ${imageShell}`}
                 >
                   <img
-                    src={s.img.src}
+                    src={isLightMode || !s.imgDark ? s.img.src : s.imgDark.src}
                     alt={s.alt}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] max-w-none opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[104%] max-w-none object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                   />
                 </div>
               </div>
@@ -132,8 +218,8 @@ export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVa
   const textTitle = isLightMode ? "text-brand-dark" : "text-white";
   const textBody = isLightMode ? "text-black/70" : "text-white/70";
   const iconBtn = isLightMode
-    ? "bg-white border border-black/5 text-brand-dark shadow-xl"
-    : "bg-white/5 border border-white/10 text-white shadow-xl";
+    ? "liquid-glass !bg-white/50 border border-black/10 text-brand-dark shadow-[0_22px_70px_rgba(0,0,0,0.12)]"
+    : "liquid-glass !bg-white/[0.07] border border-white/15 text-white shadow-[0_26px_80px_rgba(0,0,0,0.6)]";
   const imageShell = isLightMode
     ? "bg-white/40 border-2 border-black/60 backdrop-blur-xl shadow-[inset_0_4px_24px_rgba(255,255,255,0.7)] group-hover:border-black group-hover:bg-white/50"
     : "bg-white/[0.04] border border-white/15 backdrop-blur-xl shadow-[inset_0_4px_24px_rgba(0,0,0,0.35)] group-hover:border-white/25 group-hover:bg-white/[0.07]";
@@ -164,32 +250,53 @@ export function HowItWorksSection({ variant = "home" }: { variant?: HowItWorksVa
             {steps.map((s) => (
               <div
                 key={s.title}
-                className={`flex flex-col lg:flex-row items-center justify-between w-full gap-8 group p-[0px] ${
+                className={`flex flex-col xl:flex-row items-center justify-between w-full gap-8 group p-[0px] ${
                   s.withBorderBottom ? `pb-12 border-b ${sectionBorder}` : ""
                 }`}
               >
-                <div className="flex flex-col gap-4 lg:gap-6 w-full lg:w-[288px] shrink-0">
-                  <span className={`font-['Inter'] text-lg ${textMuted} font-medium`}>{s.step}</span>
+                <div className="flex flex-col gap-4 lg:gap-6 w-full xl:w-[288px] shrink-0">
+                  <span
+                    className={`font-['Inter'] text-lg ${textMuted} font-medium`}
+                  >
+                    {s.step}
+                  </span>
                   <div className="flex items-center gap-4">
-                    <h3 className={`font-['Inter'] text-5xl md:text-[59px] ${textTitle} tracking-[-2px] font-bold`}>{s.title}</h3>
+                    <h3
+                      className={`font-['Inter'] text-5xl md:text-[59px] ${textTitle} tracking-[-2px] font-bold`}
+                    >
+                      {s.title}
+                    </h3>
                     <div
                       className={`w-[80px] h-[80px] shrink-0 flex items-center justify-center rounded-full group-hover:scale-105 transition-transform duration-500 ${iconBtn}`}
                     >
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
                         <path d="M7 7h10v10" />
                         <path d="M7 17 17 7" />
                       </svg>
                     </div>
                   </div>
-                  <p className={`font-['Inter'] text-[15px] leading-relaxed ${textBody}`}>{s.body}</p>
+                  <p
+                    className={`font-['Inter'] text-[15px] leading-relaxed ${textBody}`}
+                  >
+                    {s.body}
+                  </p>
                 </div>
                 <div
-                  className={`w-full lg:w-[834px] lg:ml-auto h-[212px] rounded-full overflow-hidden relative transition-colors duration-500 ${imageShell}`}
+                  className={`w-full min-w-0 xl:ml-auto xl:max-w-[834px] h-[212px] rounded-full overflow-hidden relative transition-colors duration-500 ${imageShell}`}
                 >
                   <img
-                    src={s.img.src}
+                    src={isLightMode || !s.imgDark ? s.img.src : s.imgDark.src}
                     alt={s.alt}
-                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] max-w-none opacity-90 group-hover:opacity-100 transition-opacity duration-500"
+                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[104%] max-w-none object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-500"
                   />
                 </div>
               </div>
