@@ -124,7 +124,7 @@ export function QuickJumpFAB({
         onClick={() => setIsOpen((v) => !v)}
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="w-14 h-14 md:w-16 md:h-16 p-0 rounded-[16px] md:rounded-[18px] hover:scale-105 transition-transform duration-300 hover:!opacity-100"
+        className="w-14 h-14 md:w-16 md:h-16 p-0 rounded-full hover:scale-105 transition-transform duration-300 hover:!opacity-100"
       >
         <AnimatePresence mode="wait">
           <motion.span

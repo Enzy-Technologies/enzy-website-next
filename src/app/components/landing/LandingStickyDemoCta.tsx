@@ -34,7 +34,7 @@ export function LandingStickyDemoCta({ href, label }: Props) {
         <CTAButton
           href={href}
           variant="primary"
-          className="w-full justify-center rounded-xl py-3.5 px-6 gap-2 font-bold text-sm uppercase tracking-widest active:scale-[0.98] hover:!opacity-100"
+          className="w-full justify-center rounded-full py-3.5 px-6 gap-2 font-bold text-sm uppercase tracking-widest active:scale-[0.98] hover:!opacity-100"
         >
           {label} <ArrowRight size={18} aria-hidden />
         </CTAButton>

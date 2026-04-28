@@ -47,6 +47,8 @@ export function PixelCanvas() {
     y: typeof window !== "undefined" ? window.innerHeight / 2 : 0 
   });
   const smoothedScrollYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
+  const lastScrollYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
+  const smoothedScrollVelRef = useRef(0);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -111,6 +113,15 @@ export function PixelCanvas() {
       smoothedScrollYRef.current += (window.scrollY - smoothedScrollYRef.current) * 0.05;
 
       const isDesktop = window.innerWidth > 768;
+      const isMobile = !isDesktop;
+
+      // Mobile-only: "magnetization" bunch under the menu while scrolling.
+      // We measure scroll velocity and use it as a force multiplier.
+      const scrollY = window.scrollY;
+      const rawScrollVel = scrollY - lastScrollYRef.current;
+      lastScrollYRef.current = scrollY;
+      smoothedScrollVelRef.current += (rawScrollVel - smoothedScrollVelRef.current) * 0.2;
+      const scrollSpeed = Math.min(1, Math.abs(smoothedScrollVelRef.current) / 40);
 
       if (isDesktop) {
         // LAYER 1: Draw subtle gradient glow following mouse
@@ -195,6 +206,29 @@ export function PixelCanvas() {
         const renderY = isDesktop 
           ? particle.y 
           : (((particle.y - parallaxOffset) % canvas.height) + canvas.height) % canvas.height;
+
+        // Mobile-only attractor: keep particles bunched near top-center under the header.
+        if (isMobile) {
+          const attractorX = canvas.width / 2;
+          // Under the menu: header sits above `main` which starts at ~88px.
+          const attractorY = Math.min(140, canvas.height * 0.22);
+
+          const dx = attractorX - particle.x;
+          const dy = attractorY - renderY;
+          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+          // Constant pull + extra pull while scrolling (magnetization feel).
+          const basePull = 0.018;
+          const scrollPull = 0.06 * scrollSpeed;
+          const pull = basePull + scrollPull;
+
+          const radius = 520;
+          if (dist < radius) {
+            const falloff = 1 - dist / radius;
+            particle.vx += (dx / dist) * pull * falloff;
+            particle.vy += (dy / dist) * pull * falloff;
+          }
+        }
 
         if (particle.isGreen) {
           // Vivid Enzy Green for the distinct particles, with a subtle glow
