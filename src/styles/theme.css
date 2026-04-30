@@ -489,12 +489,12 @@
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: rgba(0, 0, 0, 0.62);
+    color: rgba(0, 0, 0, 0.74) !important;
   }
 
   .dark .enzy-hubspot-embed .hs-form-html .hs-form-field > label,
   .dark .enzy-hubspot-embed .hs-form-html label {
-    color: rgba(255, 255, 255, 0.65);
+    color: rgba(255, 255, 255, 0.72) !important;
   }
 
   .enzy-hubspot-embed .hs-form-html input:not([type="checkbox"]):not([type="radio"]),
@@ -504,7 +504,7 @@
     border-radius: 14px;
     border: 1px solid rgba(0, 0, 0, 0.14);
     background: rgba(255, 255, 255, 0.92);
-    color: rgba(0, 0, 0, 0.78);
+    color: rgba(0, 0, 0, 0.88) !important;
     padding: 12px 14px;
     font-size: 14px;
     line-height: 1.35;
@@ -517,18 +517,37 @@
   .dark .enzy-hubspot-embed .hs-form-html textarea {
     border-color: rgba(255, 255, 255, 0.14);
     background: rgba(0, 0, 0, 0.18);
-    color: rgba(255, 255, 255, 0.84);
+    color: rgba(255, 255, 255, 0.88) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .enzy-hubspot-embed .hs-form-html input::placeholder,
   .enzy-hubspot-embed .hs-form-html textarea::placeholder {
-    color: rgba(0, 0, 0, 0.45);
+    color: rgba(0, 0, 0, 0.52) !important;
   }
 
   .dark .enzy-hubspot-embed .hs-form-html input::placeholder,
   .dark .enzy-hubspot-embed .hs-form-html textarea::placeholder {
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.48) !important;
+  }
+
+  /* Some HubSpot themes apply low-contrast inline styles; normalize key text nodes. */
+  .enzy-hubspot-embed .hs-form-html .hs-form-field,
+  .enzy-hubspot-embed .hs-form-html .hs-richtext,
+  .enzy-hubspot-embed .hs-form-html .hs-form-required,
+  .enzy-hubspot-embed .hs-form-html .hs-input,
+  .enzy-hubspot-embed .hs-form-html .inputs-list,
+  .enzy-hubspot-embed .hs-form-html .hs-field-desc {
+    color: rgba(0, 0, 0, 0.76) !important;
+  }
+
+  .dark .enzy-hubspot-embed .hs-form-html .hs-form-field,
+  .dark .enzy-hubspot-embed .hs-form-html .hs-richtext,
+  .dark .enzy-hubspot-embed .hs-form-html .hs-form-required,
+  .dark .enzy-hubspot-embed .hs-form-html .hs-input,
+  .dark .enzy-hubspot-embed .hs-form-html .inputs-list,
+  .dark .enzy-hubspot-embed .hs-form-html .hs-field-desc {
+    color: rgba(255, 255, 255, 0.76) !important;
   }
 
   .enzy-hubspot-embed .hs-form-html input:focus,
