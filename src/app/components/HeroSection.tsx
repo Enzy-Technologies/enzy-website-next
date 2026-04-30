@@ -1,587 +1,68 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import imgInnerScreen from "@/assets/2b19803f6c5e3c26b39f607fe129d1919300df81.png";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "./ThemeProvider";
-import { ArrowRight, Battery, Signal, Sparkles, Wifi } from "lucide-react";
-import * as Dialog from "@radix-ui/react-dialog";
+import { Sparkles, ArrowRight, CornerDownRight, Star } from "lucide-react";
 import { CTAButton } from "./CTAButton";
-import { LogosMarquee } from "./LogosMarquee";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
+import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
 
-/** iPhone 17 class (6.3") — logical points per Apple / iOS layout (402×874). */
-const IPHONE_17_W = 402;
-const IPHONE_17_H = 874;
-const IPHONE_17_ASPECT = `${IPHONE_17_W} / ${IPHONE_17_H}` as const;
-
-type AssistantPrompt = {
-  id: "build-competition" | "todays-sales-stats" | "automated-event-messaging";
-  label: string;
-};
-
-type AssistantFlowId = AssistantPrompt["id"];
-
-type QuickReply = {
+type Question = {
   id: string;
-  label: string;
+  prompt: string;
+  answer: string;
+  followups: string[];
 };
 
-type ChatMessage = {
-  id: string;
-  role: "assistant" | "user";
-  text: string;
-  quickReplies?: QuickReply[];
-};
-
-type AssistantDemoState =
-  | {
-      mode: "start";
-      messages: ChatMessage[];
-    }
-  | {
-      mode: "flow";
-      flowId: AssistantFlowId;
-      step: number;
-      selections: Record<string, string>;
-      messages: ChatMessage[];
-    };
-
-type HeroScenarioKey = "field" | "virtual" | "ops";
-
-type HeroScenario = {
-  key: HeroScenarioKey;
-  label: string;
-  /** Outcome-led line shown under the hero CTAs. */
-  outcomeLine: string;
-  /** AI demo's first assistant message. */
-  assistantStart: string;
-  /** Copy for the 3 quick-reply prompts (flow ids stay the same). */
-  promptLabels: Record<AssistantFlowId, string>;
-  /** Connected source labels shown in the mock UI. */
-  sources: readonly { id: string; label: string; status: "connected" }[];
-};
-
-const HERO_SCENARIOS: readonly HeroScenario[] = [
+const QUESTIONS: Question[] = [
   {
-    key: "field",
-    label: "Field sales",
-    outcomeLine: "Between visits → daily plan + coaching nudges.",
-    assistantStart:
-      "What changed since yesterday, and what should reps do next?",
-    promptLabels: {
-      "build-competition": "Launch a rep sprint for stops + demos",
-      "todays-sales-stats": "Summarize today’s field activity",
-      "automated-event-messaging": "Draft a post-visit follow-up message",
-    },
-    sources: [
-      { id: "crm", label: "Salesforce", status: "connected" },
-      { id: "maps", label: "Territory/Maps", status: "connected" },
-      { id: "warehouse", label: "Warehouse", status: "connected" },
-      { id: "calendar", label: "Calendar", status: "connected" },
-    ],
+    id: "revenue-drop",
+    prompt: "Why did revenue drop in the West region this week?",
+    answer:
+      "Revenue is down 18% WoW in West. Three drivers:\n\n• Two enterprise deals stalled in Marcus Hill's territory ($84K combined)\n• Demos booked dropped 22% Tue–Thu after the new pricing rolled out\n• Jenna Cole was out Wed–Fri; her pipeline didn't get covered\n\nSuggested next moves: nudge the two stalled deals (drafts ready), run a 30-min pricing-objection refresher, redistribute Jenna's pipeline.",
+    followups: ["Draft the nudges", "Show me the deals", "Build the refresher"],
   },
   {
-    key: "virtual",
-    label: "Virtual sales",
-    outcomeLine: "Pipeline signal → follow-ups + next steps.",
-    assistantStart: "What should we do today to move pipeline forward?",
-    promptLabels: {
-      "build-competition": "Run a pipeline-builder sprint",
-      "todays-sales-stats": "Show today’s pipeline movement",
-      "automated-event-messaging": "Write a 3-touch follow-up sequence",
-    },
-    sources: [
-      { id: "crm", label: "HubSpot/CRM", status: "connected" },
-      { id: "email", label: "Email", status: "connected" },
-      { id: "calendar", label: "Calendar", status: "connected" },
-      { id: "warehouse", label: "Warehouse", status: "connected" },
-    ],
+    id: "top-performer",
+    prompt: "What is Marcus doing that the rest of the team isn't?",
+    answer:
+      "Three patterns separate Marcus from team median:\n\n• 4.2× more multi-threaded deals (avg 3.1 contacts vs 0.7)\n• Responds to inbound in 8 min vs team median of 1h 12m\n• Sends a recap email after every demo — 100% rate vs 34% team avg\n\nThe recap habit alone correlates with a 31% higher close rate across the team. Want to turn it into a workflow?",
+    followups: ["Build the recap workflow", "Show the data", "Coach the team"],
   },
   {
-    key: "ops",
-    label: "Sales ops",
-    outcomeLine: "What changed → actions + assets shipped.",
-    assistantStart:
-      "What changed across the team, and what actions should we trigger?",
-    promptLabels: {
-      "build-competition": "Generate a new incentive plan",
-      "todays-sales-stats": "Summarize KPIs and deltas",
-      "automated-event-messaging": "Draft a manager coaching message",
-    },
-    sources: [
-      { id: "crm", label: "CRM", status: "connected" },
-      { id: "slack", label: "Slack", status: "connected" },
-      { id: "bi", label: "BI/Sheets", status: "connected" },
-      { id: "warehouse", label: "Warehouse", status: "connected" },
-    ],
-  },
-] as const;
-
-function newId(prefix: string) {
-  return `${prefix}-${Math.random().toString(16).slice(2)}`;
-}
-
-type ActionCard = {
-  id: string;
-  title: string;
-  status: "ready" | "in_progress" | "queued";
-  detail: string;
-};
-
-function downloadTextFile(filename: string, text: string) {
-  try {
-    const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  } catch {
-    // no-op (demo-only affordance)
-  }
-}
-
-function initialDemoState(scenario: HeroScenario): AssistantDemoState {
-  const prompts: AssistantPrompt[] = [
-    {
-      id: "build-competition",
-      label: scenario.promptLabels["build-competition"],
-    },
-    {
-      id: "todays-sales-stats",
-      label: scenario.promptLabels["todays-sales-stats"],
-    },
-    {
-      id: "automated-event-messaging",
-      label: scenario.promptLabels["automated-event-messaging"],
-    },
-  ];
-
-  return {
-    mode: "start",
-    messages: [
-      {
-        id: newId("m"),
-        role: "assistant",
-        text: scenario.assistantStart,
-        quickReplies: prompts.map((p) => ({ id: p.id, label: p.label })),
-      },
-    ],
-  };
-}
-
-function getActionCards(demoState: AssistantDemoState): ActionCard[] {
-  if (demoState.mode === "start") {
-    return [
-      {
-        id: "insights",
-        title: "Insight summary",
-        status: "queued",
-        detail: "Ask a question to summarize today’s performance.",
-      },
-      {
-        id: "actions",
-        title: "Suggested actions",
-        status: "queued",
-        detail: "Get next-best steps, nudges, and alerts.",
-      },
-      {
-        id: "generate",
-        title: "Generated outputs",
-        status: "queued",
-        detail: "Competitions, incentives, messages, and assets.",
-      },
-    ];
-  }
-
-  const { flowId, step, selections } = demoState;
-
-  if (flowId === "build-competition") {
-    const kpi = selections.kpi ?? "revenue";
-    const duration = selections.duration ?? "7";
-    const mode = selections.mode ?? "individual";
-    const title =
-      kpi === "demos"
-        ? "Demo Sprint"
-        : kpi === "close_rate"
-          ? "Close Rate Challenge"
-          : kpi === "leads"
-            ? "Pipeline Builder"
-            : "Revenue Sprint";
-
-    return [
-      {
-        id: "draft",
-        title: "Competition draft",
-        status: step >= 3 ? "ready" : "in_progress",
-        detail:
-          step >= 3
-            ? `“${title}” · ${duration} days · ${mode === "team" ? "Teams" : "Individual"}`
-            : "Selecting KPI, duration, and format…",
-      },
-      {
-        id: "incentives",
-        title: "Incentives",
-        status: step >= 3 ? "ready" : "queued",
-        detail:
-          step >= 3
-            ? "Default: $250 · $150 · $100"
-            : "Will recommend rewards once draft is ready.",
-      },
-      {
-        id: "assets",
-        title: "Launch assets",
-        status: step >= 4 ? "ready" : "queued",
-        detail:
-          step >= 4
-            ? "Banners, badges, and announcement copy"
-            : "Generate after confirmation.",
-      },
-    ];
-  }
-
-  if (flowId === "todays-sales-stats") {
-    const crm = selections.crm ?? "salesforce";
-    const scope = selections.scope ?? "company";
-    return [
-      {
-        id: "stats",
-        title: "Today’s stats",
-        status: step >= 2 ? "ready" : "in_progress",
-        detail:
-          step >= 2
-            ? `${crm === "hubspot" ? "HubSpot" : crm === "other" ? "Your CRM" : "Salesforce"} · ${
-                scope === "region"
-                  ? "By region"
-                  : scope === "team"
-                    ? "By team"
-                    : "Company-wide"
-              }`
-            : "Choosing CRM + scope…",
-      },
-      {
-        id: "levers",
-        title: "Biggest levers",
-        status: step >= 3 ? "ready" : "queued",
-        detail:
-          step >= 3
-            ? "Nudges, mini-competition, manager alerts"
-            : "Unlock after the snapshot.",
-      },
-      {
-        id: "execute",
-        title: "Execute next step",
-        status: step >= 3 ? "in_progress" : "queued",
-        detail:
-          step >= 3 ? "Pick: draft messages / build mini-comp / alerts" : "—",
-      },
-    ];
-  }
-
-  // automated-event-messaging
-  const trigger = selections.trigger ?? "demo_booked";
-  const channel = selections.channel ?? "slack";
-  const audience = selections.audience ?? "both";
-  const triggerLabel =
-    trigger === "stage_proposal"
-      ? "Moved to Proposal"
-      : trigger === "no_activity_48h"
-        ? "No activity 48h"
-        : "Demo booked";
-
-  return [
-    {
-      id: "automation",
-      title: "Automation",
-      status: step >= 3 ? "ready" : "in_progress",
-      detail:
-        step >= 3
-          ? `${triggerLabel} → ${channel.toUpperCase()} → ${audience}`
-          : "Choosing trigger, channel, and recipients…",
-    },
-    {
-      id: "copy",
-      title: "Message copy",
-      status: step >= 4 ? "ready" : "queued",
-      detail:
-        step >= 4
-          ? "AI-drafted with context + next step"
-          : "Generate after automation draft.",
-    },
-    {
-      id: "go_live",
-      title: "Go live",
-      status: step >= 4 ? "in_progress" : "queued",
-      detail: step >= 4 ? "Choose tone, test, and enable" : "—",
-    },
-  ];
-}
-
-function flowStepPrompt(
-  flowId: AssistantFlowId,
-  step: number,
-  selections: Record<string, string>,
-) {
-  if (flowId === "build-competition") {
-    if (step === 0) {
-      return {
-        assistant: "Great. What should we optimize for?",
-        quickReplies: [
-          { id: "kpi:revenue", label: "Revenue ($ collected)" },
-          { id: "kpi:demos", label: "Demos booked" },
-          { id: "kpi:close_rate", label: "Close rate" },
-          { id: "kpi:leads", label: "Leads created" },
-        ],
-      };
-    }
-    if (step === 1) {
-      return {
-        assistant: "Nice. How long should the sprint run?",
-        quickReplies: [
-          { id: "duration:3", label: "3 days" },
-          { id: "duration:7", label: "7 days" },
-          { id: "duration:14", label: "14 days" },
-        ],
-      };
-    }
-    if (step === 2) {
-      return {
-        assistant: "Should this be individual or team-based?",
-        quickReplies: [
-          { id: "mode:individual", label: "Individual" },
-          { id: "mode:team", label: "Teams" },
-        ],
-      };
-    }
-    if (step === 3) {
-      const kpi = selections.kpi ?? "revenue";
-      const duration = selections.duration ?? "7";
-      const mode = selections.mode ?? "individual";
-      const title =
-        kpi === "demos"
-          ? "Demo Sprint"
-          : kpi === "close_rate"
-            ? "Close Rate Challenge"
-            : kpi === "leads"
-              ? "Pipeline Builder"
-              : "Revenue Sprint";
-      const scoring =
-        kpi === "demos"
-          ? "1 point per demo booked"
-          : kpi === "close_rate"
-            ? "win rate uplift vs baseline"
-            : kpi === "leads"
-              ? "1 point per qualified lead"
-              : "$ collected";
-      return {
-        assistant:
-          `Done. Here’s a launch-ready draft:\n\n` +
-          `- Competition: “${title}” (${duration} days)\n` +
-          `- Format: ${mode === "team" ? "Teams" : "Individual"}\n` +
-          `- Scoring: ${scoring}\n` +
-          `- Guardrails: minimum 10 opportunities touched\n` +
-          `- Incentives (default): 1st $250 · 2nd $150 · 3rd $100\n\n` +
-          `Want me to generate the announcement message + banner images next?`,
-        quickReplies: [
-          { id: "next:assets_yes", label: "Generate assets" },
-          { id: "next:assets_no", label: "Skip for now" },
-        ],
-      };
-    }
-    // step 4 (assets)
-    return {
-      assistant:
-        "Awesome — I’ll generate:\n- 3 banner image options\n- 6 achievement badges\n- A launch announcement message\n- A Slack/Teams nudge template\n\nAnything you want the theme to be (e.g., “Spring sprint”, “Beat last week”, “Team vs team”)?",
-      quickReplies: [
-        { id: "theme:spring", label: "Spring sprint" },
-        { id: "theme:beat_last_week", label: "Beat last week" },
-        { id: "theme:team_vs_team", label: "Team vs team" },
-      ],
-    };
-  }
-
-  if (flowId === "todays-sales-stats") {
-    if (step === 0) {
-      return {
-        assistant: "Which system should I pull today’s stats from?",
-        quickReplies: [
-          { id: "crm:salesforce", label: "Salesforce" },
-          { id: "crm:hubspot", label: "HubSpot" },
-          { id: "crm:other", label: "Other CRM" },
-        ],
-      };
-    }
-    if (step === 1) {
-      return {
-        assistant: "Got it. What scope should I summarize?",
-        quickReplies: [
-          { id: "scope:company", label: "Company-wide" },
-          { id: "scope:region", label: "By region" },
-          { id: "scope:team", label: "By team" },
-        ],
-      };
-    }
-    if (step === 2) {
-      const scope = selections.scope ?? "company";
-      return {
-        assistant:
-          `Here’s today so far (${scope === "company" ? "company-wide" : scope === "region" ? "by region" : "by team"}):\n\n` +
-          `- Revenue: $128,450 (64% to goal)\n` +
-          `- Demos booked: 19 (+12% WoW)\n` +
-          `- New opps: 31\n` +
-          `- Stalled deals (48h no activity): 14\n\n` +
-          `Want suggested actions for the biggest levers?`,
-        quickReplies: [
-          { id: "actions:yes", label: "Suggest actions" },
-          { id: "actions:no", label: "Not now" },
-        ],
-      };
-    }
-    // step 3 actions
-    return {
-      assistant:
-        "Top suggested actions:\n\n1) Nudge reps with stalled deals (48h+) — I can draft messages.\n2) Launch a 48-hour “Demo Push” mini-competition.\n3) Alert managers about 3 at-risk regions/teams.\n\nWhat should I do first?",
-      quickReplies: [
-        { id: "do:draft_messages", label: "Draft the messages" },
-        { id: "do:mini_comp", label: "Build mini-competition" },
-        { id: "do:manager_alerts", label: "Set manager alerts" },
-      ],
-    };
-  }
-
-  // automated-event-messaging
-  if (step === 0) {
-    return {
-      assistant: "Which event should trigger the automation?",
-      quickReplies: [
-        { id: "trigger:demo_booked", label: "Demo booked" },
-        { id: "trigger:stage_proposal", label: "Moved to Proposal" },
-        { id: "trigger:no_activity_48h", label: "No activity in 48h" },
-      ],
-    };
-  }
-  if (step === 1) {
-    return {
-      assistant: "Where should I send it?",
-      quickReplies: [
-        { id: "channel:slack", label: "Slack" },
-        { id: "channel:teams", label: "Teams" },
-        { id: "channel:sms", label: "SMS" },
-      ],
-    };
-  }
-  if (step === 2) {
-    return {
-      assistant: "Who should receive the message?",
-      quickReplies: [
-        { id: "audience:rep", label: "Rep" },
-        { id: "audience:manager", label: "Manager" },
-        { id: "audience:both", label: "Both" },
-      ],
-    };
-  }
-  if (step === 3) {
-    const trigger = selections.trigger ?? "demo_booked";
-    const channel = selections.channel ?? "slack";
-    const audience = selections.audience ?? "both";
-    const triggerLabel =
-      trigger === "stage_proposal"
-        ? "Deal moved to Proposal"
-        : trigger === "no_activity_48h"
-          ? "No activity in 48 hours"
-          : "Demo booked";
-    const channelLabel = channel.toUpperCase();
-    const audienceLabel =
-      audience === "rep"
-        ? "Rep"
-        : audience === "manager"
-          ? "Manager"
-          : "Rep + Manager";
-    return {
-      assistant:
-        `Perfect. Here’s the automation draft:\n\n` +
-        `- Trigger: ${triggerLabel}\n` +
-        `- Channel: ${channelLabel}\n` +
-        `- Recipients: ${audienceLabel}\n` +
-        `- Message: AI-drafted with deal context + next step suggestion\n\n` +
-        `Want me to generate the exact message copy now?`,
-      quickReplies: [
-        { id: "copy:yes", label: "Generate copy" },
-        { id: "copy:no", label: "Skip" },
-      ],
-    };
-  }
-
-  return {
-    assistant:
-      "Here’s a first message draft:\n\n“Quick update: I noticed {event}. Suggested next step: {action}. Reply YES to confirm, or I can adjust.”\n\nWant it more direct, more upbeat, or more formal?",
-    quickReplies: [
-      { id: "tone:direct", label: "Direct" },
-      { id: "tone:upbeat", label: "Upbeat" },
-      { id: "tone:formal", label: "Formal" },
-    ],
-  };
-}
-
-const HERO_LOGOS_WITH_SUMMARY = [
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Young%20Living.svg",
-    summary: "Trusted by teams who move fast.",
+    id: "next-competition",
+    prompt: "What competition would actually move the needle right now?",
+    answer:
+      "Based on this week's data, your highest-leverage play is a 5-day demo sprint, individual format.\n\nWhy: demos are your weakest stage (37% conversion vs 52% benchmark) and the team has bandwidth — call volume is down 14% WoW. A demo sprint with $250 / $150 / $100 incentives would cost ~$500 and projects to add ~$42K in pipeline.\n\nReady to launch with banners + announcement copy?",
+    followups: ["Launch the sprint", "Adjust the rewards", "See the projection"],
   },
   {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Quick%20Roofing.svg",
-    summary: "Drive consistent execution across the field.",
+    id: "what-changed",
+    prompt: "What changed since yesterday that I should care about?",
+    answer:
+      "Three things worth your attention:\n\n• 14 deals went 48h+ without activity (up from 9 yesterday)\n• Devin Park dropped from #2 to #4 on the leaderboard — his demos halved\n• A new prospect from your ICP (FieldOps Inc., 340 employees) hit the pricing page 6 times in the last 18 hours — no rep has reached out\n\nThe FieldOps signal is your highest-priority action. Want me to assign and draft outreach?",
+    followups: ["Assign FieldOps", "Check on Devin", "Nudge the stalled deals"],
   },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Chipr.svg",
-    summary: "Operational clarity that compounds every week.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Ecoshield.svg",
-    summary: "More signal. Less noise. Better outcomes.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Moxie.svg",
-    summary: "Motivate reps with incentives that work.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Space.svg",
-    summary: "the nation's fastest-growing real estate team",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/CH1DX3.svg",
-    summary: "Turn activity into measurable progress.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/FOX.svg",
-    summary: "Keep the entire org aligned on what matters.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/aptive.svg",
-    summary: "Unblock execution with real-time visibility.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/SPWR.svg",
-    summary: "Publicly Traded Company (NASDAQ: SPWR)",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Greenix.svg",
-    summary: "Teams ship faster with clearer priorities.",
-  },
-  {
-    url: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
-    summary:
-      "“The contrast of last year and this year, at least in the realm of what we've been able to do... has been just such a good improvement, real progress.\"",
-  },
-] as const;
+];
+
+const TYPING_SPEED_MS = 14;
+const ROTATE_INTERVAL_MS = 18000;
 
 export function HeroSection() {
   const { isLightMode } = useTheme();
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [activeQuestionId, setActiveQuestionId] = useState(QUESTIONS[0].id);
+  const [typedAnswer, setTypedAnswer] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [hasUserInteracted, setHasUserInteracted] = useState(false);
+  const [pulseChipId, setPulseChipId] = useState<string | null>(null);
+  const typingTimerRef = useRef<number | null>(null);
+  const rotateTimerRef = useRef<number | null>(null);
+  const pulseTimerRef = useRef<number | null>(null);
+
+  const activeQuestion =
+    QUESTIONS.find((q) => q.id === activeQuestionId) ?? QUESTIONS[0];
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -591,604 +72,402 @@ export function HeroSection() {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
+  useEffect(() => {
+    if (typingTimerRef.current !== null) {
+      window.clearInterval(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
+
+    if (prefersReducedMotion) {
+      setTypedAnswer(activeQuestion.answer);
+      setIsTyping(false);
+      return;
+    }
+
+    setTypedAnswer("");
+    setIsTyping(true);
+    let i = 0;
+
+    typingTimerRef.current = window.setInterval(() => {
+      i += 1;
+      setTypedAnswer(activeQuestion.answer.slice(0, i));
+      if (i >= activeQuestion.answer.length) {
+        if (typingTimerRef.current !== null) {
+          window.clearInterval(typingTimerRef.current);
+          typingTimerRef.current = null;
+        }
+        setIsTyping(false);
+      }
+    }, TYPING_SPEED_MS);
+
+    return () => {
+      if (typingTimerRef.current !== null) {
+        window.clearInterval(typingTimerRef.current);
+        typingTimerRef.current = null;
+      }
+    };
+  }, [activeQuestionId, activeQuestion.answer, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (hasUserInteracted || prefersReducedMotion) return;
+    if (rotateTimerRef.current !== null) {
+      window.clearInterval(rotateTimerRef.current);
+    }
+    rotateTimerRef.current = window.setInterval(() => {
+      setActiveQuestionId((prevId) => {
+        const idx = QUESTIONS.findIndex((q) => q.id === prevId);
+        return QUESTIONS[(idx + 1) % QUESTIONS.length].id;
+      });
+    }, ROTATE_INTERVAL_MS);
+
+    return () => {
+      if (rotateTimerRef.current !== null) {
+        window.clearInterval(rotateTimerRef.current);
+        rotateTimerRef.current = null;
+      }
+    };
+  }, [hasUserInteracted, prefersReducedMotion]);
+
+  useEffect(() => {
+    return () => {
+      if (pulseTimerRef.current !== null) {
+        window.clearTimeout(pulseTimerRef.current);
+      }
+    };
+  }, []);
+
+  const onPickQuestion = (id: string) => {
+    if (id === activeQuestionId) return;
+    setHasUserInteracted(true);
+    setPulseChipId(id);
+    if (pulseTimerRef.current !== null) {
+      window.clearTimeout(pulseTimerRef.current);
+    }
+    pulseTimerRef.current = window.setTimeout(() => {
+      setPulseChipId(null);
+    }, 280);
+
+    if (rotateTimerRef.current !== null) {
+      window.clearInterval(rotateTimerRef.current);
+      rotateTimerRef.current = null;
+    }
+    setActiveQuestionId(id);
+  };
+
   return (
-    <>
-      <section className="relative flex flex-col items-center w-full px-4 pt-8 md:pt-16 lg:pt-24 max-w-7xl mx-auto pointer-events-none">
-        {/* Header Content */}
-        <div className="flex flex-col items-center w-full gap-6 md:gap-10">
+    <section className="relative w-full px-4 pt-12 md:pt-20 lg:pt-28 pb-16 md:pb-24 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="lg:col-span-7 flex flex-col gap-7 text-center items-center lg:text-left lg:items-start">
+          <p className="font-['Inter'] text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold inline-flex items-center gap-2">
+            <span>#1 Sales Performance App</span>
+            <span className="opacity-60" aria-hidden>
+              |
+            </span>
+            <span className="inline-flex items-center gap-1.5" aria-label="4.5 out of 5 stars">
+              <span className="inline-flex items-center gap-0.5 text-[#19ad7d]" aria-hidden>
+                <Star size={14} className="fill-current" />
+                <Star size={14} className="fill-current" />
+                <Star size={14} className="fill-current" />
+                <Star size={14} className="fill-current" />
+                <span className="relative inline-block h-[14px] w-[14px]">
+                  <Star size={14} className="absolute inset-0 text-[#19ad7d]/30" />
+                  <span className="absolute inset-0 w-1/2 overflow-hidden">
+                    <Star size={14} className="fill-current" />
+                  </span>
+                </span>
+              </span>
+              <span className="tracking-normal opacity-80">4.5</span>
+            </span>
+          </p>
+
           <h1
-            className={`font-['IvyOra_Text'] font-medium leading-[1.05] tracking-[-2px] text-center pointer-events-auto max-w-[1200px] mx-auto ${isLightMode ? "text-brand-dark" : "text-brand-light"} text-[40px] sm:text-[48px] md:text-[64px] lg:text-[80px] xl:text-[96px] px-[16px] py-[0px] mx-[4px] my-[0px]`}
+            className={`font-['IvyOra_Text'] font-medium leading-[1.02] tracking-[-2px] ${
+              isLightMode ? "text-brand-dark" : "text-brand-light"
+            } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
           >
-            Your AI operating system
-            <br />
-            for high-performance
-            <br />
-            sales teams
+            More revenue from the team you{" "}
+            <span className="italic font-normal">already have.</span>
           </h1>
 
           <p
-            className={`font-['Inter'] tracking-[-0.03em] text-center pointer-events-auto max-w-2xl mx-auto px-4 ${isLightMode ? "text-black/75" : "text-white/60"} text-[17px] sm:text-[18px] md:text-[19px] leading-relaxed`}
+            className={`font-['Inter'] text-[17px] md:text-[18px] leading-[1.55] max-w-[540px] mx-auto lg:mx-0 ${
+              isLightMode ? "text-black/70" : "text-white/65"
+            }`}
           >
-            Connect your data. Get insights. Take action — fast.
+            Enzy connects your CRM and comms stack, makes performance visible in
+            real time, and uses competition + AI to drive the behaviors that
+            actually close deals.
           </p>
 
-          {/* Demo-first: primary = Enzy green (Specs), secondary = outline */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 w-full max-w-lg sm:max-w-none pointer-events-auto px-4 mt-2">
+          <p
+            className={`font-['Inter'] text-[14px] ${
+              isLightMode ? "text-black/65" : "text-white/55"
+            }`}
+          >
+            Customers see a median{" "}
+            <span
+              className={`font-semibold ${
+                isLightMode ? "text-brand-dark" : "text-brand-light"
+              }`}
+            >
+              27% lift in sales
+            </span>{" "}
+            within the first year.
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 w-full sm:w-auto">
             <CTAButton
               href={BOOK_DEMO_HREF}
               variant="primary"
-              className="w-full sm:w-auto justify-center rounded-full px-10 sm:px-12 py-4 sm:py-[18px] gap-2.5 font-semibold tracking-tight text-[16px] sm:text-[17px] hover:scale-[1.02] hover:!opacity-100 shadow-[0_18px_60px_rgba(0,0,0,0.18)]"
+              className="justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
             >
-              Book a demo{" "}
-              <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
+              Book a demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
             </CTAButton>
             <CTAButton
               variant="secondary"
-              href="/playground"
-              className="w-full sm:w-auto justify-center rounded-full px-10 sm:px-12 py-4 sm:py-[18px] font-semibold text-[16px] sm:text-[17px] tracking-tight"
+              href="#playground"
+              className="justify-center rounded-full px-9 py-[15px] font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
             >
-              Open Playground
+              Try the playground
             </CTAButton>
           </div>
 
-          {/* Brands Partnerships Section (directly under CTAs) */}
-          <div className="w-full mt-5 mb-0 md:mt-7 md:mb-2 z-20 flex flex-col items-center pointer-events-auto">
-            {prefersReducedMotion ? (
-              <div className="flex flex-wrap justify-center gap-x-10 gap-y-12 py-8 px-2 max-w-5xl">
-                {HERO_LOGOS_WITH_SUMMARY.map((logo, i) => (
-                  <div
-                    key={`static-${i}`}
-                    className={`relative flex items-center justify-center opacity-80 w-[clamp(132px,14vw,176px)] h-10 md:h-12 ${
-                      isLightMode ? "brightness-0" : "brightness-0 invert"
-                    }`}
-                  >
-                    <img
-                      src={logo.url}
-                      alt=""
-                      className="h-full w-full object-contain pointer-events-none"
-                      loading="lazy"
-                      draggable={false}
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <LogosMarquee
-                logos={HERO_LOGOS_WITH_SUMMARY}
-                isLightMode={isLightMode}
-                prefersReducedMotion={prefersReducedMotion}
-              />
-            )}
+          <div className="w-full lg:max-w-[560px]">
+            <SimpleLogosMarquee />
           </div>
         </div>
-      </section>
-    </>
+
+        <div className="lg:col-span-5 flex justify-center lg:justify-end" id="playground">
+          <PlaygroundSurface
+            isLightMode={isLightMode}
+            activeQuestion={activeQuestion}
+            typedAnswer={typedAnswer}
+            isTyping={isTyping}
+            questions={QUESTIONS}
+            onPickQuestion={onPickQuestion}
+            pulseChipId={pulseChipId}
+          />
+        </div>
+      </div>
+    </section>
   );
 }
 
-function CloseButton({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="pointer-events-auto inline-flex items-center justify-center w-11 h-11 rounded-full bg-black/60 text-white backdrop-blur-md border border-white/15 hover:bg-black/70 active:bg-black/80 transition-colors"
-      aria-label="Close"
-    >
-      <span className="text-[20px] leading-none select-none">×</span>
-    </button>
-  );
-}
-
-/**
- * iPhone 17–class hardware chrome: titanium-style rail, Dynamic Island, thin bezels,
- * camera-control ridge hint, home indicator. Proportions follow 402×874 pt.
- */
-function HeroPhoneFrame({
+function PlaygroundSurface({
   isLightMode,
-  children,
-  className = "",
-  productLabel = "iPhone 17",
+  activeQuestion,
+  typedAnswer,
+  isTyping,
+  questions,
+  onPickQuestion,
+  pulseChipId,
 }: {
   isLightMode: boolean;
-  children: React.ReactNode;
-  className?: string;
-  productLabel?: string;
+  activeQuestion: Question;
+  typedAnswer: string;
+  isTyping: boolean;
+  questions: Question[];
+  onPickQuestion: (id: string) => void;
+  pulseChipId: string | null;
 }) {
+  const otherQuestions = questions.filter((q) => q.id !== activeQuestion.id);
+
   return (
-    <div
-      data-device-mockup={productLabel}
-      className={`relative h-full w-full rounded-[48px] bg-gradient-to-b from-[#f2f2f3] via-[#c9c9cd] to-[#a1a1a8] p-[2.5px] shadow-[0_32px_100px_rgba(0,0,0,0.48),0_12px_36px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.5)] dark:from-[#63636d] dark:via-[#45454f] dark:to-[#1f1f23] dark:shadow-[0_32px_100px_rgba(0,0,0,0.75),0_12px_36px_rgba(0,0,0,0.5)] ${className}`}
-    >
-      {/* Side volume / Camera Control ridge (iPhone 16/17 family) */}
+    <div className="relative w-full max-w-[480px]">
       <div
-        className="pointer-events-none absolute left-0 top-[22%] z-0 h-16 w-[3px] -translate-x-[1px] rounded-full bg-gradient-to-b from-white/35 via-white/12 to-white/5 shadow-[2px_0_6px_rgba(0,0,0,0.35)]"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute left-0 top-[38%] z-0 h-10 w-[3px] -translate-x-[1px] rounded-full bg-gradient-to-b from-white/30 via-white/10 to-white/5 shadow-[2px_0_6px_rgba(0,0,0,0.3)]"
+        className="pointer-events-none absolute -inset-4 rounded-[40px] opacity-60"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 50% 30%, rgba(25,173,125,0.18), transparent 70%)",
+        }}
         aria-hidden
       />
 
-      <div className="relative h-full w-full overflow-hidden rounded-[45px] bg-[#0a0a0a] ring-1 ring-inset ring-white/[0.16]">
+      <div
+        className={`relative rounded-[28px] overflow-hidden border shadow-[0_40px_120px_rgba(0,0,0,0.55),0_12px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] ${
+          isLightMode ? "border-black/10" : "border-white/[0.08]"
+        }`}
+        style={{
+          background: isLightMode
+            ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.92) 100%)"
+            : "linear-gradient(180deg, rgba(18,20,24,0.94) 0%, rgba(10,11,14,0.96) 100%)",
+        }}
+      >
         <div
-          className="pointer-events-none absolute inset-0 rounded-[45px] bg-[radial-gradient(120%_85%_at_50%_-25%,rgba(255,255,255,0.14),transparent_58%)]"
+          className="pointer-events-none absolute inset-0 rounded-[28px]"
+          style={{
+            background: isLightMode
+              ? "radial-gradient(120% 70% at 50% -10%, rgba(25,173,125,0.10), transparent 55%)"
+              : "radial-gradient(120% 70% at 50% -10%, rgba(25,173,125,0.10), transparent 55%)",
+          }}
           aria-hidden
         />
 
-        {/* Status row + Dynamic Island */}
-        <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 grid grid-cols-3 items-center px-[5.25%] pt-[3.6%]">
-          <span
-            className="justify-self-start font-['Inter'] text-[13px] font-semibold tabular-nums tracking-tight text-white"
-            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.95)" }}
-          >
-            9:41
-          </span>
-          <div
-            className="justify-self-center h-[31px] w-[118px] rounded-full bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),0_3px_14px_rgba(0,0,0,0.55)]"
-            aria-hidden
-          />
-          <div className="justify-self-end flex items-center gap-0.5 pr-1 text-white">
-            <Signal
-              size={14}
-              strokeWidth={2.35}
-              className="opacity-95"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }}
-            />
-            <Wifi
-              size={14}
-              strokeWidth={2.35}
-              className="opacity-95"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }}
-            />
-            <Battery
-              size={17}
-              strokeWidth={2.35}
-              className="opacity-95"
-              style={{ filter: "drop-shadow(0 1px 2px rgba(0,0,0,0.85))" }}
-            />
-          </div>
-        </div>
-
         <div
-          className={`absolute inset-x-[2.1%] bottom-[2.1%] top-[1.1%] overflow-hidden rounded-[32px] ${
-            isLightMode
-              ? "bg-[#050505] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06),inset_0_12px_40px_rgba(0,0,0,0.45)]"
-              : "bg-[#030303] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05),inset_0_16px_48px_rgba(0,0,0,0.72)]"
+          className={`relative flex items-center justify-between px-5 py-3.5 border-b ${
+            isLightMode ? "border-black/10" : "border-white/[0.06]"
           }`}
         >
-          {children}
-        </div>
-
-        <div
-          className="pointer-events-none absolute bottom-[1.6%] left-1/2 z-40 h-[5px] w-[140px] -translate-x-1/2 rounded-full bg-white/[0.4] shadow-[0_1px_3px_rgba(0,0,0,0.65)]"
-          aria-hidden
-        />
-      </div>
-    </div>
-  );
-}
-
-function HeroPhoneScreenContent({
-  demoState,
-  scenario,
-  setDemoState,
-}: {
-  demoState: AssistantDemoState;
-  scenario: HeroScenario;
-  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
-}) {
-  return (
-    <div className="relative h-full w-full">
-      <div className="absolute inset-0">
-        <img
-          src={imgInnerScreen.src}
-          alt=""
-          className="h-full w-full object-cover opacity-55"
-          aria-hidden
-        />
-        <div
-          className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/35 to-black/70"
-          aria-hidden
-        />
-      </div>
-
-      <div className="absolute left-3 top-3 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
-        <Sparkles size={13} className="text-[#19ad7d]" />
-        <span className="font-['Inter'] text-[10px] font-medium tracking-tight">
-          AI Playground
-        </span>
-      </div>
-
-      <div className="absolute inset-x-3 bottom-3 top-12 z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
-        <HeroAssistantDemo
-          demoState={demoState}
-          scenario={scenario}
-          isLightMode={false}
-          setDemoState={setDemoState}
-        />
-      </div>
-    </div>
-  );
-}
-
-function HeroAssistantDemo({
-  demoState,
-  scenario,
-  isLightMode,
-  setDemoState,
-  showActionPanel = false,
-  variant = "full",
-}: {
-  demoState: AssistantDemoState;
-  scenario: HeroScenario;
-  isLightMode: boolean;
-  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
-  showActionPanel?: boolean;
-  variant?: "full" | "phone";
-}) {
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  const onQuickReply = (qr: QuickReply) => {
-    setDemoState((prev) => {
-      // Start a new flow
-      if (prev.mode === "start") {
-        const flowId = qr.id as AssistantFlowId;
-        const step0 = flowStepPrompt(flowId, 0, {});
-        return {
-          mode: "flow",
-          flowId,
-          step: 0,
-          selections: {},
-          messages: [
-            ...prev.messages.map((m) => ({ ...m, quickReplies: undefined })), // lock the initial choices once selected
-            {
-              id: newId("m"),
-              role: "user",
-              text: scenario.promptLabels[flowId] ?? qr.label,
-            },
-            {
-              id: newId("m"),
-              role: "assistant",
-              text: step0.assistant,
-              quickReplies: step0.quickReplies,
-            },
-          ],
-        };
-      }
-
-      // Flow mode
-      if (prev.mode === "flow") {
-        // global actions
-        if (qr.id === "action:start_over") return initialDemoState(scenario);
-
-        const [key, raw] = qr.id.split(":");
-        const nextSelections =
-          raw && key
-            ? {
-                ...prev.selections,
-                [key]: raw,
-              }
-            : { ...prev.selections };
-
-        const nextStep = prev.step + 1;
-        const prompt = flowStepPrompt(prev.flowId, nextStep, nextSelections);
-
-        return {
-          ...prev,
-          step: nextStep,
-          selections: nextSelections,
-          messages: [
-            ...prev.messages.map((m) => ({ ...m, quickReplies: undefined })), // lock previous options
-            { id: newId("m"), role: "user", text: qr.label },
-            {
-              id: newId("m"),
-              role: "assistant",
-              text: prompt.assistant,
-              quickReplies: [
-                ...(prompt.quickReplies ?? []),
-                { id: "action:start_over", label: "Start over" },
-              ],
-            },
-          ],
-        };
-      }
-
-      return prev;
-    });
-  };
-
-  useEffect(() => {
-    if (!copiedId) return;
-    const t = window.setTimeout(() => setCopiedId(null), 1100);
-    return () => window.clearTimeout(t);
-  }, [copiedId]);
-
-  const copyCard = async (c: ActionCard) => {
-    const text = `${c.title}\n${c.detail}`;
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedId(c.id);
-    } catch {
-      // fallback: select-copy isn’t worth it for this demo
-    }
-  };
-
-  const isPhone = variant === "phone";
-  const messages = isPhone ? demoState.messages.slice(-5) : demoState.messages;
-
-  return (
-    <div className="absolute inset-0">
-      {/* subtle “app” background (phone shell already supplies a background) */}
-      {!isPhone ? (
-        <div className="absolute inset-0">
-          <img
-            src={imgInnerScreen.src}
-            alt=""
-            className="h-full w-full object-cover opacity-55"
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/30 to-black/60"
-            aria-hidden
-          />
-        </div>
-      ) : null}
-
-      <div
-        className={`relative h-full w-full ${isPhone ? "p-3" : "p-4 md:p-6"}`}
-      >
-        {isPhone ? (
-          <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/25 px-3 py-1.5 text-white/90 backdrop-blur-md">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#19ad7d]/15 ring-1 ring-inset ring-[#19ad7d]/30">
               <Sparkles size={13} className="text-[#19ad7d]" />
-              <span className="font-['Inter'] text-[10px] font-medium tracking-tight">
+            </span>
+            <div className="flex flex-col leading-tight">
+              <span
+                className={`font-['Inter'] text-[12px] font-semibold tracking-tight ${
+                  isLightMode ? "text-brand-dark" : "text-white"
+                }`}
+              >
                 Enzy AI
               </span>
-            </div>
-            <div className="font-['Inter'] text-[10px] font-semibold tracking-tight text-white/55">
-              {scenario.label}
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/90 backdrop-blur-md">
-              <Sparkles size={14} className="text-[#19ad7d]" />
-              <span className="font-['Inter'] text-[11px] font-medium tracking-tight">
-                AI Assistant
-              </span>
-            </div>
-            <div className="inline-flex items-center gap-1 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 text-white/75 backdrop-blur-md">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
-              <span className="font-['Inter'] text-[10px] tracking-tight">
-                Connected data
-              </span>
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`${isPhone ? "mt-2 h-[calc(100%-2.25rem)]" : "mt-4 flex h-[calc(100%-3.25rem)] gap-4"}`}
-        >
-          {/* Chat */}
-          <div
-            className={`${isPhone ? "h-full" : `min-w-0 flex-1 ${showActionPanel ? "md:flex-[1.6]" : ""}`}`}
-          >
-            <div className="h-full overflow-y-auto pr-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <div
-                className={`flex flex-col ${isPhone ? "gap-2.5 pb-3" : "gap-3 pb-4"}`}
+              <span
+                className={`font-['Inter'] text-[10px] tracking-tight ${
+                  isLightMode ? "text-black/45" : "text-white/40"
+                }`}
               >
-                {messages.map((m) => {
-                  const isUser = m.role === "user";
-                  const bubbleBase = `max-w-[92%] rounded-2xl ${isPhone ? "px-3 py-2.5" : "px-3.5 py-3"} text-left backdrop-blur-md`;
-                  const bubbleClass = isUser
-                    ? "ml-auto bg-[#19ad7d] text-white shadow-[0_10px_30px_rgba(25,173,125,0.22)]"
-                    : "border border-white/10 bg-white/10 text-white/90";
-
-                  return (
-                    <div key={m.id} className={`${bubbleBase} ${bubbleClass}`}>
-                      <div
-                        className={`font-['Inter'] ${isPhone ? "text-[11px] leading-snug" : "text-[12px] leading-relaxed"} tracking-tight whitespace-pre-line`}
-                      >
-                        {m.text}
-                      </div>
-
-                      {m.quickReplies && m.quickReplies.length > 0 && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {m.quickReplies.map((qr) => (
-                            <button
-                              key={qr.id}
-                              type="button"
-                              onClick={() => onQuickReply(qr)}
-                              className={`pointer-events-auto rounded-full border border-white/12 bg-black/25 px-3 py-1.5 text-left font-['Inter'] ${isPhone ? "text-[10px]" : "text-[11px]"} tracking-tight text-white/85 transition-colors hover:bg-black/35 active:bg-[#19ad7d]/80`}
-                            >
-                              {qr.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+                Live playground
+              </span>
             </div>
           </div>
 
-          {/* Action Panel */}
-          {showActionPanel && !isPhone && (
-            <div className="hidden md:flex w-[280px] lg:w-[320px] shrink-0 flex-col gap-3">
-              <div className="rounded-2xl border border-white/10 bg-black/25 p-3 backdrop-blur-md">
-                <div className="flex items-center justify-between">
-                  <div className="font-['Inter'] text-[12px] font-semibold tracking-tight text-white/90">
-                    Outputs
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setDemoState(initialDemoState(scenario))}
-                    className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/75 hover:bg-black/30 active:bg-black/40"
-                  >
-                    Reset
-                  </button>
+          <div
+            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${
+              isLightMode ? "border-black/10 bg-black/[0.03]" : "border-white/10 bg-white/[0.04]"
+            }`}
+          >
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-[#19ad7d] opacity-70 animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
+            </span>
+            <span
+              className={`font-['Inter'] text-[10px] font-medium tracking-[0.06em] uppercase ${
+                isLightMode ? "text-black/55" : "text-white/55"
+              }`}
+            >
+              Connected
+            </span>
+          </div>
+        </div>
+
+        <div className="relative px-5 pt-5 pb-4 min-h-[400px] flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeQuestion.id}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="flex flex-col gap-3 flex-1"
+            >
+              <div className="flex justify-end">
+                <div className="max-w-[88%] rounded-2xl rounded-tr-md bg-[#19ad7d] text-white px-3.5 py-2.5 shadow-[0_8px_24px_rgba(25,173,125,0.32)]">
+                  <p className="font-['Inter'] text-[13px] leading-snug tracking-tight m-0">
+                    {activeQuestion.prompt}
+                  </p>
                 </div>
-                <div className="mt-2 space-y-2">
-                  {getActionCards(demoState).map((c) => (
+              </div>
+
+              <div className="flex justify-start">
+                <div
+                  className={`max-w-[94%] rounded-2xl rounded-tl-md border px-3.5 py-3 backdrop-blur-md ${
+                    isLightMode
+                      ? "border-black/10 bg-black/[0.03]"
+                      : "border-white/[0.08] bg-white/[0.04]"
+                  }`}
+                >
+                  <p
+                    className={`font-['Inter'] text-[13px] leading-[1.6] tracking-tight whitespace-pre-line m-0 ${
+                      isLightMode ? "text-black/80" : "text-white/90"
+                    }`}
+                  >
+                    {typedAnswer}
+                    {isTyping && (
+                      <span
+                        className={`inline-block w-[6px] h-[12px] ml-[2px] align-middle animate-pulse ${
+                          isLightMode ? "bg-black/55" : "bg-white/70"
+                        }`}
+                      />
+                    )}
+                  </p>
+
+                  {!isTyping && activeQuestion.followups.length > 0 && (
                     <motion.div
-                      key={`${c.id}-${c.status}`}
-                      initial={
-                        c.status === "ready"
-                          ? {
-                              opacity: 0,
-                              y: 6,
-                              boxShadow: "0 0 0 rgba(25,173,125,0)",
-                            }
-                          : { opacity: 1, y: 0 }
-                      }
-                      animate={
-                        c.status === "ready"
-                          ? {
-                              opacity: 1,
-                              y: 0,
-                              boxShadow: "0 0 0 rgba(25,173,125,0)",
-                            }
-                          : { opacity: 1, y: 0 }
-                      }
-                      transition={{ duration: 0.25, ease: "easeOut" }}
-                      className={`rounded-2xl border p-3 ${
-                        c.status === "ready"
-                          ? "border-[#19ad7d]/30 bg-[#19ad7d]/[0.08]"
-                          : "border-white/10 bg-white/5"
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.15 }}
+                      className={`mt-3 pt-3 border-t flex flex-wrap gap-1.5 ${
+                        isLightMode ? "border-black/10" : "border-white/[0.06]"
                       }`}
                     >
-                      <div className="flex items-center gap-2">
+                      <CornerDownRight
+                        size={11}
+                        className={isLightMode ? "text-black/35 mt-0.5 mr-0.5" : "text-white/35 mt-0.5 mr-0.5"}
+                        aria-hidden
+                      />
+                      {activeQuestion.followups.map((label) => (
                         <span
-                          className={`h-2 w-2 rounded-full ${
-                            c.status === "ready"
-                              ? "bg-[#19ad7d]"
-                              : c.status === "in_progress"
-                                ? "bg-[#19ad7d]/60"
-                                : "bg-white/25"
+                          key={label}
+                          className={`rounded-full border px-2.5 py-0.5 font-['Inter'] text-[10.5px] tracking-tight ${
+                            isLightMode
+                              ? "border-black/10 bg-black/[0.03] text-black/60"
+                              : "border-white/10 bg-white/[0.04] text-white/65"
                           }`}
-                        />
-                        <div className="font-['Inter'] text-[11px] font-semibold tracking-tight text-white/90">
-                          {c.title}
-                        </div>
-                        {c.status === "ready" && (
-                          <span className="ml-auto rounded-full border border-white/10 bg-black/20 px-2 py-0.5 font-['Inter'] text-[10px] tracking-tight text-white/70">
-                            Ready
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-1 font-['Inter'] text-[11px] leading-snug tracking-tight text-white/70">
-                        {c.detail}
-                      </div>
-
-                      {c.status === "ready" && (
-                        <div className="mt-2 flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => copyCard(c)}
-                            className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/80 hover:bg-black/35 active:bg-black/45"
-                          >
-                            {copiedId === c.id ? "Copied" : "Copy"}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              downloadTextFile(
-                                `${c.id}.txt`,
-                                `${c.title}\n\n${c.detail}\n\n(Generated in Enzy AI Playground demo)`,
-                              )
-                            }
-                            className="rounded-full border border-white/10 bg-black/25 px-2.5 py-1 font-['Inter'] text-[10px] tracking-tight text-white/80 hover:bg-black/35 active:bg-black/45"
-                          >
-                            Download
-                          </button>
-                        </div>
-                      )}
+                        >
+                          {label}
+                        </span>
+                      ))}
                     </motion.div>
-                  ))}
+                  )}
                 </div>
               </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-              <div className="rounded-2xl border border-white/10 bg-black/20 p-3 backdrop-blur-md">
-                <div className="font-['Inter'] text-[11px] font-semibold tracking-tight text-white/90">
-                  Why it converts
-                </div>
-                <div className="mt-1 font-['Inter'] text-[11px] leading-snug tracking-tight text-white/70">
-                  Users can see tangible artifacts appear — not just chat. The
-                  panel updates as the AI drafts real work.
-                </div>
-              </div>
-            </div>
-          )}
+        <div
+          className={`relative border-t px-5 py-4 ${
+            isLightMode ? "border-black/10 bg-black/[0.02]" : "border-white/[0.06] bg-black/20"
+          }`}
+        >
+          <p
+            className={`font-['Inter'] text-[10px] tracking-[0.14em] uppercase mb-2.5 font-medium ${
+              isLightMode ? "text-black/45" : "text-white/40"
+            }`}
+          >
+            Try another question
+          </p>
+          <div className="flex flex-col gap-1.5">
+            {otherQuestions.slice(0, 3).map((q) => {
+              const isPulsing = pulseChipId === q.id;
+              return (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => onPickQuestion(q.id)}
+                  className={`group relative text-left rounded-lg border transition-all duration-200 px-3 py-2 ${
+                    isPulsing
+                      ? "border-[#19ad7d]/50 bg-[#19ad7d]/[0.12]"
+                      : isLightMode
+                        ? "border-black/10 bg-black/[0.02] hover:border-black/15 hover:bg-black/[0.04]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.05]"
+                  }`}
+                >
+                  <p
+                    className={`font-['Inter'] text-[12px] leading-snug tracking-tight transition-colors m-0 ${
+                      isLightMode
+                        ? "text-black/65 group-hover:text-black/80"
+                        : "text-white/75 group-hover:text-white/90"
+                    }`}
+                  >
+                    {q.prompt}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function AiAssistantModal({
-  open,
-  onOpenChange,
-  isLightMode,
-  scenario,
-  demoState,
-  setDemoState,
-}: {
-  open: boolean;
-  onOpenChange: (v: boolean) => void;
-  isLightMode: boolean;
-  scenario: HeroScenario;
-  demoState: AssistantDemoState;
-  setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
-}) {
-  return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-[9998] bg-black/55 backdrop-blur-md" />
-        <Dialog.Content
-          className={`fixed left-1/2 top-1/2 z-[9999] w-[min(94vw,860px)] -translate-x-1/2 -translate-y-1/2 rounded-[28px] border shadow-[0_30px_120px_rgba(0,0,0,0.55)] outline-none ${
-            isLightMode
-              ? "bg-[#0b0f14] border-white/10"
-              : "bg-[#0b0f14] border-white/10"
-          }`}
-        >
-          <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-[#19ad7d]/15 ring-1 ring-inset ring-[#19ad7d]/35">
-                <Sparkles size={16} className="text-[#19ad7d]" />
-              </span>
-              <div className="flex flex-col">
-                <Dialog.Title className="font-['Inter'] text-sm font-semibold tracking-tight text-white">
-                  Meet your new AI Assistant
-                </Dialog.Title>
-                <Dialog.Description className="font-['Inter'] text-xs tracking-tight text-white/60">
-                  Pick prompts and continue the workflow end-to-end.
-                </Dialog.Description>
-              </div>
-            </div>
-
-            <Dialog.Close asChild>
-              <button
-                type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-white/5 text-white/80 transition-colors hover:bg-white/10 active:bg-white/15"
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </Dialog.Close>
-          </div>
-
-          <div className="relative h-[min(72vh,640px)]">
-            <HeroAssistantDemo
-              demoState={demoState}
-              scenario={scenario}
-              isLightMode={false}
-              setDemoState={setDemoState}
-              showActionPanel
-            />
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
-  );
-}

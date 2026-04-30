@@ -12,7 +12,9 @@ import { LandingProductVideo } from "../components/landing/LandingProductVideo";
 import { LandingStickyDemoCta } from "../components/landing/LandingStickyDemoCta";
 
 const HowItWorksSection = lazy(() =>
-  import("../components/HowItWorksSection").then((m) => ({ default: m.HowItWorksSection }))
+  import("../components/HowItWorksSectionLegacy").then((m) => ({
+    default: m.HowItWorksSectionLegacy,
+  }))
 );
 const FeaturesSection = lazy(() =>
   import("../components/FeaturesSection").then((m) => ({ default: m.FeaturesSection }))

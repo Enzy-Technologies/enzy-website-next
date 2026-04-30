@@ -17,10 +17,10 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     >
       <PixelCanvas />
 
-      <div className="relative w-full flex flex-col items-center overflow-x-hidden">
+      <div className="relative z-10 w-full flex flex-col items-center overflow-x-hidden">
         <Header />
 
-        <main className="w-full flex-1 flex flex-col items-center z-10 relative pt-[88px]">
+        <main className="w-full flex-1 flex flex-col items-center relative pt-[88px]">
           {children}
         </main>
 

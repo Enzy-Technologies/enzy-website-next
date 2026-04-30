@@ -4,7 +4,15 @@ import { RotateCw, X } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
-const testimonials = [
+export type Testimonial = {
+  id: number;
+  quote: string;
+  name: string;
+  title: string;
+  image: string;
+};
+
+export const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
     quote: "Honestly, the biggest impact Enzy has had on our company isn’t just the features themselves, it’s how it reshapes our thinking and behavior as an organization. Before Enzy, we were reacting to results; now we’re anticipating them. Because every KPI, leaderboard, and real-time insight is visible at the moment decisions are made—so if you asked me where the magic really sits, it’s not just the tool—it’s what it enables. Enzy turned data into decision velocity, visibility into alignment, and motivation into momentum. That’s been the difference-maker for us this year.",
@@ -59,71 +67,10 @@ function splitQuote(quote: string) {
 
 export function TestimonialsSection() {
   const { isLightMode } = useTheme();
-  
-  // We duplicate the array 4 times to ensure we have enough content to wrap seamlessly on any screen
-  const SETS = 4;
-  const marqueeItems = Array(SETS).fill(testimonials).flat();
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [contentWidth, setContentWidth] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const baseX = useMotionValue(0);
-
-  useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        // total scroll width divided by number of sets gives exact width of one set
-        setContentWidth(containerRef.current.scrollWidth / SETS);
-      }
-    };
-    
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
-  }, []);
-
-  const x = useTransform(baseX, (v) => {
-    if (contentWidth === 0) return "0px";
-    // This creates a seamless loop by wrapping 'v' between -contentWidth and 0.
-    // When 'v' hits -contentWidth, it wraps to 0. When 'v' hits >0, it wraps to -contentWidth.
-    const wrapped = ((v % contentWidth) - contentWidth) % contentWidth;
-    return `${wrapped}px`;
-  });
-
-  useAnimationFrame((time, delta) => {
-    // Stop scrolling if a card is flipped or the user is dragging
-    if (flippedIndex !== null || isDragging) return;
-    
-    // Auto-scroll base speed (pixels per ms)
-    let moveBy = -0.05 * delta;
-    
-    // We can also pause on hover on desktop if we want
-    if (isHovered && matchMedia("(hover: hover)").matches) {
-      moveBy = 0;
-    }
-
-    baseX.set(baseX.get() + moveBy);
-  });
 
   return (
     <section className="relative w-full py-24 md:py-32 overflow-hidden z-20"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Scrollbar hiding */}
-      <style dangerouslySetInnerHTML={{__html: `
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}} />
-
       <div className="w-full max-w-[1440px] mx-auto px-4 md:px-12 lg:px-20 flex flex-col gap-12 relative mb-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -141,23 +88,87 @@ export function TestimonialsSection() {
         </motion.div>
       </div>
 
+      <TestimonialsMarquee testimonials={TESTIMONIALS} />
+    </section>
+  );
+}
+
+export function TestimonialsMarquee({
+  testimonials,
+  className,
+  sets = 4,
+}: {
+  testimonials: readonly Testimonial[];
+  className?: string;
+  sets?: number;
+}) {
+  const { isLightMode } = useTheme();
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [contentWidth, setContentWidth] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // duplicate to wrap seamlessly on any screen
+  const marqueeItems = Array(sets).fill(testimonials).flat();
+
+  const baseX = useMotionValue(0);
+
+  useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContentWidth(containerRef.current.scrollWidth / sets);
+      }
+    };
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [sets]);
+
+  const x = useTransform(baseX, (v) => {
+    if (contentWidth === 0) return "0px";
+    const wrapped = ((v % contentWidth) - contentWidth) % contentWidth;
+    return `${wrapped}px`;
+  });
+
+  useAnimationFrame((time, delta) => {
+    if (flippedIndex !== null || isDragging) return;
+    let moveBy = -0.05 * delta;
+    if (isHovered && matchMedia("(hover: hover)").matches) moveBy = 0;
+    baseX.set(baseX.get() + moveBy);
+  });
+
+  return (
+    <div
+      className={className}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
+            .scrollbar-hide::-webkit-scrollbar { display: none; }
+            .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+          `,
+        }}
+      />
+
       <div className="w-full relative overflow-visible">
         <motion.div
           ref={containerRef}
           className="flex w-max py-8 touch-pan-y"
           style={{ x }}
-          // We use onPan to manually update baseX instead of Framer Motion's built-in drag
           onPanStart={() => setIsDragging(true)}
           onPan={(e, info) => {
             baseX.set(baseX.get() + info.delta.x);
           }}
           onPanEnd={(e, info) => {
             setIsDragging(false);
-            // Add momentum
             const velocity = info.velocity.x;
             if (Math.abs(velocity) > 200) {
               const target = baseX.get() + velocity * 0.5;
-              // Animate momentum (static import avoids chunk-load runtime errors)
               animate(baseX, target, {
                 type: "inertia",
                 velocity: velocity,
@@ -170,123 +181,158 @@ export function TestimonialsSection() {
           {marqueeItems.map((testimonial, idx) => {
             const { first, rest } = splitQuote(testimonial.quote);
             const isFlipped = flippedIndex === idx;
-            
+
             return (
               <div
                 key={`${testimonial.id}-${idx}`}
-                // The wrapper provides perspective for the 3D flip and margin for the loop math
                 className="relative shrink-0 mr-4 md:mr-6 group perspective-[1200px]"
               >
-                {/* The Flipper container rotates 180deg on click */}
-                <div 
-                  className={`relative w-[300px] md:w-[360px] h-[460px] md:h-[500px] transition-transform duration-700 [transform-style:preserve-3d] cursor-pointer ${isFlipped ? '[transform:rotateY(180deg)]' : ''}`}
+                <div
+                  className={`relative w-[300px] md:w-[360px] h-[460px] md:h-[500px] transition-transform duration-700 [transform-style:preserve-3d] cursor-pointer ${
+                    isFlipped ? "[transform:rotateY(180deg)]" : ""
+                  }`}
                   onClick={() => {
-                    // Stop event propagation if we were just dragging
                     if (isDragging) return;
                     setFlippedIndex(isFlipped ? null : idx);
                   }}
                 >
-                  
-                  {/* ================= FRONT FACE ================= */}
-                  <div 
+                  <div
                     className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 liquid-glass ${
-                      isLightMode
-                        ? "hover:border-[#19ad7d]/35"
-                        : "hover:border-[#19ad7d]/35"
-                    } ${isFlipped ? 'opacity-0 delay-300' : 'opacity-100 z-10 delay-100'}`}
-                    style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+                      isLightMode ? "hover:border-[#19ad7d]/35" : "hover:border-[#19ad7d]/35"
+                    } ${
+                      isFlipped ? "opacity-0 delay-300" : "opacity-100 z-10 delay-100"
+                    }`}
+                    style={{
+                      WebkitBackfaceVisibility: "hidden",
+                      backfaceVisibility: "hidden",
+                    }}
                   >
-                    {/* Top Border Accents */}
                     <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 z-20 transition-colors">
-                      <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#19ad7d]">Customer Story</span>
+                      <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#19ad7d]">
+                        Customer Story
+                      </span>
                       <div className="flex items-center gap-1.5 text-[#19ad7d]">
-                        <span className="text-[10px] font-bold uppercase tracking-widest">Flip</span>
+                        <span className="text-[10px] font-bold uppercase tracking-widest">
+                          Flip
+                        </span>
                         <RotateCw size={12} strokeWidth={2.5} />
                       </div>
                     </div>
 
-                    {/* Top Half: Prominent Photo */}
-                    <div className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b backdrop-blur-md ${isLightMode ? 'border-black/8 bg-[#eaf4f0]/85' : 'border-white/8 bg-[#17312d]/75'}`}>
-                      {/* Decorative Circles behind photo */}
+                    <div
+                      className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b backdrop-blur-md ${
+                        isLightMode
+                          ? "border-black/8 bg-[#eaf4f0]/85"
+                          : "border-white/8 bg-[#17312d]/75"
+                      }`}
+                    >
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full border border-[#19ad7d]/20" />
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] aspect-square rounded-full border border-[#19ad7d]/10" />
-                      
-                      {/* The Photo */}
+
                       <div className="relative w-[85%] h-[95%] rounded-t-[48px] overflow-hidden shadow-2xl z-10 border-t border-x border-white/10 bg-black/20">
-                        <ImageWithFallback 
-                          src={testimonial.image} 
+                        <ImageWithFallback
+                          src={testimonial.image}
                           alt={testimonial.name}
                           className="w-full h-full object-cover object-top grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
                         />
                       </div>
                     </div>
 
-                    {/* Bottom Half: Snippet & Author */}
                     <div className="relative h-[45%] w-full p-6 md:p-8 flex flex-col justify-between">
-                      <h3 className={`font-['Inter'] text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}>
+                      <h3
+                        className={`font-['Inter'] text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 ${
+                          isLightMode ? "text-[#0b0f14]" : "text-white"
+                        }`}
+                      >
                         "{first}"
                       </h3>
-                      
+
                       <div className="mt-auto flex flex-col relative">
                         <div className="w-10 h-[2px] bg-[#19ad7d] mb-4" />
-                        <span className={`font-['Inter'] text-[14px] font-bold tracking-[0.1em] uppercase ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}>
+                        <span
+                          className={`font-['Inter'] text-[14px] font-bold tracking-[0.1em] uppercase ${
+                            isLightMode ? "text-[#0b0f14]" : "text-white"
+                          }`}
+                        >
                           {testimonial.name}
                         </span>
-                        <span className={`font-['Inter'] text-[11px] font-medium uppercase tracking-wider mt-1 ${isLightMode ? 'text-[#0b0f14]/60' : 'text-white/40'}`}>
+                        <span
+                          className={`font-['Inter'] text-[11px] font-medium uppercase tracking-wider mt-1 ${
+                            isLightMode ? "text-[#0b0f14]/60" : "text-white/40"
+                          }`}
+                        >
                           {testimonial.title}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* ================= BACK FACE ================= */}
-                  <div 
-                    className={`absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl overflow-hidden flex flex-col p-6 md:p-8 liquid-glass`}
-                    style={{ WebkitBackfaceVisibility: 'hidden', backfaceVisibility: 'hidden' }}
+                  <div
+                    className="absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl overflow-hidden flex flex-col p-6 md:p-8 liquid-glass"
+                    style={{
+                      WebkitBackfaceVisibility: "hidden",
+                      backfaceVisibility: "hidden",
+                    }}
                   >
-                    {/* Decorative quote mark */}
-                    <div className="absolute top-4 right-6 text-[#19ad7d] opacity-20 text-[100px] font-serif leading-none select-none">“</div>
-                    
-                    {/* Full Testimonial Text (Scrollable if very long) */}
+                    <div className="absolute top-4 right-6 text-[#19ad7d] opacity-20 text-[100px] font-serif leading-none select-none">
+                      “
+                    </div>
+
                     <div className="flex-1 overflow-y-auto scrollbar-hide pr-2 relative z-10">
                       <div className="pt-2 pb-4">
-                        <p className={`font-['Inter'] text-sm md:text-[15px] leading-relaxed ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>
-                          <span className={`font-bold block mb-3 text-base md:text-lg leading-[1.3] ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <p
+                          className={`font-['Inter'] text-sm md:text-[15px] leading-relaxed ${
+                            isLightMode ? "text-black/80" : "text-white/80"
+                          }`}
+                        >
+                          <span
+                            className={`font-bold block mb-3 text-base md:text-lg leading-[1.3] ${
+                              isLightMode ? "text-black" : "text-white"
+                            }`}
+                          >
                             "{first}"
                           </span>
-                          {rest && (
-                            <span className="block opacity-80">{rest}</span>
-                          )}
+                          {rest ? <span className="block opacity-80">{rest}</span> : null}
                         </p>
                       </div>
                     </div>
 
-                    {/* Footer Avatar & Info */}
-                    <div className={`mt-4 pt-4 border-t flex items-center gap-3 shrink-0 ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
+                    <div
+                      className={`mt-4 pt-4 border-t flex items-center gap-3 shrink-0 ${
+                        isLightMode ? "border-black/10" : "border-white/10"
+                      }`}
+                    >
                       <div className="w-10 h-10 rounded-full overflow-hidden border border-[#19ad7d]/30 shrink-0">
-                        <ImageWithFallback 
-                          src={testimonial.image} 
+                        <ImageWithFallback
+                          src={testimonial.image}
                           alt={testimonial.name}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className={`font-['Inter'] text-xs font-bold tracking-wider uppercase ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <span
+                          className={`font-['Inter'] text-xs font-bold tracking-wider uppercase ${
+                            isLightMode ? "text-black" : "text-white"
+                          }`}
+                        >
                           {testimonial.name}
                         </span>
-                        <span className={`font-['Inter'] text-[10px] uppercase opacity-60 line-clamp-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <span
+                          className={`font-['Inter'] text-[10px] uppercase opacity-60 line-clamp-1 ${
+                            isLightMode ? "text-black" : "text-white"
+                          }`}
+                        >
                           {testimonial.title}
                         </span>
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
             );
           })}
         </motion.div>
       </div>
-    </section>
+    </div>
   );
 }
