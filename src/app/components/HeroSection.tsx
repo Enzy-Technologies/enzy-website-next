@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useTheme } from "./ThemeProvider";
-import { Sparkles, ArrowRight, CornerDownRight, Star } from "lucide-react";
+import { Sparkles, ArrowRight, CornerDownRight, Star, X } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
@@ -271,6 +272,48 @@ function PlaygroundSurface({
   pulseChipId: string | null;
 }) {
   const otherQuestions = questions.filter((q) => q.id !== activeQuestion.id);
+  const [showHint, setShowHint] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const DISMISS_KEY = "enzy-bg-hint-dismissed-v2";
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    let dismissed = false;
+    try {
+      dismissed = Boolean(window.sessionStorage.getItem(DISMISS_KEY));
+    } catch {}
+    if (dismissed) return;
+
+    // If we're already scrolled, show immediately.
+    if (window.scrollY > 0) {
+      setShowHint(true);
+      return;
+    }
+
+    const onScroll = () => {
+      if (window.scrollY > 0) {
+        setShowHint(true);
+        window.removeEventListener("scroll", onScroll);
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const t = window.setTimeout(() => setShowHint(true), 2500);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(t);
+    };
+  }, []);
+
+  const dismissHint = () => {
+    setShowHint(false);
+    try {
+      window.sessionStorage.setItem(DISMISS_KEY, "1");
+    } catch {}
+  };
 
   return (
     <div className="relative w-full max-w-[480px]">
@@ -467,6 +510,44 @@ function PlaygroundSurface({
           </div>
         </div>
       </div>
+
+      {isMounted && showHint
+        ? createPortal(
+            <div className="fixed inset-x-0 bottom-0 z-[9999] px-4 pb-[calc(env(safe-area-inset-bottom)+16px)]">
+              <div
+                role="dialog"
+                aria-label="Background tip"
+                className={`mx-auto w-full max-w-[520px] rounded-2xl border px-4 py-3 shadow-[0_22px_80px_rgba(0,0,0,0.22)] backdrop-blur-md ${
+                  isLightMode ? "border-black/10 bg-white/85" : "border-white/10 bg-black/60"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-1">
+                    <p
+                      className={`font-['Inter'] text-[12.5px] leading-[1.5] ${
+                        isLightMode ? "text-black/75" : "text-white/75"
+                      }`}
+                    >
+                      <span className="font-semibold">Background feeling busy?</span>{" "}
+                      Hold on the dots to see Enzy pull scattered work into a clear, connected system.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={dismissHint}
+                    className={`shrink-0 -mr-1 -mt-1 rounded-full p-2 transition-colors ${
+                      isLightMode ? "hover:bg-black/5 text-black/60" : "hover:bg-white/10 text-white/60"
+                    }`}
+                    aria-label="Dismiss"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </div>
   );
 }

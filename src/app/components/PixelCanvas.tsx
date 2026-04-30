@@ -720,12 +720,15 @@ export function PixelCanvas() {
       if (holding && centroidN > 25) {
         const cx = centroidX / centroidN;
         const cy = centroidY / centroidN;
-        const follow = targetMoved ? 0.58 : 0.22;
+        // Mobile: slower catch-up so it feels calmer.
+        const mobileFactor = isMobile ? 0.65 : 1;
+        const follow = (targetMoved ? 0.58 : 0.22) * mobileFactor;
         renderCenterRef.current.x += (cx - renderCenterRef.current.x) * follow;
         renderCenterRef.current.y += (cy - renderCenterRef.current.y) * follow;
       } else {
         // Fall back to the target center when we don't have enough points yet.
-        const follow = targetMoved ? 0.62 : 0.16;
+        const mobileFactor = isMobile ? 0.65 : 1;
+        const follow = (targetMoved ? 0.62 : 0.16) * mobileFactor;
         renderCenterRef.current.x += (sphereCenterX - renderCenterRef.current.x) * follow;
         renderCenterRef.current.y += (sphereCenterY - renderCenterRef.current.y) * follow;
       }

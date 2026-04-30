@@ -352,7 +352,8 @@
 
   .simple-logo-marquee__mask {
     overflow: hidden;
-    padding-block: 10px;
+    padding-top: 10px;
+    padding-bottom: 28px;
     -webkit-mask-image: linear-gradient(
       90deg,
       transparent,
@@ -396,6 +397,8 @@
     opacity: 0.8;
     transition: opacity 220ms ease, transform 220ms ease;
     transform-origin: center;
+    position: relative;
+    overflow: visible;
   }
 
   .simple-logo-marquee__item.is-active {
@@ -415,6 +418,49 @@
 
   .dark .simple-logo-marquee__item.is-active img {
     filter: contrast(1.25) brightness(1.18);
+  }
+
+  .simple-logo-marquee__caption {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    transform: translate(-50%, 18px);
+    opacity: 0;
+    transition: opacity 220ms ease, transform 220ms ease;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    /* Match Evidence card "liquid-glass" style (but without the big drop shadow). */
+    position: absolute;
+    overflow: hidden;
+    isolation: isolate;
+    background: rgba(255, 255, 255, 0.52);
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    color: rgba(0, 0, 0, 0.72);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    -webkit-backdrop-filter: blur(44px) saturate(165%) contrast(125%);
+    backdrop-filter: blur(44px) saturate(165%) contrast(125%);
+    transform: translateZ(0);
+    will-change: backdrop-filter, transform, opacity;
+  }
+
+  .dark .simple-logo-marquee__caption {
+    background: rgba(0, 0, 0, 0.42);
+    border-color: rgba(255, 255, 255, 0.10);
+    color: rgba(255, 255, 255, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(44px) saturate(165%) contrast(120%);
+    backdrop-filter: blur(44px) saturate(165%) contrast(120%);
+  }
+
+  .simple-logo-marquee__item.is-active .simple-logo-marquee__caption {
+    opacity: 1;
+    transform: translate(-50%, 6px);
   }
 
   @media (prefers-reduced-motion: reduce) {
