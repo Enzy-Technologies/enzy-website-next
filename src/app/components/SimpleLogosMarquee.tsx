@@ -17,6 +17,8 @@ const LOGOS = [
   "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
 ];
 
+const ACTIVE_LOGO_CAPTION = "Median sales lift, year one.";
+
 export function SimpleLogosMarquee() {
   const { isLightMode } = useTheme();
 
@@ -156,6 +158,9 @@ export function SimpleLogosMarquee() {
                   alt=""
                   className={logoClass}
                 />
+                <div className="simple-logo-marquee__caption" aria-hidden>
+                  {ACTIVE_LOGO_CAPTION}
+                </div>
               </div>
             ))}
           </div>

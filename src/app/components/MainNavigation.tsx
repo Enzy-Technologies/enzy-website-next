@@ -106,10 +106,15 @@ const itemVariants = {
 
 export function MainNavigation() {
   const { isLightMode, toggleTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -335,9 +340,24 @@ export function MainNavigation() {
           className={`p-2.5 transition-colors active:scale-95 ${
             isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
           }`}
-          aria-label={isLightMode ? "Switch to dark mode" : "Switch to light mode"}
+          aria-label={
+            mounted
+              ? isLightMode
+                ? "Switch to dark mode"
+                : "Switch to light mode"
+              : "Toggle theme"
+          }
+          suppressHydrationWarning
         >
-          {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+          {mounted ? (
+            isLightMode ? (
+              <Moon size={18} />
+            ) : (
+              <Sun size={18} />
+            )
+          ) : (
+            <span className="block h-[18px] w-[18px]" aria-hidden />
+          )}
         </button>
 
         <button 
