@@ -80,15 +80,6 @@ export function BookDemoPage() {
             />
 
             <div className="flex flex-col gap-7 enzy-hubspot-embed">
-              <div className="text-left">
-                <p className={`font-['Inter'] text-[14px] font-semibold ${containerText} m-0`}>
-                  Tell us a bit about you.
-                </p>
-                <p className={`font-['Inter'] text-[13px] ${muted} mt-1`}>
-                  Fill out the form below and we’ll follow up ASAP.
-                </p>
-              </div>
-
               <div className={`rounded-3xl border p-4 sm:p-5 ${panel}`}>
                 {!formsMounted && !formsBlocked ? (
                   <div className="flex items-start gap-3">
@@ -127,11 +118,6 @@ export function BookDemoPage() {
                 />
               </div>
 
-              <div className="pt-2">
-                <p className={`font-['Inter'] text-[12px] ${muted} m-0`}>
-                  Next: once the form is rendering reliably, we’ll re-enable the HubSpot calendar embed.
-                </p>
-              </div>
             </div>
           </div>
         </div>
