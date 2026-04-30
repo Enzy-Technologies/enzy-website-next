@@ -31,7 +31,9 @@ export function BookDemoPage() {
   useEffect(() => {
     // Mark mounted once HubSpot injects the form markup.
     const t = window.setInterval(() => {
-      const hasMarkup = !!document.querySelector(".hs-form-html .hs-form, .hs-form-html form.hs-form");
+      const hasMarkup = !!document.querySelector(
+        ".hs-form-html .hs-form, .hs-form-html form.hs-form, .hs-form-html input, .hs-form-html select, .hs-form-html textarea"
+      );
       if (hasMarkup) {
         setFormsMounted(true);
         window.clearInterval(t);
@@ -44,7 +46,9 @@ export function BookDemoPage() {
     // If the HubSpot embed script gets blocked, we don't want the UI
     // to look like it is "loading forever".
     const t = window.setTimeout(() => {
-      const hasMarkup = !!document.querySelector(".hs-form-html .hs-form, .hs-form-html form.hs-form");
+      const hasMarkup = !!document.querySelector(
+        ".hs-form-html .hs-form, .hs-form-html form.hs-form, .hs-form-html input, .hs-form-html select, .hs-form-html textarea"
+      );
       const available = !!window.hbspt;
       if (!available && !hasMarkup) setFormsBlocked(true);
     }, 10_000);
@@ -75,7 +79,7 @@ export function BookDemoPage() {
               strategy="afterInteractive"
             />
 
-            <div className="flex flex-col gap-7">
+            <div className="flex flex-col gap-7 enzy-hubspot-embed">
               <div className="text-left">
                 <p className={`font-['Inter'] text-[14px] font-semibold ${containerText} m-0`}>
                   Tell us a bit about you.
