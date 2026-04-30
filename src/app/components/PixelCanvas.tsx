@@ -42,6 +42,7 @@ export function PixelCanvas() {
   const holdTargetRef = useRef<{ x: number; y: number } | null>(null);
   const renderCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastHoldTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const selectionDisabledRef = useRef(false);
   const sphereFocusRef = useRef<{
     active: boolean;
     x: number;
@@ -158,6 +159,26 @@ export function PixelCanvas() {
     let active = false;
     let pointerType: string | null = null;
 
+    const setSelectionDisabled = (disabled: boolean) => {
+      if (selectionDisabledRef.current === disabled) return;
+      selectionDisabledRef.current = disabled;
+      const el = document.documentElement;
+      if (disabled) {
+        el.style.userSelect = "none";
+        (el.style as any).webkitUserSelect = "none";
+        (el.style as any).webkitTouchCallout = "none";
+        (el.style as any).webkitTapHighlightColor = "transparent";
+        try {
+          window.getSelection?.()?.removeAllRanges();
+        } catch {}
+      } else {
+        el.style.userSelect = "";
+        (el.style as any).webkitUserSelect = "";
+        (el.style as any).webkitTouchCallout = "";
+        (el.style as any).webkitTapHighlightColor = "";
+      }
+    };
+
     const isInteractiveTarget = (t: EventTarget | null) => {
       if (!(t instanceof Element)) return false;
       return Boolean(t.closest("a,button,input,textarea,select,[role='button'],[role='link']"));
@@ -165,9 +186,24 @@ export function PixelCanvas() {
 
     const begin = (x: number, y: number) => {
       if (easterEggConsumedRef.current) return;
-      const offsetY = 180;
+      // Prefer forming *below* the thumb, but flip above near the bottom so it stays near the action.
       const cx = Math.max(24, Math.min(window.innerWidth - 24, x));
-      const cy = Math.max(140, Math.min(window.innerHeight - 220, y - offsetY));
+      const viewportH = window.innerHeight;
+      const viewportW = window.innerWidth;
+      const sphereRadius = Math.min(viewportW, viewportH) * 0.24;
+      const offset = 76;
+      const margin = 18;
+
+      const belowY = y + offset;
+      const aboveY = y - offset;
+      const canFitBelow = belowY + sphereRadius + margin <= viewportH;
+      const canFitAbove = aboveY - sphereRadius - margin >= 0;
+      const desiredY = canFitBelow ? belowY : canFitAbove ? aboveY : belowY;
+
+      const cy = Math.max(
+        sphereRadius + margin,
+        Math.min(viewportH - sphereRadius - margin, desiredY)
+      );
       holdTargetRef.current = { x: cx, y: cy };
       easterEggHoldingRef.current = true;
       window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
@@ -176,6 +212,7 @@ export function PixelCanvas() {
     const end = () => {
       easterEggHoldingRef.current = false;
       holdTargetRef.current = null;
+      setSelectionDisabled(false);
       window.dispatchEvent(
         new CustomEvent("enzy-pixel-sphere", {
           detail: { active: false, x: sphereFocusRef.current.x, y: sphereFocusRef.current.y },
@@ -201,6 +238,8 @@ export function PixelCanvas() {
       const delayMs = e.pointerType === "mouse" ? 420 : 260;
       pressTimer = window.setTimeout(() => {
         active = true;
+        // Disable selection/callout before mobile OS starts selection UI.
+        if (pointerType === "touch") setSelectionDisabled(true);
         begin(startX, startY);
         if (navigator.vibrate) navigator.vibrate(12);
       }, delayMs);
@@ -219,6 +258,7 @@ export function PixelCanvas() {
         pointerType = null;
       }
       if (active) {
+        if (pointerType === "touch") e.preventDefault();
         // Keep gathering at the current finger point (above it).
         begin(e.clientX, e.clientY);
       }
@@ -241,6 +281,7 @@ export function PixelCanvas() {
 
     return () => {
       if (pressTimer !== null) window.clearTimeout(pressTimer);
+      setSelectionDisabled(false);
       window.removeEventListener("pointerdown", onPointerDown, { capture: true } as any);
       window.removeEventListener("pointermove", onPointerMove, { capture: true } as any);
       window.removeEventListener("pointerup", onPointerUpOrCancel, { capture: true } as any);
@@ -681,12 +722,12 @@ export function PixelCanvas() {
       if (holding && centroidN > 25) {
         const cx = centroidX / centroidN;
         const cy = centroidY / centroidN;
-        const follow = targetMoved ? 0.38 : 0.18;
+        const follow = targetMoved ? 0.58 : 0.22;
         renderCenterRef.current.x += (cx - renderCenterRef.current.x) * follow;
         renderCenterRef.current.y += (cy - renderCenterRef.current.y) * follow;
       } else {
         // Fall back to the target center when we don't have enough points yet.
-        const follow = targetMoved ? 0.42 : 0.14;
+        const follow = targetMoved ? 0.62 : 0.16;
         renderCenterRef.current.x += (sphereCenterX - renderCenterRef.current.x) * follow;
         renderCenterRef.current.y += (sphereCenterY - renderCenterRef.current.y) * follow;
       }
