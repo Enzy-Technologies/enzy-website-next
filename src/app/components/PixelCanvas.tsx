@@ -168,6 +168,8 @@ export function PixelCanvas() {
         (el.style as any).webkitUserSelect = "none";
         (el.style as any).webkitTouchCallout = "none";
         (el.style as any).webkitTapHighlightColor = "transparent";
+        (el.style as any).touchAction = "none";
+        if (document.body) (document.body.style as any).touchAction = "none";
         try {
           window.getSelection?.()?.removeAllRanges();
         } catch {}
@@ -176,6 +178,8 @@ export function PixelCanvas() {
         (el.style as any).webkitUserSelect = "";
         (el.style as any).webkitTouchCallout = "";
         (el.style as any).webkitTapHighlightColor = "";
+        (el.style as any).touchAction = "";
+        if (document.body) (document.body.style as any).touchAction = "";
       }
     };
 
@@ -186,24 +190,13 @@ export function PixelCanvas() {
 
     const begin = (x: number, y: number) => {
       if (easterEggConsumedRef.current) return;
-      // Prefer forming *below* the thumb, but flip above near the bottom so it stays near the action.
       const cx = Math.max(24, Math.min(window.innerWidth - 24, x));
       const viewportH = window.innerHeight;
       const viewportW = window.innerWidth;
       const sphereRadius = Math.min(viewportW, viewportH) * 0.24;
-      const offset = 76;
       const margin = 18;
-
-      const belowY = y + offset;
-      const aboveY = y - offset;
-      const canFitBelow = belowY + sphereRadius + margin <= viewportH;
-      const canFitAbove = aboveY - sphereRadius - margin >= 0;
-      const desiredY = canFitBelow ? belowY : canFitAbove ? aboveY : belowY;
-
-      const cy = Math.max(
-        sphereRadius + margin,
-        Math.min(viewportH - sphereRadius - margin, desiredY)
-      );
+      // Center the sphere at the hold point (clamped only to keep it on-screen).
+      const cy = Math.max(sphereRadius + margin, Math.min(viewportH - sphereRadius - margin, y));
       holdTargetRef.current = { x: cx, y: cy };
       easterEggHoldingRef.current = true;
       window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
@@ -235,11 +228,15 @@ export function PixelCanvas() {
       startX = e.clientX;
       startY = e.clientY;
 
+      // Prevent iOS long-press magnifier/callout from ever engaging.
+      if (pointerType === "touch") {
+        setSelectionDisabled(true);
+        e.preventDefault();
+      }
+
       const delayMs = e.pointerType === "mouse" ? 420 : 260;
       pressTimer = window.setTimeout(() => {
         active = true;
-        // Disable selection/callout before mobile OS starts selection UI.
-        if (pointerType === "touch") setSelectionDisabled(true);
         begin(startX, startY);
         if (navigator.vibrate) navigator.vibrate(12);
       }, delayMs);
@@ -256,10 +253,11 @@ export function PixelCanvas() {
         pressTimer = null;
         pointerId = null;
         pointerType = null;
+        setSelectionDisabled(false);
       }
       if (active) {
         if (pointerType === "touch") e.preventDefault();
-        // Keep gathering at the current finger point (above it).
+        // Keep gathering at the current finger point.
         begin(e.clientX, e.clientY);
       }
     };
@@ -274,8 +272,8 @@ export function PixelCanvas() {
       end();
     };
 
-    window.addEventListener("pointerdown", onPointerDown, { capture: true });
-    window.addEventListener("pointermove", onPointerMove, { capture: true });
+    window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: false });
+    window.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
     window.addEventListener("pointerup", onPointerUpOrCancel, { capture: true });
     window.addEventListener("pointercancel", onPointerUpOrCancel, { capture: true });
 
