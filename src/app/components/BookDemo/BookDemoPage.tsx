@@ -137,10 +137,12 @@ export function BookDemoPage() {
 
               {showCalendar ? (
                 <div className="pt-4">
-                  <div
-                    className="meetings-iframe-container"
-                    data-src="https://meetings-na2.hubspot.com/enzy/websitedemo?embed=true"
-                  />
+                  <div className="enzy-meetings-shell">
+                    <div
+                      className="meetings-iframe-container"
+                      data-src="https://meetings-na2.hubspot.com/enzy/websitedemo?embed=true"
+                    />
+                  </div>
                 </div>
               ) : null}
 
