@@ -4,9 +4,6 @@ import React from "react";
 import Link from "next/link";
 import { useTheme } from "./ThemeProvider";
 
-import { CTAButton } from "./CTAButton";
-import { BOOK_DEMO_HREF } from "@/app/lib/booking";
-
 export function Footer() {
   const { isLightMode } = useTheme();
 
@@ -16,19 +13,6 @@ export function Footer() {
 
   return (
     <footer className={`relative z-10 w-full px-4 md:px-12 lg:px-20 py-20 flex flex-col items-center border-t ${borderColor}`}>
-      
-      {/* Centered CTA */}
-      <div className={`w-full max-w-[1500px] flex flex-col items-center gap-8 pb-20 border-b mb-16 ${borderColor}`}>
-        <h2 className={`font-['Inter'] font-bold text-4xl md:text-[52px] tracking-tight text-center ${textColor}`}>
-          See Enzy live
-        </h2>
-        <p className={`font-['Inter'] text-[15px] text-center max-w-[600px] leading-relaxed ${mutedTextColor}`}>
-          A quick walkthrough of the AI Playground, competitions, and how your data connects.
-        </p>
-        <CTAButton href={BOOK_DEMO_HREF} variant="primary" className="px-8 py-4 mt-2 font-semibold text-[14px]">
-          Book a demo
-        </CTAButton>
-      </div>
 
       {/* Two-column footer content */}
       <div className="w-full max-w-[1500px] grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">

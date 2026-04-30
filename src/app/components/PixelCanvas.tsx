@@ -21,6 +21,10 @@ interface AmbientParticle {
   size: number;
   speed: number;
   isGreen: boolean;
+  sphereTheta: number;
+  spherePhi: number;
+  sphereBand: number;
+  sphereKind: "band" | "fill";
 }
 
 export function PixelCanvas() {
@@ -29,6 +33,26 @@ export function PixelCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const trailDotsRef = useRef<TrailDot[]>([]);
   const ambientParticlesRef = useRef<AmbientParticle[]>([]);
+  const easterEggConsumedRef = useRef(false);
+  const easterEggHoldingRef = useRef(false);
+  const sphereFormedAtRef = useRef<number | null>(null);
+  const sphereReadyRef = useRef(false);
+  const lastHoldingRef = useRef(false);
+  const gatherBoostedRef = useRef(false);
+  const holdTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const renderCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const lastHoldTargetRef = useRef<{ x: number; y: number } | null>(null);
+  const sphereFocusRef = useRef<{
+    active: boolean;
+    x: number;
+    y: number;
+    strength: number;
+  }>({
+    active: false,
+    x: typeof window !== "undefined" ? window.innerWidth / 2 : 0,
+    y: typeof window !== "undefined" ? window.innerHeight / 2 : 0,
+    strength: 0,
+  });
   
   // Track mouse directly inside the component
   const mousePositionRef = useRef({ 
@@ -63,21 +87,197 @@ export function PixelCanvas() {
   }, []);
 
   useEffect(() => {
+    const onSphere = (e: Event) => {
+      const ev = e as CustomEvent<{ active: boolean; x: number; y: number }>;
+      if (!ev.detail) return;
+      if (easterEggConsumedRef.current) return;
+      // Starting a new hold should reset readiness tracking.
+      if (ev.detail.active && !sphereFocusRef.current.active) {
+        sphereFormedAtRef.current = null;
+        sphereReadyRef.current = false;
+
+        // Boost density for the gather by cloning existing particles in-place.
+        // This keeps the effect "made of the same particles" (no separate layer),
+        // and the clones still travel from the same origin positions.
+        if (!gatherBoostedRef.current) {
+          const base = ambientParticlesRef.current;
+          const target = 2400;
+          if (base.length > 0 && base.length < target) {
+            const clonesNeeded = target - base.length;
+            const clones: AmbientParticle[] = [];
+            for (let i = 0; i < clonesNeeded; i++) {
+              const p = base[i % base.length];
+              const r = Math.random();
+              const capBiasedBand =
+                r < 0.18
+                  ? Math.random() * 0.08 // top cap
+                  : r > 0.82
+                    ? 0.92 + Math.random() * 0.08 // bottom cap
+                    : Math.random();
+              clones.push({
+                x: p.x,
+                y: p.y,
+                baseX: p.x,
+                baseY: p.y,
+                vx: p.vx + (Math.random() - 0.5) * 0.18,
+                vy: p.vy + (Math.random() - 0.5) * 0.18,
+                size: Math.max(0.35, p.size * (0.55 + Math.random() * 0.35)),
+                speed: p.speed,
+                isGreen: Math.random() > 0.94, // fewer greens so it's not noisy
+                sphereTheta: Math.random() * Math.PI * 2,
+                spherePhi: Math.acos(2 * Math.random() - 1),
+                sphereBand: capBiasedBand,
+                sphereKind: Math.random() < 0.6 ? "fill" : "band",
+              });
+            }
+            ambientParticlesRef.current = base.concat(clones);
+          }
+          gatherBoostedRef.current = true;
+        }
+      }
+      sphereFocusRef.current.active = ev.detail.active;
+      sphereFocusRef.current.x = ev.detail.x;
+      sphereFocusRef.current.y = ev.detail.y;
+      if (ev.detail.active) {
+        // Snap partway in immediately so the gather feels responsive on touch.
+        sphereFocusRef.current.strength = Math.max(sphereFocusRef.current.strength, 0.22);
+      }
+    };
+
+    window.addEventListener("enzy-pixel-sphere", onSphere as EventListener);
+    return () => window.removeEventListener("enzy-pixel-sphere", onSphere as EventListener);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    let pressTimer: number | null = null;
+    let pointerId: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let active = false;
+    let pointerType: string | null = null;
+
+    const isInteractiveTarget = (t: EventTarget | null) => {
+      if (!(t instanceof Element)) return false;
+      return Boolean(t.closest("a,button,input,textarea,select,[role='button'],[role='link']"));
+    };
+
+    const begin = (x: number, y: number) => {
+      if (easterEggConsumedRef.current) return;
+      const offsetY = 180;
+      const cx = Math.max(24, Math.min(window.innerWidth - 24, x));
+      const cy = Math.max(140, Math.min(window.innerHeight - 220, y - offsetY));
+      holdTargetRef.current = { x: cx, y: cy };
+      easterEggHoldingRef.current = true;
+      window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
+    };
+
+    const end = () => {
+      easterEggHoldingRef.current = false;
+      holdTargetRef.current = null;
+      window.dispatchEvent(
+        new CustomEvent("enzy-pixel-sphere", {
+          detail: { active: false, x: sphereFocusRef.current.x, y: sphereFocusRef.current.y },
+        })
+      );
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (easterEggConsumedRef.current) return;
+      if (e.pointerType !== "touch" && e.pointerType !== "mouse") return;
+      if (isInteractiveTarget(e.target)) return;
+      if (pointerId !== null) return;
+      if (e.pointerType === "mouse") {
+        // Only left click-and-hold.
+        if (e.button !== 0) return;
+      }
+
+      pointerId = e.pointerId;
+      pointerType = e.pointerType;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      const delayMs = e.pointerType === "mouse" ? 420 : 260;
+      pressTimer = window.setTimeout(() => {
+        active = true;
+        begin(startX, startY);
+        if (navigator.vibrate) navigator.vibrate(12);
+      }, delayMs);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (pointerId === null || e.pointerId !== pointerId) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      const moved = Math.sqrt(dx * dx + dy * dy);
+      const cancelThreshold = pointerType === "mouse" ? 6 : 12;
+      if (!active && moved > cancelThreshold) {
+        if (pressTimer !== null) window.clearTimeout(pressTimer);
+        pressTimer = null;
+        pointerId = null;
+        pointerType = null;
+      }
+      if (active) {
+        // Keep gathering at the current finger point (above it).
+        begin(e.clientX, e.clientY);
+      }
+    };
+
+    const onPointerUpOrCancel = (e: PointerEvent) => {
+      if (pointerId === null || e.pointerId !== pointerId) return;
+      if (pressTimer !== null) window.clearTimeout(pressTimer);
+      pressTimer = null;
+      pointerId = null;
+      pointerType = null;
+      active = false;
+      end();
+    };
+
+    window.addEventListener("pointerdown", onPointerDown, { capture: true });
+    window.addEventListener("pointermove", onPointerMove, { capture: true });
+    window.addEventListener("pointerup", onPointerUpOrCancel, { capture: true });
+    window.addEventListener("pointercancel", onPointerUpOrCancel, { capture: true });
+
+    return () => {
+      if (pressTimer !== null) window.clearTimeout(pressTimer);
+      window.removeEventListener("pointerdown", onPointerDown, { capture: true } as any);
+      window.removeEventListener("pointermove", onPointerMove, { capture: true } as any);
+      window.removeEventListener("pointerup", onPointerUpOrCancel, { capture: true } as any);
+      window.removeEventListener("pointercancel", onPointerUpOrCancel, { capture: true } as any);
+    };
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
-    // Initialize ambient particles - increased density for desktop
-    const particleCount = window.innerWidth > 768 ? 500 : 250;
+    const resizeCanvas = () => {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      // Draw using CSS pixels; scale backing store for crispness.
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.imageSmoothingEnabled = false;
+    };
+
+    resizeCanvas();
+
+    // Initialize ambient particles - slightly denser on mobile for the hold interaction
+    const particleCount = width > 768 ? 500 : 420;
     if (ambientParticlesRef.current.length === 0) {
       for (let i = 0; i < particleCount; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
+        const x = Math.random() * width;
+        const y = Math.random() * height;
         ambientParticlesRef.current.push({
           x,
           y,
@@ -88,6 +288,10 @@ export function PixelCanvas() {
           size: Math.random() * 1.5 + 0.5,
           speed: Math.random() * 0.5 + 0.2,
           isGreen: Math.random() > 0.8, // 20% chance to be a distinct green particle
+          sphereTheta: Math.random() * Math.PI * 2,
+          spherePhi: Math.acos(2 * Math.random() - 1),
+          sphereBand: Math.random(),
+          sphereKind: Math.random() < 0.35 ? "fill" : "band",
         });
       }
     }
@@ -95,7 +299,7 @@ export function PixelCanvas() {
     let animationFrameId: number;
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, width, height);
 
       const mousePosition = mousePositionRef.current;
 
@@ -112,7 +316,7 @@ export function PixelCanvas() {
       // Smooth scroll for parallax
       smoothedScrollYRef.current += (window.scrollY - smoothedScrollYRef.current) * 0.05;
 
-      const isDesktop = window.innerWidth > 768;
+      const isDesktop = width > 768;
       const isMobile = !isDesktop;
 
       // Mobile-only: "magnetization" bunch under the menu while scrolling.
@@ -122,6 +326,37 @@ export function PixelCanvas() {
       lastScrollYRef.current = scrollY;
       smoothedScrollVelRef.current += (rawScrollVel - smoothedScrollVelRef.current) * 0.2;
       const scrollSpeed = Math.min(1, Math.abs(smoothedScrollVelRef.current) / 40);
+      const focusTarget = sphereFocusRef.current.active ? 1 : 0;
+      // Slower ramp so you can *see* the gather happen.
+      const focusEasing = sphereFocusRef.current.active ? 0.12 : 0.18;
+      sphereFocusRef.current.strength += (focusTarget - sphereFocusRef.current.strength) * focusEasing;
+      const sphereT = sphereFocusRef.current.strength;
+
+      const holding = easterEggHoldingRef.current;
+      const releasedThisFrame = lastHoldingRef.current && !holding;
+
+      // If the easter egg has completed, hide particles until refresh.
+      if (easterEggConsumedRef.current) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      // Keep the attraction center perfectly in sync with the latest drag position.
+      if (holding && holdTargetRef.current) {
+        sphereFocusRef.current.x = holdTargetRef.current.x;
+        sphereFocusRef.current.y = holdTargetRef.current.y;
+      }
+
+      const sphereCenterX = sphereFocusRef.current.x;
+      const sphereCenterY = sphereFocusRef.current.y;
+
+      // The backdrop should follow the *actual* particle mass, not the target point,
+      // otherwise it looks like it "runs ahead" while particles are still converging.
+      if (renderCenterRef.current.x === 0 && renderCenterRef.current.y === 0) {
+        renderCenterRef.current = { x: sphereCenterX, y: sphereCenterY };
+      }
+      const backdropX = renderCenterRef.current.x;
+      const backdropY = renderCenterRef.current.y;
 
       if (isDesktop) {
         // LAYER 1: Draw subtle gradient glow following mouse
@@ -146,17 +381,60 @@ export function PixelCanvas() {
         ctx.fill();
       }
 
+      // While holding: paint a subtle circular "glass" backing behind the gathered sphere
+      // so it reads clearly (avoid any pill/rounded-rect shapes).
+      if (sphereT > 0.05) {
+        const r = Math.min(width, height) * 0.22;
+
+        const grad = ctx.createRadialGradient(
+          backdropX,
+          backdropY,
+          0,
+          backdropX,
+          backdropY,
+          r * 1.55
+        );
+        if (isLightMode) {
+          grad.addColorStop(0, `rgba(255,255,255,${0.72 * sphereT})`);
+          grad.addColorStop(0.55, `rgba(255,255,255,${0.28 * sphereT})`);
+          grad.addColorStop(1, `rgba(255,255,255,0)`);
+        } else {
+          grad.addColorStop(0, `rgba(255,255,255,${0.18 * sphereT})`);
+          grad.addColorStop(0.55, `rgba(255,255,255,${0.08 * sphereT})`);
+          grad.addColorStop(1, `rgba(255,255,255,0)`);
+        }
+
+        ctx.save();
+        ctx.fillStyle = grad;
+        // Reduce blur so the sphere reads crisp.
+        ctx.shadowBlur = 0;
+        ctx.beginPath();
+        ctx.ellipse(backdropX, backdropY, r, r, 0, 0, Math.PI * 2);
+        ctx.fill();
+        // Thin border for definition.
+        ctx.strokeStyle = isLightMode ? `rgba(0,0,0,${0.07 * sphereT})` : `rgba(255,255,255,${0.08 * sphereT})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+      }
+
       // LAYER 2: Update and draw ambient particles (middle layer)
+      const inSpherePoints: Array<{ x: number; y: number; depth: number; band: number; ang: number }> = [];
+      let centroidX = 0;
+      let centroidY = 0;
+      let centroidN = 0;
       ambientParticlesRef.current.forEach((particle) => {
         // Normal floating behavior
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Gentle bounds wrapping
-        if (particle.x < -10) particle.x = canvas.width + 10;
-        if (particle.x > canvas.width + 10) particle.x = -10;
-        if (particle.y < -10) particle.y = canvas.height + 10;
-        if (particle.y > canvas.height + 10) particle.y = -10;
+        // Gentle bounds wrapping (disable while focusing to avoid "teleport" artifacts)
+        if (sphereT < 0.08) {
+          if (particle.x < -10) particle.x = width + 10;
+          if (particle.x > width + 10) particle.x = -10;
+          if (particle.y < -10) particle.y = height + 10;
+          if (particle.y > height + 10) particle.y = -10;
+        }
 
         // Subtle drift back toward base position
         const dxBase = particle.baseX - particle.x;
@@ -181,9 +459,10 @@ export function PixelCanvas() {
           }
         }
 
-        // Damping - reduced for tighter clustering
-        particle.vx *= 0.96;
-        particle.vy *= 0.96;
+        // Damping - increase while focusing so it settles, but not instantly.
+        const damp = sphereT > 0.15 ? 0.92 : 0.965;
+        particle.vx *= damp;
+        particle.vy *= damp;
 
         // Calculate distance to mouse for intensity
         const distToMouse = Math.sqrt(
@@ -203,32 +482,116 @@ export function PixelCanvas() {
         
         // Parallax effect on mobile using smoothed scroll
         const parallaxOffset = isDesktop ? 0 : smoothedScrollYRef.current * (particle.speed * 1.5);
-        const renderY = isDesktop 
-          ? particle.y 
-          : (((particle.y - parallaxOffset) % canvas.height) + canvas.height) % canvas.height;
+        const renderY =
+          sphereT > 0.08
+            ? particle.y
+            : isDesktop
+              ? particle.y
+              : (((particle.y - parallaxOffset) % height) + height) % height;
 
-        // Mobile-only attractor: keep particles bunched near top-center under the header.
-        if (isMobile) {
-          const attractorX = canvas.width / 2;
-          // Under the menu: header sits above `main` which starts at ~88px.
-          const attractorY = Math.min(140, canvas.height * 0.22);
+        // Touch/hold "sphere" interaction: gather pixels into a sphere around the touch point.
+        let inSphereNow = false;
+        let depthNow = 0.5;
+        let sphereRadiusNow = 0;
+        let angNow = 0;
+        if (sphereT > 0.001) {
+          // Keep radius smaller so the full sphere fits in the widget window.
+          const sphereRadius = Math.min(width, height) * 0.24;
+          sphereRadiusNow = sphereRadius;
 
-          const dx = attractorX - particle.x;
-          const dy = attractorY - renderY;
-          const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+          const theta = particle.sphereTheta;
+          const tSec = performance.now() / 1000;
 
-          // Constant pull + extra pull while scrolling (magnetization feel).
-          const basePull = 0.018;
-          const scrollPull = 0.06 * scrollSpeed;
-          const pull = basePull + scrollPull;
+          let phi = particle.spherePhi;
+          if (particle.sphereKind === "band") {
+            // Band the sphere into a few latitudinal "filaments" (reference-like curves),
+            // while still keeping a sphere volume. Include polar caps.
+            const bandCenters = [0.22, 0.62, 1.08, 2.06, 2.52, 2.92];
+            const bandIdx = Math.min(
+              bandCenters.length - 1,
+              Math.floor(particle.sphereBand * bandCenters.length)
+            );
+            const bandCenter = bandCenters[bandIdx];
+            const bandWave =
+              0.16 *
+              Math.sin(theta * (2.1 + bandIdx * 0.33) + tSec * 0.7 + particle.sphereBand * 10);
+            const bandPhi = Math.max(0.08, Math.min(Math.PI - 0.08, bandCenter + bandWave));
 
-          const radius = 520;
-          if (dist < radius) {
-            const falloff = 1 - dist / radius;
-            particle.vx += (dx / dist) * pull * falloff;
-            particle.vy += (dy / dist) * pull * falloff;
+            const bandStrength = Math.max(0, Math.min(1, (sphereT - 0.25) / 0.6));
+            // Never fully collapse into bands; keep some surface coverage.
+            const w = 0.78 * bandStrength;
+            phi = phi * (1 - w) + bandPhi * w;
+          } else {
+            // Fill particles: keep a more uniform surface with a subtle wave.
+            phi = Math.max(
+              0.06,
+              Math.min(Math.PI - 0.06, phi + 0.06 * Math.sin(theta * 2.2 + tSec * 0.6))
+            );
+          }
+
+          const sinPhi = Math.sin(phi);
+          const cosPhi = Math.cos(phi);
+          const cosTheta = Math.cos(theta);
+          const sinTheta = Math.sin(theta);
+
+          const x3 = sphereRadius * sinPhi * cosTheta;
+          const y3 = sphereRadius * cosPhi;
+          const z3 = sphereRadius * sinPhi * sinTheta;
+
+          const depth = (z3 / sphereRadius + 1) / 2; // 0..1
+          depthNow = depth;
+          const perspective = 0.78 + depth * 0.28;
+
+          const targetX = sphereCenterX + x3 * perspective;
+          const targetY = sphereCenterY + y3 * perspective;
+
+          const sx = targetX - particle.x;
+          const sy = targetY - renderY;
+          const sDist = Math.sqrt(sx * sx + sy * sy) || 1;
+
+          const spherePull = (0.07 + 0.18 * sphereT) * (0.55 + 0.45 * depth);
+          particle.vx += (sx / sDist) * spherePull * sphereT;
+          particle.vy += (sy / sDist) * spherePull * sphereT;
+
+          // "Finish" convergence: once strong, lerp into place quickly.
+          if (sphereT > 0.92) {
+            particle.x += sx * 0.10;
+            particle.y += sy * 0.10;
+            particle.vx *= 0.72;
+            particle.vy *= 0.72;
+          }
+
+          // Collect points that are actually within the sphere surface for connections.
+          const dxS = particle.x - sphereCenterX;
+          const dyS = renderY - sphereCenterY;
+          inSphereNow = dxS * dxS + dyS * dyS <= (sphereRadius * 1.06) ** 2;
+          if (inSphereNow && sphereT > 0.35) {
+            angNow = Math.atan2(dyS, dxS);
+            inSpherePoints.push({
+              x: particle.x,
+              y: renderY,
+              depth,
+              band: particle.sphereKind === "band" ? Math.min(5, Math.floor(particle.sphereBand * 6)) : -1,
+              ang: angNow,
+            });
+
+            // Use the in-sphere points to estimate the visible sphere center.
+            // This keeps the backdrop locked to the particle mass.
+            centroidX += particle.x;
+            centroidY += renderY;
+            centroidN += 1;
           }
         }
+
+        // While focusing, keep particles visible as they travel from their origin.
+        // We'll only gently deemphasize far-away points near the end of the gather.
+        const dxToSphere = particle.x - sphereCenterX;
+        const dyToSphere = renderY - sphereCenterY;
+        const distToSphere = Math.sqrt(dxToSphere * dxToSphere + dyToSphere * dyToSphere);
+        const farFade =
+          sphereT > 0.8
+            ? Math.max(0.15, 1 - Math.min(1, distToSphere / (Math.min(width, height) * 0.55)) * 0.85)
+            : 1;
 
         if (particle.isGreen) {
           // Vivid Enzy Green for the distinct particles, with a subtle glow
@@ -247,16 +610,168 @@ export function PixelCanvas() {
             : `rgba(255, 255, 255, ${0.15 + intensity * 0.25})`;
         }
 
+        // Apply gentle far fade near end of gather.
+        if (farFade < 0.999) ctx.save();
+        if (farFade < 0.999) ctx.globalAlpha = farFade;
+
         ctx.fillRect(
           particle.x - pixelSize / 2,
           renderY - pixelSize / 2,
           pixelSize,
           pixelSize
         );
+
+        // Fill the sphere interior so it feels complete.
+        // We keep this subtle and only when the sphere is mostly formed.
+        if (sphereT > 0.74 && inSphereNow) {
+          const fillT = Math.min(1, (sphereT - 0.74) / 0.22);
+          const seed = particle.sphereTheta * 1000 + particle.sphereBand * 100;
+          const jitter = (a: number) => Math.sin(seed + a) * 0.5 + 0.5; // 0..1
+          const amp = (0.9 + (1 - depthNow) * 1.8) * fillT;
+
+          ctx.save();
+          ctx.globalAlpha *= 0.34 * fillT * (0.55 + 0.45 * depthNow);
+          ctx.shadowBlur = 0;
+
+          const dotSize = Math.max(0.8, 1.05 * (0.8 + depthNow * 0.55));
+          for (let k = 0; k < 9; k++) {
+            const a = k * 12.345;
+            const ox = (jitter(a) - 0.5) * amp;
+            const oy = (jitter(a + 3.21) - 0.5) * amp;
+            // Keep the micro points inside the sphere radius.
+            if (sphereRadiusNow > 0) {
+              const dx = (particle.x + ox) - sphereCenterX;
+              const dy = (renderY + oy) - sphereCenterY;
+              if (dx * dx + dy * dy > (sphereRadiusNow * 1.02) ** 2) continue;
+            }
+            ctx.fillRect(particle.x + ox, renderY + oy, dotSize, dotSize);
+          }
+
+          // Extra silhouette density: brighten near the sphere edge so the outline feels defined.
+          if (sphereRadiusNow > 0) {
+            const dx = particle.x - sphereCenterX;
+            const dy = renderY - sphereCenterY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const edgeBand = Math.abs(dist - sphereRadiusNow) / sphereRadiusNow; // 0 at edge
+            const edgeBoost = Math.max(0, 1 - edgeBand * 16);
+            if (edgeBoost > 0) {
+              ctx.globalAlpha *= 0.65 * edgeBoost;
+              ctx.fillRect(particle.x, renderY, 1.2, 1.2);
+            }
+          }
+          ctx.restore();
+        }
+
+        if (farFade < 0.999) ctx.restore();
         
         // Reset shadow so it doesn't affect standard particles or trails
         ctx.shadowBlur = 0;
       });
+
+      // Update backdrop render center after we've measured the particle mass.
+      const targetMoved =
+        holding &&
+        holdTargetRef.current &&
+        lastHoldTargetRef.current &&
+        Math.hypot(
+          holdTargetRef.current.x - lastHoldTargetRef.current.x,
+          holdTargetRef.current.y - lastHoldTargetRef.current.y
+        ) > 1.5;
+
+      if (holding && centroidN > 25) {
+        const cx = centroidX / centroidN;
+        const cy = centroidY / centroidN;
+        const follow = targetMoved ? 0.38 : 0.18;
+        renderCenterRef.current.x += (cx - renderCenterRef.current.x) * follow;
+        renderCenterRef.current.y += (cy - renderCenterRef.current.y) * follow;
+      } else {
+        // Fall back to the target center when we don't have enough points yet.
+        const follow = targetMoved ? 0.42 : 0.14;
+        renderCenterRef.current.x += (sphereCenterX - renderCenterRef.current.x) * follow;
+        renderCenterRef.current.y += (sphereCenterY - renderCenterRef.current.y) * follow;
+      }
+
+      lastHoldTargetRef.current = holdTargetRef.current;
+
+      // Local filament connections: short, smooth segments (no scribbles).
+      if (sphereT > 0.74 && inSpherePoints.length > 0) {
+        const maxDist = 44;
+        const baseAlpha = isLightMode ? 0.14 : 0.16;
+        ctx.lineWidth = 1;
+
+        // Bucket by band to create "fluid" horizontal filaments.
+        const bands: Array<Array<{ x: number; y: number; depth: number; ang: number }>> = [[], [], [], [], [], []];
+        for (const p of inSpherePoints) {
+          if (p.band < 0) continue;
+          bands[p.band].push(p);
+        }
+
+        for (const band of bands) {
+          if (band.length < 10) continue;
+          band.sort((a, b) => a.ang - b.ang);
+
+          // Connect each point to the next few points; only short distances.
+          for (let i = 0; i < band.length; i += 2) {
+            const a = band[i];
+            for (let k = 1; k <= 3; k++) {
+              const b = band[(i + k) % band.length];
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const d = Math.sqrt(dx * dx + dy * dy);
+              if (d > maxDist) continue;
+              const falloff = 1 - d / maxDist;
+              const depthBoost = 0.65 + 0.35 * ((a.depth + b.depth) / 2);
+              const alpha = baseAlpha * falloff * depthBoost * sphereT;
+              ctx.strokeStyle = isLightMode
+                ? `rgba(0,0,0,${alpha})`
+                : `rgba(255,255,255,${alpha})`;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y);
+              // slight curvature for "fluid" feel
+              const mx = (a.x + b.x) / 2;
+              const my = (a.y + b.y) / 2;
+              ctx.quadraticCurveTo(mx, my + dy * 0.08, b.x, b.y);
+              ctx.stroke();
+            }
+          }
+        }
+      }
+
+      // Track when the sphere is fully formed (so we can hold it on screen).
+      const now = performance.now();
+      // Consider the sphere "formed" once the majority of particles are in-sphere
+      // AND the focus strength is high.
+      const formedNow =
+        holding &&
+        sphereT > 0.86 &&
+        inSpherePoints.length >= Math.floor(ambientParticlesRef.current.length * 0.62);
+
+      if (holding) {
+        if (formedNow) {
+          if (sphereFormedAtRef.current === null) sphereFormedAtRef.current = now;
+        } else {
+          sphereFormedAtRef.current = null;
+        }
+
+        if (sphereFormedAtRef.current !== null && now - sphereFormedAtRef.current > 1400) {
+          sphereReadyRef.current = true;
+        }
+      }
+
+      // Consume on release edge, after we've held a formed sphere long enough.
+      if (releasedThisFrame && sphereReadyRef.current) {
+        easterEggConsumedRef.current = true;
+        sphereFocusRef.current.active = false;
+        sphereFocusRef.current.strength = 0;
+        ambientParticlesRef.current = [];
+        trailDotsRef.current = [];
+        sphereFormedAtRef.current = null;
+        sphereReadyRef.current = false;
+        gatherBoostedRef.current = false;
+        renderCenterRef.current = { x: 0, y: 0 };
+      }
+
+      lastHoldingRef.current = holding;
 
       // Add smoothed mouse position to path for uniform trail spacing
       const currentTime = Date.now();
@@ -345,22 +860,21 @@ export function PixelCanvas() {
 
     animate();
 
-    let lastWidth = window.innerWidth;
+    let lastWidth = width;
     const handleResize = () => {
       if (!canvas) return;
-      
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+
+      resizeCanvas();
       
       // Only reinitialize particles if width changes (e.g., orientation change)
       // Ignoring height-only changes prevents particles from jumping/resetting
       // when the mobile browser's address bar hides or shows during scrolling.
-      if (window.innerWidth !== lastWidth) {
+      if (width !== lastWidth) {
         ambientParticlesRef.current = [];
-        const particleCount = window.innerWidth > 768 ? 500 : 250;
+        const particleCount = width > 768 ? 500 : 420;
         for (let i = 0; i < particleCount; i++) {
-          const x = Math.random() * canvas.width;
-          const y = Math.random() * canvas.height;
+          const x = Math.random() * width;
+          const y = Math.random() * height;
           ambientParticlesRef.current.push({
             x,
             y,
@@ -371,9 +885,13 @@ export function PixelCanvas() {
             size: Math.random() * 1.5 + 0.5,
             speed: Math.random() * 0.5 + 0.2,
             isGreen: Math.random() > 0.8, // 20% chance to be a distinct green particle
+            sphereTheta: Math.random() * Math.PI * 2,
+            spherePhi: Math.acos(2 * Math.random() - 1),
+            sphereBand: Math.random(),
+            sphereKind: Math.random() < 0.35 ? "fill" : "band",
           });
         }
-        lastWidth = window.innerWidth;
+        lastWidth = width;
       }
     };
 
