@@ -5,18 +5,204 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
-import imgRectangle4 from "../../imports/Component1-1/740b84f868f5f05705a6d5da233d3963bb632a44.png";
-import imgRectangle5 from "../../imports/Component1-1/c53f9c53c9946ca164cba639507beeb3a99702bf.png";
-import imgRectangle6 from "../../imports/Component1-1/a3a7b398f9fb1711017bc4163fe6010220312ca6.png";
-import imgRectangle7 from "../../imports/Component1-1/505761bb7aaea91aab56d5260b680dcb7d9cbb90.png";
-import imgRectangle8 from "../../imports/Component1-1/1ce6b06bd6a76bcd69678d1034fb45721f60c106.png";
+function svgDataUri(svg: string) {
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+}
 
-const featuresImages = [
-  imgRectangle4.src,
-  imgRectangle5.src,
-  imgRectangle6.src,
-  imgRectangle7.src,
-  imgRectangle8.src,
+const featurePlaceholders = [
+  svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#071018"/>
+          <stop offset="1" stop-color="#0b0f14"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="35%" cy="20%" r="65%">
+          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.35"/>
+          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="1600" fill="url(#bg)"/>
+      <rect width="1200" height="1600" fill="url(#glow)"/>
+      <g opacity="0.92">
+        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">AI Assistant</text>
+        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Instant answers. Next-best actions.</text>
+      </g>
+      <g transform="translate(90 310)" opacity="0.95">
+        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+        <g transform="translate(46 54)">
+          <rect x="0" y="0" rx="18" width="640" height="56" fill="rgba(255,255,255,0.06)"/>
+          <rect x="0" y="92" rx="18" width="920" height="56" fill="rgba(255,255,255,0.06)"/>
+          <rect x="0" y="184" rx="18" width="780" height="56" fill="rgba(255,255,255,0.06)"/>
+          <g transform="translate(0 300)">
+            <circle cx="14" cy="14" r="6" fill="#19ad7d"/>
+            <rect x="34" y="4" rx="10" width="560" height="20" fill="rgba(245,247,250,0.70)"/>
+            <circle cx="14" cy="82" r="6" fill="#19ad7d"/>
+            <rect x="34" y="72" rx="10" width="720" height="20" fill="rgba(245,247,250,0.65)"/>
+            <circle cx="14" cy="150" r="6" fill="#19ad7d"/>
+            <rect x="34" y="140" rx="10" width="640" height="20" fill="rgba(245,247,250,0.58)"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  `),
+  svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#071018"/>
+          <stop offset="1" stop-color="#0b0f14"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="70%" cy="18%" r="70%">
+          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.32"/>
+          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="1600" fill="url(#bg)"/>
+      <rect width="1200" height="1600" fill="url(#glow)"/>
+      <g opacity="0.92">
+        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Leaderboards</text>
+        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Make performance visible.</text>
+      </g>
+      <g transform="translate(90 310)">
+        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+        <g transform="translate(54 72)">
+          <rect x="0" y="0" rx="14" width="912" height="18" fill="rgba(245,247,250,0.16)"/>
+          <rect x="0" y="70" rx="14" width="820" height="18" fill="rgba(245,247,250,0.16)"/>
+          <rect x="0" y="140" rx="14" width="760" height="18" fill="rgba(245,247,250,0.16)"/>
+          <rect x="0" y="210" rx="14" width="700" height="18" fill="rgba(245,247,250,0.16)"/>
+          <g transform="translate(0 330)">
+            <rect x="0" y="0" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="0" y="124" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="0" y="248" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="0" y="372" rx="18" width="912" height="88" fill="rgba(25,173,125,0.10)" stroke="rgba(25,173,125,0.35)"/>
+            <circle cx="46" cy="416" r="14" fill="#19ad7d"/>
+            <rect x="82" y="404" rx="10" width="340" height="24" fill="rgba(245,247,250,0.72)"/>
+            <rect x="560" y="404" rx="10" width="180" height="24" fill="rgba(245,247,250,0.55)"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  `),
+  svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#071018"/>
+          <stop offset="1" stop-color="#0b0f14"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="45%" cy="22%" r="70%">
+          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.30"/>
+          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="1600" fill="url(#bg)"/>
+      <rect width="1200" height="1600" fill="url(#glow)"/>
+      <g opacity="0.92">
+        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Profiles</text>
+        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">One view for performance &amp; progress.</text>
+      </g>
+      <g transform="translate(90 310)">
+        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+        <g transform="translate(70 88)">
+          <circle cx="90" cy="90" r="56" fill="rgba(245,247,250,0.12)"/>
+          <rect x="170" y="54" rx="14" width="420" height="22" fill="rgba(245,247,250,0.72)"/>
+          <rect x="170" y="92" rx="14" width="300" height="18" fill="rgba(245,247,250,0.42)"/>
+          <g transform="translate(0 210)">
+            <rect x="0" y="0" rx="20" width="880" height="140" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="30" y="34" rx="12" width="240" height="18" fill="rgba(245,247,250,0.55)"/>
+            <rect x="30" y="70" rx="12" width="360" height="40" fill="rgba(25,173,125,0.14)" stroke="rgba(25,173,125,0.35)"/>
+            <rect x="420" y="70" rx="12" width="420" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+          </g>
+          <g transform="translate(0 400)">
+            <rect x="0" y="0" rx="20" width="420" height="260" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="460" y="0" rx="20" width="420" height="260" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="30" y="34" rx="12" width="250" height="18" fill="rgba(245,247,250,0.55)"/>
+            <rect x="490" y="34" rx="12" width="250" height="18" fill="rgba(245,247,250,0.55)"/>
+            <rect x="30" y="88" rx="12" width="360" height="16" fill="rgba(245,247,250,0.22)"/>
+            <rect x="490" y="88" rx="12" width="360" height="16" fill="rgba(245,247,250,0.22)"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  `),
+  svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#071018"/>
+          <stop offset="1" stop-color="#0b0f14"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="62%" cy="24%" r="70%">
+          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.30"/>
+          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="1600" fill="url(#bg)"/>
+      <rect width="1200" height="1600" fill="url(#glow)"/>
+      <g opacity="0.92">
+        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Competition Builder</text>
+        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Launch incentives in minutes.</text>
+      </g>
+      <g transform="translate(90 310)">
+        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+        <g transform="translate(64 80)">
+          <rect x="0" y="0" rx="20" width="892" height="92" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+          <rect x="24" y="26" rx="12" width="260" height="18" fill="rgba(245,247,250,0.55)"/>
+          <rect x="24" y="52" rx="12" width="420" height="16" fill="rgba(245,247,250,0.22)"/>
+          <g transform="translate(0 140)">
+            <rect x="0" y="0" rx="20" width="892" height="360" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="24" y="26" rx="12" width="180" height="18" fill="rgba(245,247,250,0.55)"/>
+            <rect x="24" y="72" rx="14" width="300" height="40" fill="rgba(25,173,125,0.14)" stroke="rgba(25,173,125,0.35)"/>
+            <rect x="350" y="72" rx="14" width="300" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+            <rect x="24" y="132" rx="14" width="626" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+            <rect x="24" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+            <rect x="262" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+            <rect x="500" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  `),
+  svgDataUri(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#071018"/>
+          <stop offset="1" stop-color="#0b0f14"/>
+        </linearGradient>
+        <radialGradient id="glow" cx="40%" cy="18%" r="70%">
+          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.28"/>
+          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1200" height="1600" fill="url(#bg)"/>
+      <rect width="1200" height="1600" fill="url(#glow)"/>
+      <g opacity="0.92">
+        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Messaging</text>
+        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Announcements, nudges, updates.</text>
+      </g>
+      <g transform="translate(90 310)">
+        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
+        <g transform="translate(64 88)">
+          <rect x="0" y="0" rx="22" width="892" height="138" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+          <circle cx="58" cy="56" r="22" fill="rgba(245,247,250,0.12)"/>
+          <rect x="98" y="42" rx="12" width="300" height="18" fill="rgba(245,247,250,0.62)"/>
+          <rect x="98" y="72" rx="12" width="520" height="14" fill="rgba(245,247,250,0.24)"/>
+          <g transform="translate(0 178)">
+            <rect x="0" y="0" rx="22" width="740" height="138" fill="rgba(25,173,125,0.10)" stroke="rgba(25,173,125,0.35)"/>
+            <rect x="24" y="42" rx="12" width="380" height="18" fill="rgba(245,247,250,0.70)"/>
+            <rect x="24" y="72" rx="12" width="540" height="14" fill="rgba(245,247,250,0.30)"/>
+          </g>
+          <g transform="translate(152 356)">
+            <rect x="0" y="0" rx="22" width="740" height="138" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
+            <rect x="24" y="42" rx="12" width="420" height="18" fill="rgba(245,247,250,0.58)"/>
+            <rect x="24" y="72" rx="12" width="520" height="14" fill="rgba(245,247,250,0.24)"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  `),
 ];
 
 const cardsData = [
@@ -236,7 +422,7 @@ export function FeaturesPreviewSection() {
                 `}
               >
                 <img
-                  src={featuresImages[i]}
+                  src={featurePlaceholders[i]}
                   alt={card.title}
                   className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${
                     showDetails ? "scale-105" : "scale-100"
