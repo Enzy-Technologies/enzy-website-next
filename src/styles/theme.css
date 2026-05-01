@@ -537,7 +537,9 @@
   .enzy-hubspot-embed .hs-form-html .hs-form-required,
   .enzy-hubspot-embed .hs-form-html .hs-input,
   .enzy-hubspot-embed .hs-form-html .inputs-list,
-  .enzy-hubspot-embed .hs-form-html .hs-field-desc {
+  .enzy-hubspot-embed .hs-form-html .hs-field-desc,
+  .enzy-hubspot-embed .hs-form-html .hsfc-FieldDescription,
+  .enzy-hubspot-embed .hs-form-html [data-hsfc-id="FieldDescription"] {
     color: rgba(0, 0, 0, 0.76) !important;
   }
 
@@ -546,8 +548,15 @@
   .dark .enzy-hubspot-embed .hs-form-html .hs-form-required,
   .dark .enzy-hubspot-embed .hs-form-html .hs-input,
   .dark .enzy-hubspot-embed .hs-form-html .inputs-list,
-  .dark .enzy-hubspot-embed .hs-form-html .hs-field-desc {
+  .dark .enzy-hubspot-embed .hs-form-html .hs-field-desc,
+  .dark .enzy-hubspot-embed .hs-form-html .hsfc-FieldDescription,
+  .dark .enzy-hubspot-embed .hs-form-html [data-hsfc-id="FieldDescription"] {
     color: rgba(255, 255, 255, 0.76) !important;
+  }
+
+  .enzy-hubspot-embed .hs-form-html .hsfc-FieldDescription {
+    font-size: 12px;
+    line-height: 1.45;
   }
 
   .enzy-hubspot-embed .hs-form-html input:focus,
