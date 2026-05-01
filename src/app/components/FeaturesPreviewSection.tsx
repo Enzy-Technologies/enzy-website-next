@@ -273,8 +273,35 @@ export function FeaturesPreviewSection() {
   activeIndexRef.current = activeIndex;
   const [isHoveringIndex, setIsHoveringIndex] = useState<number | null>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [isCarousel, setIsCarousel] = useState(true);
 
   useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const recompute = () => {
+      const canScroll = el.scrollWidth > el.clientWidth + 4;
+      setIsCarousel(canScroll);
+      // When there is no overflow, treat this like a static row.
+      if (!canScroll) {
+        setActiveIndex(0);
+        setExpandedIndex(null);
+        setIsHoveringIndex(null);
+      }
+    };
+
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const children = scrollRef.current.children;
       if (children.length > 2) {
@@ -289,9 +316,10 @@ export function FeaturesPreviewSection() {
         });
       }
     }
-  }, []);
+  }, [isCarousel]);
 
   useEffect(() => {
+    if (!isCarousel) return;
     const container = scrollRef.current;
     if (!container) return;
 
@@ -315,9 +343,10 @@ export function FeaturesPreviewSection() {
 
     Array.from(container.children).forEach((child) => observer.observe(child));
     return () => observer.disconnect();
-  }, []);
+  }, [isCarousel]);
 
   const scrollPrev = () => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const scrollAmount = scrollRef.current.clientWidth * 0.85;
       scrollRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
@@ -325,6 +354,7 @@ export function FeaturesPreviewSection() {
   };
 
   const scrollNext = () => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const scrollAmount = scrollRef.current.clientWidth * 0.85;
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
@@ -332,6 +362,7 @@ export function FeaturesPreviewSection() {
   };
 
   const scrollToCard = (index: number) => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const child = scrollRef.current.children[index] as HTMLElement;
       const scrollPos =
@@ -371,6 +402,7 @@ export function FeaturesPreviewSection() {
       </div>
 
       <div className="relative w-full overflow-hidden">
+        {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 z-20 hidden md:block">
           <button
             onClick={scrollPrev}
@@ -381,7 +413,9 @@ export function FeaturesPreviewSection() {
             <ChevronLeft size={24} />
           </button>
         </div>
+        ) : null}
 
+        {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-12 z-20 hidden md:block">
           <button
             onClick={scrollNext}
@@ -392,14 +426,23 @@ export function FeaturesPreviewSection() {
             <ChevronRight size={24} />
           </button>
         </div>
+        ) : null}
 
         <div
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pb-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          style={{
-            paddingLeft: "max(16px, calc(50vw - 190px))",
-            paddingRight: "max(16px, calc(50vw - 190px))",
-          }}
+          className={
+            isCarousel
+              ? "flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pb-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              : "flex flex-wrap justify-center gap-5 w-full pb-8 pt-4"
+          }
+          style={
+            isCarousel
+              ? {
+                  paddingLeft: "max(16px, calc(50vw - 190px))",
+                  paddingRight: "max(16px, calc(50vw - 190px))",
+                }
+              : undefined
+          }
         >
           {cardsData.map((card, i) => {
             const isCenter = activeIndex === i;
@@ -418,7 +461,13 @@ export function FeaturesPreviewSection() {
                 }}
                 type="button"
                 className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
-                  ${isCenter ? "ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]" : "opacity-60 hover:opacity-90"}
+                  ${
+                    !isCarousel
+                      ? "opacity-100"
+                      : isCenter
+                        ? "ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]"
+                        : "opacity-60 hover:opacity-90"
+                  }
                 `}
               >
                 <img
@@ -468,6 +517,7 @@ export function FeaturesPreviewSection() {
         </div>
       </div>
 
+      {isCarousel ? (
       <div className="flex justify-center gap-2 mt-4">
         {cardsData.map((_, i) => (
           <button
@@ -483,6 +533,7 @@ export function FeaturesPreviewSection() {
           />
         ))}
       </div>
+      ) : null}
     </section>
   );
 }

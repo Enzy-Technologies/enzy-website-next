@@ -353,7 +353,8 @@
   .simple-logo-marquee__mask {
     overflow: hidden;
     padding-top: 10px;
-    padding-bottom: 28px;
+    /* Room for caption + box-shadow (mask uses overflow:hidden) */
+    padding-bottom: 56px;
     -webkit-mask-image: linear-gradient(
       90deg,
       transparent,
@@ -394,7 +395,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0.8;
+    opacity: 0.55;
     transition: opacity 220ms ease, transform 220ms ease;
     transform-origin: center;
     position: relative;
@@ -403,12 +404,22 @@
 
   .simple-logo-marquee__item.is-active {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.09);
   }
 
   .simple-logo-marquee__item img {
     transition: filter 220ms ease, opacity 220ms ease, transform 220ms ease;
     will-change: filter, opacity, transform;
+  }
+
+  .simple-logo-marquee__item:not(.is-active) img {
+    opacity: 0.65;
+    filter: contrast(0.95) brightness(1.05);
+  }
+
+  .dark .simple-logo-marquee__item:not(.is-active) img {
+    opacity: 0.6;
+    filter: contrast(0.9) brightness(0.95);
   }
 
   .simple-logo-marquee__item.is-active img {
@@ -417,7 +428,7 @@
   }
 
   .dark .simple-logo-marquee__item.is-active img {
-    filter: contrast(1.25) brightness(1.18);
+    filter: contrast(1.35) brightness(1.25);
   }
 
   .simple-logo-marquee__caption {
@@ -439,23 +450,23 @@
     position: absolute;
     overflow: hidden;
     isolation: isolate;
-    background: rgba(255, 255, 255, 0.52);
-    border: 1px solid rgba(0, 0, 0, 0.10);
-    color: rgba(0, 0, 0, 0.72);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
-    -webkit-backdrop-filter: blur(44px) saturate(165%) contrast(125%);
-    backdrop-filter: blur(44px) saturate(165%) contrast(125%);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: rgba(0, 0, 0, 0.82);
+    box-shadow:
+      0 10px 28px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.65);
     transform: translateZ(0);
-    will-change: backdrop-filter, transform, opacity;
+    will-change: transform, opacity;
   }
 
   .dark .simple-logo-marquee__caption {
-    background: rgba(0, 0, 0, 0.42);
-    border-color: rgba(255, 255, 255, 0.10);
-    color: rgba(255, 255, 255, 0.78);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.10);
-    -webkit-backdrop-filter: blur(44px) saturate(165%) contrast(120%);
-    backdrop-filter: blur(44px) saturate(165%) contrast(120%);
+    background: #0b0f14;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: rgba(255, 255, 255, 0.90);
+    box-shadow:
+      0 12px 34px rgba(0, 0, 0, 0.55),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   .simple-logo-marquee__item.is-active .simple-logo-marquee__caption {
@@ -508,7 +519,8 @@
     padding: 12px 14px;
     font-size: 14px;
     line-height: 1.35;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.75);
     outline: none;
   }
 
@@ -519,6 +531,22 @@
     background: rgba(0, 0, 0, 0.18);
     color: rgba(255, 255, 255, 0.88) !important;
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  /* Extra-frosty glass shell specifically for the Book Demo panel */
+  .book-demo-glass.liquid-glass {
+    opacity: 1;
+    color: rgba(219, 219, 219, 1);
+    background-color: rgba(245, 245, 245, 0.42);
+    border-image: none;
+    border-color: rgba(25, 173, 125, 0.28);
+    box-shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.15);
+    -webkit-backdrop-filter: blur(3.1px);
+    backdrop-filter: blur(3.1px);
+  }
+
+  .book-demo-glass.liquid-glass::after {
+    opacity: 0.24;
   }
 
   .enzy-hubspot-embed .hs-form-html input::placeholder,
