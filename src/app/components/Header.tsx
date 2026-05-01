@@ -29,10 +29,10 @@ export function Header() {
       className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'py-4' : 'py-6'}`}
     >
       <div 
-        className={`absolute inset-0 transition-all duration-300 pointer-events-none ${
-          isScrolled 
-            ? 'liquid-glass rounded-none border-x-0 border-t-0 border-b border-white/20 shadow-none' 
-            : 'bg-transparent'
+        className={`absolute inset-0 pointer-events-none rounded-none border-x-0 border-t-0 border-b shadow-none transform-gpu will-change-[opacity] transition-[opacity,border-color,background-color] duration-300 ${
+          isScrolled
+            ? "liquid-glass opacity-100 border-white/20"
+            : "bg-transparent opacity-0 border-transparent"
         }`}
       />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">

@@ -85,9 +85,35 @@ export function FeaturesSection() {
   activeIndexRef.current = activeIndex;
   const [isHoveringIndex, setIsHoveringIndex] = useState<number | null>(null);
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
+  const [isCarousel, setIsCarousel] = useState(true);
 
   // Set initial scroll to center (index 2)
   useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const recompute = () => {
+      const canScroll = el.scrollWidth > el.clientWidth + 4;
+      setIsCarousel(canScroll);
+      if (!canScroll) {
+        setActiveIndex(0);
+        setExpandedIndex(null);
+        setIsHoveringIndex(null);
+      }
+    };
+
+    recompute();
+    const ro = new ResizeObserver(recompute);
+    ro.observe(el);
+    window.addEventListener("resize", recompute);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", recompute);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const children = scrollRef.current.children;
       if (children.length > 2) {
@@ -99,10 +125,11 @@ export function FeaturesSection() {
         });
       }
     }
-  }, []);
+  }, [isCarousel]);
 
   // Update active index based on intersection observer
   useEffect(() => {
+    if (!isCarousel) return;
     const container = scrollRef.current;
     if (!container) return;
 
@@ -130,9 +157,10 @@ export function FeaturesSection() {
 
     Array.from(container.children).forEach(child => observer.observe(child));
     return () => observer.disconnect();
-  }, []);
+  }, [isCarousel]);
 
   const scrollPrev = () => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const container = scrollRef.current;
       const child = container.children[0] as HTMLElement;
@@ -143,6 +171,7 @@ export function FeaturesSection() {
   };
 
   const scrollNext = () => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const container = scrollRef.current;
       const child = container.children[0] as HTMLElement;
@@ -152,6 +181,7 @@ export function FeaturesSection() {
   };
 
   const scrollToCard = (index: number) => {
+    if (!isCarousel) return;
     if (scrollRef.current) {
       const child = scrollRef.current.children[index] as HTMLElement;
       const scrollPos = child.offsetLeft - (scrollRef.current.clientWidth / 2) + (child.clientWidth / 2);
@@ -173,6 +203,7 @@ export function FeaturesSection() {
       {/* Horizontal Scroll Container */}
       <div className="relative w-full overflow-hidden">
         {/* Navigation Arrows */}
+        {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 z-20 hidden md:block">
           <button 
             onClick={scrollPrev}
@@ -182,7 +213,9 @@ export function FeaturesSection() {
             <ChevronLeft size={24} />
           </button>
         </div>
+        ) : null}
         
+        {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-12 z-20 hidden md:block">
           <button 
             onClick={scrollNext}
@@ -192,15 +225,24 @@ export function FeaturesSection() {
             <ChevronRight size={24} />
           </button>
         </div>
+        ) : null}
 
         {/* Carousel */}
         <div 
           ref={scrollRef}
-          className="flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pb-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-          style={{
-            paddingLeft: 'max(16px, calc(50vw - 190px))',
-            paddingRight: 'max(16px, calc(50vw - 190px))',
-          }}
+          className={
+            isCarousel
+              ? "flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pb-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              : "flex flex-wrap justify-center gap-5 w-full pb-8 pt-4"
+          }
+          style={
+            isCarousel
+              ? {
+                  paddingLeft: 'max(16px, calc(50vw - 190px))',
+                  paddingRight: 'max(16px, calc(50vw - 190px))',
+                }
+              : undefined
+          }
         >
           {cardsData.map((card, i) => {
             const isCenter = activeIndex === i;
@@ -219,7 +261,13 @@ export function FeaturesSection() {
                 }}
                 type="button"
                 className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
-                  ${isCenter ? 'ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]' : 'opacity-60 hover:opacity-90'}
+                  ${
+                    !isCarousel
+                      ? "opacity-100"
+                      : isCenter
+                        ? 'ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]'
+                        : 'opacity-60 hover:opacity-90'
+                  }
                 `}
               >
                 {/* Background Image */}
@@ -268,6 +316,7 @@ export function FeaturesSection() {
       </div>
 
       {/* Navigation Indicators */}
+      {isCarousel ? (
       <div className="flex justify-center gap-2 mt-4">
         {cardsData.map((_, i) => (
           <button
@@ -278,6 +327,7 @@ export function FeaturesSection() {
           />
         ))}
       </div>
+      ) : null}
 
     </section>
   );

@@ -159,9 +159,17 @@ export function HeroSection() {
     <section className="relative w-full px-4 pt-12 md:pt-20 lg:pt-28 pb-16 md:pb-24 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
         <div className="lg:col-span-7 flex flex-col gap-7 text-center items-center lg:text-left lg:items-start">
-          <p className="font-['Inter'] text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold inline-flex items-center gap-2">
-            <span>#1 Sales Performance App</span>
-            <span className="opacity-60" aria-hidden>
+          <div
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 transition-colors ${
+              isLightMode
+                ? "border-black/10 bg-white text-black/70"
+                : "border-white/10 bg-[#0b0f14] text-white/70"
+            }`}
+          >
+            <span className="font-['Inter'] text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold">
+              #1 Sales Performance App
+            </span>
+            <span className={isLightMode ? "text-black/30" : "text-white/30"} aria-hidden>
               |
             </span>
             <span className="inline-flex items-center gap-1.5" aria-label="4.5 out of 5 stars">
@@ -177,9 +185,9 @@ export function HeroSection() {
                   </span>
                 </span>
               </span>
-              <span className="tracking-normal opacity-80">4.5</span>
+              <span className="font-['Inter'] text-[11px] tracking-tight opacity-90">4.5</span>
             </span>
-          </p>
+          </div>
 
           <h1
             className={`font-['IvyOra_Text'] font-medium leading-[1.02] tracking-[-2px] ${
