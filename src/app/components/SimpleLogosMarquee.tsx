@@ -89,6 +89,7 @@ export function SimpleLogosMarquee() {
     const EXIT_DIST = Math.max(ENTER_DIST * 2.6, 38);
 
     const tick = (now: number) => {
+      void now; // keeps the signature compatible with requestAnimationFrame without using `now`
       const maskRect = mask.getBoundingClientRect();
       const centerX = maskRect.width / 2;
 

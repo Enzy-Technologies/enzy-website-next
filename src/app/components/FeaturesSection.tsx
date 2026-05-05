@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import Image from "next/image";
 
-import imgRectangle4 from "../../imports/Component1-1/740b84f868f5f05705a6d5da233d3963bb632a44.png";
-import imgRectangle5 from "../../imports/Component1-1/c53f9c53c9946ca164cba639507beeb3a99702bf.png";
-import imgRectangle6 from "../../imports/Component1-1/a3a7b398f9fb1711017bc4163fe6010220312ca6.png";
-import imgRectangle7 from "../../imports/Component1-1/505761bb7aaea91aab56d5260b680dcb7d9cbb90.png";
-import imgRectangle8 from "../../imports/Component1-1/1ce6b06bd6a76bcd69678d1034fb45721f60c106.png";
+import imgRectangle4 from "../../assets/features/740b84f868f5f05705a6d5da233d3963bb632a44.png";
+import imgRectangle5 from "../../assets/features/c53f9c53c9946ca164cba639507beeb3a99702bf.png";
+import imgRectangle6 from "../../assets/features/a3a7b398f9fb1711017bc4163fe6010220312ca6.png";
+import imgRectangle7 from "../../assets/features/505761bb7aaea91aab56d5260b680dcb7d9cbb90.png";
+import imgRectangle8 from "../../assets/features/1ce6b06bd6a76bcd69678d1034fb45721f60c106.png";
 
 const featuresImages = [
   imgRectangle4.src,
@@ -271,10 +272,12 @@ export function FeaturesSection() {
                 `}
               >
                 {/* Background Image */}
-                <img 
-                  src={featuresImages[i]} 
-                  alt={card.title} 
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${showDetails ? 'scale-105' : 'scale-100'}`} 
+                <Image
+                  src={featuresImages[i]}
+                  alt={card.title}
+                  fill
+                  sizes="(min-width: 1024px) 380px, 85vw"
+                  className={`object-cover transition-transform duration-1000 ease-out ${showDetails ? 'scale-105' : 'scale-100'}`}
                 />
 
                 {/* Soft vignette for readability */}

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { StaticImageData } from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import integrateImgLight from "@/assets/how-it-works-integrate-light.png";
 import integrateImgDark from "@/assets/how-it-works-integrate-dark.png";
 import engageImg from "@/assets/34d961d0ab311afc7564d03f49aed88b4a54a35f.png";
@@ -156,8 +156,12 @@ function HowItWorksRow({
       </div>
 
       <div className="md:col-span-6">
-        {/* Use a plain <img> because these are local static assets already optimized by Next. */}
-        <img src={imgSrc.src} alt={step.alt} className="w-full h-auto rounded-2xl" />
+        <Image
+          src={imgSrc}
+          alt={step.alt}
+          className="w-full h-auto rounded-2xl"
+          sizes="(min-width: 768px) 50vw, 100vw"
+        />
       </div>
     </div>
   );

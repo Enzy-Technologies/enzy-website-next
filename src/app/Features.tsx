@@ -187,8 +187,14 @@ function FeatureBrowser({
               {(["Work", "Perform", "AI"] as const).map((group) => {
                 const groupItems = FEATURES_DATA.filter((f) => f.group === group);
                 return (
-                  <div key={group} className="mb-5 last:mb-0">
-                    <div className={`eyebrow mb-3 ${isLightMode ? "text-black/45" : "text-white/45"}`}>{group}</div>
+                  <div key={group} className="mb-4 last:mb-0">
+                    <div
+                      className={`mb-2 font-['Inter'] text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                        isLightMode ? "text-black/40" : "text-white/40"
+                      }`}
+                    >
+                      {group}
+                    </div>
                     <div className="flex flex-col gap-2">
                       {groupItems.map((f) => {
                         const active = f.id === selected.id;
@@ -202,21 +208,40 @@ function FeatureBrowser({
                               const nextHash = `#${f.id}`;
                               if (window.location.hash !== nextHash) window.history.replaceState(null, "", nextHash);
                             }}
-                            className={`text-left rounded-2xl border px-4 py-3 transition-colors duration-300 backdrop-blur-xl ${
+                            className={`group relative text-left w-full px-5 py-4 rounded-2xl transition-all duration-500 overflow-hidden liquid-glass ${
                               active
                                 ? isLightMode
-                                  ? "border-[#19ad7d]/45 bg-[#19ad7d]/10"
-                                  : "border-[#19ad7d]/35 bg-white/[0.10]"
+                                  ? "bg-[#19ad7d]/10 border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
+                                  : "bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)] border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
                                 : isLightMode
-                                  ? "border-black/10 bg-black/[0.02] hover:bg-black/[0.04] hover:border-black/15"
-                                  : "border-white/10 bg-white/[0.08] hover:bg-white/[0.10] hover:border-white/15"
+                                  ? "bg-black/5 border border-black/10 hover:border-black/30 hover:bg-black/10"
+                                  : "bg-[rgba(255,255,255,0.03)] border border-white/10 hover:border-white/30 hover:bg-[rgba(255,255,255,0.08)]"
                             }`}
                           >
-                            <div className={`font-['Inter'] text-[14px] font-semibold tracking-tight ${active ? "text-[#19ad7d]" : isLightMode ? "text-black" : "text-white"}`}>
-                              {f.title}
-                            </div>
-                            <div className={`mt-1 font-['Inter'] text-[12.5px] leading-snug ${isLightMode ? "text-black/55" : "text-white/55"}`}>
-                              {f.desc}
+                            {active ? (
+                              <div className="absolute inset-0 bg-[#19ad7d]/10 blur-xl rounded-2xl pointer-events-none" />
+                            ) : null}
+
+                            <div className="relative z-10 flex flex-col">
+                              <div className="flex items-center justify-between gap-4">
+                                <div
+                                  className={`font-['Inter'] text-[16px] md:text-[17px] font-semibold tracking-tight transition-colors duration-300 ${
+                                    active ? "text-[#19ad7d]" : isLightMode ? "text-black group-hover:text-black/80" : "text-white group-hover:text-white/90"
+                                  }`}
+                                >
+                                  {f.title}
+                                </div>
+                                <div
+                                  className={`h-2 w-2 rounded-full transition-all duration-500 ${
+                                    active
+                                      ? "bg-[#19ad7d] shadow-[0_0_18px_rgba(25,173,125,0.55)]"
+                                      : isLightMode
+                                        ? "bg-black/15 group-hover:bg-black/25"
+                                        : "bg-white/15 group-hover:bg-white/25"
+                                  }`}
+                                  aria-hidden
+                                />
+                              </div>
                             </div>
                           </button>
                         );
@@ -239,43 +264,50 @@ function FeatureBrowser({
                   exit={{ opacity: 0, y: -8, filter: "blur(10px)" }}
                   transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="min-w-0">
-                      <div className={`font-['Inter'] text-[11px] font-semibold uppercase tracking-[0.14em] ${isLightMode ? "text-black/45" : "text-white/40"}`}>
-                        {selected.group}
-                      </div>
-                      <div className={`mt-2 font-['IvyOra_Text'] font-medium text-[34px] sm:text-[42px] leading-[1.05] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
-                        {selected.title}
-                      </div>
-                      <div className={`mt-3 font-['Inter'] text-[15px] sm:text-[16px] leading-relaxed max-w-2xl ${isLightMode ? "text-black/65" : "text-white/65"}`}>
-                        {selected.desc}
-                      </div>
-                    </div>
-                  </div>
+                  <div className="relative w-full rounded-[32px] overflow-hidden liquid-glass">
+                    <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.15)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
+                    <div className="absolute bottom-0 left-0 w-[320px] h-[320px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
 
-                  <div className={`mt-6 grid grid-cols-1 ${selected.images.length > 1 ? "lg:grid-cols-2" : ""} gap-4`}>
-                    {selected.images.map((src) => (
-                      <div
-                        key={src}
-                        className={`relative rounded-[22px] overflow-hidden border ${
-                          isLightMode
-                            ? "liquid-glass"
-                            : "border-white/10 bg-white/[0.10] backdrop-blur-2xl"
-                        }`}
-                      >
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.12)_0%,transparent_70%)] pointer-events-none" />
-                        <div className="relative aspect-[16/10] sm:aspect-[16/9]">
-                          <ImageWithFallback
-                            src={src}
-                            alt={selected.title}
-                            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                              isLightMode ? "opacity-80" : "opacity-95"
-                            }`}
-                          />
-                          <div className={`absolute inset-0 bg-gradient-to-tr ${isLightMode ? "from-white/35 via-white/10 to-transparent" : "from-[#0b0f14]/70 via-[#0b0f14]/35 to-transparent"}`} />
+                    <div className="relative z-10 p-6 sm:p-8 lg:p-10">
+                      <div className="flex items-start justify-between gap-6">
+                        <div className="min-w-0">
+                          <div className={`font-['Inter'] text-[11px] font-semibold uppercase tracking-[0.14em] ${isLightMode ? "text-black/45" : "text-white/40"}`}>
+                            {selected.group}
+                          </div>
+                          <div className={`mt-2 font-['IvyOra_Text'] font-medium text-[34px] sm:text-[42px] leading-[1.05] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
+                            {selected.title}
+                          </div>
+                          <div className={`mt-3 font-['Inter'] text-[15px] sm:text-[16px] leading-relaxed max-w-2xl ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                            {selected.desc}
+                          </div>
                         </div>
                       </div>
-                    ))}
+
+                      <div className={`mt-8 grid grid-cols-1 ${selected.images.length > 1 ? "lg:grid-cols-2" : ""} gap-5`}>
+                        {selected.images.map((src) => (
+                          <div
+                            key={src}
+                            className={`relative rounded-[22px] overflow-hidden border transition-colors duration-500 liquid-glass ${
+                              isLightMode
+                                ? "border-black/10 bg-black/[0.02]"
+                                : "border-white/10 bg-white/[0.04]"
+                            }`}
+                          >
+                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.12)_0%,transparent_70%)] pointer-events-none" />
+                            <div className="relative aspect-[16/10] sm:aspect-[16/9]">
+                              <ImageWithFallback
+                                src={src}
+                                alt={selected.title}
+                                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+                                  isLightMode ? "opacity-80" : "opacity-95"
+                                }`}
+                              />
+                              <div className={`absolute inset-0 bg-gradient-to-tr ${isLightMode ? "from-white/35 via-white/10 to-transparent" : "from-[#0b0f14]/70 via-[#0b0f14]/35 to-transparent"}`} />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               </AnimatePresence>

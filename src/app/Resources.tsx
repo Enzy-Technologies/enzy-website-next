@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, ArrowRight } from "lucide-react";
 import { useTheme } from "./components/ThemeProvider";
 import { CTAButton } from "./components/CTAButton";
+import Image from "next/image";
 
 import imgInsightsBg from "@/assets/fe07aab853fa3e439a789e527dbd50601d1228f8.png";
 import imgPlaybooksBg from "@/assets/04f7043b15b6e1aecfd7c7b8261277090632e920.png";
@@ -90,14 +91,16 @@ export function Resources() {
         {/* Backgrounds */}
         {item.bgImage && (
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
-            <img 
-              src={item.bgImage} 
-              alt="" 
-              className={`absolute object-cover w-full h-full ${
+            <Image
+              src={item.bgImage}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className={`absolute object-cover ${
                 item.layoutStyle === 'tile1' ? 'left-0 top-[-5%] h-[110%]' :
                 item.layoutStyle === 'tile4' || item.layoutStyle === 'tile5' ? 'left-[-5%] w-[110%]' :
                 'left-0 top-0'
-              }`} 
+              }`}
             />
           </div>
         )}
@@ -108,17 +111,17 @@ export function Resources() {
         {/* Inner specific images */}
         {item.bottomImage && item.layoutStyle === 'tile3' && (
           <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[320px] rounded-t-[16px] overflow-hidden h-[180px] pointer-events-none">
-            <img src={item.bottomImage} className="w-full h-full object-cover" alt="" />
+            <Image src={item.bottomImage} alt="" fill sizes="320px" className="object-cover" />
           </div>
         )}
         {item.innerImage && item.layoutStyle === 'tile4' && (
           <div className="absolute bottom-[-10%] left-[-5%] w-[80%] max-w-[320px] pointer-events-none">
-            <img src={item.innerImage} className="w-full h-auto drop-shadow-2xl" alt="" />
+            <Image src={item.innerImage} alt="" width={320} height={320} className="w-full h-auto drop-shadow-2xl" />
           </div>
         )}
         {item.innerImage && item.layoutStyle === 'tile5' && (
           <div className="absolute top-0 right-0 h-full w-[50%] max-w-[280px] pointer-events-none">
-            <img src={item.innerImage} className="w-full h-full object-cover object-left" alt="" />
+            <Image src={item.innerImage} alt="" fill sizes="280px" className="object-cover object-left" />
           </div>
         )}
 

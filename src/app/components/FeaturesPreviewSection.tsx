@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 
@@ -470,10 +471,12 @@ export function FeaturesPreviewSection() {
                   }
                 `}
               >
-                <img
+                <Image
                   src={featurePlaceholders[i]}
                   alt={card.title}
-                  className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ease-out ${
+                  fill
+                  sizes="(min-width: 1024px) 380px, 85vw"
+                  className={`object-cover transition-transform duration-1000 ease-out ${
                     showDetails ? "scale-105" : "scale-100"
                   }`}
                 />

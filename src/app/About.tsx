@@ -1,22 +1,62 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  ArrowRight,
-  Database,
-  Link2,
-  MessagesSquare,
-  Network,
-  Sparkles,
-  Target,
-  Trophy,
-  Workflow,
-} from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
 import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
+
+const VIZUALIZER_SRC =
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Vizualizer_V2.mov";
+
+function VizualizerVideo() {
+  const [didError, setDidError] = useState(false);
+  const canAttemptPlayback = useMemo(() => {
+    if (typeof document === "undefined") return true;
+    const v = document.createElement("video");
+    // Many browsers won't decode QuickTime containers; try anyway and fall back if it fails.
+    return (
+      v.canPlayType("video/quicktime") !== "" ||
+      v.canPlayType('video/mp4; codecs="avc1.42E01E"') !== ""
+    );
+  }, []);
+
+  if (didError || !canAttemptPlayback) {
+    return (
+      <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+        <div className="max-w-[520px]">
+          <p className="font-['Inter'] text-[14px] md:text-[15px] font-semibold text-white/80">
+            Video preview isn’t supported in this browser.
+          </p>
+          <a
+            href={VIZUALIZER_SRC}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-3 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-['Inter'] text-[13px] font-semibold text-white/90 hover:bg-white/15 transition-colors"
+          >
+            Open video
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <video
+      className="absolute inset-0 h-full w-full object-cover"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      onError={() => setDidError(true)}
+    >
+      <source src={VIZUALIZER_SRC} type="video/quicktime" />
+    </video>
+  );
+}
 
 const FadeInSection = ({
   children,
@@ -37,37 +77,6 @@ const FadeInSection = ({
     {children}
   </motion.div>
 );
-
-function BulletList({
-  items,
-  isLightMode,
-  columns = 1,
-}: {
-  items: string[];
-  isLightMode: boolean;
-  columns?: 1 | 2;
-}) {
-  return (
-    <ul
-      className={`mt-4 grid gap-x-10 gap-y-2.5 ${
-        columns === 2 ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"
-      }`}
-    >
-      {items.map((b) => (
-        <li key={b} className="flex items-start gap-3">
-          <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_10px_rgba(25,173,125,0.45)]" />
-          <span
-            className={`font-['Inter'] text-[14px] leading-snug ${
-              isLightMode ? "text-black/75" : "text-white/75"
-            }`}
-          >
-            {b}
-          </span>
-        </li>
-      ))}
-    </ul>
-  );
-}
 
 export function About() {
   const { isLightMode } = useTheme();
@@ -114,6 +123,26 @@ export function About() {
               into decisions that compound. Built for companies who measure
               themselves by outcomes, not activity.
             </p>
+
+            <div className="mt-10 md:mt-12">
+              <div
+                className={`relative overflow-hidden rounded-[28px] border backdrop-blur-xl liquid-glass ${
+                  isLightMode ? "border-black/10 bg-white/50" : "border-white/10 bg-white/[0.05]"
+                }`}
+              >
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-80"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 30% 25%, rgba(25,173,125,0.22), transparent 58%), radial-gradient(circle at 78% 80%, rgba(25,173,125,0.12), transparent 62%)",
+                  }}
+                  aria-hidden
+                />
+                <div className="relative aspect-[16/9] w-full">
+                  <VizualizerVideo />
+                </div>
+              </div>
+            </div>
           </section>
         </FadeInSection>
 
@@ -130,10 +159,18 @@ export function About() {
 
             <div className="mt-7 grid grid-cols-1 lg:grid-cols-12 gap-5 md:gap-6">
               <div
-                className={`lg:col-span-7 relative rounded-[18px] p-7 md:p-8 border ${
-                  isLightMode ? "border-black/10 bg-white/40" : "border-white/10 bg-white/[0.03]"
+                className={`lg:col-span-7 relative rounded-[18px] p-7 md:p-8 border overflow-hidden backdrop-blur-xl liquid-glass ${
+                  isLightMode ? "border-black/10 bg-white/55" : "border-white/10 bg-white/[0.05]"
                 }`}
               >
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-70"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 30% 25%, rgba(25,173,125,0.18), transparent 58%), radial-gradient(circle at 85% 75%, rgba(25,173,125,0.10), transparent 60%)",
+                  }}
+                  aria-hidden
+                />
                 <p className="eyebrow text-[#19ad7d] mb-3">Today</p>
                 <p
                   className={`font-['Inter'] text-[20px] md:text-[24px] font-semibold tracking-tight ${
@@ -158,8 +195,8 @@ export function About() {
                       key={chip}
                       className={`px-3 py-2 rounded-full border text-[12px] font-['Inter'] font-semibold tracking-tight ${
                         isLightMode
-                          ? "border-black/10 bg-white/60 text-black/70"
-                          : "border-white/12 bg-white/[0.05] text-white/70"
+                          ? "border-black/10 bg-white/70 text-black/70"
+                          : "border-white/12 bg-white/[0.07] text-white/70"
                       }`}
                     >
                       {chip}
@@ -169,10 +206,18 @@ export function About() {
               </div>
 
               <div
-                className={`lg:col-span-5 relative rounded-[18px] p-7 md:p-8 border ${
-                  isLightMode ? "border-black/10 bg-white/40" : "border-white/10 bg-white/[0.03]"
+                className={`lg:col-span-5 relative rounded-[18px] p-7 md:p-8 border overflow-hidden backdrop-blur-xl liquid-glass ${
+                  isLightMode ? "border-black/10 bg-white/55" : "border-white/10 bg-white/[0.05]"
                 }`}
               >
+                <div
+                  className="pointer-events-none absolute inset-0 opacity-80"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 35% 28%, rgba(25,173,125,0.20), transparent 58%), radial-gradient(circle at 70% 70%, rgba(25,173,125,0.12), transparent 62%)",
+                  }}
+                  aria-hidden
+                />
                 <p className="eyebrow text-[#19ad7d] mb-3">With EnzyAI</p>
                 <p
                   className={`font-['Inter'] text-[20px] md:text-[24px] font-semibold tracking-tight ${

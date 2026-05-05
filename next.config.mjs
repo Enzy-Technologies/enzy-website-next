@@ -1,14 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Dev-only stabilization: Webpack/HMR can occasionally end up with a mismatched module graph
-  // (symptom: broken/unstyled page + runtime `__webpack_modules__[id] is not a function`).
-  // Disabling persistent filesystem cache in dev removes that class of flake.
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.cache = false
-    }
-    return config
+  experimental: {
+    // Prevent dev-only segment explorer manifest errors that crash the app.
+    // If Next's devtools feature is flaky, it causes a cascade into
+    // `__webpack_modules__[id] is not a function` and missing client modules.
+    devtoolSegmentExplorer: false,
   },
   images: {
     remotePatterns: [
