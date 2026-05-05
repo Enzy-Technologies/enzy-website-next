@@ -3,8 +3,7 @@
 // Shared Playground primitives sourced from the existing hero implementation.
 // This keeps the landing page lightweight while reusing the demo logic.
 
-import React, { useRef } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Battery, Signal, Sparkles, Wifi } from "lucide-react";
 
@@ -161,9 +160,6 @@ export function HeroPhoneScreenContent({
   scenario: HeroScenario;
   setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
 }) {
-  const isPhone = true;
-  const messages = isPhone ? demoState.messages.slice(-5) : demoState.messages;
-
   return (
     <div className="relative h-full w-full">
       <div className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
@@ -178,7 +174,7 @@ export function HeroPhoneScreenContent({
       </div>
 
       <div className="absolute inset-x-4 bottom-4 top-[92px] z-10 overflow-hidden rounded-3xl border border-white/10 bg-black/25 backdrop-blur-md">
-        <HeroAssistantDemo demoState={demoState} scenario={scenario} setDemoState={setDemoState} isLightMode={false} />
+        <HeroAssistantDemo demoState={demoState} scenario={scenario} setDemoState={setDemoState} />
       </div>
     </div>
   );
@@ -188,12 +184,10 @@ export function HeroAssistantDemo({
   demoState,
   scenario,
   setDemoState,
-  isLightMode,
 }: {
   demoState: AssistantDemoState;
   scenario: HeroScenario;
   setDemoState: React.Dispatch<React.SetStateAction<AssistantDemoState>>;
-  isLightMode: boolean;
 }) {
   const isStart = demoState.mode === "start";
 
@@ -291,7 +285,7 @@ export function AiAssistantModal({
           </div>
 
           <div className="relative h-[min(70vh,640px)] mt-2 rounded-3xl overflow-hidden border border-white/10 bg-black/10">
-            <HeroAssistantDemo demoState={demoState} scenario={scenario} setDemoState={setDemoState} isLightMode={isLightMode} />
+            <HeroAssistantDemo demoState={demoState} scenario={scenario} setDemoState={setDemoState} />
           </div>
         </Dialog.Content>
       </Dialog.Portal>

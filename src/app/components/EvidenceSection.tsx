@@ -130,7 +130,7 @@ export function EvidenceSection() {
             className="pointer-events-none absolute -top-8 -left-2 font-['IvyOra_Text'] text-[200px] md:text-[260px] leading-none text-[#19ad7d] opacity-[0.10] select-none"
             aria-hidden
           >
-            "
+            &quot;
           </span>
 
           <blockquote className="m-0 relative">

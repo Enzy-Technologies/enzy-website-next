@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { usePathname } from "next/navigation"
 import { PixelCanvas } from "./PixelCanvas"
 import { Header } from "./Header"
 import { Footer } from "./Footer"
@@ -8,6 +9,8 @@ import { useTheme } from "./ThemeProvider"
 
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { isLightMode } = useTheme()
+  const pathname = usePathname()
+  const showParticles = pathname !== "/about"
 
   return (
     <div
@@ -15,7 +18,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
       }`}
     >
-      <PixelCanvas />
+      {showParticles ? <PixelCanvas /> : null}
 
       <div className="relative z-10 w-full flex flex-col items-center overflow-x-hidden">
         <Header />

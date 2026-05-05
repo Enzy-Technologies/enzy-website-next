@@ -32,7 +32,7 @@ export function HeroPlaygroundExperience({
       ...s,
       selections: { ...s.selections, crm: stack },
     } satisfies AssistantDemoState;
-  }, [scenarioKey, stack]);
+  }, [scenario, stack]);
 
   const [demoState, setDemoState] = useState<AssistantDemoState>(seeded);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);

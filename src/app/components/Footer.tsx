@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
 
 export function Footer() {
@@ -19,10 +20,12 @@ export function Footer() {
         {/* Left column: Brand, address, contact */}
         <div className="flex flex-col gap-6">
           <Link href="/" className="block transition-transform hover:scale-105 w-fit">
-            <img 
-              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg" 
-              alt="Enzy Logo" 
-              className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`} 
+            <Image
+              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
+              alt="Enzy Logo"
+              width={220}
+              height={40}
+              className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
             />
           </Link>
           <div className={`font-['Inter'] text-sm leading-relaxed ${mutedTextColor}`}>

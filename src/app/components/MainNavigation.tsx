@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, ArrowRight, ArrowUpRight, Menu, X, Sun, Moon } from 'lucide-react';
+import { ChevronDown, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';

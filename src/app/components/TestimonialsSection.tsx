@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { animate, motion, useAnimationFrame, useMotionValue, useTransform } from "motion/react";
-import { RotateCw, X } from "lucide-react";
+import { RotateCw } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
@@ -134,6 +134,7 @@ export function TestimonialsMarquee({
   });
 
   useAnimationFrame((time, delta) => {
+    void time; // avoid noUnusedParameters noise; only delta drives motion
     if (flippedIndex !== null || isDragging) return;
     let moveBy = -0.05 * delta;
     if (isHovered && matchMedia("(hover: hover)").matches) moveBy = 0;
@@ -162,9 +163,11 @@ export function TestimonialsMarquee({
           style={{ x }}
           onPanStart={() => setIsDragging(true)}
           onPan={(e, info) => {
+            void e;
             baseX.set(baseX.get() + info.delta.x);
           }}
           onPanEnd={(e, info) => {
+            void e;
             setIsDragging(false);
             const velocity = info.velocity.x;
             if (Math.abs(velocity) > 200) {
@@ -244,7 +247,9 @@ export function TestimonialsMarquee({
                           isLightMode ? "text-[#0b0f14]" : "text-white"
                         }`}
                       >
-                        "{first}"
+                        {"\u201C"}
+                        {first}
+                        {"\u201D"}
                       </h3>
 
                       <div className="mt-auto flex flex-col relative">
@@ -290,7 +295,9 @@ export function TestimonialsMarquee({
                               isLightMode ? "text-black" : "text-white"
                             }`}
                           >
-                            "{first}"
+                          {"\u201C"}
+                          {first}
+                          {"\u201D"}
                           </span>
                           {rest ? <span className="block opacity-80">{rest}</span> : null}
                         </p>

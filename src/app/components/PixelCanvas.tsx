@@ -364,7 +364,6 @@ export function PixelCanvas() {
       const rawScrollVel = scrollY - lastScrollYRef.current;
       lastScrollYRef.current = scrollY;
       smoothedScrollVelRef.current += (rawScrollVel - smoothedScrollVelRef.current) * 0.2;
-      const scrollSpeed = Math.min(1, Math.abs(smoothedScrollVelRef.current) / 40);
       const focusTarget = sphereFocusRef.current.active ? 1 : 0;
       // Slower ramp so you can *see* the gather happen.
       const focusEasing = sphereFocusRef.current.active ? 0.12 : 0.18;

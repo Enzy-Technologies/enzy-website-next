@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { MainNavigation } from "./MainNavigation";
 import Link from "next/link";
+import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
 import { Sun, Moon } from "lucide-react";
 
@@ -37,10 +38,13 @@ export function Header() {
       />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">
         <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
-          <img 
-            src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg" 
-            alt="Enzy Logo" 
-            className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`} 
+          <Image
+            src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
+            alt="Enzy Logo"
+            width={220}
+            height={40}
+            priority
+            className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
           />
         </Link>
         
@@ -51,7 +55,7 @@ export function Header() {
           <button 
             onClick={toggleTheme}
             className={`p-2.5 rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
-            aria-label="Toggle Theme"
+            aria-label="Toggle theme"
           >
             {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
           </button>

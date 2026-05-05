@@ -566,12 +566,19 @@ export function Solutions() {
                       <div className="eyebrow text-[#19ad7d] mb-4">What Enzy changes</div>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                         {(activePain?.outcomes ?? []).map((o) => (
-                          <div key={o.label} className={`relative rounded-[22px] p-5 transition-colors duration-500 liquid-glass ${isLightMode ? "hover:bg-[#19ad7d]/10" : "hover:bg-[rgba(25,173,125,0.06)]"}`}>
+                          <div
+                            key={o.label}
+                            className={`relative rounded-[22px] p-5 border transition-colors duration-500 liquid-glass ${
+                              isLightMode
+                                ? "border-black/10 bg-black/[0.02] hover:bg-[#19ad7d]/10 hover:border-[#19ad7d]/25"
+                                : "border-white/10 bg-white/[0.04] hover:bg-[rgba(25,173,125,0.06)] hover:border-[#19ad7d]/25"
+                            }`}
+                          >
                             <div className="pointer-events-none absolute left-5 right-5 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent" />
                             <div className={`font-['Inter'] font-extrabold tracking-[-2px] leading-none text-[34px] ${isLightMode ? "text-black" : "text-white"}`}>
                               {o.value}
                             </div>
-                            <div className={`mt-2 font-['Inter'] text-[13px] leading-snug ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                            <div className={`mt-2 font-['Inter'] text-[13px] leading-snug ${isLightMode ? "text-black/65" : "text-white/65"}`}>
                               {o.label}
                             </div>
                           </div>
