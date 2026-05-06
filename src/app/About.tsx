@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
@@ -8,35 +8,46 @@ import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
 
-const VIZUALIZER_SRC =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Vizualizer_V2.mov";
+/** VP9 + alpha WebM — ProRes 4444 decoded to real alpha (`format=yuva420p`), not keyed from black RGB. */
+const VIZUALIZER_WEBM_ALPHA_SRC = "/video/Vizualizer_alpha.webm?v=yuva1";
+/** Flat H.264 (same master via `avconvert`). Only used when WebM isn’t played — may show an opaque matte. */
+const VIZUALIZER_M4V_FALLBACK_SRC = "/video/Vizualizer_V2.m4v?v=yuva1";
 
-function VizualizerVideo() {
+function VizualizerVideo({ isLightMode }: { isLightMode: boolean }) {
   const [didError, setDidError] = useState(false);
-  const canAttemptPlayback = useMemo(() => {
-    if (typeof document === "undefined") return true;
-    const v = document.createElement("video");
-    // Many browsers won't decode QuickTime containers; try anyway and fall back if it fails.
-    return (
-      v.canPlayType("video/quicktime") !== "" ||
-      v.canPlayType('video/mp4; codecs="avc1.42E01E"') !== ""
-    );
-  }, []);
 
-  if (didError || !canAttemptPlayback) {
+  if (didError) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+      <div className="flex min-h-[200px] w-full items-center justify-center px-6 py-12 text-center">
         <div className="max-w-[520px]">
-          <p className="font-['Inter'] text-[14px] md:text-[15px] font-semibold text-white/80">
-            Video preview isn’t supported in this browser.
+          <p
+            className={`font-['Inter'] text-[14px] md:text-[15px] font-semibold ${
+              isLightMode ? "text-black/70" : "text-white/80"
+            }`}
+          >
+            playback failed — open the clip in a new tab.
           </p>
           <a
-            href={VIZUALIZER_SRC}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-3 inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-5 py-2.5 font-['Inter'] text-[13px] font-semibold text-white/90 hover:bg-white/15 transition-colors"
+            href={VIZUALIZER_WEBM_ALPHA_SRC}
+            download
+            className={`mt-3 inline-flex items-center justify-center rounded-full border px-5 py-2.5 font-['Inter'] text-[13px] font-semibold transition-colors ${
+              isLightMode
+                ? "border-black/15 bg-black/5 text-black/85 hover:bg-black/10"
+                : "border-white/20 bg-white/10 text-white/90 hover:bg-white/15"
+            }`}
           >
-            Open video
+            Download WebM (alpha)
+          </a>
+          <a
+            href={VIZUALIZER_M4V_FALLBACK_SRC}
+            download
+            className={`mt-2 inline-flex items-center justify-center rounded-full border px-5 py-2.5 font-['Inter'] text-[13px] font-semibold transition-colors ${
+              isLightMode
+                ? "border-black/12 bg-transparent text-black/70 hover:bg-black/[0.04]"
+                : "border-white/15 bg-transparent text-white/75 hover:bg-white/[0.06]"
+            }`}
+          >
+            Download M4V (fallback)
           </a>
         </div>
       </div>
@@ -44,17 +55,26 @@ function VizualizerVideo() {
   }
 
   return (
-    <video
-      className="absolute inset-0 h-full w-full object-cover"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      onError={() => setDidError(true)}
-    >
-      <source src={VIZUALIZER_SRC} type="video/quicktime" />
-    </video>
+    <div className="relative flex w-full items-center justify-center bg-transparent px-2 py-6 md:py-8">
+      <video
+        className={`h-auto max-h-[min(70vh,720px)] w-full object-contain bg-transparent ${
+          isLightMode
+            ? /* invert luma so sparks read as ink on light backgrounds — leaves alpha compositing intact */
+              "invert contrast-[1.05]"
+            : ""
+        }`}
+        style={{ backgroundColor: "transparent" }}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        onError={() => setDidError(true)}
+      >
+        <source src={VIZUALIZER_WEBM_ALPHA_SRC} type="video/webm" />
+        <source src={VIZUALIZER_M4V_FALLBACK_SRC} type="video/mp4" />
+      </video>
+    </div>
   );
 }
 
@@ -126,20 +146,12 @@ export function About() {
 
             <div className="mt-10 md:mt-12">
               <div
-                className={`relative overflow-hidden rounded-[28px] border backdrop-blur-xl liquid-glass ${
-                  isLightMode ? "border-black/10 bg-white/50" : "border-white/10 bg-white/[0.05]"
+                className={`relative overflow-hidden rounded-[28px] border bg-transparent ${
+                  isLightMode ? "border-black/[0.07]" : "border-white/[0.10]"
                 }`}
               >
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-80"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 30% 25%, rgba(25,173,125,0.22), transparent 58%), radial-gradient(circle at 78% 80%, rgba(25,173,125,0.12), transparent 62%)",
-                  }}
-                  aria-hidden
-                />
-                <div className="relative aspect-[16/9] w-full">
-                  <VizualizerVideo />
+                <div className="relative w-full">
+                  <VizualizerVideo isLightMode={isLightMode} />
                 </div>
               </div>
             </div>
