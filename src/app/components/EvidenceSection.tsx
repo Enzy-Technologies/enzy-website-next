@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useInView } from "motion/react";
+import React, { useEffect, useRef, useState } from "react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useTheme } from "./ThemeProvider";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { TESTIMONIALS, TestimonialsMarquee } from "./TestimonialsSection";
 
 const FEATURED_QUOTE = {
   text: "Before Enzy, we were reacting to results. Now we're anticipating them. It turned data into decision velocity, visibility into alignment, and motivation into momentum.",
@@ -50,62 +49,65 @@ function useCountUp(target: number, durationMs = 1400) {
   return { value, ref };
 }
 
+import { BlurReveal } from "./BlurReveal";
+
 export function EvidenceSection() {
   const { isLightMode } = useTheme();
   const { value: count, ref: countRef } = useCountUp(27);
-  const additional = useMemo(() => TESTIMONIALS.filter((t) => t.id !== 1), []);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+  
+  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
 
   return (
-    <section className="relative w-full px-4 pt-12 pb-20 md:pt-16 md:pb-28 max-w-7xl mx-auto">
-      <p className="font-['Inter'] text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-10">
-        Evidence
-      </p>
-
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+    <section ref={containerRef} className="relative w-full px-4 pt-16 pb-24 md:pt-24 md:pb-32 max-w-7xl mx-auto overflow-hidden">
+      <div className="flex flex-col items-center justify-center text-center relative z-10">
         <motion.div
-          ref={countRef}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className={`lg:col-span-5 liquid-glass relative rounded-[28px] p-8 md:p-10 flex flex-col justify-between min-h-[340px] ring-1 overflow-hidden ${
-            isLightMode ? "ring-[#19ad7d]/20" : "ring-[#19ad7d]/25"
-          }`}
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center"
         >
-          <div
-            className="pointer-events-none absolute left-8 right-8 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent"
-            aria-hidden
-          />
-
-          <div
-            className="pointer-events-none absolute -top-8 -right-8 w-[280px] h-[280px] rounded-full opacity-[0.07]"
-            style={{
-              background:
-                "radial-gradient(circle, rgba(25,173,125,1) 0%, transparent 70%)",
-            }}
-            aria-hidden
-          />
+          <p className="font-['Inter'] text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
+            The Enzy Impact
+          </p>
 
           <div className="relative">
+            <motion.div
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full opacity-[0.15] blur-[80px]"
+              style={{
+                background: "radial-gradient(circle, rgba(25,173,125,1) 0%, transparent 70%)",
+                y
+              }}
+              aria-hidden
+            />
             <p
-              className={`font-['IvyOra_Text'] font-medium tracking-[-3px] leading-[0.9] tabular-nums ${
+              className={`font-['IvyOra_Text'] font-medium tracking-[-5px] md:tracking-[-10px] leading-[0.8] tabular-nums flex items-center justify-center ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
-              } text-[96px] md:text-[120px] lg:text-[140px]`}
+              } text-[160px] sm:text-[220px] md:text-[320px] lg:text-[400px]`}
             >
-              {count}
+              <span ref={countRef}>{count}</span>
               <span className="text-[#19ad7d]">%</span>
-            </p>
-            <p
-              className={`font-['Inter'] text-[18px] md:text-[20px] font-medium mt-3 ${
-                isLightMode ? "text-black" : "text-white"
-              }`}
-            >
-              Median sales lift, year one
             </p>
           </div>
 
+          <BlurReveal
+            as="p"
+            delay={0.1}
+            className={`font-['Inter'] text-[24px] md:text-[32px] lg:text-[40px] font-medium mt-6 md:mt-8 tracking-tight ${
+              isLightMode ? "text-black" : "text-white"
+            }`}
+          >
+            Median sales lift, year one.
+          </BlurReveal>
+          
           <p
-            className={`font-['Inter'] text-[14px] leading-relaxed mt-6 max-w-[360px] relative ${
+            className={`font-['Inter'] text-[16px] md:text-[18px] leading-relaxed mt-4 max-w-[500px] mx-auto ${
               isLightMode ? "text-black/55" : "text-white/55"
             }`}
           >
@@ -115,27 +117,29 @@ export function EvidenceSection() {
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          className="lg:col-span-7 liquid-glass relative rounded-[28px] p-8 md:p-10 flex flex-col justify-between min-h-[340px] overflow-hidden"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+          className={`mt-16 md:mt-24 w-full max-w-[900px] liquid-glass relative rounded-[32px] p-8 md:p-12 text-left ring-1 ${
+            isLightMode ? "ring-[#19ad7d]/20" : "ring-[#19ad7d]/25"
+          }`}
         >
           <div
-            className="pointer-events-none absolute left-8 right-8 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent"
+            className="pointer-events-none absolute left-12 right-12 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent"
             aria-hidden
           />
 
           <span
-            className="pointer-events-none absolute -top-8 -left-2 font-['IvyOra_Text'] text-[200px] md:text-[260px] leading-none text-[#19ad7d] opacity-[0.10] select-none"
+            className="pointer-events-none absolute -top-6 -left-4 font-['IvyOra_Text'] text-[160px] md:text-[200px] leading-none text-[#19ad7d] opacity-[0.10] select-none"
             aria-hidden
           >
             &quot;
           </span>
 
-          <blockquote className="m-0 relative">
+          <blockquote className="m-0 relative z-10">
             <p
-              className={`font-['IvyOra_Text'] italic text-[22px] md:text-[26px] lg:text-[28px] leading-[1.4] tracking-[-0.5px] ${
+              className={`font-['IvyOra_Text'] italic text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.5px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               }`}
             >
@@ -144,50 +148,32 @@ export function EvidenceSection() {
           </blockquote>
 
           <footer
-            className={`flex items-center gap-3 mt-8 pt-6 border-t relative ${
+            className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-8 md:mt-10 pt-6 md:pt-8 border-t relative z-10 ${
               isLightMode ? "border-black/10" : "border-white/10"
             }`}
           >
-            <div className="w-11 h-11 rounded-full overflow-hidden border border-[#19ad7d]/30 shrink-0">
-              <ImageWithFallback
-                src={FEATURED_QUOTE.image}
-                alt={FEATURED_QUOTE.name}
-                className="w-full h-full object-cover object-top"
-              />
-            </div>
             <div className="flex-1 min-w-0">
               <p
-                className={`font-['Inter'] text-[14px] font-semibold tracking-tight m-0 ${
+                className={`font-['Inter'] text-[16px] md:text-[18px] font-semibold tracking-tight m-0 ${
                   isLightMode ? "text-brand-dark" : "text-brand-light"
                 }`}
               >
-                {FEATURED_QUOTE.name}
-              </p>
-              <p
-                className={`font-['Inter'] text-[12px] m-0 ${
-                  isLightMode ? "text-black/55" : "text-white/50"
-                }`}
-              >
-                {FEATURED_QUOTE.role}
+                {FEATURED_QUOTE.name}, {FEATURED_QUOTE.role}
               </p>
             </div>
             <Link
               href="/customers"
-              className="group inline-flex items-center gap-1.5 font-['Inter'] text-[13px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
+              className="group hidden sm:inline-flex items-center gap-2 font-['Inter'] text-[15px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
             >
               More stories
               <ArrowRight
-                size={14}
+                size={18}
                 strokeWidth={2.5}
-                className="transition-transform group-hover:translate-x-0.5"
+                className="transition-transform group-hover:translate-x-1"
               />
             </Link>
           </footer>
         </motion.div>
-      </div>
-
-      <div className="mt-6 md:mt-10">
-        <TestimonialsMarquee testimonials={additional} sets={3} />
       </div>
     </section>
   );

@@ -6,7 +6,9 @@ import { JsonLd } from "@/app/components/JsonLd";
 import { buildMetadata } from "@/app/lib/seo";
 import { getLandingPageConfig } from "@/app/(landing)/lp/config/pages";
 import { LandingPageTemplate } from "@/app/(landing)/LandingPageTemplate";
+import { isLandingHomeConfig } from "@/app/(landing)/lp/config/types";
 import { buildLandingJsonLd } from "@/app/(landing)/lp/lib/buildLandingJsonLd";
+import { LpHomeShell } from "@/app/(landing)/lp/templates/LpHomeShell";
 
 export async function generateMetadata({
   params,
@@ -45,7 +47,7 @@ export default async function Page({
   return (
     <>
       <JsonLd data={buildLandingJsonLd(config)} />
-      <LandingPageTemplate config={config} />
+      {isLandingHomeConfig(config) ? <LpHomeShell /> : <LandingPageTemplate config={config} />}
     </>
   );
 }

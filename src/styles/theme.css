@@ -84,6 +84,9 @@
 }
 
 @theme inline {
+  --font-sans: 'Inter', sans-serif;
+  --font-inter: 'Inter', sans-serif;
+  --font-ivyora: 'IvyOra Text', serif;
   --color-brand-dark: var(--color-brand-dark);
   --color-brand-light: var(--color-brand-light);
   --color-brand-green: var(--color-brand-green);
@@ -256,6 +259,12 @@
     z-index: 0;
     pointer-events: none;
     background:
+      /* Spotlight gradient reacting to the cursor */
+      radial-gradient(
+        800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.45) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
       radial-gradient(
         1200px 420px at 18% 0%,
         rgba(255, 255, 255, 0.7) 0%,
@@ -276,10 +285,17 @@
       );
     opacity: 0.85;
     transform: translate3d(0, 0, 0);
+    transition: background 0.15s ease-out;
   }
 
   .dark .liquid-glass::before {
     background:
+      /* Dark mode Spotlight gradient */
+      radial-gradient(
+        800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(25, 173, 125, 0.18) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
       radial-gradient(
         1200px 420px at 18% 0%,
         rgba(255, 255, 255, 0.24) 0%,

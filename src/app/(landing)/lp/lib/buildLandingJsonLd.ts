@@ -1,5 +1,6 @@
 import { SITE_FAQS } from "@/app/lib/faq-data";
 import { siteUrl } from "@/app/lib/site";
+import { isLandingHomeConfig } from "../config/types";
 import type { LandingPageConfig } from "../config/types";
 
 /** FAQ + Video + WebPage graph for landing routes (Organization/SoftwareApplication live in root layout). */
@@ -17,7 +18,7 @@ export function buildLandingJsonLd(config: LandingPageConfig): Record<string, un
     },
   ];
 
-  if (config.sections.includes("faq")) {
+  if (!isLandingHomeConfig(config) && config.sections.includes("faq")) {
     graph.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -32,7 +33,7 @@ export function buildLandingJsonLd(config: LandingPageConfig): Record<string, un
     });
   }
 
-  if (config.productVideo?.embedSrc?.trim()) {
+  if (!isLandingHomeConfig(config) && config.productVideo?.embedSrc?.trim()) {
     const v = config.productVideo;
     const src = v.embedSrc.trim();
     const yt = src.match(/\/embed\/([^?&/]+)/);

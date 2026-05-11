@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import React, { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "motion/react";
 import { useTheme } from "./components/ThemeProvider";
-import { QuickJumpFAB } from "./components/QuickJumpFAB";
+import { BlurReveal } from "./components/BlurReveal";
+import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import { CheckCircle2 } from "lucide-react";
 
 type SalesMode = "field" | "virtual";
 
@@ -21,6 +22,7 @@ type PainItem = {
   pains: string[];
   outcomes: { value: string; label: string }[];
   plays: Play[];
+  placeholderImage: string;
 };
 
 type ModeContent = {
@@ -40,6 +42,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "territory",
         label: "Territory execution",
         summary: "Make the route obvious. Keep the day moving.",
+        placeholderImage: "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Plans live in heads (or spreadsheets)",
           "Missed stops and inconsistent coverage",
@@ -75,6 +78,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "coaching",
         label: "In-field coaching",
         summary: "Coach in minutes—without chasing updates.",
+        placeholderImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHhkYXNoYm9hcmR8ZW58MXx8fHwxNzc1Njc3NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Managers get updates late",
           "Coaching is reactive, not daily",
@@ -110,6 +114,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "motivation",
         label: "Momentum + incentives",
         summary: "Keep energy high across the week.",
+        placeholderImage: "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmV8ZW58MXx8fHwxNzc1Njc3NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Kickoffs fade by Wednesday",
           "Recognition is inconsistent",
@@ -143,6 +148,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "followup",
         label: "Speed to lead",
         summary: "Respond fast. Don’t lose winnable deals.",
+        placeholderImage: "https://images.unsplash.com/photo-1591467454366-fb32b72b20e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGF0fGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Leads sit too long",
           "Follow-up is inconsistent",
@@ -178,6 +184,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "messaging",
         label: "Consistent messaging",
         summary: "Standardize the playbook without killing personalization.",
+        placeholderImage: "https://images.unsplash.com/photo-1695144244472-a4543101ef35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxBSSUyMGFzc2lzdGFudHxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Messaging varies rep-to-rep",
           "Objections aren’t handled consistently",
@@ -213,6 +220,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         id: "visibility",
         label: "Manager visibility",
         summary: "Know what’s happening without another dashboard.",
+        placeholderImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkYXNoYm9hcmR8ZW58MXx8fHwxNzc1Njc3NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Forecast calls feel like guesses",
           "Activity spikes don’t map to outcomes",
@@ -250,13 +258,12 @@ function ModeToggle({
 }) {
   return (
     <div
-      className={`w-full max-w-[520px] rounded-full p-1 border backdrop-blur-md transition-colors duration-500 liquid-glass ${
-        isLightMode ? "border-black/10 bg-white/60" : "border-white/10 bg-white/5"
+      className={`w-full max-w-[520px] rounded-2xl p-1.5 border ${
+        isLightMode ? "border-black/10 bg-[#f5f7fa]" : "border-white/10 bg-[#0a0a0c]"
       }`}
       role="tablist"
-      aria-label="Select sales motion"
     >
-      <div className="grid grid-cols-2 gap-1">
+      <div className="grid grid-cols-2 gap-2">
         {[{ id: "field" as const, label: "Field Sales" }, { id: "virtual" as const, label: "Virtual Sales" }].map((t) => {
           const active = value === t.id;
           return (
@@ -264,14 +271,14 @@ function ModeToggle({
               key={t.id}
               type="button"
               onClick={() => onChange(t.id)}
-              className={`relative rounded-full px-4 py-2.5 text-[13px] md:text-[14px] font-['Inter'] font-semibold tracking-tight transition-colors duration-300 ${
+              className={`relative rounded-xl px-4 py-3 md:py-4 text-[14px] md:text-[16px] font-['Inter'] font-bold uppercase tracking-widest transition-all duration-300 ${
                 active
                   ? isLightMode
-                    ? "bg-black text-white"
-                    : "bg-white text-black"
+                    ? "bg-black text-white shadow-md"
+                    : "bg-white text-black shadow-md"
                   : isLightMode
-                    ? "text-black/60 hover:text-black"
-                    : "text-white/60 hover:text-white"
+                    ? "text-black/60 hover:text-black hover:bg-black/5"
+                    : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
               role="tab"
               aria-selected={active}
@@ -290,18 +297,16 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
 
   return (
     <div
-      className={`relative rounded-[28px] p-7 md:p-8 transition-colors duration-500 liquid-glass ${
-        isLightMode ? "hover:bg-[#19ad7d]/10" : "hover:bg-[rgba(25,173,125,0.06)]"
+      className={`relative rounded-[24px] p-6 md:p-8 border transition-all duration-300 ${
+        isLightMode ? "border-black/10 hover:border-black/30 bg-white" : "border-white/10 hover:border-white/30 bg-black"
       }`}
     >
-      <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent" />
-
-      <div className="flex items-start justify-between gap-6">
-        <div className="flex flex-col">
-          <div className={`font-['Inter'] text-[18px] md:text-[20px] font-semibold tracking-tight ${isLightMode ? "text-black" : "text-white"}`}>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex flex-col gap-2">
+          <div className={`font-['Inter'] text-[14px] md:text-[16px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
             {play.title}
           </div>
-          <div className={`mt-2 font-['Inter'] text-[14px] md:text-[15px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+          <div className={`font-['Inter'] text-[14px] md:text-[15px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
             {play.description}
           </div>
         </div>
@@ -309,14 +314,14 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`shrink-0 px-4 py-2 rounded-full border font-['Inter'] text-[12px] md:text-[13px] font-semibold transition-colors duration-300 ${
+          className={`shrink-0 w-full md:w-auto px-5 py-2.5 rounded-xl border font-['Inter'] text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${
             isLightMode
-              ? "border-black/10 bg-white/70 text-black/70 hover:text-black"
-              : "border-white/10 bg-white/5 text-white/70 hover:text-white"
+              ? "border-black/15 bg-[#f5f7fa] text-black hover:bg-black hover:text-white"
+              : "border-white/15 bg-[#0a0a0c] text-white hover:bg-white hover:text-black"
           }`}
           aria-expanded={open}
         >
-          {open ? "Hide" : "Show"} steps
+          {open ? "HIDE STEPS" : "VIEW STEPS"}
         </button>
       </div>
 
@@ -329,11 +334,13 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
             transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden"
           >
-            <ul className="mt-6 flex flex-col gap-2.5">
-              {play.steps.map((s) => (
-                <li key={s} className="flex items-start gap-3">
-                  <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_10px_rgba(25,173,125,0.55)]" />
-                  <span className={`font-['Inter'] text-[13px] md:text-[14px] leading-snug ${isLightMode ? "text-black/75" : "text-white/75"}`}>
+            <ul className="mt-6 flex flex-col gap-4 pt-6 border-t border-black/5 dark:border-white/5">
+              {play.steps.map((s, i) => (
+                <li key={s} className="flex items-start gap-4">
+                  <div className={`flex items-center justify-center shrink-0 w-6 h-6 rounded-full border ${isLightMode ? "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]" : "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]"} font-bold text-[11px]`}>
+                    {i + 1}
+                  </div>
+                  <span className={`font-['Inter'] text-[14px] md:text-[15px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
                     {s}
                   </span>
                 </li>
@@ -346,283 +353,226 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
   );
 }
 
+function SolutionWord({ index, activeIndex, title, isLightMode, onClick }: { index: number, activeIndex: number, title: string, isLightMode: boolean, onClick: () => void }) {
+  const distance = Math.abs(activeIndex - index);
+  
+  // Replicating the Grit effect:
+  // Active is fully opaque. Neighbors are progressively more transparent and blurred.
+  const opacity = distance === 0 ? 1 : distance === 1 ? 0.4 : distance === 2 ? 0.15 : 0;
+  const filter = distance === 0 ? "blur(0px)" : distance === 1 ? "blur(4px)" : distance === 2 ? "blur(8px)" : "blur(12px)";
+  
+  return (
+    <motion.div
+      className="w-full flex flex-col items-center justify-center origin-center cursor-pointer"
+      onClick={onClick}
+      style={{
+        height: ITEM_HEIGHT,
+      }}
+      initial={false}
+      animate={{
+        opacity,
+        filter,
+        scale: distance === 0 ? 1 : 0.95,
+        zIndex: distance === 0 ? 10 : 0
+      }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <div className="relative inline-flex flex-col items-center justify-center w-full px-4 hover:opacity-80 transition-opacity">
+        <h2 className={`relative z-10 font-['Inter'] font-black uppercase text-[40px] sm:text-[60px] md:text-[80px] lg:text-[100px] leading-[0.85] tracking-[-2px] text-center w-full transition-colors duration-300 ${isLightMode ? 'text-black' : 'text-white'}`}>
+          {title}
+        </h2>
+      </div>
+    </motion.div>
+  );
+}
+
+const ITEM_HEIGHT = 90; // Tighter stacking
+
+function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLightMode: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const TOTAL_ITEMS = content.pains.length;
+  const floatIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_ITEMS - 1]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useMotionValueEvent(floatIndex, "change", (latest) => {
+    const idx = Math.round(latest);
+    if (idx !== activeIndex && idx >= 0 && idx < TOTAL_ITEMS) {
+      setActiveIndex(idx);
+    }
+  });
+
+  // Reset index when mode (field vs virtual) changes
+  React.useEffect(() => {
+    setActiveIndex(0);
+  }, [content.mode]);
+
+  const activePain = content.pains[activeIndex];
+
+  return (
+    <section ref={containerRef} className="relative w-full h-[400vh] bg-transparent">
+      <div className="sticky top-0 h-[100dvh] w-full flex flex-col pt-[env(safe-area-inset-top,0px)] overflow-hidden">
+        
+        {/* Full Edge-to-Edge Image Background layer for Active Pain */}
+        <div className="absolute inset-0 w-full h-full -z-20 bg-[#0a0a0c]">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePain.id}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <ImageWithFallback 
+                src={activePain.placeholderImage} 
+                alt={activePain.label} 
+                className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity" 
+              />
+              <div className={`absolute inset-0 ${isLightMode ? 'bg-gradient-to-b from-[#faf9f6]/90 via-[#faf9f6]/80 to-[#faf9f6]/95' : 'bg-gradient-to-b from-[#0b0f14]/90 via-[#0b0f14]/80 to-[#0b0f14]/95'}`} />
+            </motion.div>
+          </AnimatePresence>
+        </div>
+
+        {/* Row of Tabs at Top */}
+        <div className="relative z-20 w-full px-4 pt-20 md:pt-28 pb-4 shrink-0 flex flex-col items-center">
+          <div className="flex flex-row flex-wrap justify-center gap-4 md:gap-12 w-full max-w-5xl mx-auto">
+             {content.pains.map((p, i) => (
+                <div 
+                   key={p.id} 
+                   className={`relative transition-all duration-300 px-2 py-1 ${
+                      activeIndex === i 
+                        ? (isLightMode ? "text-black scale-105" : "text-white scale-105") 
+                        : (isLightMode ? "text-black/40 scale-100" : "text-white/40 scale-100")
+                   }`}
+                >
+                   <span className="font-['Inter'] font-black uppercase text-[13px] md:text-[18px] lg:text-[20px] tracking-widest">
+                     {p.label}
+                   </span>
+                   {/* Green underline for active */}
+                   {activeIndex === i && (
+                      <motion.div 
+                        layoutId="activeTabIndicator" 
+                        className="absolute -bottom-2 left-0 right-0 h-[2px] md:h-[3px] bg-[#19ad7d]" 
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      />
+                   )}
+                </div>
+             ))}
+          </div>
+        </div>
+
+        {/* Active Content Pane - Positioned Below Tabs */}
+        <div className="w-full flex-1 max-w-5xl mx-auto relative flex flex-col justify-start md:justify-center min-h-0 z-10 px-4 pb-8 pt-4">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activePain.id}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+              className="flex flex-col gap-6 lg:gap-8 w-full h-full"
+            >
+              {/* Summary */}
+              <div className="text-center max-w-3xl mx-auto px-4 shrink-0">
+                <p className={`font-['Inter'] text-[18px] md:text-[28px] font-medium leading-snug drop-shadow-sm ${isLightMode ? "text-black" : "text-white"}`}>
+                  {activePain.summary}
+                </p>
+              </div>
+
+              {/* Data & Playbooks Grid */}
+              <div className="w-full flex flex-col lg:flex-row gap-6 mt-2 shrink-0">
+                
+                {/* Left: Problem / Outcome */}
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/40 border-black/10" : "bg-black/40 border-white/10"}`}>
+                    <div className={`font-['Inter'] text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                      The Problem
+                    </div>
+                    <ul className="flex flex-col gap-3">
+                      {activePain.pains.map((p) => (
+                        <li key={p} className="flex items-start gap-3">
+                          <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLightMode ? "bg-[#19ad7d]" : "bg-[#19ad7d]"}`} />
+                          <span className={`font-['Inter'] text-[13px] md:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                            {p}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/60 border-[#19ad7d]/20" : "bg-black/60 border-[#19ad7d]/20"}`}>
+                    <div className={`font-['Inter'] text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                      The Outcome
+                    </div>
+                    <ul className="flex flex-col gap-4">
+                      {activePain.outcomes.map((o) => (
+                        <li key={o.value} className="flex items-center gap-3">
+                          <CheckCircle2 size={18} strokeWidth={2.5} className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"} />
+                          <div className={`font-['Inter'] text-[13px] md:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                            <span className="font-bold">{o.value}</span> {o.label}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Right: Playbooks */}
+                <div className="flex-1 flex flex-col gap-4">
+                  {activePain.plays.map((play) => (
+                    <PlaybookCard key={play.title} play={play} isLightMode={isLightMode} />
+                  ))}
+                </div>
+
+              </div>
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export function Solutions() {
   const { isLightMode } = useTheme();
   const [mode, setMode] = useState<SalesMode>("field");
-
   const content = MODE_CONTENT[mode];
-  const [activePainId, setActivePainId] = useState<string>(content.pains[0]?.id ?? "");
-
-  useEffect(() => {
-    setActivePainId(MODE_CONTENT[mode].pains[0]?.id ?? "");
-  }, [mode]);
-
-  const activePain = useMemo(() => {
-    return content.pains.find((p) => p.id === activePainId) ?? content.pains[0];
-  }, [content.pains, activePainId]);
-
-  // Hash support: #field:territory or #virtual:followup
-  useEffect(() => {
-    const applyHash = () => {
-      const hash = window.location.hash;
-      if (!hash) return;
-
-      const raw = hash.replace("#", "");
-      const [hashMode, hashPain] = raw.split(":");
-      if (!hashMode || !hashPain) return;
-
-      if (hashMode !== "field" && hashMode !== "virtual") return;
-
-      const nextMode = hashMode as SalesMode;
-      const painExists = MODE_CONTENT[nextMode].pains.some((p) => p.id === hashPain);
-      if (!painExists) return;
-
-      setMode(nextMode);
-      setActivePainId(hashPain);
-
-      const el = document.getElementById("solutions-interactive");
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 50);
-      }
-    };
-
-    applyHash();
-    window.addEventListener("hashchange", applyHash);
-    return () => window.removeEventListener("hashchange", applyHash);
-  }, []);
-
-  const jumpItems = content.pains.map((p, i) => ({
-    id: p.id,
-    label: p.label,
-    meta: (i + 1).toString().padStart(2, "0"),
-  }));
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
-        {/* Header */}
+      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-16 md:pt-24 lg:pt-32 pb-8 max-w-7xl mx-auto z-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center w-full mb-10 md:mb-14"
+          className="flex flex-col items-center w-full relative z-10"
         >
-          <div
-            className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${
-              isLightMode
-                ? "border-black/10 bg-black/5 text-black/60"
-                : "border-white/10 bg-white/5 text-white/60"
-            } eyebrow`}
-          >
+          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"} font-bold uppercase tracking-[0.25em] text-[11px]`}>
             Tailored Solutions
           </div>
 
-          <h1
-            className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[92px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
-              isLightMode ? "text-black" : "text-[#f5f7fa]"
-            }`}
-          >
-            Built for how your team <span className="text-[#19ad7d]">sells</span>
+          <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[92px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? "text-black" : "text-[#f5f7fa]"}`}>
+            <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
+            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
+              <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
+            </span>
           </h1>
 
-          <p
-            className={`font-['Inter'] text-base md:text-lg mt-6 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
-              isLightMode ? "text-black/60" : "text-white/50"
-            }`}
-          >
-            Toggle the motion. Explore the pains. See the playbooks.
-          </p>
-
-          <div className="mt-8 w-full flex justify-center">
+          <div className="mt-12 w-full flex justify-center">
             <ModeToggle value={mode} onChange={setMode} isLightMode={isLightMode} />
           </div>
-
-          <div className={`mt-6 font-['Inter'] text-[13px] md:text-[14px] tracking-tight ${isLightMode ? "text-black/55" : "text-white/55"}`}>
-            <span className="font-semibold text-[#19ad7d]">{content.title}</span> — {content.subhead}
-          </div>
         </motion.div>
-
-        {/* Interactive section */}
-        <div id="solutions-interactive" className="w-full flex flex-col lg:flex-row gap-6 md:gap-10">
-          {/* Left: pain nav */}
-          <div className="w-full lg:w-[35%] flex flex-col gap-4">
-            <div className={`mb-2 border-b pb-4 pl-2 transition-colors duration-500 ${isLightMode ? "text-black/40 border-black/10" : "text-white/40 border-white/10"} eyebrow`}>
-              Pain points
-            </div>
-
-            <div className="flex flex-col gap-3">
-              {content.pains.map((p) => {
-                const isActive = p.id === activePainId;
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => {
-                      setActivePainId(p.id);
-                      const el = document.getElementById("solutions-interactive");
-                      if (el && window.innerWidth < 1024) {
-                        setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
-                      }
-                      const nextHash = `#${mode}:${p.id}`;
-                      if (window.location.hash !== nextHash) window.history.replaceState(null, "", nextHash);
-                    }}
-                    className={`group relative text-left w-full p-6 rounded-2xl transition-all duration-500 overflow-hidden liquid-glass ${
-                      isActive
-                        ? isLightMode
-                          ? "bg-[#19ad7d]/10 border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
-                          : "bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)] border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
-                        : isLightMode
-                          ? "bg-black/5 border border-black/10 hover:border-black/30 hover:bg-black/10"
-                          : "bg-[rgba(255,255,255,0.03)] border border-white/10 hover:border-white/30 hover:bg-[rgba(255,255,255,0.08)]"
-                    }`}
-                  >
-                    {isActive ? (
-                      <div className="absolute inset-0 bg-[#19ad7d]/10 blur-xl rounded-2xl pointer-events-none" />
-                    ) : null}
-
-                    <div className="relative z-10 flex flex-col">
-                      <div className="flex items-center justify-between">
-                        <span
-                          className={`font-['Inter'] text-[18px] md:text-[20px] font-semibold transition-colors duration-300 ${
-                            isActive
-                              ? "text-[#19ad7d]"
-                              : isLightMode
-                                ? "text-black group-hover:text-black/80"
-                                : "text-white group-hover:text-white/90"
-                          }`}
-                        >
-                          {p.label}
-                        </span>
-                        <ArrowRight
-                          size={20}
-                          className={`transition-all duration-500 ${
-                            isActive
-                              ? "text-[#19ad7d] translate-x-1 opacity-100"
-                              : isLightMode
-                                ? "text-black/30 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
-                                : "text-white/30 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
-                          }`}
-                        />
-                      </div>
-                      <p className={`text-sm mt-3 transition-colors duration-300 ${isActive ? (isLightMode ? "text-black/80" : "text-white/80") : (isLightMode ? "text-black/50" : "text-white/50")}`}>
-                        {p.summary}
-                      </p>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Right: dynamic content */}
-          <div className="w-full lg:w-[65%] mt-2 lg:mt-0 flex flex-col">
-            <div className="text-transparent mb-4 border-b border-transparent pb-4 hidden lg:block select-none eyebrow">Spacer</div>
-
-            <div className="relative w-full flex-1 rounded-[32px] overflow-hidden min-h-[560px] flex items-stretch transition-colors duration-500 liquid-glass">
-              <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.15)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
-              <div className="absolute bottom-0 left-0 w-[320px] h-[320px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
-
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={`${mode}:${activePain?.id}`}
-                  initial={{ opacity: 0, y: 16, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -16, filter: "blur(10px)" }}
-                  transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                  className="relative z-10 w-full h-full p-8 md:p-12 lg:p-14 flex flex-col"
-                >
-                  <div className="flex flex-col gap-6">
-                    <div className={`font-['Inter'] text-[11px] font-semibold uppercase tracking-[0.14em] ${isLightMode ? "text-black/45" : "text-white/40"}`}>
-                      Selected pain
-                    </div>
-                    <div className={`font-['IvyOra_Text'] font-medium text-3xl md:text-4xl lg:text-[46px] leading-[1.05] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
-                      {activePain?.label}
-                    </div>
-                    <div className={`font-['Inter'] text-[15px] md:text-[16px] leading-relaxed max-w-2xl ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                      {activePain?.summary}
-                    </div>
-                  </div>
-
-                  <div className={`w-full h-px bg-gradient-to-r from-transparent to-transparent my-10 ${isLightMode ? "via-black/10" : "via-white/10"}`} />
-
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-                    <div className="lg:col-span-6">
-                      <div className="eyebrow text-[#19ad7d] mb-4">What teams feel</div>
-                      <ul className="flex flex-col gap-2.5">
-                        {(activePain?.pains ?? []).map((x) => (
-                          <li key={x} className="flex items-start gap-3">
-                            <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_10px_rgba(25,173,125,0.55)]" />
-                            <span className={`font-['Inter'] text-[14px] md:text-[15px] leading-snug ${isLightMode ? "text-black/75" : "text-white/75"}`}>
-                              {x}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="lg:col-span-6">
-                      <div className="eyebrow text-[#19ad7d] mb-4">What Enzy changes</div>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-                        {(activePain?.outcomes ?? []).map((o) => (
-                          <div
-                            key={o.label}
-                            className={`relative rounded-[22px] p-5 border transition-colors duration-500 liquid-glass ${
-                              isLightMode
-                                ? "border-black/10 bg-black/[0.02] hover:bg-[#19ad7d]/10 hover:border-[#19ad7d]/25"
-                                : "border-white/10 bg-white/[0.04] hover:bg-[rgba(25,173,125,0.06)] hover:border-[#19ad7d]/25"
-                            }`}
-                          >
-                            <div className="pointer-events-none absolute left-5 right-5 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/35 to-transparent" />
-                            <div className={`font-['Inter'] font-extrabold tracking-[-2px] leading-none text-[34px] ${isLightMode ? "text-black" : "text-white"}`}>
-                              {o.value}
-                            </div>
-                            <div className={`mt-2 font-['Inter'] text-[13px] leading-snug ${isLightMode ? "text-black/65" : "text-white/65"}`}>
-                              {o.label}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={`w-full h-px bg-gradient-to-r from-transparent to-transparent my-10 ${isLightMode ? "via-black/10" : "via-white/10"}`} />
-
-                  <div className="flex flex-col gap-6">
-                    <div className="flex items-end justify-between gap-6 flex-wrap">
-                      <div>
-                        <div className="eyebrow text-[#19ad7d]">Playbooks</div>
-                        <div className={`mt-2 font-['Inter'] text-[14px] md:text-[15px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                          Click into a playbook to see the steps.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 gap-5">
-                      {(activePain?.plays ?? []).map((pl) => (
-                        <PlaybookCard key={pl.title} play={pl} isLightMode={isLightMode} />
-                      ))}
-                    </div>
-                  </div>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
       </section>
 
-      <QuickJumpFAB
-        title={mode === "field" ? "Field Sales" : "Virtual Sales"}
-        items={jumpItems}
-        onJump={(id) => {
-          setActivePainId(id);
-          const el = document.getElementById("solutions-interactive");
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-          const nextHash = `#${mode}:${id}`;
-          if (window.location.hash !== nextHash) window.history.replaceState(null, "", nextHash);
-        }}
-      />
+      {/* Solutions content layout using the new Browser */}
+      <SolutionsBrowser key={mode} content={content} isLightMode={isLightMode} />
     </>
   );
 }

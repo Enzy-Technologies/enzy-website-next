@@ -4,7 +4,7 @@ import React, { Suspense, lazy } from "react";
 import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 
-import type { LandingPageConfig, LandingSectionKey } from "./lp/config/types";
+import type { LandingPageConfigMarketing, LandingSectionKey } from "./lp/config/types";
 import { useTheme } from "../components/ThemeProvider";
 import { CTAButton } from "../components/CTAButton";
 import { LandingSocialProofStrip } from "../components/landing/LandingSocialProofStrip";
@@ -35,7 +35,7 @@ const FAQSection = lazy(() => import("../components/FAQSection").then((m) => ({ 
 
 const SectionFallback = () => <div className="min-h-[280px] w-full animate-pulse bg-transparent" />;
 
-function LandingHero({ config }: { config: LandingPageConfig }) {
+function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
   const { isLightMode } = useTheme();
   const hero = config.hero;
 
@@ -100,7 +100,7 @@ function LandingHero({ config }: { config: LandingPageConfig }) {
   );
 }
 
-function renderSection(key: LandingSectionKey, config: LandingPageConfig): React.ReactNode {
+function renderSection(key: LandingSectionKey, config: LandingPageConfigMarketing): React.ReactNode {
   switch (key) {
     case "socialProof":
       if (!config.socialProof) return null;
@@ -127,7 +127,7 @@ function renderSection(key: LandingSectionKey, config: LandingPageConfig): React
   }
 }
 
-export function LandingPageTemplate({ config }: { config: LandingPageConfig }) {
+export function LandingPageTemplate({ config }: { config: LandingPageConfigMarketing }) {
   const demo = config.hero.primaryCta;
 
   return (

@@ -1,82 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import { ArrowRight } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
 import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
-
-/** VP9 + alpha WebM — ProRes 4444 decoded to real alpha (`format=yuva420p`), not keyed from black RGB. */
-const VIZUALIZER_WEBM_ALPHA_SRC = "/video/Vizualizer_alpha.webm?v=yuva1";
-/** Flat H.264 (same master via `avconvert`). Only used when WebM isn’t played — may show an opaque matte. */
-const VIZUALIZER_M4V_FALLBACK_SRC = "/video/Vizualizer_V2.m4v?v=yuva1";
-
-function VizualizerVideo({ isLightMode }: { isLightMode: boolean }) {
-  const [didError, setDidError] = useState(false);
-
-  if (didError) {
-    return (
-      <div className="flex min-h-[200px] w-full items-center justify-center px-6 py-12 text-center">
-        <div className="max-w-[520px]">
-          <p
-            className={`font-['Inter'] text-[14px] md:text-[15px] font-semibold ${
-              isLightMode ? "text-black/70" : "text-white/80"
-            }`}
-          >
-            playback failed — open the clip in a new tab.
-          </p>
-          <a
-            href={VIZUALIZER_WEBM_ALPHA_SRC}
-            download
-            className={`mt-3 inline-flex items-center justify-center rounded-full border px-5 py-2.5 font-['Inter'] text-[13px] font-semibold transition-colors ${
-              isLightMode
-                ? "border-black/15 bg-black/5 text-black/85 hover:bg-black/10"
-                : "border-white/20 bg-white/10 text-white/90 hover:bg-white/15"
-            }`}
-          >
-            Download WebM (alpha)
-          </a>
-          <a
-            href={VIZUALIZER_M4V_FALLBACK_SRC}
-            download
-            className={`mt-2 inline-flex items-center justify-center rounded-full border px-5 py-2.5 font-['Inter'] text-[13px] font-semibold transition-colors ${
-              isLightMode
-                ? "border-black/12 bg-transparent text-black/70 hover:bg-black/[0.04]"
-                : "border-white/15 bg-transparent text-white/75 hover:bg-white/[0.06]"
-            }`}
-          >
-            Download M4V (fallback)
-          </a>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative flex w-full items-center justify-center bg-transparent px-2 py-6 md:py-8">
-      <video
-        className={`h-auto max-h-[min(70vh,720px)] w-full object-contain bg-transparent ${
-          isLightMode
-            ? /* invert luma so sparks read as ink on light backgrounds — leaves alpha compositing intact */
-              "invert contrast-[1.05]"
-            : ""
-        }`}
-        style={{ backgroundColor: "transparent" }}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        onError={() => setDidError(true)}
-      >
-        <source src={VIZUALIZER_WEBM_ALPHA_SRC} type="video/webm" />
-        <source src={VIZUALIZER_M4V_FALLBACK_SRC} type="video/mp4" />
-      </video>
-    </div>
-  );
-}
+import { BlurReveal } from "./components/BlurReveal";
 
 const FadeInSection = ({
   children,
@@ -98,24 +29,205 @@ const FadeInSection = ({
   </motion.div>
 );
 
+const ENZY_LOOP_STEPS = [
+  {
+    numeral: "01",
+    title: "Unify",
+    body: "Behavioral, organizational, and transactional data flow into one connected performance graph.",
+    tag: "Data",
+  },
+  {
+    numeral: "02",
+    title: "Decide",
+    body: "AI agents identify what top performers do differently — and surface the actions that move the metric.",
+    tag: "AI",
+  },
+  {
+    numeral: "03",
+    title: "Compound",
+    body: "Coaching, workflows, and incentives adapt in real time. Every cycle, the system gets sharper.",
+    tag: "Loop",
+  },
+];
+
+function LoopCard({ step, index, totalSteps, isLightMode, scrollYProgress }: { step: any, index: number, totalSteps: number, isLightMode: boolean, scrollYProgress: any }) {
+  // Add an extra step to the total so the final card has a chance to stay on screen
+  // before the section unpins.
+  const animationSteps = totalSteps + 1;
+  const stepSize = 1 / animationSteps;
+  const startProgress = index * stepSize;
+  const endProgress = (index + 1) * stepSize;
+
+  const yPoints = [];
+  const yValues = [];
+  const scalePoints = [];
+  const scaleValues = [];
+  const overlayPoints = [];
+  const overlayValues = [];
+  
+  if (index > 0) {
+    if (startProgress > 0) {
+      yPoints.push(0, startProgress, endProgress);
+      yValues.push("100vh", "100vh", "0vh");
+      scalePoints.push(0, startProgress, endProgress);
+      scaleValues.push(1, 1, 1);
+      overlayPoints.push(0, startProgress, endProgress);
+      overlayValues.push(0, 0, 0);
+    } else {
+      yPoints.push(0, endProgress);
+      yValues.push("100vh", "0vh");
+      scalePoints.push(0, endProgress);
+      scaleValues.push(1, 1);
+      overlayPoints.push(0, endProgress);
+      overlayValues.push(0, 0);
+    }
+  } else {
+    yPoints.push(0);
+    yValues.push("0vh");
+    scalePoints.push(0);
+    scaleValues.push(1);
+    overlayPoints.push(0);
+    overlayValues.push(0);
+  }
+  
+  for (let i = index + 1; i < totalSteps; i++) {
+    const i_start = i * stepSize;
+    const i_end = (i + 1) * stepSize;
+    const delayStart = i_start + (i_end - i_start) * 0.7; // Wait until next card is 70% up
+    
+    yPoints.push(delayStart, i_end);
+    yValues.push(`-${(i - index - 1) * 4}vh`, `-${(i - index) * 4}vh`);
+    
+    scalePoints.push(delayStart, i_end);
+    scaleValues.push(1 - (i - index - 1) * 0.05, 1 - (i - index) * 0.05);
+    
+    overlayPoints.push(delayStart, i_end);
+    overlayValues.push((i - index - 1) * 0.3, (i - index) * 0.3);
+  }
+  
+  const y = useTransform(scrollYProgress, yPoints, yValues);
+  const scale = useTransform(scrollYProgress, scalePoints, scaleValues);
+  const overlayOpacity = useTransform(scrollYProgress, overlayPoints, overlayValues);
+
+  return (
+    <motion.div
+      className={`absolute w-full rounded-[32px] border p-8 sm:p-12 md:p-16 flex flex-col md:flex-row gap-10 md:gap-16 items-start md:items-center justify-between transition-colors duration-500 origin-top overflow-hidden ${
+        isLightMode
+          ? "bg-[#f5f7fa] border-black/10 text-black"
+          : "bg-[#0a0a0c] border-white/10 text-white"
+      }`}
+      style={{ 
+        y,
+        scale,
+        zIndex: index + 10,
+        boxShadow: isLightMode 
+          ? "0 -30px 80px -20px rgba(0,0,0,0.15), 0 25px 50px -12px rgba(0,0,0,0.1)" 
+          : "0 -30px 80px -20px rgba(0,0,0,0.6), 0 25px 50px -12px rgba(0,0,0,0.4)"
+      }}
+    >
+      <motion.div 
+        className="absolute inset-0 bg-black pointer-events-none z-0"
+        style={{ opacity: overlayOpacity }}
+        initial={{ opacity: 0 }}
+      />
+      
+      <div className="relative z-10 flex flex-col gap-6 max-w-xl">
+        <div className={`font-['Inter'] text-[11px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+          PHASE {step.numeral}
+        </div>
+        <h3 className={`font-['Inter'] font-black uppercase text-[40px] sm:text-[56px] leading-[0.9] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
+          {step.title}
+        </h3>
+        <p className={`font-['Inter'] text-[16px] sm:text-[18px] md:text-[20px] font-medium leading-snug mt-2 ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+          {step.body}
+        </p>
+      </div>
+      
+      <div className={`relative z-10 shrink-0 flex items-center justify-center w-28 h-28 md:w-40 md:h-40 rounded-full border ${isLightMode ? "border-black/10 bg-black/5" : "border-white/10 bg-white/5"}`}>
+        <span
+          className={`font-['Inter'] text-[12px] md:text-[14px] font-bold tracking-[0.18em] uppercase ${
+            isLightMode
+              ? "text-black/60"
+              : "text-white/60"
+          }`}
+        >
+          {step.tag}
+        </span>
+      </div>
+    </motion.div>
+  );
+}
+
+function TheEnzyLoop({ isLightMode }: { isLightMode: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  return (
+    <div ref={containerRef} className="relative w-full h-[400vh]">
+      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center max-w-6xl mx-auto px-4">
+        <div className="flex flex-col items-center justify-center text-center mb-10 md:mb-16 shrink-0 mt-20">
+          <p
+            className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
+            } mb-6`}
+          >
+            003 — How it works
+          </p>
+          <h2 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-[0.95] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
+            The Enzy Loop
+          </h2>
+        </div>
+
+        <div className="relative w-full flex-1 flex items-center justify-center min-h-[400px] mb-20 max-w-[1000px] mx-auto">
+          {ENZY_LOOP_STEPS.map((step, idx) => (
+            <LoopCard 
+              key={step.title} 
+              step={step} 
+              index={idx} 
+              totalSteps={ENZY_LOOP_STEPS.length} 
+              isLightMode={isLightMode} 
+              scrollYProgress={scrollYProgress}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function About() {
   const { isLightMode } = useTheme();
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   const pageTitle = isLightMode ? "text-black" : "text-[#f5f7fa]";
   const pageBody = isLightMode ? "text-black/65" : "text-white/65";
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-start pt-8 md:pt-16 lg:pt-24 pb-16 md:pb-20 overflow-hidden z-20 transition-colors duration-500">
+    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-8 md:pt-16 lg:pt-24 pb-16 md:pb-20 z-20 transition-colors duration-500">
       {/* Background glows */}
-      <div
+      <motion.div
         className={`absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
           isLightMode ? "opacity-45" : "opacity-100"
         }`}
+        style={{ y: backgroundY }}
       />
-      <div
+      <motion.div
         className={`absolute top-[55%] left-[-12%] w-[560px] h-[560px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.07)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
           isLightMode ? "opacity-45" : "opacity-100"
         }`}
+        style={{ y: backgroundY2 }}
       />
 
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
@@ -129,13 +241,13 @@ export function About() {
             >
               001 — Who we are
             </p>
-            <h1
+            <BlurReveal
+              as="h1"
+              delay={0.1}
               className={`mt-5 font-['IvyOra_Text'] font-medium tracking-[-2px] leading-[1.03] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
             >
-              Performance is the largest{" "}
-              <em className="not-italic text-[#19ad7d]">untapped lever</em> in
-              your business.
-            </h1>
+              Performance is the largest untapped lever in your business.
+            </BlurReveal>
             <p
               className={`mt-6 font-['Inter'] text-[16px] md:text-[18px] leading-relaxed max-w-2xl ${pageBody}`}
             >
@@ -144,17 +256,6 @@ export function About() {
               themselves by outcomes, not activity.
             </p>
 
-            <div className="mt-10 md:mt-12">
-              <div
-                className={`relative overflow-hidden rounded-[28px] border bg-transparent ${
-                  isLightMode ? "border-black/[0.07]" : "border-white/[0.10]"
-                }`}
-              >
-                <div className="relative w-full">
-                  <VizualizerVideo isLightMode={isLightMode} />
-                </div>
-              </div>
-            </div>
           </section>
         </FadeInSection>
 
@@ -290,83 +391,8 @@ export function About() {
         </FadeInSection>
 
         {/* 003 — How it works */}
-        <FadeInSection className="pb-12 md:pb-16">
-          <section data-section="003">
-            <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-black/45" : "text-white/40"
-              }`}
-            >
-              003 — How it works
-            </p>
-
-            <ol className="mt-7 flex flex-col">
-              {[
-                {
-                  numeral: "i.",
-                  title: "Unify",
-                  body: "Behavioral, organizational, and transactional data flow into one connected performance graph.",
-                  tag: "Data",
-                },
-                {
-                  numeral: "ii.",
-                  title: "Decide",
-                  body: "AI agents identify what top performers do differently — and surface the actions that move the metric.",
-                  tag: "AI",
-                },
-                {
-                  numeral: "iii.",
-                  title: "Compound",
-                  body: "Coaching, workflows, and incentives adapt in real time. Every cycle, the system gets sharper.",
-                  tag: "Loop",
-                },
-              ].map((s) => (
-                <li
-                  key={s.title}
-                  className={`py-8 md:py-10 border-b ${
-                    isLightMode ? "border-black/10" : "border-white/10"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="flex items-start gap-5">
-                      <span
-                        className={`font-['Inter'] text-[14px] font-extrabold tracking-[0.22em] uppercase mt-1 ${
-                          isLightMode ? "text-black/45" : "text-white/40"
-                        }`}
-                      >
-                        {s.numeral}
-                      </span>
-                      <div>
-                        <h3
-                          className={`font-['Inter'] text-[22px] md:text-[26px] font-semibold tracking-tight ${
-                            isLightMode ? "text-black" : "text-white"
-                          }`}
-                        >
-                          {s.title}
-                        </h3>
-                        <p
-                          className={`mt-2 font-['Inter'] text-[14px] md:text-[15px] leading-relaxed ${
-                            isLightMode ? "text-black/65" : "text-white/65"
-                          }`}
-                        >
-                          {s.body}
-                        </p>
-                      </div>
-                    </div>
-                    <span
-                      className={`shrink-0 px-3 py-2 rounded-full border text-[12px] font-['Inter'] font-bold tracking-[0.18em] uppercase ${
-                        isLightMode
-                          ? "border-black/10 bg-white/60 text-black/60"
-                          : "border-white/12 bg-white/[0.05] text-white/60"
-                      }`}
-                    >
-                      {s.tag}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </section>
+        <FadeInSection className="pb-[20vh] max-w-none px-0">
+          <TheEnzyLoop isLightMode={isLightMode} />
         </FadeInSection>
 
         {/* 004 — What we've learned */}

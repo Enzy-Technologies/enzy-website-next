@@ -2,13 +2,14 @@
 
 import React from "react";
 import { useTheme } from "./components/ThemeProvider";
+import { BlurReveal } from "./components/BlurReveal";
 
 export function Privacy() {
   const { isLightMode } = useTheme();
 
   return (
     <main className={`w-full pt-8 md:pt-16 lg:pt-24 pb-16 px-4 md:px-12 lg:px-20 max-w-4xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 font-['Inter']">Privacy Policy</h1>
+        <BlurReveal as="h1" delay={0.1} className="text-4xl md:text-5xl font-bold tracking-tight mb-4 font-['Inter']">Privacy Policy</BlurReveal>
         <p className="opacity-70 mb-8 font-['Inter'] text-sm">Effective Date: August 09, 2024</p>
         
         <div className={`prose max-w-none ${isLightMode ? 'prose-slate' : 'prose-invert'} prose-headings:font-['Inter'] prose-p:font-['Inter'] prose-a:text-[#19ad7d]`}>

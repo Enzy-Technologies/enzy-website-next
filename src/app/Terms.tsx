@@ -2,13 +2,14 @@
 
 import React from "react";
 import { useTheme } from "./components/ThemeProvider";
+import { BlurReveal } from "./components/BlurReveal";
 
 export function Terms() {
   const { isLightMode } = useTheme();
 
   return (
     <main className={`w-full pt-8 md:pt-16 lg:pt-24 pb-16 px-4 md:px-12 lg:px-20 max-w-4xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-8 font-['Inter']">Terms and Conditions</h1>
+        <BlurReveal as="h1" delay={0.1} className="text-4xl md:text-5xl font-bold tracking-tight mb-8 font-['Inter']">Terms and Conditions</BlurReveal>
         <div className={`prose max-w-none ${isLightMode ? 'prose-slate' : 'prose-invert'} prose-headings:font-['Inter'] prose-p:font-['Inter'] prose-a:text-[#19ad7d]`}>
           <p className="mb-4">These Terms and Conditions (“Terms”) sets forth the terms and conditions that apply to access and use of the Services of Enzy Technologies, LLC (“Provider”) by the customer set forth on an Order Form submitted to Provider (“Customer”). These Terms, together with any Order Form, SOW, and Privacy Policy constitute the “Agreement.”</p>
           

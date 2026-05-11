@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useMemo, useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useTheme } from "@/app/components/ThemeProvider";
 import { CTAButton } from "@/app/components/CTAButton";
 import { HeroPlaygroundExperience } from "@/app/playground/playgroundExperience";
+import { BlurReveal } from "@/app/components/BlurReveal";
 
 type Role = "rep" | "leader" | "ops";
 type Goal = "visibility" | "competition" | "execution";
@@ -29,17 +30,39 @@ export function Playground() {
 
   const scenarioKey = useMemo(() => pickScenario(role, goal), [role, goal]);
 
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
   return (
-    <section className="relative z-20 w-full px-4 md:px-12 lg:px-20 pt-10 md:pt-16 lg:pt-20 pb-16 md:pb-24 flex flex-col items-center">
-      <div className="w-full max-w-[1100px] flex flex-col gap-10">
+    <section ref={containerRef} className="relative z-20 w-full px-4 md:px-12 lg:px-20 pt-10 md:pt-16 lg:pt-20 pb-16 md:pb-24 flex flex-col items-center">
+      <motion.div
+        className={`absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${
+          isLightMode ? "opacity-50" : "opacity-100"
+        }`}
+        style={{ y: backgroundY }}
+      />
+      <motion.div
+        className={`absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
+          isLightMode ? "opacity-50" : "opacity-100"
+        }`}
+        style={{ y: backgroundY2 }}
+      />
+      <div className="w-full max-w-[1100px] flex flex-col gap-10 relative z-10">
         <div className="flex flex-col items-center text-center gap-4">
-          <h1
+          <BlurReveal
+            as="h1"
+            delay={0.1}
             className={`font-['IvyOra_Text'] font-medium tracking-[-2px] leading-[1.05] text-[44px] sm:text-[56px] md:text-[72px] ${
               isLightMode ? "text-[#0b0f14]" : "text-[#f5f7fa]"
             }`}
           >
             AI Playground
-          </h1>
+          </BlurReveal>
           <p
             className={`font-['Inter'] text-[16px] md:text-[18px] leading-relaxed max-w-[720px] ${
               isLightMode ? "text-black/60" : "text-white/60"

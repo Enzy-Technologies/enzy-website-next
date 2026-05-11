@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
-import { ArrowLeft } from "lucide-react";
+import React, { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "motion/react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { useTheme } from "./components/ThemeProvider";
+import { BlurReveal } from "./components/BlurReveal";
 
 type FeatureGroup = "Work" | "Perform" | "AI";
 
@@ -127,192 +127,164 @@ const FEATURES_DATA: Feature[] = [
   },
 ];
 
-function FeatureBrowser({
-  selectedId,
-  onSelect,
-  isLightMode,
-}: {
-  selectedId: string;
-  onSelect: (id: string) => void;
-  isLightMode: boolean;
-}) {
-  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
+const ITEM_HEIGHT = 100;
 
-  useEffect(() => {
-    const onResize = () => {
-      // If we move to desktop, show both panes.
-      if (window.innerWidth >= 640) setMobileView("list");
-    };
-    window.addEventListener("resize", onResize, { passive: true });
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
+function FeatureWord({ index, activeIndex, feature, isLightMode }: { index: number, activeIndex: number, feature: Feature, isLightMode: boolean }) {
+  const distance = Math.abs(activeIndex - index);
+  
+  const opacity = distance === 0 ? 1 : distance === 1 ? 0.25 : 0.05;
+  const scale = distance === 0 ? 1 : distance === 1 ? 0.75 : 0.6;
+  
+  // Scribble animation
+  const scribblePathLength = distance === 0 ? 1 : 0;
+  const scribbleOpacity = distance === 0 ? 1 : 0;
+  
+  return (
+    <motion.div
+      className="absolute left-0 w-full flex items-center justify-center lg:justify-start origin-center lg:origin-left"
+      style={{
+        top: index * ITEM_HEIGHT,
+        height: ITEM_HEIGHT,
+      }}
+      initial={false}
+      animate={{
+        opacity,
+        scale,
+      }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+    >
+      <div className="relative inline-block">
+        <h2 className={`relative z-10 font-['Inter'] font-black uppercase text-[48px] sm:text-[64px] lg:text-[80px] leading-none tracking-[-2px] ${isLightMode ? 'text-black' : 'text-white'}`}>
+          {feature.title}
+        </h2>
+        {/* Dynamic Green Scribble Underline */}
+        <motion.svg 
+          viewBox="0 0 100 20" 
+          preserveAspectRatio="none" 
+          className="absolute -bottom-2 left-0 w-full h-[15px] lg:h-[20px] text-[#19ad7d] z-0"
+          initial={false}
+          animate={{ opacity: scribbleOpacity }}
+          transition={{ duration: 0.3 }}
+        >
+          <motion.path 
+            d="M 2 12 Q 25 2 50 10 T 98 8" 
+            fill="transparent" 
+            stroke="currentColor" 
+            strokeWidth="4" 
+            strokeLinecap="round" 
+            initial={false}
+            animate={{ pathLength: scribblePathLength }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </motion.svg>
+      </div>
+    </motion.div>
+  );
+}
 
-  const selected = useMemo(() => FEATURES_DATA.find((f) => f.id === selectedId) ?? FEATURES_DATA[0], [selectedId]);
+function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const TOTAL_ITEMS = FEATURES_DATA.length;
+  // Make the float index scrub across the exact number of items
+  const floatIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_ITEMS - 1]);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useMotionValueEvent(floatIndex, "change", (latest) => {
+    const idx = Math.round(latest);
+    if (idx !== activeIndex && idx >= 0 && idx < TOTAL_ITEMS) {
+      setActiveIndex(idx);
+    }
+  });
+
+  const activeFeature = FEATURES_DATA[activeIndex];
 
   return (
-    <section className="relative w-full max-w-7xl mx-auto px-4 pb-24">
-      <div
-        className={`relative w-full overflow-hidden rounded-[28px] border shadow-[0_32px_96px_rgba(0,0,0,0.18),inset_0_1px_0_rgba(255,255,255,0.08)] liquid-glass ${
-          isLightMode ? "border-black/10 bg-white/92" : "border-white/10 bg-[#0b0f14]/92"
-        }`}
-      >
-        <div className={`flex items-center justify-between gap-4 px-5 sm:px-6 py-4 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
-          <div className="min-w-0">
-            <div className="eyebrow text-[#19ad7d]">Explore the system</div>
-            <div className={`font-['Inter'] text-[13px] mt-1 ${isLightMode ? "text-black/55" : "text-white/55"}`}>
-              Pick a module on the left to see details.
-            </div>
+    <section ref={containerRef} className="relative w-full h-[600vh]">
+      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-center max-w-7xl mx-auto px-4 pt-20 lg:pt-32 pb-8 gap-6 lg:gap-12">
+        
+        {/* Header (always on screen while scrolling this section) */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col items-center relative z-10 shrink-0"
+        >
+          <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-4 lg:mb-6 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} font-bold uppercase tracking-[0.25em] text-[10px] lg:text-[11px]`}>
+            Platform Overview
           </div>
-          <button
-            type="button"
-            onClick={() => setMobileView("list")}
-            className={`sm:hidden inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-opacity ${
-              mobileView === "detail" ? "opacity-100" : "opacity-0 pointer-events-none"
-            } ${isLightMode ? "border-black/10 bg-black/[0.03] text-black/70" : "border-white/10 bg-white/[0.04] text-white/70"}`}
-            aria-label="Back to list"
-          >
-            <ArrowLeft size={14} />
-            Back
-          </button>
-        </div>
+          <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-1px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+            <BlurReveal as="span" delay={0.1}>Everything you need.</BlurReveal><br/>
+            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
+              <BlurReveal as="span" delay={0.3}>Nothing you don&apos;t.</BlurReveal>
+            </span>
+          </h1>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-[320px_1fr] min-h-[72vh] sm:min-h-[640px]">
-          {/* Left selector */}
-          <div
-            className={`sm:block border-r ${isLightMode ? "border-black/10" : "border-white/10"} ${
-              mobileView === "detail" ? "hidden" : "block"
-            }`}
-          >
-            <div className="h-full overflow-y-auto p-4 sm:p-5">
-              {(["Work", "Perform", "AI"] as const).map((group) => {
-                const groupItems = FEATURES_DATA.filter((f) => f.group === group);
-                return (
-                  <div key={group} className="mb-4 last:mb-0">
-                    <div
-                      className={`mb-2 font-['Inter'] text-[10px] font-semibold uppercase tracking-[0.18em] ${
-                        isLightMode ? "text-black/40" : "text-white/40"
-                      }`}
-                    >
-                      {group}
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      {groupItems.map((f) => {
-                        const active = f.id === selected.id;
-                        return (
-                          <button
-                            key={f.id}
-                            type="button"
-                            onClick={() => {
-                              onSelect(f.id);
-                              setMobileView("detail");
-                              const nextHash = `#${f.id}`;
-                              if (window.location.hash !== nextHash) window.history.replaceState(null, "", nextHash);
-                            }}
-                            className={`group relative text-left w-full px-5 py-4 rounded-2xl transition-all duration-500 overflow-hidden liquid-glass ${
-                              active
-                                ? isLightMode
-                                  ? "bg-[#19ad7d]/10 border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
-                                  : "bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)] border border-[#19ad7d]/40 shadow-[0_8px_32px_rgba(25,173,125,0.15)]"
-                                : isLightMode
-                                  ? "bg-black/5 border border-black/10 hover:border-black/30 hover:bg-black/10"
-                                  : "bg-[rgba(255,255,255,0.03)] border border-white/10 hover:border-white/30 hover:bg-[rgba(255,255,255,0.08)]"
-                            }`}
-                          >
-                            {active ? (
-                              <div className="absolute inset-0 bg-[#19ad7d]/10 blur-xl rounded-2xl pointer-events-none" />
-                            ) : null}
-
-                            <div className="relative z-10 flex flex-col">
-                              <div className="flex items-center justify-between gap-4">
-                                <div
-                                  className={`font-['Inter'] text-[16px] md:text-[17px] font-semibold tracking-tight transition-colors duration-300 ${
-                                    active ? "text-[#19ad7d]" : isLightMode ? "text-black group-hover:text-black/80" : "text-white group-hover:text-white/90"
-                                  }`}
-                                >
-                                  {f.title}
-                                </div>
-                                <div
-                                  className={`h-2 w-2 rounded-full transition-all duration-500 ${
-                                    active
-                                      ? "bg-[#19ad7d] shadow-[0_0_18px_rgba(25,173,125,0.55)]"
-                                      : isLightMode
-                                        ? "bg-black/15 group-hover:bg-black/25"
-                                        : "bg-white/15 group-hover:bg-white/25"
-                                  }`}
-                                  aria-hidden
-                                />
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Right details */}
-          <div className={`${mobileView === "list" ? "hidden sm:block" : "block"} h-full overflow-y-auto`}>
-            <div className="p-4 sm:p-6">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={selected.id}
-                  initial={{ opacity: 0, y: 8, filter: "blur(10px)" }}
-                  animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  exit={{ opacity: 0, y: -8, filter: "blur(10px)" }}
-                  transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        {/* Content Panes */}
+        <div className="w-full flex-1 flex flex-col lg:flex-row items-center justify-center min-h-0 gap-6 lg:gap-16">
+          
+          {/* Left pane: Scrubbing Words */}
+          <div className="w-full lg:w-[45%] h-[30vh] lg:h-full flex items-center justify-center relative shrink-0">
+            <div 
+              className="relative w-full h-full"
+              style={{ 
+                maskImage: "linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)",
+                WebkitMaskImage: "linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)"
+              }}
+            >
+              <div className="absolute top-1/2 left-0 w-full" style={{ marginTop: -ITEM_HEIGHT / 2 }}>
+                <motion.div 
+                  className="relative w-full"
+                  initial={false}
+                  animate={{ y: -(activeIndex * ITEM_HEIGHT) }}
+                  transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                 >
-                  <div className="relative w-full rounded-[32px] overflow-hidden liquid-glass">
-                    <div className="absolute top-0 right-0 w-[420px] h-[420px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.15)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
-                    <div className="absolute bottom-0 left-0 w-[320px] h-[320px] bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[60px] pointer-events-none" />
-
-                    <div className="relative z-10 p-6 sm:p-8 lg:p-10">
-                      <div className="flex items-start justify-between gap-6">
-                        <div className="min-w-0">
-                          <div className={`font-['Inter'] text-[11px] font-semibold uppercase tracking-[0.14em] ${isLightMode ? "text-black/45" : "text-white/40"}`}>
-                            {selected.group}
-                          </div>
-                          <div className={`mt-2 font-['IvyOra_Text'] font-medium text-[34px] sm:text-[42px] leading-[1.05] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
-                            {selected.title}
-                          </div>
-                          <div className={`mt-3 font-['Inter'] text-[15px] sm:text-[16px] leading-relaxed max-w-2xl ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                            {selected.desc}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className={`mt-8 grid grid-cols-1 ${selected.images.length > 1 ? "lg:grid-cols-2" : ""} gap-5`}>
-                        {selected.images.map((src) => (
-                          <div
-                            key={src}
-                            className={`relative rounded-[22px] overflow-hidden border transition-colors duration-500 liquid-glass ${
-                              isLightMode
-                                ? "border-black/10 bg-black/[0.02]"
-                                : "border-white/10 bg-white/[0.04]"
-                            }`}
-                          >
-                            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(25,173,125,0.12)_0%,transparent_70%)] pointer-events-none" />
-                            <div className="relative aspect-[16/10] sm:aspect-[16/9]">
-                              <ImageWithFallback
-                                src={src}
-                                alt={selected.title}
-                                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-                                  isLightMode ? "opacity-80" : "opacity-95"
-                                }`}
-                              />
-                              <div className={`absolute inset-0 bg-gradient-to-tr ${isLightMode ? "from-white/35 via-white/10 to-transparent" : "from-[#0b0f14]/70 via-[#0b0f14]/35 to-transparent"}`} />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  {FEATURES_DATA.map((f, i) => (
+                    <FeatureWord key={f.id} index={i} activeIndex={activeIndex} feature={f} isLightMode={isLightMode} />
+                  ))}
                 </motion.div>
-              </AnimatePresence>
+              </div>
             </div>
           </div>
+
+          {/* Right pane: Active Content */}
+          <div className="w-full lg:w-[55%] flex-1 lg:h-full relative flex flex-col justify-center min-h-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeFeature.id}
+                initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -20, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+                className="absolute inset-0 flex flex-col justify-start lg:justify-center"
+              >
+                <div className={`relative w-full aspect-video lg:aspect-[4/3] rounded-[24px] lg:rounded-[32px] overflow-hidden border shadow-2xl shrink-0 ${isLightMode ? "border-black/10 shadow-black/5" : "border-white/10 shadow-black/50"}`}>
+                  <ImageWithFallback
+                    src={activeFeature.images[0]}
+                    alt={activeFeature.title}
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
+                  />
+                </div>
+                
+                <div className="mt-4 lg:mt-8 flex flex-col gap-1 lg:gap-3 px-2 text-center lg:text-left shrink-0">
+                <div className={`font-['Inter'] text-[10px] lg:text-[12px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                  {activeFeature.group}
+                </div>
+                  <p className={`font-['Inter'] text-[15px] md:text-[18px] lg:text-[24px] font-medium leading-snug ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                    {activeFeature.desc}
+                  </p>
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
         </div>
       </div>
     </section>
@@ -321,47 +293,8 @@ function FeatureBrowser({
 
 export function Features() {
   const { isLightMode } = useTheme();
-  const [selectedId, setSelectedId] = useState(FEATURES_DATA[0]?.id ?? "map");
-
-  useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash;
-      if (!hash) return;
-
-      const id = hash.replace("#", "");
-      const exists = FEATURES_DATA.some((f) => f.id === id);
-      if (!exists) return;
-      setSelectedId(id);
-    };
-
-    handleHash();
-    window.addEventListener("hashchange", handleHash);
-    return () => window.removeEventListener("hashchange", handleHash);
-  }, []);
 
   return (
-    <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-8 md:pb-12 max-w-7xl mx-auto z-20">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center"
-        >
-          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} eyebrow`}>
-            Platform Overview
-          </div>
-          <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
-            Explore the <span className="text-[#19ad7d]">system</span>
-          </h1>
-        </motion.div>
-      </section>
-
-      <FeatureBrowser
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        isLightMode={isLightMode}
-      />
-    </>
+    <FeatureBrowser isLightMode={isLightMode} />
   );
 }
