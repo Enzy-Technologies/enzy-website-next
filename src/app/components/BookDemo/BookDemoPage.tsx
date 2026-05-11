@@ -1,9 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { useTheme } from "@/app/components/ThemeProvider";
 import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/TestimonialsSection";
+import { motion, useScroll, useTransform } from "motion/react";
+import { BlurReveal } from "@/app/components/BlurReveal";
 
 declare global {
   interface Window {
@@ -30,6 +32,13 @@ export function BookDemoPage() {
   const bg = isLightMode ? "bg-[rgba(245,245,245,0.42)]" : "bg-white/[0.03]";
   const border = isLightMode ? "border-[rgba(25,173,125,0.28)]" : "border-white/10";
   const panelText = isLightMode ? "text-[rgba(219,219,219,1)]" : "";
+
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
     // Mark mounted once HubSpot injects the form markup.
@@ -85,17 +94,19 @@ export function BookDemoPage() {
 
   return (
     <main className="relative w-full">
-      <section className="relative w-full px-4 pt-10 md:pt-16 lg:pt-20 pb-10 max-w-7xl mx-auto">
+      <section ref={containerRef} className="relative w-full px-4 pt-10 md:pt-16 lg:pt-20 pb-10 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
           <div className="lg:col-span-5">
             <p className="font-['Inter'] text-[11px] tracking-[0.18em] uppercase text-[#19ad7d] font-semibold">
               Book a demo
             </p>
-            <h1
+            <BlurReveal
+              as="h1"
+              delay={0.1}
               className={`mt-4 font-['IvyOra_Text'] font-medium leading-[1.06] tracking-[-1.8px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
             >
               See Enzy turn performance into a system.
-            </h1>
+            </BlurReveal>
             <p className={`mt-4 font-['Inter'] text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
               Submit the form and pick a time—Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
             </p>
@@ -120,7 +131,7 @@ export function BookDemoPage() {
             <div className="relative">
               {/* Intense gradients behind the glass */}
               <div className="pointer-events-none absolute -inset-4 -z-10">
-                <div className="absolute inset-0 rounded-[44px] bg-[radial-gradient(800px_340px_at_12%_0%,rgba(25,173,125,0.45),transparent_60%),radial-gradient(760px_340px_at_88%_120%,rgba(25,173,125,0.20),transparent_55%)] blur-2xl opacity-90" />
+                <motion.div style={{ y: backgroundY }} className="absolute inset-0 rounded-[44px] bg-[radial-gradient(800px_340px_at_12%_0%,rgba(25,173,125,0.45),transparent_60%),radial-gradient(760px_340px_at_88%_120%,rgba(25,173,125,0.20),transparent_55%)] blur-2xl opacity-90" />
               </div>
 
               <div

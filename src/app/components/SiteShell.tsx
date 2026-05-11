@@ -11,6 +11,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const { isLightMode } = useTheme()
   const pathname = usePathname()
   const showParticles = pathname !== "/about"
+  const isLp = Boolean(pathname?.startsWith("/lp/"))
 
   return (
     <div
@@ -18,16 +19,20 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
       }`}
     >
-      {showParticles ? <PixelCanvas /> : null}
+      {showParticles && !isLp ? <PixelCanvas /> : null}
 
-      <div className="relative z-10 w-full flex flex-col items-center overflow-x-hidden">
-        <Header />
+      <div className="relative z-10 w-full flex flex-col items-center">
+        {isLp ? null : <Header />}
 
-        <main className="w-full flex-1 flex flex-col items-center relative pt-[88px]">
+        <main
+          className={`w-full flex-1 flex flex-col items-center relative ${
+            isLp ? "pt-6 md:pt-10" : "pt-[88px]"
+          }`}
+        >
           {children}
         </main>
 
-        <Footer />
+        {isLp ? null : <Footer />}
       </div>
     </div>
   )

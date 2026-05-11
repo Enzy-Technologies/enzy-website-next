@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import React, { useRef, useState } from "react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { X, ArrowRight } from "lucide-react";
 import { useTheme } from "./components/ThemeProvider";
 import { CTAButton } from "./components/CTAButton";
+import { BlurReveal } from "./components/BlurReveal";
 import Image from "next/image";
 
 import imgInsightsBg from "@/assets/fe07aab853fa3e439a789e527dbd50601d1228f8.png";
@@ -82,6 +83,14 @@ export function Resources() {
   const { isLightMode } = useTheme();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
   const selectedItem = LEARN_DATA.find((item) => item.id === selectedId);
 
   // Helper to render the inner image layout based on the tile style
@@ -136,12 +145,24 @@ export function Resources() {
 
   return (
     <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
+      <section ref={containerRef} className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
+        <motion.div
+          className={`absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${
+            isLightMode ? "opacity-50" : "opacity-100"
+          }`}
+          style={{ y: backgroundY }}
+        />
+        <motion.div
+          className={`absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
+            isLightMode ? "opacity-50" : "opacity-100"
+          }`}
+          style={{ y: backgroundY2 }}
+        />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center w-full mb-16"
+          className="flex flex-col items-center w-full mb-16 relative z-10"
         >
           <div
             className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${
@@ -150,13 +171,15 @@ export function Resources() {
           >
             Resources
           </div>
-          <h1
+          <BlurReveal
+            as="h1"
+            delay={0.1}
             className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >
-            Learn in <span className="text-[#19ad7d]">minutes</span>
-          </h1>
+            Learn in minutes
+          </BlurReveal>
           <p
             className={`font-['Inter'] text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
               isLightMode ? "text-black/60" : "text-white/60"

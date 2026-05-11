@@ -2,12 +2,15 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { useTheme } from "./ThemeProvider";
 import { Sparkles, ArrowRight, CornerDownRight, Star, X } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
+import { HeroVideoPlaceholder } from "@/app/components/HeroVideoPlaceholder";
+
+import { BlurReveal } from "./BlurReveal";
 
 type Question = {
   id: string;
@@ -50,7 +53,58 @@ const QUESTIONS: Question[] = [
 const TYPING_SPEED_MS = 14;
 const ROTATE_INTERVAL_MS = 18000;
 
-export function HeroSection() {
+function HeroSectionLp() {
+  const { isLightMode } = useTheme();
+
+  return (
+    <section className="relative w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 max-w-7xl mx-auto">
+      <div className="flex flex-col gap-12 lg:gap-16 items-center w-full">
+        <div className="flex flex-col gap-7 text-center items-center max-w-4xl mx-auto w-full">
+          <h1
+            className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
+              isLightMode ? "text-brand-dark" : "text-brand-light"
+            } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
+          >
+            <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
+            <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
+            <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
+          </h1>
+
+          <p
+            className={`font-inter text-[17px] md:text-[18px] leading-[1.55] max-w-[540px] mx-auto ${
+              isLightMode ? "text-black/70" : "text-white/65"
+            }`}
+          >
+            Enzy connects your CRM and comms stack, makes performance visible in
+            real time, and uses competition + AI to drive the behaviors that
+            actually close deals.
+          </p>
+
+
+          <div className="flex w-full flex-col items-center justify-center gap-4 sm:gap-6 pt-6 pb-4 sm:flex-row sm:items-center">
+            <CTAButton
+              href={BOOK_DEMO_HREF}
+              variant="primary"
+              className="w-full sm:w-auto max-w-[320px] sm:max-w-none justify-center rounded-full px-10 py-5 sm:py-6 sm:px-12 gap-3 font-extrabold text-[16px] sm:text-[18px] uppercase tracking-[0.1em] hover:scale-[1.02] active:scale-[0.99] shadow-[0_0_40px_rgba(25,173,125,0.45)]"
+            >
+              Book a demo <ArrowRight size={22} strokeWidth={2.25} aria-hidden />
+            </CTAButton>
+          </div>
+
+          <div className="w-full lg:max-w-[560px]">
+            <SimpleLogosMarquee />
+          </div>
+        </div>
+
+        <div className="w-full flex justify-center">
+          <HeroVideoPlaceholder id="product-video" />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HeroSectionDefault() {
   const { isLightMode } = useTheme();
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [activeQuestionId, setActiveQuestionId] = useState(QUESTIONS[0].id);
@@ -61,6 +115,13 @@ export function HeroSection() {
   const typingTimerRef = useRef<number | null>(null);
   const rotateTimerRef = useRef<number | null>(null);
   const pulseTimerRef = useRef<number | null>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"],
+  });
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   const activeQuestion =
     QUESTIONS.find((q) => q.id === activeQuestionId) ?? QUESTIONS[0];
@@ -156,50 +217,21 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative w-full px-4 pt-12 md:pt-20 lg:pt-28 pb-16 md:pb-24 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-        <div className="lg:col-span-7 flex flex-col gap-7 text-center items-center lg:text-left lg:items-start">
-          <div
-            className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 transition-colors ${
-              isLightMode
-                ? "border-black/10 bg-white text-black/70"
-                : "border-white/10 bg-[#0b0f14] text-white/70"
-            }`}
-          >
-            <span className="font-['Inter'] text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold">
-              #1 Sales Performance App
-            </span>
-            <span className={isLightMode ? "text-black/30" : "text-white/30"} aria-hidden>
-              |
-            </span>
-            <span className="inline-flex items-center gap-1.5" aria-label="4.5 out of 5 stars">
-              <span className="inline-flex items-center gap-0.5 text-[#19ad7d]" aria-hidden>
-                <Star size={14} className="fill-current" />
-                <Star size={14} className="fill-current" />
-                <Star size={14} className="fill-current" />
-                <Star size={14} className="fill-current" />
-                <span className="relative inline-block h-[14px] w-[14px]">
-                  <Star size={14} className="absolute inset-0 text-[#19ad7d]/30" />
-                  <span className="absolute inset-0 w-1/2 overflow-hidden">
-                    <Star size={14} className="fill-current" />
-                  </span>
-                </span>
-              </span>
-              <span className="font-['Inter'] text-[11px] tracking-tight opacity-90">4.5</span>
-            </span>
-          </div>
-
+    <section ref={containerRef} className="relative w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 max-w-7xl mx-auto">
+      <div className="flex flex-col gap-12 lg:gap-16 items-center w-full">
+        <div className="flex flex-col gap-7 text-center items-center max-w-4xl mx-auto w-full">
           <h1
-            className={`font-['IvyOra_Text'] font-medium leading-[1.02] tracking-[-2px] ${
+            className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
               isLightMode ? "text-brand-dark" : "text-brand-light"
             } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
           >
-            More revenue from the team you{" "}
-            <span className="italic font-normal">already have.</span>
+            <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
+            <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
+            <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
           </h1>
 
           <p
-            className={`font-['Inter'] text-[17px] md:text-[18px] leading-[1.55] max-w-[540px] mx-auto lg:mx-0 ${
+            className={`font-inter text-[17px] md:text-[18px] leading-[1.55] max-w-[540px] mx-auto ${
               isLightMode ? "text-black/70" : "text-white/65"
             }`}
           >
@@ -208,34 +240,19 @@ export function HeroSection() {
             actually close deals.
           </p>
 
-          <p
-            className={`font-['Inter'] text-[14px] ${
-              isLightMode ? "text-black/65" : "text-white/55"
-            }`}
-          >
-            Customers see a median{" "}
-            <span
-              className={`font-semibold ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              }`}
-            >
-              27% lift in sales
-            </span>{" "}
-            within the first year.
-          </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2 w-full sm:w-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 pt-6 pb-4 w-full">
             <CTAButton
               href={BOOK_DEMO_HREF}
               variant="primary"
-              className="justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
+              className="w-full sm:w-auto max-w-[320px] sm:max-w-none justify-center rounded-full px-10 py-5 sm:py-6 sm:px-12 gap-3 font-extrabold text-[16px] sm:text-[18px] uppercase tracking-[0.1em] hover:scale-[1.02] active:scale-[0.99] shadow-[0_0_40px_rgba(25,173,125,0.45)]"
             >
-              Book a demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
+              Book a demo <ArrowRight size={22} strokeWidth={2.25} aria-hidden />
             </CTAButton>
             <CTAButton
               variant="secondary"
               href="#playground"
-              className="justify-center rounded-full px-9 py-[15px] font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
+              className="w-full sm:w-auto max-w-[320px] sm:max-w-none justify-center rounded-full px-10 py-5 sm:py-6 sm:px-12 font-extrabold text-[16px] sm:text-[18px] uppercase tracking-[0.1em] hover:scale-[1.02] active:scale-[0.99]"
             >
               Try the playground
             </CTAButton>
@@ -246,7 +263,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 flex justify-center lg:justify-end" id="playground">
+        <div className="w-full flex justify-center" id="playground">
           <PlaygroundSurface
             isLightMode={isLightMode}
             activeQuestion={activeQuestion}
@@ -255,11 +272,17 @@ export function HeroSection() {
             questions={QUESTIONS}
             onPickQuestion={onPickQuestion}
             pulseChipId={pulseChipId}
+            backgroundY={backgroundY}
           />
         </div>
       </div>
     </section>
   );
+}
+
+export function HeroSection({ variant = "default" }: { variant?: "default" | "lp" } = {}) {
+  if (variant === "lp") return <HeroSectionLp />;
+  return <HeroSectionDefault />;
 }
 
 function PlaygroundSurface({
@@ -270,6 +293,7 @@ function PlaygroundSurface({
   questions,
   onPickQuestion,
   pulseChipId,
+  backgroundY,
 }: {
   isLightMode: boolean;
   activeQuestion: Question;
@@ -278,6 +302,7 @@ function PlaygroundSurface({
   questions: Question[];
   onPickQuestion: (id: string) => void;
   pulseChipId: string | null;
+  backgroundY?: any;
 }) {
   const otherQuestions = questions.filter((q) => q.id !== activeQuestion.id);
   const [showHint, setShowHint] = useState(false);
@@ -325,11 +350,12 @@ function PlaygroundSurface({
 
   return (
     <div className="relative w-full max-w-[480px]">
-      <div
+      <motion.div
         className="pointer-events-none absolute -inset-4 rounded-[40px] opacity-60"
         style={{
           background:
             "radial-gradient(60% 50% at 50% 30%, rgba(25,173,125,0.18), transparent 70%)",
+          y: backgroundY,
         }}
         aria-hidden
       />

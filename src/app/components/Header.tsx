@@ -11,7 +11,12 @@ import { CTAButton } from "./CTAButton";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const { isLightMode, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,10 +59,10 @@ export function Header() {
         <div className="hidden md:flex relative items-center gap-4">
           <button 
             onClick={toggleTheme}
-            className={`p-2.5 rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            className={`flex items-center justify-center w-[38px] h-[38px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
             aria-label="Toggle theme"
           >
-            {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+            {isMounted ? (isLightMode ? <Moon size={18} /> : <Sun size={18} />) : <div className="w-[18px] h-[18px]" />}
           </button>
 
           <CTAButton href="/about" variant="secondary" className="z-50">

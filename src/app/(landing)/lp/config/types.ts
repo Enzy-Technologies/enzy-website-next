@@ -25,30 +25,51 @@ export type LandingSeoConfig = {
   type?: "website" | "article";
 };
 
-export type LandingPageConfig = {
+export type LandingMarketingSocialProof = {
+  eyebrow: string;
+  line: string;
+  /** Short brand labels (replace with logo assets later if needed). */
+  logos?: readonly string[];
+  testimonial?: {
+    quote: string;
+    name: string;
+    role: string;
+  };
+};
+
+export type LandingMarketingProductVideo = {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  embedSrc: string;
+  /** Repeat the demo CTA after the watch (improves conversion for “booked demos” LPs). */
+  cta?: { label: string; href: string };
+};
+
+/**
+ * Duplicates the main site home flow (Hero + How it works + Evidence + Features preview + Closing CTA).
+ * Renders with `HeroSection` in LP mode (video placeholder instead of playground, single large demo CTA).
+ * Use for fast, consistent paid/vertical LPs; add a new slug in `pages.ts` with `layout: "home"`.
+ */
+export type LandingPageConfigHome = {
+  layout: "home";
   slug: string;
   seo: LandingSeoConfig;
-  hero: LandingHeroConfig;
-  /** Shown when `socialProof` is in `sections` */
-  socialProof?: {
-    eyebrow: string;
-    line: string;
-    /** Short brand labels (replace with logo assets later if needed). */
-    logos?: readonly string[];
-    testimonial?: {
-      quote: string;
-      name: string;
-      role: string;
-    };
-  };
-  /** Shown when `productVideo` is in `sections` — use the host’s embed URL (`src` for the iframe). */
-  productVideo?: {
-    eyebrow?: string;
-    title: string;
-    description?: string;
-    embedSrc: string;
-    /** Repeat the demo CTA after the watch (improves conversion for “booked demos” LPs). */
-    cta?: { label: string; href: string };
-  };
-  sections: LandingSectionKey[];
 };
+
+/** Long-form landing built from `LandingPageTemplate` sections. */
+export type LandingPageConfigMarketing = {
+  slug: string;
+  seo: LandingSeoConfig;
+  layout?: "marketing";
+  hero: LandingHeroConfig;
+  sections: LandingSectionKey[];
+  socialProof?: LandingMarketingSocialProof;
+  productVideo?: LandingMarketingProductVideo;
+};
+
+export type LandingPageConfig = LandingPageConfigHome | LandingPageConfigMarketing;
+
+export function isLandingHomeConfig(config: LandingPageConfig): config is LandingPageConfigHome {
+  return config.layout === "home";
+}

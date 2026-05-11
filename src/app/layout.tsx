@@ -1,6 +1,11 @@
 import React from "react"
 import type { Metadata } from "next"
 import "@fontsource/inter/index.css"
+import "@fontsource/inter/500.css"
+import "@fontsource/inter/600.css"
+import "@fontsource/inter/700.css"
+import "@fontsource/inter/800.css"
+import "@fontsource/inter/900.css"
 import "./globals.css"
 
 import { ThemeProvider } from "./components/ThemeProvider"
@@ -8,6 +13,8 @@ import { SiteShell } from "./components/SiteShell"
 import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
 import { defaultOgImagePath, siteName, siteUrl } from "./lib/site"
+import { SpotlightCursor } from "./components/SpotlightCursor"
+import { LeadingLine } from "./components/LeadingLine"
 
 export const metadata: Metadata = {
   ...buildMetadata({
@@ -85,10 +92,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
+        <SpotlightCursor />
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />
         <ThemeProvider>
+          <LeadingLine />
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
       </body>
