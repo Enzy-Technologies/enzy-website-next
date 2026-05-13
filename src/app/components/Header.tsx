@@ -45,21 +45,25 @@ export function Header() {
         }`}
       />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">
-        <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
-          <Image
-            src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
-            alt="Enzy Logo"
-            width={220}
-            height={40}
-            priority
-            className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
-          />
-        </Link>
+        <div className="flex-1 flex justify-start">
+          <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
+            <Image
+              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
+              alt="Enzy Logo"
+              width={220}
+              height={40}
+              priority
+              className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
+            />
+          </Link>
+        </div>
         
-        {/* Desktop Nav Items (Absolutely positioned center pill and mobile menu) */}
-        {!isLandingPage && <MainNavigation />}
+        {/* Desktop Nav Items and mobile menu */}
+        <div className="flex-shrink-0 flex justify-center">
+          {!isLandingPage && <MainNavigation />}
+        </div>
 
-        <div className={`${isLandingPage ? 'flex' : 'hidden md:flex'} relative items-center gap-2 md:gap-4`}>
+        <div className={`flex-1 flex justify-end ${isLandingPage ? 'flex' : 'hidden lg:flex'} relative items-center gap-2 md:gap-4`}>
           <button 
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();

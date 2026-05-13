@@ -247,66 +247,21 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
   },
 };
 
-function ModeToggle({
-  value,
-  onChange,
-  isLightMode,
-}: {
-  value: SalesMode;
-  onChange: (v: SalesMode) => void;
-  isLightMode: boolean;
-}) {
-  return (
-    <div
-      className={`w-full max-w-[520px] rounded-2xl p-1.5 border ${
-        isLightMode ? "border-black/10 bg-[#f5f7fa]" : "border-white/10 bg-[#0a0a0c]"
-      }`}
-      role="tablist"
-    >
-      <div className="grid grid-cols-2 gap-2">
-        {[{ id: "field" as const, label: "Field Sales" }, { id: "virtual" as const, label: "Virtual Sales" }].map((t) => {
-          const active = value === t.id;
-          return (
-            <button
-              key={t.id}
-              type="button"
-              onClick={() => onChange(t.id)}
-              className={`relative rounded-xl px-4 py-3 md:py-4 text-[14px] md:text-[16px] font-inter font-bold uppercase tracking-widest transition-all duration-300 ${
-                active
-                  ? isLightMode
-                    ? "bg-black text-white shadow-md"
-                    : "bg-white text-black shadow-md"
-                  : isLightMode
-                    ? "text-black/60 hover:text-black hover:bg-black/5"
-                    : "text-white/60 hover:text-white hover:bg-white/5"
-              }`}
-              role="tab"
-              aria-selected={active}
-            >
-              {t.label}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div
-      className={`relative rounded-[24px] p-6 md:p-8 border transition-all duration-300 ${
-        isLightMode ? "border-black/10 hover:border-black/30 bg-white" : "border-white/10 hover:border-white/30 bg-black"
+      className={`relative py-5 md:py-6 border-b transition-all duration-300 ${
+        isLightMode ? "border-black/10 last:border-0" : "border-white/10 last:border-0"
       }`}
     >
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex flex-col gap-2">
-          <div className={`font-inter text-[14px] md:text-[16px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1.5">
+          <div className={`font-inter text-[13px] md:text-[14px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
             {play.title}
           </div>
-          <div className={`font-inter text-[14px] md:text-[15px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+          <div className={`font-inter text-[13px] md:text-[14px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
             {play.description}
           </div>
         </div>
@@ -314,10 +269,10 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`shrink-0 w-full md:w-auto px-5 py-2.5 rounded-xl border font-inter text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${
+          className={`shrink-0 w-full md:w-auto px-4 py-2 rounded-xl border font-inter text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${
             isLightMode
-              ? "border-black/15 bg-[#f5f7fa] text-black hover:bg-black hover:text-white"
-              : "border-white/15 bg-[#0a0a0c] text-white hover:bg-white hover:text-black"
+              ? "border-black/15 bg-transparent text-black hover:bg-black/5"
+              : "border-white/15 bg-transparent text-white hover:bg-white/5"
           }`}
           aria-expanded={open}
         >
@@ -334,13 +289,13 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
             transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
             className="overflow-hidden"
           >
-            <ul className="mt-6 flex flex-col gap-4 pt-6 border-t border-black/5 dark:border-white/5">
+            <ul className="mt-4 flex flex-col gap-3 pt-4 border-t border-black/5 dark:border-white/5">
               {play.steps.map((s, i) => (
-                <li key={s} className="flex items-start gap-4">
-                  <div className={`flex items-center justify-center shrink-0 w-6 h-6 rounded-full border ${isLightMode ? "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]" : "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]"} font-bold text-[11px]`}>
+                <li key={s} className="flex items-start gap-3">
+                  <div className={`flex items-center justify-center shrink-0 w-5 h-5 rounded-full border ${isLightMode ? "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]" : "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]"} font-bold text-[10px]`}>
                     {i + 1}
                   </div>
-                  <span className={`font-inter text-[14px] md:text-[15px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <span className={`font-inter text-[13px] md:text-[14px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
                     {s}
                   </span>
                 </li>
@@ -353,153 +308,126 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
   );
 }
 
-function SolutionWord({ index, activeIndex, title, isLightMode, onClick }: { index: number, activeIndex: number, title: string, isLightMode: boolean, onClick: () => void }) {
-  const distance = Math.abs(activeIndex - index);
+export function Solutions() {
+  const { isLightMode } = useTheme();
+  const [mode, setMode] = useState<SalesMode>("field");
+  const content = MODE_CONTENT[mode];
   
-  // Replicating the Grit effect:
-  // Active is fully opaque. Neighbors are progressively more transparent and blurred.
-  const opacity = distance === 0 ? 1 : distance === 1 ? 0.4 : distance === 2 ? 0.15 : 0;
-  const filter = distance === 0 ? "blur(0px)" : distance === 1 ? "blur(4px)" : distance === 2 ? "blur(8px)" : "blur(12px)";
-  
-  return (
-    <motion.div
-      className="w-full flex flex-col items-center justify-center origin-center cursor-pointer"
-      onClick={onClick}
-      style={{
-        height: ITEM_HEIGHT,
-      }}
-      initial={false}
-      animate={{
-        opacity,
-        filter,
-        scale: distance === 0 ? 1 : 0.95,
-        zIndex: distance === 0 ? 10 : 0
-      }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-    >
-      <div className="relative inline-flex flex-col items-center justify-center w-full px-4 hover:opacity-80 transition-opacity">
-        <h2 className={`relative z-10 font-ivyora font-medium text-[40px] sm:text-[60px] md:text-[80px] lg:text-[100px] leading-[0.95] tracking-[-2px] text-center w-full transition-colors duration-300 ${isLightMode ? 'text-black' : 'text-white'}`}>
-          {title}
-        </h2>
-      </div>
-    </motion.div>
-  );
-}
-
-const ITEM_HEIGHT = 90; // Tighter stacking
-
-function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLightMode: boolean }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-
-  const TOTAL_ITEMS = content.pains.length;
-  const floatIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_ITEMS - 1]);
-
   const [activeIndex, setActiveIndex] = useState(0);
-
-  useMotionValueEvent(floatIndex, "change", (latest) => {
-    const idx = Math.round(latest);
-    if (idx !== activeIndex && idx >= 0 && idx < TOTAL_ITEMS) {
-      setActiveIndex(idx);
-    }
-  });
 
   // Reset index when mode (field vs virtual) changes
   React.useEffect(() => {
     setActiveIndex(0);
-  }, [content.mode]);
+  }, [mode]);
 
   const activePain = content.pains[activeIndex];
 
   return (
-    <section ref={containerRef} className="relative w-full h-[400vh] bg-transparent">
-      <div className="sticky top-0 h-[100dvh] w-full flex flex-col pt-[env(safe-area-inset-top,0px)] overflow-hidden">
-        
-        {/* Full Edge-to-Edge Image Background layer for Active Pain */}
-        <div className="absolute inset-0 w-full h-full -z-20 bg-[#0a0a0c]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activePain.id}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <ImageWithFallback 
-                src={activePain.placeholderImage} 
-                alt={activePain.label} 
-                className="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-luminosity" 
-              />
-              <div className={`absolute inset-0 ${isLightMode ? 'bg-gradient-to-b from-[#faf9f6]/90 via-[#faf9f6]/80 to-[#faf9f6]/95' : 'bg-gradient-to-b from-[#0b0f14]/90 via-[#0b0f14]/80 to-[#0b0f14]/95'}`} />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+    <section className="relative w-full min-h-[800px] bg-transparent pb-24">
+      {/* Base Background */}
+      <div className="absolute inset-0 w-full h-full -z-20 overflow-hidden">
+        <div className={`absolute inset-0 ${isLightMode ? 'bg-[#faf9f6]' : 'bg-[#0b0f14]'}`} />
+      </div>
 
-        {/* Row of Tabs at Top */}
-        <div className="relative z-20 w-full px-4 pt-20 md:pt-28 pb-4 shrink-0 flex flex-col items-center">
-          <div className="flex flex-row flex-wrap justify-center gap-4 md:gap-12 w-full max-w-5xl mx-auto">
-             {content.pains.map((p, i) => (
-                <div 
-                   key={p.id} 
-                   className={`relative transition-all duration-300 px-2 py-1 ${
-                      activeIndex === i 
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-20 lg:pt-32 flex flex-col items-center">
+        
+        {/* Header */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="flex flex-col items-center relative z-10 shrink-0 w-full"
+        >
+          <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-4 lg:mb-6 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} font-bold uppercase tracking-[0.25em] text-[10px] lg:text-[11px]`}>
+            Tailored Solutions
+          </div>
+          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+            <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
+            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
+              <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
+            </span>
+          </h1>
+
+          {/* Mode Tabs */}
+          <div className="flex flex-row flex-wrap justify-center gap-6 md:gap-12 w-full max-w-5xl mx-auto mt-8 lg:mt-12">
+             {[{ id: "field", label: "Field Sales" }, { id: "virtual", label: "Virtual Sales" }].map((t) => (
+                <button 
+                   key={t.id} 
+                   onClick={() => setMode(t.id as SalesMode)}
+                   className={`relative transition-all duration-300 px-2 py-1 cursor-pointer ${
+                      mode === t.id 
                         ? (isLightMode ? "text-black scale-105" : "text-white scale-105") 
-                        : (isLightMode ? "text-black/40 scale-100" : "text-white/40 scale-100")
+                        : (isLightMode ? "text-black/40 scale-100 hover:text-black/70" : "text-white/40 scale-100 hover:text-white/70")
                    }`}
                 >
-                   <span className="font-inter font-black uppercase text-[13px] md:text-[18px] lg:text-[20px] tracking-widest">
-                     {p.label}
+                   <span className="font-inter font-black uppercase text-[14px] md:text-[18px] lg:text-[20px] tracking-widest">
+                     {t.label}
                    </span>
-                   {/* Green underline for active */}
-                   {activeIndex === i && (
+                   {mode === t.id && (
                       <motion.div 
-                        layoutId="activeTabIndicator" 
+                        layoutId="activeModeIndicator" 
                         className="absolute -bottom-2 left-0 right-0 h-[2px] md:h-[3px] bg-[#19ad7d]" 
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                       />
                    )}
-                </div>
+                </button>
              ))}
           </div>
-        </div>
+        </motion.div>
 
-        {/* Active Content Pane - Positioned Below Tabs */}
-        <div className="w-full flex-1 max-w-5xl mx-auto relative flex flex-col justify-start md:justify-center min-h-0 z-10 px-4 pb-8 pt-4">
-          <AnimatePresence mode="wait">
+        {/* Content Area */}
+        <div className="w-full flex flex-col lg:flex-row gap-8 lg:gap-16 mt-12 lg:mt-20">
+          
+          {/* Left pane: Navigation / Focus Areas */}
+          <div className="w-full lg:w-[35%] flex flex-col gap-4 shrink-0">
+            <div className={`font-inter text-[11px] font-bold uppercase tracking-[0.25em] mb-2 pl-2 ${isLightMode ? "text-black/40" : "text-white/40"}`}>
+              Select a focus area
+            </div>
+            <div className="flex flex-row lg:flex-col gap-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden pb-4 lg:pb-0 snap-x snap-mandatory">
+              {content.pains.map((p, i) => {
+                const isActive = activeIndex === i;
+                return (
+                  <button
+                    key={p.id}
+                    onClick={() => setActiveIndex(i)}
+                    className={`text-left px-5 py-4 lg:px-6 lg:py-5 rounded-[24px] transition-all duration-300 border snap-start shrink-0 w-[280px] lg:w-full ${
+                      isActive 
+                        ? (isLightMode ? "bg-white/80 border-black/10 shadow-sm backdrop-blur-md" : "bg-black/80 border-white/10 shadow-sm backdrop-blur-md") 
+                        : (isLightMode ? "bg-white/20 border-transparent hover:bg-white/40" : "bg-black/20 border-transparent hover:bg-black/40")
+                    }`}
+                  >
+                    <h3 className={`font-ivyora text-3xl lg:text-4xl tracking-tight mb-2 transition-colors ${isActive ? (isLightMode ? "text-black" : "text-white") : (isLightMode ? "text-black/60" : "text-white/60")}`}>
+                      {p.label}
+                    </h3>
+                    <p className={`font-inter text-sm leading-snug transition-colors ${isActive ? (isLightMode ? "text-black/80" : "text-white/80") : (isLightMode ? "text-black/40" : "text-white/40")}`}>
+                      {p.summary}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right pane: Active Content */}
+          <div className="w-full lg:w-[65%] flex flex-col min-h-0">
             <motion.div
               key={activePain.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-              className="flex flex-col gap-6 lg:gap-8 w-full h-full"
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="flex flex-col gap-6 lg:gap-8 w-full"
             >
-              {/* Summary */}
-              <div className="text-center max-w-3xl mx-auto px-4 shrink-0">
-                <p className={`font-inter text-[18px] md:text-[28px] font-medium leading-snug drop-shadow-sm ${isLightMode ? "text-black" : "text-white"}`}>
-                  {activePain.summary}
-                </p>
-              </div>
-
-              {/* Data & Playbooks Grid */}
-              <div className="w-full flex flex-col lg:flex-row gap-6 mt-2 shrink-0">
-                
-                {/* Left: Problem / Outcome */}
-                <div className="flex-1 flex flex-col gap-4">
-                  <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/40 border-black/10" : "bg-black/40 border-white/10"}`}>
-                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+              {/* Problem & Outcome Row */}
+                <div className={`flex flex-col sm:flex-row gap-8 lg:gap-12 w-full pb-8 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
+                  <div className="flex-1 flex flex-col gap-4">
+                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                       The Problem
                     </div>
                     <ul className="flex flex-col gap-3">
                       {activePain.pains.map((p) => (
                         <li key={p} className="flex items-start gap-3">
                           <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLightMode ? "bg-[#19ad7d]" : "bg-[#19ad7d]"}`} />
-                          <span className={`font-inter text-[13px] md:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <span className={`font-inter text-[14px] lg:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
                             {p}
                           </span>
                         </li>
@@ -507,15 +435,15 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
                     </ul>
                   </div>
 
-                  <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/60 border-[#19ad7d]/20" : "bg-black/60 border-[#19ad7d]/20"}`}>
-                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                  <div className="flex-1 flex flex-col gap-4">
+                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
                       The Outcome
                     </div>
-                    <ul className="flex flex-col gap-4">
+                    <ul className="flex flex-col gap-3.5">
                       {activePain.outcomes.map((o) => (
                         <li key={o.value} className="flex items-center gap-3">
                           <CheckCircle2 size={18} strokeWidth={2.5} className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"} />
-                          <div className={`font-inter text-[13px] md:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <div className={`font-inter text-[14px] lg:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
                             <span className="font-bold">{o.value}</span> {o.label}
                           </div>
                         </li>
@@ -524,55 +452,20 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
                   </div>
                 </div>
 
-                {/* Right: Playbooks */}
-                <div className="flex-1 flex flex-col gap-4">
+                {/* Playbooks */}
+                <div className="flex flex-col">
+                  <div className={`font-inter text-[11px] font-bold uppercase tracking-[0.25em] mt-2 ${isLightMode ? "text-black/40" : "text-white/40"}`}>
+                    Playbooks
+                  </div>
                   {activePain.plays.map((play) => (
                     <PlaybookCard key={play.title} play={play} isLightMode={isLightMode} />
                   ))}
                 </div>
+              </motion.div>
+          </div>
 
-              </div>
-            </motion.div>
-          </AnimatePresence>
         </div>
       </div>
     </section>
-  );
-}
-
-export function Solutions() {
-  const { isLightMode } = useTheme();
-  const [mode, setMode] = useState<SalesMode>("field");
-  const content = MODE_CONTENT[mode];
-
-  return (
-    <>
-      <section className="relative flex flex-col items-center justify-start w-full px-4 pt-16 md:pt-24 lg:pt-32 pb-8 max-w-7xl mx-auto z-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center w-full relative z-10"
-        >
-          <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"} font-bold uppercase tracking-[0.25em] text-[11px]`}>
-            Tailored Solutions
-          </div>
-
-          <h1 className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[92px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? "text-black" : "text-[#f5f7fa]"}`}>
-            <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
-            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
-              <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
-            </span>
-          </h1>
-
-          <div className="mt-12 w-full flex justify-center">
-            <ModeToggle value={mode} onChange={setMode} isLightMode={isLightMode} />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Solutions content layout using the new Browser */}
-      <SolutionsBrowser key={mode} content={content} isLightMode={isLightMode} />
-    </>
   );
 }

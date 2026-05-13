@@ -80,6 +80,15 @@ export function Footer() {
             <Link href="/partners" className={LINK_COLUMN_CLASS}>
               Partners
             </Link>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                window.dispatchEvent(new CustomEvent("open-partner-modal"));
+              }}
+              className={LINK_COLUMN_CLASS}
+            >
+              Become a Partner
+            </button>
             <Link href={BOOK_DEMO_HREF} className={LINK_COLUMN_CLASS}>
               Book a demo
             </Link>

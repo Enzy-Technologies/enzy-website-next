@@ -1,34 +1,9 @@
-"use client";
+const fs = require('fs');
+const path = './src/app/Partners.tsx';
 
-import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
-import { useTheme } from "./components/ThemeProvider";
-import { BlurReveal } from "./components/BlurReveal";
-import { CTAButton } from "./components/CTAButton";
-import { X, ArrowRight, CheckCircle2, Zap, Network, Rocket } from "lucide-react";
-import Image from "next/image";
+let content = fs.readFileSync(path, 'utf8');
 
-const FadeInSection = ({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 30 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-100px" }}
-    transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1], delay }}
-    className={className}
-  >
-    {children}
-  </motion.div>
-);
-
-const LOGO_PLACEHOLDERS = [
+const newPlaceholders = `const LOGO_PLACEHOLDERS = [
   { 
     name: "Salesforce", 
     url: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg",
@@ -77,9 +52,23 @@ const LOGO_PLACEHOLDERS = [
     desc: "Keep your team aligned and motivated with Microsoft Teams integration. Broadcast achievements and leaderboard changes directly to your channels.",
     features: ["Achievement broadcasts", "Leaderboard alerts", "Team notifications"]
   },
-];
+];`;
 
-export function Partners() {
+content = content.replace(/const LOGO_PLACEHOLDERS = \[[\s\S]*?\];/, newPlaceholders);
+
+// Add missing imports
+if (!content.includes('AnimatePresence')) {
+  content = content.replace('import { motion, useScroll, useTransform } from "motion/react";', 'import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";');
+}
+if (!content.includes('useState')) {
+  content = content.replace('import React, { useRef } from "react";', 'import React, { useRef, useState } from "react";');
+}
+if (!content.includes('X,')) {
+  content = content.replace('import { ArrowRight, CheckCircle2, Zap, Network, Rocket } from "lucide-react";', 'import { X, ArrowRight, CheckCircle2, Zap, Network, Rocket } from "lucide-react";');
+}
+
+// Replace Partners function
+const newPartnersFunc = `export function Partners() {
   const { isLightMode } = useTheme();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -96,17 +85,17 @@ export function Partners() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center max-w-4xl"
           >
-            <div className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-6 md:mb-8 transition-colors duration-500 eyebrow ${
+            <div className={\`px-5 py-2 rounded-full border backdrop-blur-sm mb-6 md:mb-8 transition-colors duration-500 eyebrow \${
               isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'
-            }`}>
+            }\`}>
               Partner Network
             </div>
             
             <BlurReveal
               as="h1"
-              className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[0.95] tracking-[-2px] text-center transition-colors duration-500 ${
+              className={\`font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[0.95] tracking-[-2px] text-center transition-colors duration-500 \${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
-              }`}
+              }\`}
             >
               Integrated with the tools you use
             </BlurReveal>
@@ -114,9 +103,9 @@ export function Partners() {
             <BlurReveal
               as="p"
               delay={0.1}
-              className={`font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
+              className={\`font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 \${
                 isLightMode ? "text-black/60" : "text-white/60"
-              }`}
+              }\`}
             >
               Connect Enzy to your existing tech stack to automatically track activities, update records, and trigger actions.
             </BlurReveal>
@@ -131,28 +120,28 @@ export function Partners() {
           {LOGO_PLACEHOLDERS.map((logo, i) => (
             <FadeInSection key={i} delay={i * 0.05}>
               <motion.div 
-                layoutId={`partner-card-${logo.name}`}
+                layoutId={\`partner-card-\${logo.name}\`}
                 onClick={() => setSelectedId(logo.name)}
-                className={`aspect-[4/3] rounded-2xl border flex flex-col items-center justify-center p-6 transition-all duration-300 group cursor-pointer backdrop-blur-md ${
+                className={\`aspect-[4/3] rounded-2xl border flex flex-col items-center justify-center p-6 transition-all duration-300 group cursor-pointer \${
                   isLightMode 
-                    ? "border-black/5 bg-white/40 hover:bg-white/60 hover:border-black/10" 
-                    : "border-white/5 bg-black/20 hover:bg-black/40 hover:border-white/10"
-                }`}
+                    ? "border-black/5 bg-black/[0.02] hover:bg-black/5 hover:border-black/10" 
+                    : "border-white/5 bg-white/[0.02] hover:bg-white/5 hover:border-white/10"
+                }\`}
               >
                 <div className="flex-1 w-full flex items-center justify-center relative">
                    <Image 
                      src={logo.url} 
-                     alt={`${logo.name} integration`}
+                     alt={\`\${logo.name} integration\`}
                      width={120}
                      height={40}
-                     className={`object-contain transition-transform duration-300 group-hover:scale-110 ${
-                       isLightMode ? "" : "invert"
-                     }`}
+                     className={\`object-contain transition-transform duration-300 group-hover:scale-110 \${
+                       isLightMode ? "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100" : "grayscale invert opacity-60 group-hover:grayscale-0 group-hover:opacity-100"
+                     }\`}
                    />
                 </div>
-                <div className={`mt-4 w-full flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-inter text-xs font-semibold uppercase tracking-wider ${
+                <div className={\`mt-4 w-full flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-inter text-xs font-semibold uppercase tracking-wider \${
                   isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
-                }`}>
+                }\`}>
                   <span>{logo.name}</span>
                   <ArrowRight size={14} />
                 </div>
@@ -162,7 +151,7 @@ export function Partners() {
         </div>
 
         <FadeInSection delay={0.4} className="mt-16 text-center">
-          <p className={`font-inter text-sm md:text-base ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+          <p className={\`font-inter text-sm md:text-base \${isLightMode ? 'text-black/60' : 'text-white/60'}\`}>
             Don&apos;t see your tool? <button onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent("open-partner-modal")); }} className="text-[#19ad7d] hover:underline font-semibold">Become a Partner</button> and let us know what we should build next.
           </p>
         </FadeInSection>
@@ -181,70 +170,70 @@ export function Partners() {
             />
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
               <motion.div
-                layoutId={`partner-card-${selectedItem.name}`}
-                className={`relative overflow-hidden rounded-[32px] w-full max-w-4xl h-[auto] max-h-[85vh] pointer-events-auto flex flex-col md:flex-row liquid-glass ${
+                layoutId={\`partner-card-\${selectedItem.name}\`}
+                className={\`relative overflow-hidden rounded-[32px] w-full max-w-4xl h-[auto] max-h-[85vh] pointer-events-auto flex flex-col md:flex-row liquid-glass \${
                   isLightMode ? "bg-white/95 border-black/10" : "bg-[#0b0f14]/95 border-white/10"
-                }`}
+                }\`}
               >
                 {/* Left Half: Logo Display */}
                 <div
-                  className={`relative w-full md:w-[40%] h-[200px] md:h-auto flex-shrink-0 flex items-center justify-center p-8 ${
+                  className={\`relative w-full md:w-[40%] h-[200px] md:h-auto flex-shrink-0 flex items-center justify-center p-8 \${
                     isLightMode ? "bg-black/5" : "bg-white/5"
-                  }`}
+                  }\`}
                 >
                   <Image 
                      src={selectedItem.url} 
-                     alt={`${selectedItem.name} integration`}
+                     alt={\`\${selectedItem.name} integration\`}
                      width={180}
                      height={80}
-                     className={`object-contain ${
-                       isLightMode ? "" : "invert"
-                     }`}
+                     className={\`object-contain \${
+                       isLightMode ? "grayscale opacity-80" : "grayscale invert opacity-80"
+                     }\`}
                    />
                 </div>
 
                 {/* Right Half: Details */}
                 <div
-                  className={`flex-1 w-full md:w-[60%] border-t md:border-t-0 md:border-l p-8 md:p-12 flex flex-col relative z-20 overflow-y-auto ${
+                  className={\`flex-1 w-full md:w-[60%] border-t md:border-t-0 md:border-l p-8 md:p-12 flex flex-col relative z-20 overflow-y-auto \${
                     isLightMode
                       ? "border-black/10 text-black"
                       : "border-white/10 text-white"
-                  }`}
+                  }\`}
                 >
                   <button
                     onClick={() => setSelectedId(null)}
-                    className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${
+                    className={\`absolute top-6 right-6 p-2 rounded-full transition-colors \${
                       isLightMode
                         ? "bg-black/5 hover:bg-black/10 text-black"
                         : "bg-white/10 hover:bg-white/20 text-white"
-                    }`}
+                    }\`}
                   >
                     <X size={20} />
                   </button>
 
-                  <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-6 w-fit text-[11px] font-bold uppercase tracking-[0.2em] ${
+                  <div className={\`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-6 w-fit text-[11px] font-bold uppercase tracking-[0.2em] \${
                     isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"
-                  }`}>
+                  }\`}>
                     Integration
                   </div>
 
-                  <h2 className={`font-ivyora font-medium text-4xl md:text-5xl tracking-[-1px] mb-6 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <h2 className={\`font-ivyora font-medium text-4xl md:text-5xl tracking-[-1px] mb-6 \${isLightMode ? "text-black" : "text-white"}\`}>
                     {selectedItem.name}
                   </h2>
                   
-                  <p className={`font-inter text-base md:text-[17px] mb-8 leading-relaxed ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+                  <p className={\`font-inter text-base md:text-[17px] mb-8 leading-relaxed \${isLightMode ? "text-black/70" : "text-white/70"}\`}>
                     {selectedItem.desc}
                   </p>
 
                   <div className="mb-10">
-                    <h3 className={`font-inter text-[13px] font-bold uppercase tracking-widest mb-4 ${isLightMode ? "text-black/50" : "text-white/50"}`}>
+                    <h3 className={\`font-inter text-[13px] font-bold uppercase tracking-widest mb-4 \${isLightMode ? "text-black/50" : "text-white/50"}\`}>
                       Key Capabilities
                     </h3>
                     <ul className="flex flex-col gap-3">
                       {selectedItem.features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-3">
                           <CheckCircle2 size={18} className="text-[#19ad7d] shrink-0 mt-0.5" />
-                          <span className={`font-inter text-[15px] font-medium ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                          <span className={\`font-inter text-[15px] font-medium \${isLightMode ? "text-black/80" : "text-white/80"}\`}>
                             {feature}
                           </span>
                         </li>
@@ -265,4 +254,9 @@ export function Partners() {
       </AnimatePresence>
     </main>
   );
-}
+}`;
+
+content = content.replace(/export function Partners\(\) \{[\s\S]*$/, newPartnersFunc);
+
+fs.writeFileSync(path, content);
+console.log("Patched Partners.tsx");
