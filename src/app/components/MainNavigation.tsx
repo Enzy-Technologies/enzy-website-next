@@ -143,7 +143,7 @@ export function MainNavigation() {
     <>
       {/* Desktop Main Navigation */}
       <div 
-        className="hidden md:flex flex-col items-center absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50 pointer-events-auto"
+        className="hidden lg:flex flex-col items-center z-50 pointer-events-auto"
         onMouseLeave={handleMouseLeave}
       >
         {/* Main Navigation Items */}
@@ -335,7 +335,7 @@ export function MainNavigation() {
       </div>
 
       {/* Mobile header controls (theme + menu) */}
-      <div className="md:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
+      <div className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
         <button 
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -406,7 +406,7 @@ export function MainNavigation() {
             animate={{ opacity: 1, backdropFilter: 'blur(40px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             transition={{ duration: 0.4, ease: easeOutExpo }}
-            className={`fixed inset-0 z-[55] md:hidden pointer-events-auto overflow-y-auto ${
+            className={`fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto ${
               isLightMode 
                 ? 'bg-white/60' 
                 : 'bg-[#0b0f14]/80'

@@ -450,7 +450,7 @@ export function PixelCanvas() {
 
       // While holding: paint a subtle circular "glass" backing behind the gathered sphere
       // so it reads clearly (avoid any pill/rounded-rect shapes).
-      if (sphereT > 0.05) {
+      if (!autoConsumeRef.current && sphereT > 0.05) {
         const r = Math.min(width, height) * 0.22;
 
         const grad = ctx.createRadialGradient(
@@ -563,7 +563,8 @@ export function PixelCanvas() {
         let angNow = 0;
         if (sphereT > 0.001) {
           // Keep radius smaller so the full sphere fits in the widget window.
-          const sphereRadius = Math.min(width, height) * 0.24;
+          // If autoConsume is true, we want the particles to gather into a single point (the wand).
+          const sphereRadius = autoConsumeRef.current ? 0 : Math.min(width, height) * 0.24;
           sphereRadiusNow = sphereRadius;
 
           const theta = particle.sphereTheta;
@@ -605,7 +606,7 @@ export function PixelCanvas() {
           const y3 = sphereRadius * cosPhi;
           const z3 = sphereRadius * sinPhi * sinTheta;
 
-          const depth = (z3 / sphereRadius + 1) / 2; // 0..1
+          const depth = sphereRadius > 0 ? (z3 / sphereRadius + 1) / 2 : 0.5; // 0..1
           depthNow = depth;
           const perspective = 0.78 + depth * 0.28;
 
@@ -616,14 +617,17 @@ export function PixelCanvas() {
           const sy = targetY - renderY;
           const sDist = Math.sqrt(sx * sx + sy * sy) || 1;
 
-          const spherePull = (0.07 + 0.18 * sphereT) * (0.55 + 0.45 * depth);
+          // If autoConsume is true, pull them in much faster so they collapse into the wand
+          const pullMultiplier = autoConsumeRef.current ? 2.5 : 1;
+          const spherePull = (0.07 + 0.18 * sphereT) * (0.55 + 0.45 * depth) * pullMultiplier;
+          
           particle.vx += (sx / sDist) * spherePull * sphereT;
           particle.vy += (sy / sDist) * spherePull * sphereT;
 
           // "Finish" convergence: once strong, lerp into place quickly.
           if (sphereT > 0.92) {
-            particle.x += sx * 0.10;
-            particle.y += sy * 0.10;
+            particle.x += sx * (autoConsumeRef.current ? 0.25 : 0.10);
+            particle.y += sy * (autoConsumeRef.current ? 0.25 : 0.10);
             particle.vx *= 0.72;
             particle.vy *= 0.72;
           }
@@ -631,7 +635,11 @@ export function PixelCanvas() {
           // Collect points that are actually within the sphere surface for connections.
           const dxS = particle.x - sphereCenterX;
           const dyS = renderY - sphereCenterY;
-          inSphereNow = dxS * dxS + dyS * dyS <= (sphereRadius * 1.06) ** 2;
+          // If radius is 0, we just check if they are very close to the center
+          inSphereNow = autoConsumeRef.current 
+            ? (dxS * dxS + dyS * dyS <= 400) // within 20px of center
+            : (dxS * dxS + dyS * dyS <= (sphereRadius * 1.06) ** 2);
+            
           if (inSphereNow && sphereT > 0.35) {
             angNow = Math.atan2(dyS, dxS);
             inSpherePoints.push({
@@ -690,7 +698,7 @@ export function PixelCanvas() {
 
         // Fill the sphere interior so it feels complete.
         // We keep this subtle and only when the sphere is mostly formed.
-        if (sphereT > 0.74 && inSphereNow) {
+        if (!autoConsumeRef.current && sphereT > 0.74 && inSphereNow) {
           const fillT = Math.min(1, (sphereT - 0.74) / 0.22);
           const seed = particle.sphereTheta * 1000 + particle.sphereBand * 100;
           const jitter = (a: number) => Math.sin(seed + a) * 0.5 + 0.5; // 0..1
@@ -764,7 +772,7 @@ export function PixelCanvas() {
       lastHoldTargetRef.current = holdTargetRef.current;
 
       // Local filament connections: short, smooth segments (no scribbles).
-      if (sphereT > 0.74 && inSpherePoints.length > 0) {
+      if (!autoConsumeRef.current && sphereT > 0.74 && inSpherePoints.length > 0) {
         const maxDist = 44;
         const baseAlpha = isLightMode ? 0.14 : 0.16;
         ctx.lineWidth = 1;
@@ -814,7 +822,7 @@ export function PixelCanvas() {
       const formedNow =
         holding &&
         sphereT > 0.86 &&
-        inSpherePoints.length >= Math.floor(ambientParticlesRef.current.length * 0.62);
+        inSpherePoints.length >= Math.floor(ambientParticlesRef.current.length * (autoConsumeRef.current ? 0.4 : 0.62));
 
       if (holding) {
         if (formedNow) {
@@ -823,7 +831,11 @@ export function PixelCanvas() {
           sphereFormedAtRef.current = null;
         }
 
-        if (sphereFormedAtRef.current !== null && now - sphereFormedAtRef.current > 1400) {
+        // If autoConsume is true, we don't need to wait as long for it to hold the shape,
+        // because it's just sucking into a point and disappearing.
+        const holdTime = autoConsumeRef.current ? 400 : 1400;
+
+        if (sphereFormedAtRef.current !== null && now - sphereFormedAtRef.current > holdTime) {
           sphereReadyRef.current = true;
           
           if (autoConsumeRef.current) {

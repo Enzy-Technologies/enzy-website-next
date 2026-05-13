@@ -33,58 +33,66 @@ const STEPS: Step[] = [
 ];
 
 function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step: Step, index: number, totalSteps: number, isLightMode: boolean, scrollYProgress: any }) {
-  // Add an extra step to the total so the final card has a chance to stay on screen
-  // before the section unpins.
-  const animationSteps = totalSteps; 
-  const stepSize = 1 / animationSteps;
-  const startProgress = Math.max(0, (index - 1) * stepSize);
-  const endProgress = index * stepSize;
+  // Create distinct phases: Read -> Transition -> Read -> Transition -> Read
+  const totalUnits = totalSteps * 2 - 1;
+  const stepSize = 1 / totalUnits;
+  
+  const startProgress = index > 0 ? Number(((index * 2 - 1) * stepSize).toFixed(4)) : 0;
+  const endProgress = index > 0 ? Number(((index * 2) * stepSize).toFixed(4)) : 0;
 
-  const yPoints = [];
-  const yValues = [];
-  const scalePoints = [];
-  const scaleValues = [];
-  const overlayPoints = [];
-  const overlayValues = [];
+  const yPoints = [0];
+  const yValues = [index > 0 ? "100%" : "0%"];
+  const scalePoints = [0];
+  const scaleValues = [1];
+  const overlayPoints = [0];
+  const overlayValues = [0];
   
   if (index > 0) {
-    if (startProgress > 0) {
-      yPoints.push(0, startProgress, endProgress);
-      yValues.push("100vh", "100vh", "0vh");
-      scalePoints.push(0, startProgress, endProgress);
-      scaleValues.push(1, 1, 1);
-      overlayPoints.push(0, startProgress, endProgress);
-      overlayValues.push(0, 0, 0);
-    } else {
-      yPoints.push(0, endProgress);
-      yValues.push("100vh", "0vh");
-      scalePoints.push(0, endProgress);
-      scaleValues.push(1, 1);
-      overlayPoints.push(0, endProgress);
-      overlayValues.push(0, 0);
-    }
-  } else {
-    yPoints.push(0);
-    yValues.push("0vh");
-    scalePoints.push(0);
-    scaleValues.push(1);
-    overlayPoints.push(0);
-    overlayValues.push(0);
+    yPoints.push(startProgress, endProgress);
+    yValues.push("100%", "0%");
+    scalePoints.push(startProgress, endProgress);
+    scaleValues.push(1, 1);
+    overlayPoints.push(startProgress, endProgress);
+    overlayValues.push(0, 0);
   }
   
   for (let i = index + 1; i < totalSteps; i++) {
-    const i_start = (i - 1) * stepSize;
-    const i_end = i * stepSize;
-    const delayStart = i_start + (i_end - i_start) * 0.85; // Wait until next card is 85% up
+    const i_start = Number(((i * 2 - 1) * stepSize).toFixed(4));
+    const i_end = Number(((i * 2) * stepSize).toFixed(4));
     
-    yPoints.push(delayStart, i_end);
-    yValues.push(`-${(i - index - 1) * 2.5}vh`, `-${(i - index) * 2.5}vh`);
+    // Wait until the next card is 60% up before starting to dim this one
+    const delayStart = Number((i_start + (i_end - i_start) * 0.6).toFixed(4));
     
-    scalePoints.push(delayStart, i_end);
-    scaleValues.push(1 - (i - index - 1) * 0.05, 1 - (i - index) * 0.05);
+    // If delayStart is not the last point, push it to anchor the flat region
+    if (yPoints[yPoints.length - 1] !== delayStart) {
+      yPoints.push(delayStart);
+      yValues.push(`-${(i - index - 1) * 2.5}vh`);
+      
+      scalePoints.push(delayStart);
+      scaleValues.push(1 - (i - index - 1) * 0.05);
+      
+      overlayPoints.push(delayStart);
+      overlayValues.push((i - index - 1) * 0.3);
+    }
     
-    overlayPoints.push(delayStart, i_end);
-    overlayValues.push((i - index - 1) * 0.3, (i - index) * 0.3);
+    yPoints.push(i_end);
+    yValues.push(`-${(i - index) * 2.5}vh`);
+    
+    scalePoints.push(i_end);
+    scaleValues.push(1 - (i - index) * 0.05);
+    
+    overlayPoints.push(i_end);
+    overlayValues.push((i - index) * 0.3);
+  }
+
+  // Ensure arrays end at 1 to satisfy WAAPI scroll timelines
+  if (yPoints[yPoints.length - 1] < 1) {
+    yPoints.push(1);
+    yValues.push(yValues[yValues.length - 1]);
+    scalePoints.push(1);
+    scaleValues.push(scaleValues[scaleValues.length - 1]);
+    overlayPoints.push(1);
+    overlayValues.push(overlayValues[overlayValues.length - 1]);
   }
   
   const y = useTransform(scrollYProgress, yPoints, yValues);
@@ -95,7 +103,7 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
     <motion.div
       className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-16 px-8 sm:py-20 sm:px-12 md:py-24 md:px-16 lg:py-28 lg:px-20 flex flex-col md:flex-row gap-10 md:gap-20 items-start md:items-center justify-between transition-colors duration-500 origin-top ${
         isLightMode
-          ? "bg-[#f5f7fa] border-black/10 text-black"
+          ? "bg-white border-black/10 text-black"
           : "bg-[#0a0a0c] border-white/10 text-white"
       }`}
       style={{ 

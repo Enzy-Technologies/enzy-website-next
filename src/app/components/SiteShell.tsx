@@ -7,6 +7,8 @@ import { Header } from "./Header"
 import { Footer } from "./Footer"
 import { useTheme } from "./ThemeProvider"
 
+import { PartnerFormModal } from "./PartnerFormModal"
+
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { isLightMode } = useTheme()
   const pathname = usePathname()
@@ -34,6 +36,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
         {isLp ? null : <Footer />}
       </div>
+      <PartnerFormModal />
     </div>
   )
 }
