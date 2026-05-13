@@ -106,13 +106,13 @@ export function VisualizeSystemWidget() {
 
                   <span className="ml-3 flex flex-col items-start">
                     <span
-                      className={`font-['Inter'] text-[12.5px] font-semibold ${
+                      className={`font-inter text-[12.5px] font-semibold ${
                         isLightMode ? "text-brand-dark" : "text-brand-light"
                       }`}
                     >
                       Visualize your system
                     </span>
-                    <span className={`font-['Inter'] text-[11.5px] ${isLightMode ? "text-black/55" : "text-white/55"}`}>
+                    <span className={`font-inter text-[11.5px] ${isLightMode ? "text-black/55" : "text-white/55"}`}>
                       {isHolding ? "Release to disperse" : "Press & hold"}
                     </span>
                   </span>

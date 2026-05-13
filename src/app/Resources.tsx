@@ -136,8 +136,8 @@ export function Resources() {
 
         {/* Text Content */}
         <div className="relative z-10 flex flex-col p-8 md:p-10 max-w-[380px]">
-          <h3 className={`font-['Inter'] text-[20px] tracking-tight mb-2 ${item.textColor}`}>{item.title}</h3>
-          <p className={`font-['Inter'] text-[16px] leading-snug ${item.descColor}`}>{item.desc}</p>
+          <h3 className={`font-inter text-[20px] tracking-tight mb-2 ${item.textColor}`}>{item.title}</h3>
+          <p className={`font-inter text-[16px] leading-snug ${item.descColor}`}>{item.desc}</p>
         </div>
       </>
     );
@@ -174,14 +174,14 @@ export function Resources() {
           <BlurReveal
             as="h1"
             delay={0.1}
-            className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.9] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
+            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >
             Learn in minutes
           </BlurReveal>
           <p
-            className={`font-['Inter'] text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
+            className={`font-inter text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
               isLightMode ? "text-black/60" : "text-white/60"
             }`}
           >
@@ -256,10 +256,10 @@ export function Resources() {
                     <X size={20} />
                   </button>
 
-                  <h2 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl tracking-[-2px] mb-6 mt-4 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <h2 className={`font-ivyora font-medium text-4xl md:text-5xl tracking-[-2px] mb-6 mt-4 ${isLightMode ? "text-black" : "text-white"}`}>
                     {selectedItem.title}
                   </h2>
-                  <p className={`font-['Inter'] text-base md:text-[17px] mb-8 leading-relaxed whitespace-pre-line ${isLightMode ? "text-black/65" : "text-white/65"}`}>
+                  <p className={`font-inter text-base md:text-[17px] mb-8 leading-relaxed whitespace-pre-line ${isLightMode ? "text-black/65" : "text-white/65"}`}>
                     {selectedItem.content}
                   </p>
 

@@ -53,10 +53,10 @@ const ENZY_LOOP_STEPS = [
 function LoopCard({ step, index, totalSteps, isLightMode, scrollYProgress }: { step: any, index: number, totalSteps: number, isLightMode: boolean, scrollYProgress: any }) {
   // Add an extra step to the total so the final card has a chance to stay on screen
   // before the section unpins.
-  const animationSteps = totalSteps + 1;
+  const animationSteps = totalSteps;
   const stepSize = 1 / animationSteps;
-  const startProgress = index * stepSize;
-  const endProgress = (index + 1) * stepSize;
+  const startProgress = Math.max(0, (index - 1) * stepSize);
+  const endProgress = index * stepSize;
 
   const yPoints = [];
   const yValues = [];
@@ -91,12 +91,12 @@ function LoopCard({ step, index, totalSteps, isLightMode, scrollYProgress }: { s
   }
   
   for (let i = index + 1; i < totalSteps; i++) {
-    const i_start = i * stepSize;
-    const i_end = (i + 1) * stepSize;
-    const delayStart = i_start + (i_end - i_start) * 0.7; // Wait until next card is 70% up
+    const i_start = (i - 1) * stepSize;
+    const i_end = i * stepSize;
+    const delayStart = i_start + (i_end - i_start) * 0.85; // Wait until next card is 85% up
     
     yPoints.push(delayStart, i_end);
-    yValues.push(`-${(i - index - 1) * 4}vh`, `-${(i - index) * 4}vh`);
+    yValues.push(`-${(i - index - 1) * 2.5}vh`, `-${(i - index) * 2.5}vh`);
     
     scalePoints.push(delayStart, i_end);
     scaleValues.push(1 - (i - index - 1) * 0.05, 1 - (i - index) * 0.05);
@@ -111,7 +111,7 @@ function LoopCard({ step, index, totalSteps, isLightMode, scrollYProgress }: { s
 
   return (
     <motion.div
-      className={`absolute w-full rounded-[32px] border p-8 sm:p-12 md:p-16 flex flex-col md:flex-row gap-10 md:gap-16 items-start md:items-center justify-between transition-colors duration-500 origin-top overflow-hidden ${
+      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-16 px-8 sm:py-20 sm:px-12 md:py-24 md:px-16 lg:py-28 lg:px-20 flex flex-col md:flex-row gap-10 md:gap-20 items-start md:items-center justify-between transition-colors duration-500 origin-top ${
         isLightMode
           ? "bg-[#f5f7fa] border-black/10 text-black"
           : "bg-[#0a0a0c] border-white/10 text-white"
@@ -121,31 +121,31 @@ function LoopCard({ step, index, totalSteps, isLightMode, scrollYProgress }: { s
         scale,
         zIndex: index + 10,
         boxShadow: isLightMode 
-          ? "0 -30px 80px -20px rgba(0,0,0,0.15), 0 25px 50px -12px rgba(0,0,0,0.1)" 
-          : "0 -30px 80px -20px rgba(0,0,0,0.6), 0 25px 50px -12px rgba(0,0,0,0.4)"
+          ? "0 -15px 40px rgba(0,0,0,0.08), 0 25px 50px -12px rgba(0,0,0,0.1)" 
+          : "0 -15px 40px rgba(0,0,0,0.4), 0 25px 50px -12px rgba(0,0,0,0.4)"
       }}
     >
       <motion.div 
-        className="absolute inset-0 bg-black pointer-events-none z-0"
+        className="absolute inset-0 bg-black rounded-[32px] pointer-events-none z-0"
         style={{ opacity: overlayOpacity }}
         initial={{ opacity: 0 }}
       />
       
       <div className="relative z-10 flex flex-col gap-6 max-w-xl">
-        <div className={`font-['Inter'] text-[11px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+        <div className={`font-inter text-[11px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
           PHASE {step.numeral}
         </div>
-        <h3 className={`font-['Inter'] font-black uppercase text-[40px] sm:text-[56px] leading-[0.9] tracking-[-1.5px] ${isLightMode ? "text-black" : "text-white"}`}>
+        <h3 className={`font-ivyora font-medium text-[48px] sm:text-[64px] leading-[0.95] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
           {step.title}
         </h3>
-        <p className={`font-['Inter'] text-[16px] sm:text-[18px] md:text-[20px] font-medium leading-snug mt-2 ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+        <p className={`font-inter text-[18px] sm:text-[20px] md:text-[24px] font-medium leading-snug mt-2 ${isLightMode ? "text-black/70" : "text-white/70"}`}>
           {step.body}
         </p>
       </div>
       
-      <div className={`relative z-10 shrink-0 flex items-center justify-center w-28 h-28 md:w-40 md:h-40 rounded-full border ${isLightMode ? "border-black/10 bg-black/5" : "border-white/10 bg-white/5"}`}>
+      <div className={`relative z-10 shrink-0 flex items-center justify-center w-40 h-40 md:w-64 md:h-64 rounded-full border ${isLightMode ? "border-black/10 bg-black/5" : "border-white/10 bg-white/5"}`}>
         <span
-          className={`font-['Inter'] text-[12px] md:text-[14px] font-bold tracking-[0.18em] uppercase ${
+          className={`font-inter text-[16px] md:text-[20px] font-bold tracking-[0.18em] uppercase ${
             isLightMode
               ? "text-black/60"
               : "text-white/60"
@@ -168,21 +168,21 @@ function TheEnzyLoop({ isLightMode }: { isLightMode: boolean }) {
 
   return (
     <div ref={containerRef} className="relative w-full h-[400vh]">
-      <div className="sticky top-0 h-screen w-full flex flex-col items-center justify-center max-w-6xl mx-auto px-4">
-        <div className="flex flex-col items-center justify-center text-center mb-10 md:mb-16 shrink-0 mt-20">
+      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto px-4 pt-24 lg:pt-32">
+        <div className="flex flex-col items-center justify-center text-center mb-8 shrink-0">
           <p
-            className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+            className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
               isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
             } mb-6`}
           >
             003 — How it works
           </p>
-          <h2 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl leading-[0.95] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
+          <h2 className={`font-ivyora font-medium text-5xl md:text-7xl leading-[0.95] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
             The Enzy Loop
           </h2>
         </div>
 
-        <div className="relative w-full flex-1 flex items-center justify-center min-h-[400px] mb-20 max-w-[1000px] mx-auto">
+        <div className="relative w-full flex-1 flex items-start justify-center max-w-[1000px] mx-auto pb-10">
           {ENZY_LOOP_STEPS.map((step, idx) => (
             <LoopCard 
               key={step.title} 
@@ -235,7 +235,7 @@ export function About() {
         <FadeInSection>
           <section className="pt-2 pb-12 md:pb-16" data-section="001">
             <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
                 isLightMode ? "text-black/45" : "text-white/40"
               }`}
             >
@@ -244,12 +244,12 @@ export function About() {
             <BlurReveal
               as="h1"
               delay={0.1}
-              className={`mt-5 font-['IvyOra_Text'] font-medium tracking-[-2px] leading-[1.03] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
+              className={`mt-5 font-ivyora font-medium tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
             >
               Performance is the largest untapped lever in your business.
             </BlurReveal>
             <p
-              className={`mt-6 font-['Inter'] text-[16px] md:text-[18px] leading-relaxed max-w-2xl ${pageBody}`}
+              className={`mt-6 font-inter text-[16px] md:text-[18px] leading-relaxed max-w-2xl ${pageBody}`}
             >
               EnzyAI is the AI operating layer that turns scattered work data
               into decisions that compound. Built for companies who measure
@@ -263,7 +263,7 @@ export function About() {
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="002">
             <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
                 isLightMode ? "text-black/45" : "text-white/40"
               }`}
             >
@@ -286,7 +286,7 @@ export function About() {
                 />
                 <p className="eyebrow text-[#19ad7d] mb-3">Today</p>
                 <p
-                  className={`font-['Inter'] text-[20px] md:text-[24px] font-semibold tracking-tight ${
+                  className={`font-inter text-[20px] md:text-[24px] font-semibold tracking-tight ${
                     isLightMode ? "text-black" : "text-white"
                   }`}
                 >
@@ -306,7 +306,7 @@ export function About() {
                   ].map((chip) => (
                     <li
                       key={chip}
-                      className={`px-3 py-2 rounded-full border text-[12px] font-['Inter'] font-semibold tracking-tight ${
+                      className={`px-3 py-2 rounded-full border text-[12px] font-inter font-semibold tracking-tight ${
                         isLightMode
                           ? "border-black/10 bg-white/70 text-black/70"
                           : "border-white/12 bg-white/[0.07] text-white/70"
@@ -333,7 +333,7 @@ export function About() {
                 />
                 <p className="eyebrow text-[#19ad7d] mb-3">With EnzyAI</p>
                 <p
-                  className={`font-['Inter'] text-[20px] md:text-[24px] font-semibold tracking-tight ${
+                  className={`font-inter text-[20px] md:text-[24px] font-semibold tracking-tight ${
                     isLightMode ? "text-black" : "text-white"
                   }`}
                 >
@@ -349,7 +349,7 @@ export function About() {
                 >
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.22)_0%,transparent_60%)]" />
                   <span
-                    className={`relative font-['Inter'] text-[14px] md:text-[15px] font-extrabold tracking-[0.22em] uppercase ${
+                    className={`relative font-inter text-[14px] md:text-[15px] font-extrabold tracking-[0.22em] uppercase ${
                       isLightMode ? "text-black/70" : "text-white/70"
                     }`}
                   >
@@ -370,7 +370,7 @@ export function About() {
               }`}
             >
               <p
-                className={`font-['IvyOra_Text'] text-[28px] md:text-[40px] leading-[1.08] tracking-[-1.2px] ${
+                className={`font-ivyora text-[28px] md:text-[40px] leading-[1.08] tracking-[-1.2px] ${
                   isLightMode ? "text-black" : "text-white"
                 }`}
               >
@@ -379,7 +379,7 @@ export function About() {
               <cite className="mt-6 not-italic flex items-center gap-3">
                 <span className="h-px w-10 bg-[#19ad7d]/60" />
                 <span
-                  className={`font-['Inter'] text-[12px] font-semibold tracking-[0.18em] uppercase ${
+                  className={`font-inter text-[12px] font-semibold tracking-[0.18em] uppercase ${
                     isLightMode ? "text-black/50" : "text-white/45"
                   }`}
                 >
@@ -399,7 +399,7 @@ export function About() {
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="004">
             <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
                 isLightMode ? "text-black/45" : "text-white/40"
               }`}
             >
@@ -420,7 +420,7 @@ export function About() {
                   }`}
                 >
                   <dt
-                    className={`font-['Inter'] font-extrabold tracking-[-2px] leading-none ${
+                    className={`font-inter font-extrabold tracking-[-2px] leading-none ${
                       isLightMode ? "text-black" : "text-white"
                     } text-[48px] md:text-[56px]`}
                   >
@@ -434,7 +434,7 @@ export function About() {
                     </span>
                   </dt>
                   <dd
-                    className={`mt-3 font-['Inter'] text-[13px] md:text-[14px] leading-relaxed ${
+                    className={`mt-3 font-inter text-[13px] md:text-[14px] leading-relaxed ${
                       isLightMode ? "text-black/60" : "text-white/60"
                     }`}
                   >
@@ -450,7 +450,7 @@ export function About() {
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="005">
             <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
                 isLightMode ? "text-black/45" : "text-white/40"
               }`}
             >
@@ -503,7 +503,7 @@ export function About() {
                       className={`w-16 h-16 rounded-full flex items-center justify-center ring-1 ring-inset ${portraitBg} ${portraitRing}`}
                     >
                       <span
-                        className={`font-['Inter'] font-extrabold tracking-[0.12em] ${
+                        className={`font-inter font-extrabold tracking-[0.12em] ${
                           isLightMode ? "text-black/75" : "text-white/75"
                         }`}
                       >
@@ -512,21 +512,21 @@ export function About() {
                     </div>
 
                     <p
-                      className={`mt-5 font-['Inter'] text-[16px] font-semibold ${
+                      className={`mt-5 font-inter text-[16px] font-semibold ${
                         isLightMode ? "text-black" : "text-white"
                       }`}
                     >
                       {p.name}
                     </p>
                     <p
-                      className={`mt-1 font-['Inter'] text-[12px] font-semibold tracking-[0.18em] uppercase ${
+                      className={`mt-1 font-inter text-[12px] font-semibold tracking-[0.18em] uppercase ${
                         isLightMode ? "text-black/50" : "text-white/45"
                       }`}
                     >
                       {p.role}
                     </p>
                     <p
-                      className={`mt-4 font-['Inter'] text-[14px] leading-relaxed ${
+                      className={`mt-4 font-inter text-[14px] leading-relaxed ${
                         isLightMode ? "text-black/65" : "text-white/65"
                       }`}
                     >
@@ -549,7 +549,7 @@ export function About() {
                   (i) => (
                     <li
                       key={i}
-                      className={`px-4 py-2 rounded-full border text-[12px] font-['Inter'] font-semibold tracking-tight ${
+                      className={`px-4 py-2 rounded-full border text-[12px] font-inter font-semibold tracking-tight ${
                         isLightMode
                           ? "border-black/10 bg-white/60 text-black/70"
                           : "border-white/12 bg-white/[0.05] text-white/70"
@@ -568,7 +568,7 @@ export function About() {
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="006">
             <p
-              className={`font-['Inter'] text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
+              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
                 isLightMode ? "text-black/45" : "text-white/40"
               }`}
             >
@@ -591,7 +591,7 @@ export function About() {
               />
 
               <h2
-                className={`relative z-10 font-['IvyOra_Text'] font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl ${
+                className={`relative z-10 font-ivyora font-medium tracking-[-2px] leading-[0.95] text-3xl md:text-5xl ${
                   isLightMode ? "text-black" : "text-white"
                 }`}
               >
@@ -609,7 +609,7 @@ export function About() {
                 </CTAButton>
                 <Link
                   href="/resources"
-                  className={`w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-['Inter'] text-sm font-semibold rounded-full transition-colors ${
+                  className={`w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-inter text-sm font-semibold rounded-full transition-colors ${
                     isLightMode
                       ? "text-black/70 hover:text-black hover:bg-black/5 border border-black/10"
                       : "text-white/70 hover:text-white hover:bg-white/[0.06] border border-white/10"
@@ -625,7 +625,7 @@ export function About() {
         {/* About footer */}
         <footer className="pt-2 pb-6">
           <div
-            className={`flex flex-col md:flex-row md:items-center md:justify-between gap-2 font-['Inter'] text-[12px] tracking-tight ${
+            className={`flex flex-col md:flex-row md:items-center md:justify-between gap-2 font-inter text-[12px] tracking-tight ${
               isLightMode ? "text-black/45" : "text-white/40"
             }`}
           >

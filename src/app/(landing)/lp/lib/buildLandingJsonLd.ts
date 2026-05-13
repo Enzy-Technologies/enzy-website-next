@@ -18,7 +18,7 @@ export function buildLandingJsonLd(config: LandingPageConfig): Record<string, un
     },
   ];
 
-  if (!isLandingHomeConfig(config) && config.sections.includes("faq")) {
+  if (!isLandingHomeConfig(config) && config.sections?.includes("faq")) {
     graph.push({
       "@context": "https://schema.org",
       "@type": "FAQPage",

@@ -7,26 +7,52 @@ import { useTheme } from "@/app/components/ThemeProvider";
 type HeroVideoPlaceholderProps = {
   label?: string;
   id?: string;
+  /** Widen for LP hero rails (default keeps homepage proportions). */
+  variant?: "default" | "lp";
+  className?: string;
+  /** Inside a custom LP frame — omit outer glow and card chrome. */
+  embedded?: boolean;
 };
 
 /** Static placeholder until a hosted video URL is wired in from LP config later. */
-export function HeroVideoPlaceholder({ label = "Product video coming soon", id }: HeroVideoPlaceholderProps) {
+export function HeroVideoPlaceholder({
+  label = "Product video coming soon",
+  id,
+  variant = "default",
+  className,
+  embedded = false,
+}: HeroVideoPlaceholderProps) {
   const { isLightMode } = useTheme();
+  const widthCls =
+    variant === "lp" ? "w-full max-w-[min(100%,920px)] mx-auto" : "relative w-full max-w-[480px]";
+
+  const radius =
+    embedded
+      ? "rounded-none"
+      : variant === "lp"
+        ? "rounded-[20px] sm:rounded-[28px] md:rounded-[32px] lg:rounded-[36px]"
+        : "rounded-[28px]";
+
+  const chrome = embedded
+    ? "border-0 shadow-none"
+    : `border shadow-[0_40px_120px_rgba(0,0,0,0.45),0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)] ${
+        isLightMode ? "border-black/10" : "border-white/[0.08]"
+      }`;
 
   return (
-    <div className="relative w-full max-w-[480px]" id={id}>
+    <div className={`relative ${widthCls} ${className ?? ""}`.trim()} id={id}>
+      {!embedded ? (
+        <div
+          className="pointer-events-none absolute -inset-4 rounded-[40px] opacity-60"
+          style={{
+            background:
+              "radial-gradient(60% 50% at 50% 30%, rgba(25,173,125,0.16), transparent 70%)",
+          }}
+          aria-hidden
+        />
+      ) : null}
       <div
-        className="pointer-events-none absolute -inset-4 rounded-[40px] opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 50% 30%, rgba(25,173,125,0.16), transparent 70%)",
-        }}
-        aria-hidden
-      />
-      <div
-        className={`relative aspect-video w-full overflow-hidden rounded-[28px] border shadow-[0_40px_120px_rgba(0,0,0,0.45),0_12px_40px_rgba(0,0,0,0.28),inset_0_1px_0_rgba(255,255,255,0.08)] ${
-          isLightMode ? "border-black/10" : "border-white/[0.08]"
-        }`}
+        className={`relative aspect-video w-full overflow-hidden ${radius} ${chrome}`}
         style={{
           background: isLightMode
             ? "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.92) 100%)"
@@ -52,7 +78,7 @@ export function HeroVideoPlaceholder({ label = "Product video coming soon", id }
             <Play className="ml-1 h-7 w-7 text-[#19ad7d]" fill="currentColor" />
           </span>
           <p
-            className={`m-0 max-w-[280px] font-['Inter'] text-[13px] font-medium leading-relaxed ${
+            className={`m-0 max-w-[280px] font-inter text-[13px] font-medium leading-relaxed ${
               isLightMode ? "text-black/55" : "text-white/55"
             }`}
           >

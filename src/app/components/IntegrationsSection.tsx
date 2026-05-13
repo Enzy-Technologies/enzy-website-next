@@ -70,15 +70,15 @@ function IntegrationPill({ url }: { url: string }) {
 export function IntegrationsSection() {
   const { isLightMode } = useTheme();
   return (
-    <section className="relative z-10 w-full flex justify-center overflow-hidden px-[0px] py-[24px] bg-transparent">
+    <section className="relative z-10 w-full flex justify-center px-[0px] py-[24px] bg-transparent">
       <div className="w-full max-w-[1280px] flex flex-col lg:flex-row items-center justify-between gap-16 lg:gap-8">
         
         {/* Left side: Floating logos grid */}
         <div 
-          className="flex gap-4 md:gap-5 items-center justify-center w-full lg:w-1/2 relative h-[500px] md:h-[600px] overflow-hidden"
+          className="flex gap-4 md:gap-5 items-center justify-center w-full lg:w-1/2 relative h-[500px] md:h-[600px] -my-32 py-32 -mx-4 px-4 lg:-mx-8 lg:px-8"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)', 
-            WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)' 
+            maskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, transparent, black 20%, black 80%, transparent)' 
           }}
         >
           {/* Column 1 */}
@@ -119,7 +119,7 @@ export function IntegrationsSection() {
         <div className="flex flex-col items-start w-full lg:w-1/2 gap-8 px-[16px] py-[0px]">
           <div className="flex flex-col relative w-full">
             <h2
-              className={`font-['Inter'] font-semibold text-[64px] md:text-8xl lg:text-[96px] tracking-[-5px] leading-none mb-2 ${
+              className={`font-ivyora font-medium text-[64px] md:text-8xl lg:text-[96px] tracking-[-2px] leading-[0.95] mb-2 ${
                 isLightMode ? "text-[#0b0f14]" : "text-[#f5f7fa]"
               }`}
             >
@@ -127,7 +127,7 @@ export function IntegrationsSection() {
             </h2>
           </div>
           <p
-            className={`font-['Inter'] text-xl max-w-[500px] leading-relaxed ${
+            className={`font-inter text-xl max-w-[500px] leading-relaxed ${
               isLightMode ? "text-black/75" : "text-white/75"
             }`}
           >

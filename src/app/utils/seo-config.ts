@@ -25,4 +25,8 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
     title: "About Enzy",
     description: "Why Enzy exists: a simpler, AI-first way to drive daily execution, engagement, and results.",
   },
+  partners: {
+    title: "Partners - Integrate with Enzy",
+    description: "Partner with Enzy to deliver a complete performance system. See how we connect with your data and tools.",
+  },
 };

@@ -39,6 +39,7 @@ export function PixelCanvas() {
   const sphereReadyRef = useRef(false);
   const lastHoldingRef = useRef(false);
   const gatherBoostedRef = useRef(false);
+  const autoConsumeRef = useRef(false);
   const holdTargetRef = useRef<{ x: number; y: number } | null>(null);
   const renderCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastHoldTargetRef = useRef<{ x: number; y: number } | null>(null);
@@ -89,11 +90,24 @@ export function PixelCanvas() {
 
   useEffect(() => {
     const onSphere = (e: Event) => {
-      const ev = e as CustomEvent<{ active: boolean; x: number; y: number }>;
+      const ev = e as CustomEvent<{ active?: boolean; triggerClick?: boolean; x: number; y: number; force?: boolean }>;
       if (!ev.detail) return;
-      if (easterEggConsumedRef.current) return;
+      if (easterEggConsumedRef.current && !ev.detail.force) return;
+      
+      const isActive = ev.detail.triggerClick ? true : !!ev.detail.active;
+      
+      if (isActive) {
+        // If forced, reset consumption state so the animation can play
+        if (ev.detail.force) {
+          easterEggConsumedRef.current = false;
+        }
+        if (ev.detail.triggerClick) {
+          autoConsumeRef.current = true;
+        }
+      }
+      
       // Starting a new hold should reset readiness tracking.
-      if (ev.detail.active && !sphereFocusRef.current.active) {
+      if (isActive && !sphereFocusRef.current.active) {
         sphereFormedAtRef.current = null;
         sphereReadyRef.current = false;
 
@@ -136,12 +150,27 @@ export function PixelCanvas() {
           gatherBoostedRef.current = true;
         }
       }
-      sphereFocusRef.current.active = ev.detail.active;
+      sphereFocusRef.current.active = isActive;
       sphereFocusRef.current.x = ev.detail.x;
       sphereFocusRef.current.y = ev.detail.y;
-      if (ev.detail.active) {
+      
+      // Manually trigger begin/end logic since we removed the event listeners
+      if (isActive) {
+        const cx = Math.max(24, Math.min(window.innerWidth - 24, ev.detail.x));
+        const viewportH = window.innerHeight;
+        const viewportW = window.innerWidth;
+        const sphereRadius = Math.min(viewportW, viewportH) * 0.24;
+        const margin = 18;
+        const cy = Math.max(sphereRadius + margin, Math.min(viewportH - sphereRadius - margin, ev.detail.y));
+        holdTargetRef.current = { x: cx, y: cy };
+        easterEggHoldingRef.current = true;
+        
         // Snap partway in immediately so the gather feels responsive on touch.
         sphereFocusRef.current.strength = Math.max(sphereFocusRef.current.strength, 0.22);
+      } else {
+        easterEggHoldingRef.current = false;
+        holdTargetRef.current = null;
+        autoConsumeRef.current = false;
       }
     };
 
@@ -199,18 +228,18 @@ export function PixelCanvas() {
       const cy = Math.max(sphereRadius + margin, Math.min(viewportH - sphereRadius - margin, y));
       holdTargetRef.current = { x: cx, y: cy };
       easterEggHoldingRef.current = true;
-      window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
+      // window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
     };
 
     const end = () => {
       easterEggHoldingRef.current = false;
       holdTargetRef.current = null;
       setSelectionDisabled(false);
-      window.dispatchEvent(
-        new CustomEvent("enzy-pixel-sphere", {
-          detail: { active: false, x: sphereFocusRef.current.x, y: sphereFocusRef.current.y },
-        })
-      );
+      // window.dispatchEvent(
+      //   new CustomEvent("enzy-pixel-sphere", {
+      //     detail: { active: false, x: sphereFocusRef.current.x, y: sphereFocusRef.current.y },
+      //   })
+      // );
     };
 
     const onPointerDown = (e: PointerEvent) => {
@@ -272,18 +301,18 @@ export function PixelCanvas() {
       end();
     };
 
-    window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: false });
-    window.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
-    window.addEventListener("pointerup", onPointerUpOrCancel, { capture: true });
-    window.addEventListener("pointercancel", onPointerUpOrCancel, { capture: true });
+    // window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: false });
+    // window.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
+    // window.addEventListener("pointerup", onPointerUpOrCancel, { capture: true });
+    // window.addEventListener("pointercancel", onPointerUpOrCancel, { capture: true });
 
     return () => {
       if (pressTimer !== null) window.clearTimeout(pressTimer);
       setSelectionDisabled(false);
-      window.removeEventListener("pointerdown", onPointerDown, { capture: true } as any);
-      window.removeEventListener("pointermove", onPointerMove, { capture: true } as any);
-      window.removeEventListener("pointerup", onPointerUpOrCancel, { capture: true } as any);
-      window.removeEventListener("pointercancel", onPointerUpOrCancel, { capture: true } as any);
+      // window.removeEventListener("pointerdown", onPointerDown, { capture: true } as any);
+      // window.removeEventListener("pointermove", onPointerMove, { capture: true } as any);
+      // window.removeEventListener("pointerup", onPointerUpOrCancel, { capture: true } as any);
+      // window.removeEventListener("pointercancel", onPointerUpOrCancel, { capture: true } as any);
     };
   }, []);
 
@@ -796,6 +825,13 @@ export function PixelCanvas() {
 
         if (sphereFormedAtRef.current !== null && now - sphereFormedAtRef.current > 1400) {
           sphereReadyRef.current = true;
+          
+          if (autoConsumeRef.current) {
+            // Auto trigger release
+            easterEggHoldingRef.current = false;
+            autoConsumeRef.current = false;
+            // The next frame will catch releasedThisFrame
+          }
         }
       }
 

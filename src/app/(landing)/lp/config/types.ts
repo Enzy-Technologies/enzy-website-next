@@ -57,13 +57,14 @@ export type LandingPageConfigHome = {
   seo: LandingSeoConfig;
 };
 
-/** Long-form landing built from `LandingPageTemplate` sections. */
+/** Marketing landing: fixed stack (hero → optional embed video → evidence → testimonial → features) + sticky demo CTA. */
 export type LandingPageConfigMarketing = {
   slug: string;
   seo: LandingSeoConfig;
   layout?: "marketing";
   hero: LandingHeroConfig;
-  sections: LandingSectionKey[];
+  /** @deprecated Ignored; section order is fixed. Kept for backward compatibility with older configs. */
+  sections?: LandingSectionKey[];
   socialProof?: LandingMarketingSocialProof;
   productVideo?: LandingMarketingProductVideo;
 };

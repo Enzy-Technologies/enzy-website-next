@@ -4,7 +4,7 @@ import type { LandingPageConfig } from "./types";
  * Landing pages keyed by URL slug (`/lp/<slug>`).
  *
  * Duplicate quickly:
- * 1. Copy `fieldsales` (home-style) or define a marketing block with `hero` + `sections`
+ * 1. Copy `fieldsales` (home-style) or define a marketing block with `hero` + optional `productVideo`
  *    (see `LandingPageTemplate`).
  * 2. Use `layout: "home"` when you want the same stack as `/` plus LP hero (video placeholder,
  *    oversized Book demo — no playground, no site nav/footer shell on `/lp/*`).
@@ -45,7 +45,6 @@ export const LANDING_PAGES: Record<string, LandingPageConfig> = {
       subhead: "…",
       primaryCta: { label: "Book a demo", href: BOOK_DEMO_HREF },
     },
-    sections: ["socialProof", "productVideo", "howItWorks", "faq"],
     socialProof: { eyebrow: "…", line: "…" },
     productVideo: { title: "…", embedSrc: "https://www.youtube.com/embed/…" },
   },

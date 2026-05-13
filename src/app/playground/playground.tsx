@@ -57,14 +57,14 @@ export function Playground() {
           <BlurReveal
             as="h1"
             delay={0.1}
-            className={`font-['IvyOra_Text'] font-medium tracking-[-2px] leading-[1.05] text-[44px] sm:text-[56px] md:text-[72px] ${
+            className={`font-ivyora font-medium tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] ${
               isLightMode ? "text-[#0b0f14]" : "text-[#f5f7fa]"
             }`}
           >
             AI Playground
           </BlurReveal>
           <p
-            className={`font-['Inter'] text-[16px] md:text-[18px] leading-relaxed max-w-[720px] ${
+            className={`font-inter text-[16px] md:text-[18px] leading-relaxed max-w-[720px] ${
               isLightMode ? "text-black/60" : "text-white/60"
             }`}
           >
@@ -75,10 +75,10 @@ export function Playground() {
         {/* Question flow */}
         <div className="w-full rounded-[28px] p-6 md:p-8 liquid-glass">
           <div className="flex items-center justify-between gap-4 mb-6">
-            <div className={`font-['Inter'] text-sm font-semibold ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+            <div className={`font-inter text-sm font-semibold ${isLightMode ? "text-black/70" : "text-white/70"}`}>
               Setup
             </div>
-            <div className={`font-['Inter'] text-xs ${isLightMode ? "text-black/40" : "text-white/40"}`}>
+            <div className={`font-inter text-xs ${isLightMode ? "text-black/40" : "text-white/40"}`}>
               Step {step + 1} of 4
             </div>
           </div>
@@ -94,10 +94,10 @@ export function Playground() {
                 className="flex flex-col gap-5"
               >
                 <div>
-                  <div className={`font-['Inter'] text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                     Who are you setting this up for?
                   </div>
-                  <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                     We’ll tailor the prompts and outputs to match how you work.
                   </div>
                 </div>
@@ -119,10 +119,10 @@ export function Playground() {
                             : "border-white/10 hover:border-white/20 hover:bg-white/5"
                       }`}
                     >
-                      <div className={`font-['Inter'] font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                         {o.title}
                       </div>
-                      <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                      <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                         {o.desc}
                       </div>
                     </button>
@@ -141,10 +141,10 @@ export function Playground() {
                 className="flex flex-col gap-5"
               >
                 <div>
-                  <div className={`font-['Inter'] text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                     What do you want to improve first?
                   </div>
-                  <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                     We’ll prioritize the most relevant workflow.
                   </div>
                 </div>
@@ -166,10 +166,10 @@ export function Playground() {
                             : "border-white/10 hover:border-white/20 hover:bg-white/5"
                       }`}
                     >
-                      <div className={`font-['Inter'] font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                         {o.title}
                       </div>
-                      <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                      <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                         {o.desc}
                       </div>
                     </button>
@@ -188,10 +188,10 @@ export function Playground() {
                 className="flex flex-col gap-5"
               >
                 <div>
-                  <div className={`font-['Inter'] text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                     What’s your primary CRM?
                   </div>
-                  <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                     This changes the pre-filled demo and the language we use.
                   </div>
                 </div>
@@ -213,10 +213,10 @@ export function Playground() {
                             : "border-white/10 hover:border-white/20 hover:bg-white/5"
                       }`}
                     >
-                      <div className={`font-['Inter'] font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                         {o.title}
                       </div>
-                      <div className={`font-['Inter'] text-xs mt-1 ${isLightMode ? "text-black/50" : "text-white/50"}`}>
+                      <div className={`font-inter text-xs mt-1 ${isLightMode ? "text-black/50" : "text-white/50"}`}>
                         Used to seed the demo.
                       </div>
                     </button>
@@ -237,10 +237,10 @@ export function Playground() {
                 <div className="flex items-start gap-3">
                   <CheckCircle2 className="text-[#19ad7d] mt-0.5" size={20} />
                   <div>
-                    <div className={`font-['Inter'] text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
+                    <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
                       Your experience is ready.
                     </div>
-                    <div className={`font-['Inter'] text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                    <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                       We curated prompts + outputs for <span className="text-[#19ad7d] font-semibold">{scenarioKey}</span> using{" "}
                       <span className="text-[#19ad7d] font-semibold">{stack}</span>.
                     </div>
@@ -264,7 +264,7 @@ export function Playground() {
             <button
               type="button"
               onClick={() => setStep((s) => (s > 0 ? ((s - 1) as any) : s))}
-              className={`text-sm font-['Inter'] font-semibold px-3 py-2 rounded-xl transition-colors ${
+              className={`text-sm font-inter font-semibold px-3 py-2 rounded-xl transition-colors ${
                 isLightMode ? "text-black/60 hover:bg-black/5" : "text-white/60 hover:bg-white/5"
               }`}
               disabled={step === 0}
@@ -274,7 +274,7 @@ export function Playground() {
             <button
               type="button"
               onClick={() => setStep((s) => (s < 3 ? ((s + 1) as any) : s))}
-              className={`text-sm font-['Inter'] font-semibold px-3 py-2 rounded-xl transition-colors ${
+              className={`text-sm font-inter font-semibold px-3 py-2 rounded-xl transition-colors ${
                 isLightMode ? "text-black/60 hover:bg-black/5" : "text-white/60 hover:bg-white/5"
               }`}
               disabled={step === 3}
