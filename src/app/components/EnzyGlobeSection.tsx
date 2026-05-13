@@ -217,20 +217,21 @@ function EnzyGlobe() {
     const beamGeom = new THREE.ConeGeometry(beamR, beamH, 6, 1, false);
     
     const count = beamGeom.attributes.position.count;
-    const colors = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 4);
     const colorTop = new THREE.Color(themeColors.hotspot); 
-    const colorBottom = new THREE.Color(0xffffff); 
+    const colorBottom = new THREE.Color(isLightMode ? themeColors.hotspot : 0xffffff); 
     
     for (let i = 0; i < count; i++) {
       const y = beamGeom.attributes.position.getY(i);
       const t = (y + beamH / 2) / beamH; 
       const MathPow = Math.pow(t, 2.0); 
       const c = colorBottom.clone().lerp(colorTop, MathPow);
-      colors[i * 3] = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
+      colors[i * 4] = c.r;
+      colors[i * 4 + 1] = c.g;
+      colors[i * 4 + 2] = c.b;
+      colors[i * 4 + 3] = isLightMode ? MathPow : 1.0;
     }
-    beamGeom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    beamGeom.setAttribute('color', new THREE.BufferAttribute(colors, 4));
     
     beamGeom.translate(0, beamH / 2, 0);
     beamGeom.rotateX(-Math.PI / 2);
@@ -243,15 +244,15 @@ function EnzyGlobe() {
       transparent: true,
       opacity: 1,
       depthWrite: true,
-      blending: THREE.NormalBlending,
+      blending: isLightMode ? THREE.NormalBlending : THREE.AdditiveBlending,
     });
     
     const baseMat = new THREE.MeshBasicMaterial({
-      color: 0xffffff, 
+      color: isLightMode ? themeColors.hotspot : 0xffffff, 
       transparent: true,
-      opacity: 1,
+      opacity: isLightMode ? 0.8 : 1,
       depthWrite: false,
-      blending: THREE.NormalBlending,
+      blending: isLightMode ? THREE.NormalBlending : THREE.AdditiveBlending,
       side: THREE.DoubleSide
     });
 
@@ -471,14 +472,14 @@ export function EnzyGlobeSection() {
               ? "border-black/10 bg-white/70 text-black/70"
               : "border-white/10 bg-[#0b0f14]/70 text-white/70"
           }`}>
-          <span className="font-['Inter'] text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold uppercase">
+          <span className="font-inter text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold uppercase">
             Global Impact
           </span>
         </div>
         <BlurReveal
           as="h2"
           delay={0.1}
-          className={`font-['IvyOra_Text'] font-medium tracking-[-1.4px] md:tracking-[-2px] leading-[1.06] text-[44px] sm:text-[56px] md:text-[72px] transition-colors duration-500 drop-shadow-sm ${
+          className={`font-ivyora font-medium tracking-[-2px] md:tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] transition-colors duration-500 drop-shadow-sm ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           }`}
         >

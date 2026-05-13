@@ -271,7 +271,7 @@ function ModeToggle({
               key={t.id}
               type="button"
               onClick={() => onChange(t.id)}
-              className={`relative rounded-xl px-4 py-3 md:py-4 text-[14px] md:text-[16px] font-['Inter'] font-bold uppercase tracking-widest transition-all duration-300 ${
+              className={`relative rounded-xl px-4 py-3 md:py-4 text-[14px] md:text-[16px] font-inter font-bold uppercase tracking-widest transition-all duration-300 ${
                 active
                   ? isLightMode
                     ? "bg-black text-white shadow-md"
@@ -303,10 +303,10 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
     >
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex flex-col gap-2">
-          <div className={`font-['Inter'] text-[14px] md:text-[16px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+          <div className={`font-inter text-[14px] md:text-[16px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
             {play.title}
           </div>
-          <div className={`font-['Inter'] text-[14px] md:text-[15px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+          <div className={`font-inter text-[14px] md:text-[15px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
             {play.description}
           </div>
         </div>
@@ -314,7 +314,7 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`shrink-0 w-full md:w-auto px-5 py-2.5 rounded-xl border font-['Inter'] text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${
+          className={`shrink-0 w-full md:w-auto px-5 py-2.5 rounded-xl border font-inter text-[11px] font-bold uppercase tracking-widest transition-all duration-300 ${
             isLightMode
               ? "border-black/15 bg-[#f5f7fa] text-black hover:bg-black hover:text-white"
               : "border-white/15 bg-[#0a0a0c] text-white hover:bg-white hover:text-black"
@@ -340,7 +340,7 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
                   <div className={`flex items-center justify-center shrink-0 w-6 h-6 rounded-full border ${isLightMode ? "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]" : "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]"} font-bold text-[11px]`}>
                     {i + 1}
                   </div>
-                  <span className={`font-['Inter'] text-[14px] md:text-[15px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <span className={`font-inter text-[14px] md:text-[15px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
                     {s}
                   </span>
                 </li>
@@ -378,7 +378,7 @@ function SolutionWord({ index, activeIndex, title, isLightMode, onClick }: { ind
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <div className="relative inline-flex flex-col items-center justify-center w-full px-4 hover:opacity-80 transition-opacity">
-        <h2 className={`relative z-10 font-['Inter'] font-black uppercase text-[40px] sm:text-[60px] md:text-[80px] lg:text-[100px] leading-[0.85] tracking-[-2px] text-center w-full transition-colors duration-300 ${isLightMode ? 'text-black' : 'text-white'}`}>
+        <h2 className={`relative z-10 font-ivyora font-medium text-[40px] sm:text-[60px] md:text-[80px] lg:text-[100px] leading-[0.95] tracking-[-2px] text-center w-full transition-colors duration-300 ${isLightMode ? 'text-black' : 'text-white'}`}>
           {title}
         </h2>
       </div>
@@ -452,7 +452,7 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
                         : (isLightMode ? "text-black/40 scale-100" : "text-white/40 scale-100")
                    }`}
                 >
-                   <span className="font-['Inter'] font-black uppercase text-[13px] md:text-[18px] lg:text-[20px] tracking-widest">
+                   <span className="font-inter font-black uppercase text-[13px] md:text-[18px] lg:text-[20px] tracking-widest">
                      {p.label}
                    </span>
                    {/* Green underline for active */}
@@ -481,7 +481,7 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
             >
               {/* Summary */}
               <div className="text-center max-w-3xl mx-auto px-4 shrink-0">
-                <p className={`font-['Inter'] text-[18px] md:text-[28px] font-medium leading-snug drop-shadow-sm ${isLightMode ? "text-black" : "text-white"}`}>
+                <p className={`font-inter text-[18px] md:text-[28px] font-medium leading-snug drop-shadow-sm ${isLightMode ? "text-black" : "text-white"}`}>
                   {activePain.summary}
                 </p>
               </div>
@@ -492,14 +492,14 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
                 {/* Left: Problem / Outcome */}
                 <div className="flex-1 flex flex-col gap-4">
                   <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/40 border-black/10" : "bg-black/40 border-white/10"}`}>
-                    <div className={`font-['Inter'] text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                       The Problem
                     </div>
                     <ul className="flex flex-col gap-3">
                       {activePain.pains.map((p) => (
                         <li key={p} className="flex items-start gap-3">
                           <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLightMode ? "bg-[#19ad7d]" : "bg-[#19ad7d]"}`} />
-                          <span className={`font-['Inter'] text-[13px] md:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <span className={`font-inter text-[13px] md:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
                             {p}
                           </span>
                         </li>
@@ -508,14 +508,14 @@ function SolutionsBrowser({ content, isLightMode }: { content: ModeContent, isLi
                   </div>
 
                   <div className={`p-5 rounded-[24px] border backdrop-blur-xl ${isLightMode ? "bg-white/60 border-[#19ad7d]/20" : "bg-black/60 border-[#19ad7d]/20"}`}>
-                    <div className={`font-['Inter'] text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] mb-4 ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
                       The Outcome
                     </div>
                     <ul className="flex flex-col gap-4">
                       {activePain.outcomes.map((o) => (
                         <li key={o.value} className="flex items-center gap-3">
                           <CheckCircle2 size={18} strokeWidth={2.5} className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"} />
-                          <div className={`font-['Inter'] text-[13px] md:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <div className={`font-inter text-[13px] md:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
                             <span className="font-bold">{o.value}</span> {o.label}
                           </div>
                         </li>
@@ -558,7 +558,7 @@ export function Solutions() {
             Tailored Solutions
           </div>
 
-          <h1 className={`font-['IvyOra_Text'] font-medium text-5xl md:text-7xl lg:text-[92px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? "text-black" : "text-[#f5f7fa]"}`}>
+          <h1 className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[92px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? "text-black" : "text-[#f5f7fa]"}`}>
             <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
             <span className={isLightMode ? "text-black/40" : "text-white/40"}>
               <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>

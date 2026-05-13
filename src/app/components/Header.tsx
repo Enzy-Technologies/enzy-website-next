@@ -5,14 +5,17 @@ import { MainNavigation } from "./MainNavigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Wand2 } from "lucide-react";
 
+import { usePathname } from "next/navigation";
 import { CTAButton } from "./CTAButton";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const { isLightMode, toggleTheme } = useTheme();
+  const pathname = usePathname();
+  const isLandingPage = pathname?.startsWith("/lp/");
 
   useEffect(() => {
     setIsMounted(true);
@@ -54,9 +57,23 @@ export function Header() {
         </Link>
         
         {/* Desktop Nav Items (Absolutely positioned center pill and mobile menu) */}
-        <MainNavigation />
+        {!isLandingPage && <MainNavigation />}
 
-        <div className="hidden md:flex relative items-center gap-4">
+        <div className={`${isLandingPage ? 'flex' : 'hidden md:flex'} relative items-center gap-2 md:gap-4`}>
+          <button 
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const cx = rect.left + rect.width / 2;
+              const cy = rect.top + rect.height / 2;
+              window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { triggerClick: true, x: cx, y: cy, force: true } }));
+            }}
+            className={`flex items-center justify-center w-[38px] h-[38px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            aria-label="Gather pixels"
+            title="Gather pixels"
+          >
+            <Wand2 size={18} />
+          </button>
+
           <button 
             onClick={toggleTheme}
             className={`flex items-center justify-center w-[38px] h-[38px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
@@ -65,9 +82,11 @@ export function Header() {
             {isMounted ? (isLightMode ? <Moon size={18} /> : <Sun size={18} />) : <div className="w-[18px] h-[18px]" />}
           </button>
 
-          <CTAButton href="/about" variant="secondary" className="z-50">
-            Learn more
-          </CTAButton>
+          {!isLandingPage && (
+            <CTAButton href="/about" variant="secondary" className="z-50">
+              Learn more
+            </CTAButton>
+          )}
         </div>
       </div>
     </header>

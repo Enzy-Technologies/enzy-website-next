@@ -16,10 +16,10 @@ export function SpecsSection() {
           <h2 className="eyebrow-lg text-[#19ad7d] text-center">
             Specs
           </h2>
-          <h3 className={`font-['Inter'] font-bold text-4xl sm:text-5xl md:text-[60px] tracking-[-2px] md:tracking-[-3px] leading-[1.1] md:leading-[0.9] text-center ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
+          <h3 className={`font-ivyora font-medium text-4xl sm:text-5xl md:text-[60px] tracking-[-2px] leading-[0.95] text-center ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
             Built for daily execution
           </h3>
-          <p className={`font-['Inter'] text-[13px] md:text-[15px] text-center leading-relaxed max-w-[600px] ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+          <p className={`font-inter text-[13px] md:text-[15px] text-center leading-relaxed max-w-[600px] ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
             Not another dashboard. Enzy is a system for action—visibility, competition, and AI guidance.
           </p>
           <div className="mt-2 md:mt-4">
@@ -42,9 +42,9 @@ export function SpecsSection() {
             </colgroup>
             <thead>
               <tr className={`border-b ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
-                <th className={`pb-4 text-left font-['Inter'] font-semibold text-[12px] md:text-[13px] uppercase tracking-wider ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Feature</th>
-                <th className="pb-4 text-center font-['Inter'] font-semibold text-[12px] md:text-[13px] uppercase tracking-wider text-[#19ad7d]">Enzy</th>
-                <th className={`pb-4 text-center font-['Inter'] font-semibold text-[12px] md:text-[13px] uppercase tracking-wider ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Other Tools</th>
+                <th className={`pb-4 text-left font-inter font-semibold text-[12px] md:text-[13px] uppercase tracking-wider ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Feature</th>
+                <th className="pb-4 text-center font-inter font-semibold text-[12px] md:text-[13px] uppercase tracking-wider text-[#19ad7d]">Enzy</th>
+                <th className={`pb-4 text-center font-inter font-semibold text-[12px] md:text-[13px] uppercase tracking-wider ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Other Tools</th>
               </tr>
             </thead>
             <tbody>
@@ -57,7 +57,7 @@ export function SpecsSection() {
                 "System integration",
               ].map((feature, i, arr) => (
                 <tr key={i} className={i !== arr.length - 1 ? (isLightMode ? 'border-b border-black/5' : 'border-b border-white/5') : ''}>
-                  <td className={`py-[20px] md:py-[24px] font-['Inter'] font-medium text-[15px] md:text-[17px] leading-snug ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}>
+                  <td className={`py-[20px] md:py-[24px] font-inter font-medium text-[15px] md:text-[17px] leading-snug ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}>
                     {feature}
                   </td>
                   <td className="py-[20px] md:py-[24px] text-center">

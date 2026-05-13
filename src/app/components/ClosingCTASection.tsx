@@ -6,7 +6,11 @@ import { CTAButton } from "./CTAButton";
 import { useTheme } from "./ThemeProvider";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 
-export function ClosingCTASection() {
+type ClosingCTASectionProps = {
+  demoHref?: string;
+};
+
+export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASectionProps = {}) {
   const { isLightMode } = useTheme();
 
   return (
@@ -22,7 +26,7 @@ export function ClosingCTASection() {
         />
 
         <h2
-          className={`font-['IvyOra_Text'] font-medium leading-[1.05] tracking-[-2px] ${
+          className={`font-ivyora font-medium leading-[0.95] tracking-[-2px] ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           } text-[36px] sm:text-[48px] md:text-[60px] lg:text-[68px] mx-auto max-w-[820px]`}
         >
@@ -31,7 +35,7 @@ export function ClosingCTASection() {
         </h2>
 
         <p
-          className={`font-['Inter'] text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[520px] mx-auto ${
+          className={`font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[520px] mx-auto ${
             isLightMode ? "text-black/65" : "text-white/60"
           }`}
         >
@@ -41,7 +45,7 @@ export function ClosingCTASection() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-10">
           <CTAButton
-            href={BOOK_DEMO_HREF}
+            href={demoHref}
             variant="primary"
             className="justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
           >

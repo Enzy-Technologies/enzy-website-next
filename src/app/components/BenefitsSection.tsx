@@ -40,14 +40,14 @@ export function BenefitsSection() {
             Benefits
           </h2>
           <p
-            className={`font-medium text-[32px] sm:text-[40px] md:text-[60px] lg:text-[72px] tracking-[-2px] leading-[1.05] md:leading-[0.9] ${isLightMode ? "text-brand-dark" : "text-brand-light"} font-[IvyOra_Text] w-full`}
+            className={`font-medium text-[32px] sm:text-[40px] md:text-[60px] lg:text-[72px] tracking-[-2px] leading-[1.05] md:leading-[0.9] ${isLightMode ? "text-brand-dark" : "text-brand-light"} font-ivyora w-full`}
           >
             <span className="block md:whitespace-nowrap">Visibility drives action.</span>
             <span className="block md:whitespace-nowrap">Action creates momentum.</span>
             <span className="block md:whitespace-nowrap">Momentum builds revenue.</span>
           </p>
           <p
-            className={`font-['Inter'] text-[16px] md:text-[18px] max-w-[620px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}
+            className={`font-inter text-[16px] md:text-[18px] max-w-[620px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}
           >
             AI highlights what changed—and what to do next.
           </p>
@@ -65,16 +65,16 @@ export function BenefitsSection() {
               <div className={cardAccent} />
               <div className="flex flex-col gap-4 md:gap-5">
                 <div
-                  className={`font-['Inter'] font-extrabold tracking-[-2px] leading-none ${
+                  className={`font-inter font-extrabold tracking-[-2px] leading-none ${
                     isLightMode ? "text-brand-dark" : "text-brand-light"
                   } text-[56px] sm:text-[64px] md:text-[72px] lg:text-[80px]`}
                 >
                   {primaryStat.value}
                 </div>
-                <div className={`font-['Inter'] font-medium text-[17px] md:text-[18px] ${isLightMode ? "text-black" : "text-white"}`}>
+                <div className={`font-inter font-medium text-[17px] md:text-[18px] ${isLightMode ? "text-black" : "text-white"}`}>
                   {primaryStat.label}
                 </div>
-                <div className={`font-['Inter'] text-[15px] md:text-[16px] leading-relaxed max-w-[480px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                <div className={`font-inter text-[15px] md:text-[16px] leading-relaxed max-w-[480px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                   {primaryStat.desc}
                 </div>
               </div>
@@ -86,16 +86,16 @@ export function BenefitsSection() {
                   <div className={cardAccent} />
                   <div className="flex flex-col gap-3">
                     <div
-                      className={`font-['Inter'] font-extrabold tracking-[-2px] leading-none ${
+                      className={`font-inter font-extrabold tracking-[-2px] leading-none ${
                         isLightMode ? "text-brand-dark" : "text-brand-light"
                       } text-[48px] md:text-[52px] lg:text-[56px]`}
                     >
                       {s.value}
                     </div>
-                    <div className={`font-['Inter'] font-medium text-[16px] ${isLightMode ? "text-black" : "text-white"}`}>
+                    <div className={`font-inter font-medium text-[16px] ${isLightMode ? "text-black" : "text-white"}`}>
                       {s.label}
                     </div>
-                    <div className={`font-['Inter'] text-[14px] md:text-[15px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                    <div className={`font-inter text-[14px] md:text-[15px] leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                       {s.desc}
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export function BenefitsSection() {
           <div className="mt-10 md:mt-12 flex justify-center">
             <Link
               href="/features"
-              className={`group inline-flex items-center gap-2 font-['Inter'] text-sm font-semibold transition-opacity hover:opacity-90 ${
+              className={`group inline-flex items-center gap-2 font-inter text-sm font-semibold transition-opacity hover:opacity-90 ${
                 isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
               }`}
             >

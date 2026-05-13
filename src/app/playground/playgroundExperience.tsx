@@ -70,7 +70,7 @@ export function HeroPlaygroundExperience({
                 // Playground page owns the key; this button is informational here.
                 // Keep it non-interactive to avoid conflicting state.
               }}
-              className={`rounded-full px-4 py-2 text-[13px] md:text-[14px] font-['Inter'] font-semibold tracking-tight border backdrop-blur-md ${
+              className={`rounded-full px-4 py-2 text-[13px] md:text-[14px] font-inter font-semibold tracking-tight border backdrop-blur-md ${
                 active
                   ? "border-[#19ad7d]/35 bg-[#19ad7d]/15 text-[#19ad7d]"
                   : isLightMode
@@ -87,10 +87,10 @@ export function HeroPlaygroundExperience({
       </div>
 
       <div className="flex w-full max-w-3xl flex-col gap-1.5 z-30 pointer-events-auto px-2">
-        <p className={`text-center font-['Inter'] text-[14px] md:text-[15px] font-medium tracking-tight ${isLightMode ? "text-black/60" : "text-white/65"}`}>
+        <p className={`text-center font-inter text-[14px] md:text-[15px] font-medium tracking-tight ${isLightMode ? "text-black/60" : "text-white/65"}`}>
           {scenario.outcomeLine}
         </p>
-        <p className={`text-center text-[12px] md:text-[13px] font-['Inter'] leading-snug ${isLightMode ? "text-black/45" : "text-white/50"}`}>
+        <p className={`text-center text-[12px] md:text-[13px] font-inter leading-snug ${isLightMode ? "text-black/45" : "text-white/50"}`}>
           Tap a prompt to explore. Use Expand for the full workflow.
         </p>
       </div>

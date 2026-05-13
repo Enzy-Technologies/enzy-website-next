@@ -154,7 +154,7 @@ function FeatureWord({ index, activeIndex, feature, isLightMode }: { index: numb
       transition={{ duration: 0.4, ease: "easeOut" }}
     >
       <div className="relative inline-block">
-        <h2 className={`relative z-10 font-['Inter'] font-black uppercase text-[48px] sm:text-[64px] lg:text-[80px] leading-none tracking-[-2px] ${isLightMode ? 'text-black' : 'text-white'}`}>
+        <h2 className={`relative z-10 font-ivyora font-medium text-[48px] sm:text-[64px] lg:text-[80px] leading-[0.95] tracking-[-2px] ${isLightMode ? 'text-black' : 'text-white'}`}>
           {feature.title}
         </h2>
         {/* Dynamic Green Scribble Underline */}
@@ -219,7 +219,7 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
           <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-4 lg:mb-6 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} font-bold uppercase tracking-[0.25em] text-[10px] lg:text-[11px]`}>
             Platform Overview
           </div>
-          <h1 className={`font-['IvyOra_Text'] font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-1px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
             <BlurReveal as="span" delay={0.1}>Everything you need.</BlurReveal><br/>
             <span className={isLightMode ? "text-black/40" : "text-white/40"}>
               <BlurReveal as="span" delay={0.3}>Nothing you don&apos;t.</BlurReveal>
@@ -274,10 +274,10 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
                 </div>
                 
                 <div className="mt-4 lg:mt-8 flex flex-col gap-1 lg:gap-3 px-2 text-center lg:text-left shrink-0">
-                <div className={`font-['Inter'] text-[10px] lg:text-[12px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                <div className={`font-inter text-[10px] lg:text-[12px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
                   {activeFeature.group}
                 </div>
-                  <p className={`font-['Inter'] text-[15px] md:text-[18px] lg:text-[24px] font-medium leading-snug ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                  <p className={`font-inter text-[15px] md:text-[18px] lg:text-[24px] font-medium leading-snug ${isLightMode ? "text-black/80" : "text-white/80"}`}>
                     {activeFeature.desc}
                   </p>
                 </div>

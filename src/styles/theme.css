@@ -226,7 +226,6 @@
   /* Liquid glass: frosted + refracted feel via layered highlights + subtle noise. */
   .liquid-glass {
     position: relative;
-    overflow: hidden;
     isolation: isolate;
     background: rgba(255, 255, 255, 0.38);
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -256,6 +255,7 @@
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: inherit;
     z-index: 0;
     pointer-events: none;
     background:
@@ -321,6 +321,7 @@
     content: "";
     position: absolute;
     inset: 0;
+    border-radius: inherit;
     z-index: 0;
     pointer-events: none;
     /* Micro-noise + concentric ripples (ensure visible in light mode). */
@@ -369,8 +370,8 @@
   .simple-logo-marquee__mask {
     overflow: hidden;
     padding-top: 10px;
-    /* Room for caption + box-shadow (mask uses overflow:hidden) */
-    padding-bottom: 56px;
+    /* Room below logos for caption (absolute below item) + full box-shadow (no harsh clip). */
+    padding-bottom: 120px;
     -webkit-mask-image: linear-gradient(
       90deg,
       transparent,
@@ -450,8 +451,8 @@
   .simple-logo-marquee__caption {
     position: absolute;
     left: 50%;
-    bottom: 0;
-    transform: translate(-50%, 18px);
+    bottom: -28px;
+    transform: translate3d(-50%, 12px, 0);
     opacity: 0;
     transition: opacity 220ms ease, transform 220ms ease;
     padding: 6px 10px;
@@ -463,7 +464,6 @@
     white-space: nowrap;
     pointer-events: none;
     /* Match Evidence card "liquid-glass" style (but without the big drop shadow). */
-    position: absolute;
     overflow: hidden;
     isolation: isolate;
     background: #ffffff;
@@ -472,7 +472,6 @@
     box-shadow:
       0 10px 28px rgba(0, 0, 0, 0.18),
       inset 0 1px 0 rgba(255, 255, 255, 0.65);
-    transform: translateZ(0);
     will-change: transform, opacity;
   }
 
@@ -487,7 +486,7 @@
 
   .simple-logo-marquee__item.is-active .simple-logo-marquee__caption {
     opacity: 1;
-    transform: translate(-50%, 6px);
+    transform: translate3d(-50%, 0, 0);
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -79,10 +79,10 @@ export function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="flex flex-col items-center w-full gap-4 text-center"
         >
-          <h2 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[1.1] font-medium`}>
+          <h2 className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[0.95] font-medium`}>
             Loved by leaders
           </h2>
-          <p className={`font-['Inter'] text-[15px] md:text-[16px] ${isLightMode ? "text-black/60" : "text-white/60"} max-w-[600px] leading-relaxed`}>
+          <p className={`font-inter text-[15px] md:text-[16px] ${isLightMode ? "text-black/60" : "text-white/60"} max-w-[600px] leading-relaxed`}>
             See what industry experts are saying about how Enzy transforms their organizations.
           </p>
         </motion.div>
@@ -243,7 +243,7 @@ export function TestimonialsMarquee({
 
                     <div className="relative h-[45%] w-full p-6 md:p-8 flex flex-col justify-between">
                       <h3
-                        className={`font-['Inter'] text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 ${
+                        className={`font-inter text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 ${
                           isLightMode ? "text-[#0b0f14]" : "text-white"
                         }`}
                       >
@@ -255,14 +255,14 @@ export function TestimonialsMarquee({
                       <div className="mt-auto flex flex-col relative">
                         <div className="w-10 h-[2px] bg-[#19ad7d] mb-4" />
                         <span
-                          className={`font-['Inter'] text-[14px] font-bold tracking-[0.1em] uppercase ${
+                          className={`font-inter text-[14px] font-bold tracking-[0.1em] uppercase ${
                             isLightMode ? "text-[#0b0f14]" : "text-white"
                           }`}
                         >
                           {testimonial.name}
                         </span>
                         <span
-                          className={`font-['Inter'] text-[11px] font-medium uppercase tracking-wider mt-1 ${
+                          className={`font-inter text-[11px] font-medium uppercase tracking-wider mt-1 ${
                             isLightMode ? "text-[#0b0f14]/60" : "text-white/40"
                           }`}
                         >
@@ -286,7 +286,7 @@ export function TestimonialsMarquee({
                     <div className="flex-1 overflow-y-auto scrollbar-hide pr-2 relative z-10">
                       <div className="pt-2 pb-4">
                         <p
-                          className={`font-['Inter'] text-sm md:text-[15px] leading-relaxed ${
+                          className={`font-inter text-sm md:text-[15px] leading-relaxed ${
                             isLightMode ? "text-black/80" : "text-white/80"
                           }`}
                         >
@@ -318,14 +318,14 @@ export function TestimonialsMarquee({
                       </div>
                       <div className="flex flex-col">
                         <span
-                          className={`font-['Inter'] text-xs font-bold tracking-wider uppercase ${
+                          className={`font-inter text-xs font-bold tracking-wider uppercase ${
                             isLightMode ? "text-black" : "text-white"
                           }`}
                         >
                           {testimonial.name}
                         </span>
                         <span
-                          className={`font-['Inter'] text-[10px] uppercase opacity-60 line-clamp-1 ${
+                          className={`font-inter text-[10px] uppercase opacity-60 line-clamp-1 ${
                             isLightMode ? "text-black" : "text-white"
                           }`}
                         >

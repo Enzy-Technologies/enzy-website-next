@@ -193,10 +193,10 @@ export function FeaturesSection() {
   return (
     <section className="relative w-full py-24 flex flex-col items-center bg-transparent">
       <div className="w-full flex flex-col items-center gap-4 mb-12 text-center px-4">
-        <h1 className={`font-['IvyOra_Text'] text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[1.1] font-medium`}>
+        <h1 className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[0.95] font-medium`}>
           Features
         </h1>
-        <p className={`font-['Inter'] tracking-[-0.04em] text-center max-w-2xl ${isLightMode ? 'text-black/60' : 'text-white/50'} text-[18px] md:text-[22px]`}>
+        <p className={`font-inter tracking-[-0.04em] text-center max-w-2xl ${isLightMode ? 'text-black/60' : 'text-white/50'} text-[18px] md:text-[22px]`}>
           The system that turns connected data into actions—and results.
         </p>
       </div>
@@ -294,7 +294,7 @@ export function FeaturesSection() {
                   }`}
                 >
                   <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent" />
-                  <h3 className="text-white text-2xl md:text-3xl font-bold font-['Inter'] mb-3 tracking-tight drop-shadow-md">
+                  <h3 className="text-white text-2xl md:text-3xl font-bold font-inter mb-3 tracking-tight drop-shadow-md">
                     {card.title}
                   </h3>
                   

@@ -103,13 +103,13 @@ export function QuickJumpFAB({
                   role="menuitem"
                 >
                   <span
-                    className={`font-['Inter'] text-[13px] transition-colors truncate pr-4 ${
+                    className={`font-inter text-[13px] transition-colors truncate pr-4 ${
                       isLightMode ? "text-black/70 group-hover:text-black" : "text-white/70 group-hover:text-white"
                     }`}
                   >
                     {item.label}
                   </span>
-                  <span className="text-[10px] text-[#19ad7d]/50 group-hover:text-[#19ad7d] font-['Inter'] font-semibold transition-colors">
+                  <span className="text-[10px] text-[#19ad7d]/50 group-hover:text-[#19ad7d] font-inter font-semibold transition-colors">
                     {item.meta ?? (i + 1).toString().padStart(2, "0")}
                   </span>
                 </button>

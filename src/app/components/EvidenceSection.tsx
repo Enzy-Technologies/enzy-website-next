@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useTheme } from "./ThemeProvider";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
@@ -51,9 +50,12 @@ function useCountUp(target: number, durationMs = 1400) {
 
 import { BlurReveal } from "./BlurReveal";
 
-export function EvidenceSection() {
+type EvidenceVariant = "default" | "lp";
+
+export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVariant } = {}) {
   const { isLightMode } = useTheme();
-  const { value: count, ref: countRef } = useCountUp(27);
+  const showQuoteCard = variant !== "lp";
+  const { value: count, ref: countRef } = useCountUp(37);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -73,8 +75,8 @@ export function EvidenceSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center"
         >
-          <p className="font-['Inter'] text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
-            The Enzy Impact
+          <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
+            The Enzy Effect
           </p>
 
           <div className="relative">
@@ -87,7 +89,7 @@ export function EvidenceSection() {
               aria-hidden
             />
             <p
-              className={`font-['IvyOra_Text'] font-medium tracking-[-5px] md:tracking-[-10px] leading-[0.8] tabular-nums flex items-center justify-center ${
+              className={`font-ivyora font-medium tracking-[-15px] md:tracking-[-25px] leading-[0.8] tabular-nums flex items-center justify-center ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               } text-[160px] sm:text-[220px] md:text-[320px] lg:text-[400px]`}
             >
@@ -99,23 +101,32 @@ export function EvidenceSection() {
           <BlurReveal
             as="p"
             delay={0.1}
-            className={`font-['Inter'] text-[24px] md:text-[32px] lg:text-[40px] font-medium mt-6 md:mt-8 tracking-tight ${
+            className={`font-inter text-[24px] md:text-[32px] lg:text-[40px] font-medium mt-6 md:mt-8 tracking-tight ${
               isLightMode ? "text-black" : "text-white"
             }`}
           >
-            Median sales lift, year one.
+            Average sales increase per sales rep
           </BlurReveal>
           
           <p
-            className={`font-['Inter'] text-[16px] md:text-[18px] leading-relaxed mt-4 max-w-[500px] mx-auto ${
+            className={`font-inter text-[16px] md:text-[18px] leading-relaxed mt-4 max-w-[500px] mx-auto ${
               isLightMode ? "text-black/55" : "text-white/55"
             }`}
           >
-            Measured across 140+ deployments running competitions, incentives,
-            and AI-driven coaching.
+            In a before and after analysis
           </p>
+          {!showQuoteCard ? (
+            <p
+              className={`font-inter text-[13px] md:text-[14px] leading-relaxed mt-3 max-w-[520px] mx-auto ${
+                isLightMode ? "text-black/40" : "text-white/40"
+              }`}
+            >
+              Customer-reported outcomes; methodology shared during onboarding.
+            </p>
+          ) : null}
         </motion.div>
 
+        {showQuoteCard ? (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -131,7 +142,7 @@ export function EvidenceSection() {
           />
 
           <span
-            className="pointer-events-none absolute -top-6 -left-4 font-['IvyOra_Text'] text-[160px] md:text-[200px] leading-none text-[#19ad7d] opacity-[0.10] select-none"
+            className="pointer-events-none absolute -top-6 -left-4 font-ivyora text-[160px] md:text-[200px] leading-none text-[#19ad7d] opacity-[0.10] select-none"
             aria-hidden
           >
             &quot;
@@ -139,7 +150,7 @@ export function EvidenceSection() {
 
           <blockquote className="m-0 relative z-10">
             <p
-              className={`font-['IvyOra_Text'] italic text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.5px] ${
+              className={`font-ivyora italic text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.5px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               }`}
             >
@@ -154,7 +165,7 @@ export function EvidenceSection() {
           >
             <div className="flex-1 min-w-0">
               <p
-                className={`font-['Inter'] text-[16px] md:text-[18px] font-semibold tracking-tight m-0 ${
+                className={`font-inter text-[16px] md:text-[18px] font-semibold tracking-tight m-0 ${
                   isLightMode ? "text-brand-dark" : "text-brand-light"
                 }`}
               >
@@ -163,7 +174,7 @@ export function EvidenceSection() {
             </div>
             <Link
               href="/customers"
-              className="group hidden sm:inline-flex items-center gap-2 font-['Inter'] text-[15px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
+              className="group hidden sm:inline-flex items-center gap-2 font-inter text-[15px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
             >
               More stories
               <ArrowRight
@@ -174,6 +185,7 @@ export function EvidenceSection() {
             </Link>
           </footer>
         </motion.div>
+        ) : null}
       </div>
     </section>
   );

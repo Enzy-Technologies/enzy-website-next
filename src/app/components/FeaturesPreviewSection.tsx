@@ -266,8 +266,9 @@ const cardsData = [
   },
 ];
 
-export function FeaturesPreviewSection() {
+export function FeaturesPreviewSection({ variant = "default" }: { variant?: "default" | "lp" } = {}) {
   const { isLightMode } = useTheme();
+  const isLp = variant === "lp";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(2);
   const activeIndexRef = useRef(activeIndex);
@@ -377,20 +378,29 @@ export function FeaturesPreviewSection() {
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
           <div>
-            <p className="font-['Inter'] text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-3">
-              The full system
+            <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-3">
+              {isLp ? "Inside the platform" : "The full system"}
             </p>
             <h2
-              className={`font-['IvyOra_Text'] font-medium leading-[1.05] tracking-[-1.5px] ${
+              className={`font-ivyora font-medium leading-[0.95] tracking-[-2px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               } text-[32px] sm:text-[40px] md:text-[48px]`}
             >
-              Featured Features <span className="italic font-normal"></span>
+              {isLp ? (
+                <>
+                  Execution tools reps{" "}
+                  <span className="italic font-normal text-[#19ad7d]">open every day</span>
+                </>
+              ) : (
+                <>
+                  Featured Features <span className="italic font-normal"></span>
+                </>
+              )}
             </h2>
           </div>
           <Link
             href="/features"
-            className="group inline-flex items-center gap-1.5 font-['Inter'] text-[14px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90 pb-2"
+            className="group inline-flex items-center gap-1.5 font-inter text-[14px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90 pb-2"
           >
             See the full system
             <ArrowRight
@@ -402,7 +412,7 @@ export function FeaturesPreviewSection() {
         </div>
       </div>
 
-      <div className="relative w-full overflow-hidden">
+      <div className="relative w-full">
         {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 z-20 hidden md:block">
           <button
@@ -433,8 +443,8 @@ export function FeaturesPreviewSection() {
           ref={scrollRef}
           className={
             isCarousel
-              ? "flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pb-8 pt-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-              : "flex flex-wrap justify-center gap-5 w-full pb-8 pt-4"
+              ? "flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pt-20 pb-32 -mt-16 -mb-24 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              : "flex flex-wrap justify-center gap-5 w-full pt-20 pb-32 -mt-16 -mb-24"
           }
           style={
             isCarousel
@@ -461,7 +471,7 @@ export function FeaturesPreviewSection() {
                   setExpandedIndex((prev) => (prev === i ? null : i));
                 }}
                 type="button"
-                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] overflow-hidden cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
+                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
                   ${
                     !isCarousel
                       ? "opacity-100"
@@ -471,29 +481,30 @@ export function FeaturesPreviewSection() {
                   }
                 `}
               >
-                <Image
-                  src={featurePlaceholders[i]}
-                  alt={card.title}
-                  fill
-                  sizes="(min-width: 1024px) 380px, 85vw"
-                  className={`object-cover transition-transform duration-1000 ease-out ${
-                    showDetails ? "scale-105" : "scale-100"
-                  }`}
-                />
+                <div className="absolute inset-0 rounded-[32px] overflow-hidden pointer-events-none z-0">
+                  <Image
+                    src={featurePlaceholders[i]}
+                    alt={card.title}
+                    fill
+                    sizes="(min-width: 1024px) 380px, 85vw"
+                    className={`object-cover transition-transform duration-1000 ease-out ${
+                      showDetails ? "scale-105" : "scale-100"
+                    }`}
+                  />
+                  <div
+                    className={`pointer-events-none absolute inset-0 bg-gradient-to-t transition-opacity duration-500 ${
+                      showDetails ? "from-black/55 via-black/15 to-transparent" : "from-black/70 via-black/10 to-transparent"
+                    }`}
+                  />
+                </div>
 
                 <div
-                  className={`pointer-events-none absolute inset-0 bg-gradient-to-t transition-opacity duration-500 ${
-                    showDetails ? "from-black/55 via-black/15 to-transparent" : "from-black/70 via-black/10 to-transparent"
-                  }`}
-                />
-
-                <div
-                  className={`absolute bottom-0 left-0 right-0 flex flex-col text-left border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[28px] ${
+                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
                     showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
                   }`}
                 >
                   <div className="pointer-events-none absolute left-6 right-6 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent" />
-                  <h3 className="text-white text-2xl md:text-3xl font-bold font-['Inter'] mb-3 tracking-tight drop-shadow-md">
+                  <h3 className="text-white text-2xl md:text-3xl font-bold font-inter mb-3 tracking-tight drop-shadow-md">
                     {card.title}
                   </h3>
 

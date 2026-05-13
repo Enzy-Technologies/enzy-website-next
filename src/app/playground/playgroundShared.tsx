@@ -107,7 +107,7 @@ export function HeroPhoneFrame({
       <div className="relative h-full w-full overflow-hidden rounded-[45px] bg-[#0a0a0a] ring-1 ring-inset ring-white/[0.16]">
         <div className="pointer-events-none absolute left-0 right-0 top-0 z-40 grid grid-cols-3 items-center px-[5.25%] pt-[3.6%]">
           <span
-            className="justify-self-start font-['Inter'] text-[13px] font-semibold tabular-nums tracking-tight text-white"
+            className="justify-self-start font-inter text-[13px] font-semibold tabular-nums tracking-tight text-white"
             style={{ textShadow: "0 1px 4px rgba(0,0,0,0.95)" }}
           >
             9:41
@@ -146,7 +146,7 @@ function FlowChip({ label }: { label: string }) {
   return (
     <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-1.5 backdrop-blur-md">
       <span className="h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
-      <span className="font-['Inter'] text-[10px] tracking-tight text-white/80">{label}</span>
+      <span className="font-inter text-[10px] tracking-tight text-white/80">{label}</span>
     </div>
   );
 }
@@ -164,7 +164,7 @@ export function HeroPhoneScreenContent({
     <div className="relative h-full w-full">
       <div className="absolute left-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-white/90 backdrop-blur-md">
         <Sparkles size={14} className="text-[#19ad7d]" />
-        <span className="font-['Inter'] text-[11px] font-medium tracking-tight">AI Playground</span>
+        <span className="font-inter text-[11px] font-medium tracking-tight">AI Playground</span>
       </div>
 
       <div className="absolute left-4 right-4 top-14 z-20 flex flex-wrap gap-2">
@@ -194,7 +194,7 @@ export function HeroAssistantDemo({
   return (
     <div className="h-full w-full p-4 flex flex-col gap-3">
       <div className="flex flex-col gap-2">
-        <div className="font-['Inter'] text-[12px] font-semibold text-white/90">Curated prompts</div>
+        <div className="font-inter text-[12px] font-semibold text-white/90">Curated prompts</div>
         <div className="flex flex-col gap-2">
           {(isStart ? demoState.messages[0].quickReplies ?? [] : []).map((q) => (
             <button
@@ -218,17 +218,17 @@ export function HeroAssistantDemo({
               }}
               className="text-left rounded-2xl border border-white/10 bg-white/5 px-3 py-2.5 hover:bg-white/10 transition-colors"
             >
-              <div className="font-['Inter'] text-[12px] font-semibold text-white/90">{q.label}</div>
+              <div className="font-inter text-[12px] font-semibold text-white/90">{q.label}</div>
             </button>
           ))}
         </div>
       </div>
 
       <div className="mt-auto flex flex-col gap-2">
-        <div className="font-['Inter'] text-[11px] text-white/60">
+        <div className="font-inter text-[11px] text-white/60">
           Scenario: <span className="text-white/85 font-semibold">{scenario.label}</span>
         </div>
-        <div className="font-['Inter'] text-[11px] text-white/45">
+        <div className="font-inter text-[11px] text-white/45">
           (This is a lightweight demo. The full playground expands into a guided workflow.)
         </div>
       </div>
@@ -262,10 +262,10 @@ export function AiAssistantModal({
                 <Sparkles size={16} className="text-[#19ad7d]" />
               </div>
               <div className="flex flex-col">
-                <Dialog.Title className={`font-['Inter'] text-sm font-semibold tracking-tight ${isLightMode ? "text-black" : "text-white"}`}>
+                <Dialog.Title className={`font-inter text-sm font-semibold tracking-tight ${isLightMode ? "text-black" : "text-white"}`}>
                   AI Playground
                 </Dialog.Title>
-                <Dialog.Description className={`font-['Inter'] text-xs tracking-tight ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                <Dialog.Description className={`font-inter text-xs tracking-tight ${isLightMode ? "text-black/60" : "text-white/60"}`}>
                   Explore a curated workflow end-to-end.
                 </Dialog.Description>
               </div>

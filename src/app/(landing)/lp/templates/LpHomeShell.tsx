@@ -2,25 +2,31 @@
 
 import React from "react";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
+import { ClosingCTASection } from "@/app/components/ClosingCTASection";
 import { HeroSection } from "@/app/components/HeroSection";
-import { HowItWorksSection } from "@/app/components/HowItWorksSection";
 import { EvidenceSection } from "@/app/components/EvidenceSection";
 import { FeaturesPreviewSection } from "@/app/components/FeaturesPreviewSection";
-import { ClosingCTASection } from "@/app/components/ClosingCTASection";
+import { FAQSection } from "@/app/components/FAQSection";
+import { LpBookDemoScrollShell } from "@/app/components/landing/LpBookDemoScroll";
+import { LpSingleTestimonial } from "@/app/components/landing/LpSingleTestimonial";
+import { BOOK_DEMO_HREF } from "@/app/lib/booking";
+import { TESTIMONIALS } from "@/app/components/TestimonialsSection";
+import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
 /**
- * Same section stack as `/` (Home), with `HeroSection` in LP mode: no playground column,
- * large primary demo CTA, and a video placeholder. Used by `/lp/*` configs with `layout: "home"`.
+ * Focused `/lp/*` flow: split hero + proof + stat + testimonial + features + closing CTA.
  */
 export function LpHomeShell() {
   return (
-    <main className="relative w-full">
-      <ScrollProgress />
-      <HeroSection variant="lp" />
-      <HowItWorksSection />
-      <EvidenceSection />
-      <FeaturesPreviewSection />
-      <ClosingCTASection />
-    </main>
+    <LpBookDemoScrollShell href="#lp-demo" label="Book a demo">
+      <main className="relative w-full pb-32 md:pb-36 lg:pb-40">
+        <ScrollProgress />
+        <HeroSection variant="lp" />
+
+        {/* Confidence Boosters */}
+        <EvidenceSection variant="lp" />
+        <LpSingleTestimonial testimonial={TESTIMONIALS[1]} />
+      </main>
+    </LpBookDemoScrollShell>
   );
 }

@@ -12,6 +12,7 @@ const nextConfig = {
       { protocol: "https", hostname: "39823762.fs1.hubspotusercontent-na2.net" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "cdn.prod.website-files.com" },
+      { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
   },
 }

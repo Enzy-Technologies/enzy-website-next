@@ -94,12 +94,12 @@ export function HowItWorksSectionLegacy({
     <section className="relative w-full">
       <div className="mx-auto max-w-7xl px-4 py-16 md:py-24">
         <div className="mb-10 md:mb-14">
-          <p className="font-['Inter'] text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d]">
+          <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d]">
             How it works
           </p>
           {variant === "landing" ? null : (
             <h2
-              className={`mt-3 font-['IvyOra_Text'] text-[34px] md:text-[44px] leading-[1.05] tracking-[-1px] ${
+              className={`mt-3 font-ivyora text-[34px] md:text-[44px] leading-[0.95] tracking-[-2px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               }`}
             >
@@ -136,18 +136,18 @@ function HowItWorksRow({
       }`}
     >
       <div className="md:col-span-6">
-        <p className="font-['Inter'] text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d]">
+        <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d]">
           {step.step}
         </p>
         <h3
-          className={`mt-3 font-['Inter'] text-[22px] md:text-[26px] font-medium tracking-[-0.5px] ${
+          className={`mt-3 font-inter text-[22px] md:text-[26px] font-medium tracking-[-0.5px] ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           }`}
         >
           {step.title}
         </h3>
         <div
-          className={`mt-3 font-['Inter'] text-[15px] md:text-[16px] leading-[1.65] ${
+          className={`mt-3 font-inter text-[15px] md:text-[16px] leading-[1.65] ${
             isLightMode ? "text-black/70" : "text-white/65"
           }`}
         >

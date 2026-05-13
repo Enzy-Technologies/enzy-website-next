@@ -20,7 +20,7 @@ export function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`font-['IvyOra_Text'] text-5xl md:text-6xl tracking-[-2px] leading-[1.1] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
+            className={`font-ivyora text-5xl md:text-6xl tracking-[-2px] leading-[0.95] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
           >
             Frequently Asked <span className="text-[#19ad7d]">Questions</span>
           </motion.h2>
@@ -29,7 +29,7 @@ export function FAQSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className={`font-['Inter'] text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed ${isLightMode ? 'text-black/60' : 'text-white/60'}`}
+            className={`font-inter text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed ${isLightMode ? 'text-black/60' : 'text-white/60'}`}
           >
             Quick answers about the platform, setup, and where Enzy fits.
           </motion.p>

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
+import { ChevronDown, ArrowRight, Menu, X, Sun, Moon, Wand2 } from 'lucide-react';
 import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';
@@ -11,6 +11,7 @@ const MENU_ITEMS = [
   { id: 'features', label: 'System', path: '/features' },
   { id: 'solutions', label: 'Solutions', path: '/solutions' },
   { id: 'resources', label: 'Resources', path: '/resources' },
+  { id: 'partners', label: 'Partners', path: '/partners' },
   { id: 'about', label: 'About', path: '/about' },
 ];
 
@@ -146,7 +147,7 @@ export function MainNavigation() {
         onMouseLeave={handleMouseLeave}
       >
         {/* Main Navigation Items */}
-        <div className={`flex gap-8 px-4 py-3.5 font-['Inter'] text-[12px] uppercase tracking-[0.15em] font-medium relative ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+        <div className={`flex gap-8 px-4 py-3.5 font-inter text-[12px] uppercase tracking-[0.15em] font-medium relative ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
           {MENU_ITEMS.map((item) => (
             <Link 
               href={item.path}
@@ -201,7 +202,7 @@ export function MainNavigation() {
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
                             See what Enzy does—fast.
                         </h3>
                         <div className="mt-4">
@@ -216,7 +217,7 @@ export function MainNavigation() {
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                         {SYSTEM_SECTIONS.map((section, i) => (
                             <motion.div key={i} variants={itemVariants} className="flex flex-col">
-                                <span className={`font-['Inter'] text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                                <span className={`font-inter text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
                                     {section.title}
                                 </span>
                                 <span className={`text-[13px] mb-4 leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
@@ -230,7 +231,7 @@ export function MainNavigation() {
                                                 onClick={() => setActiveDropdown(null)}
                                                 className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
                                             >
-                                                <span className={`font-['Inter'] text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>{item}</span>
+                                                <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>{item}</span>
                                                 <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                             </Link>
                                         </li>
@@ -246,7 +247,7 @@ export function MainNavigation() {
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
                             Built for action. Built to scale.
                         </h3>
                         <div className="mt-4">
@@ -261,7 +262,7 @@ export function MainNavigation() {
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
                         {USE_CASES.map((uc, i) => (
                             <motion.div key={i} variants={itemVariants} className="flex flex-col">
-                                <span className={`font-['Inter'] text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                                <span className={`font-inter text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
                                     {uc.title}
                                 </span>
                                 <span className={`text-[13px] mb-4 leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
@@ -274,7 +275,7 @@ export function MainNavigation() {
                                             onClick={() => setActiveDropdown(null)}
                                             className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
                                         >
-                                            <span className={`font-['Inter'] text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>Learn more</span>
+                                            <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>Learn more</span>
                                             <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                         </Link>
                                     </li>
@@ -289,7 +290,7 @@ export function MainNavigation() {
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-['Inter'] text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
                             Learn the playbooks that work.
                         </h3>
                         <div className="mt-4">
@@ -304,7 +305,7 @@ export function MainNavigation() {
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10">
                         {LEARN_ITEMS.map((item, i) => (
                             <motion.div key={i} variants={itemVariants} className="flex flex-col">
-                                <span className={`font-['Inter'] text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                                <span className={`font-inter text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
                                     {item.title}
                                 </span>
                                 <span className={`text-[13px] mb-4 leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
@@ -317,7 +318,7 @@ export function MainNavigation() {
                                             onClick={() => setActiveDropdown(null)}
                                             className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
                                         >
-                                            <span className={`font-['Inter'] text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>Learn more</span>
+                                            <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>Learn more</span>
                                             <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                         </Link>
                                     </li>
@@ -335,6 +336,22 @@ export function MainNavigation() {
 
       {/* Mobile header controls (theme + menu) */}
       <div className="md:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
+        <button 
+          onClick={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { triggerClick: true, x: cx, y: cy, force: true } }));
+          }}
+          className={`p-2.5 transition-colors active:scale-95 ${
+            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
+          }`}
+          aria-label="Gather pixels"
+          title="Gather pixels"
+        >
+          <Wand2 size={18} />
+        </button>
+
         <button
           onClick={toggleTheme}
           className={`p-2.5 transition-colors active:scale-95 ${
@@ -410,7 +427,7 @@ export function MainNavigation() {
                     <Link 
                       href={item.path}
                       onClick={() => setMobileMenuOpen(false)}
-                      className={`font-['Inter'] text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 ${
+                      className={`font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 ${
                         isLightMode ? 'text-black/90' : 'text-white/90'
                       }`}
                     >
@@ -450,7 +467,7 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See what Enzy does—fast.</p>
+                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See what Enzy does—fast.</p>
                                     <Link href="/features" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Explore platform <ArrowRight size={12} />
                                     </Link>
@@ -480,7 +497,7 @@ export function MainNavigation() {
                                                         : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-[#19ad7d]/30'
                                                 }`}
                                             >
-                                                <span className={`text-[14px] font-semibold font-['Inter'] ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>{subitem}</span>
+                                                <span className={`text-[14px] font-semibold font-inter ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>{subitem}</span>
                                                 <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                             </Link>
                                         ))}
@@ -494,7 +511,7 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Built for action. Built to scale.</p>
+                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Built for action. Built to scale.</p>
                                     <Link href="/solutions" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Explore solutions <ArrowRight size={12} />
                                     </Link>
@@ -522,7 +539,7 @@ export function MainNavigation() {
                                                     : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-[#19ad7d]/30'
                                             }`}
                                         >
-                                            <span className={`text-[14px] font-semibold font-['Inter'] ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>Learn more</span>
+                                            <span className={`text-[14px] font-semibold font-inter ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>Learn more</span>
                                             <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                         </Link>
                                     </div>
@@ -535,7 +552,7 @@ export function MainNavigation() {
                             <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-['Inter'] leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Learn the playbooks that work.</p>
+                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Learn the playbooks that work.</p>
                                     <Link href="/resources" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Browse resources <ArrowRight size={12} strokeWidth={2.5} />
                                     </Link>
@@ -563,7 +580,7 @@ export function MainNavigation() {
                                                     : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-[#19ad7d]/30'
                                             }`}
                                         >
-                                            <span className={`text-[14px] font-semibold font-['Inter'] ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>Learn more</span>
+                                            <span className={`text-[14px] font-semibold font-inter ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>Learn more</span>
                                             <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                         </Link>
                                     </div>

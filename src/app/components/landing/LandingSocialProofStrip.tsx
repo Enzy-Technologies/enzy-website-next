@@ -30,7 +30,7 @@ export function LandingSocialProofStrip({ eyebrow, line, logos, testimonial }: P
       >
         <p className="eyebrow text-[#19ad7d] mb-1.5">{eyebrow}</p>
         <p
-          className={`font-['Inter'] text-[14px] md:text-[15px] font-medium tracking-tight ${
+          className={`font-inter text-[14px] md:text-[15px] font-medium tracking-tight ${
             isLightMode ? "text-black/70" : "text-white/70"
           }`}
         >
@@ -47,7 +47,7 @@ export function LandingSocialProofStrip({ eyebrow, line, logos, testimonial }: P
             {logos.map((name) => (
               <span
                 key={name}
-                className={`font-['Inter'] text-[11px] md:text-[12px] font-semibold tracking-tight px-3 py-1.5 rounded-full border ${
+                className={`font-inter text-[11px] md:text-[12px] font-semibold tracking-tight px-3 py-1.5 rounded-full border ${
                   isLightMode ? "border-black/10 bg-black/[0.03] text-black/55" : "border-white/10 bg-white/[0.04] text-white/55"
                 }`}
               >
@@ -62,13 +62,13 @@ export function LandingSocialProofStrip({ eyebrow, line, logos, testimonial }: P
             className={`mt-6 text-left border-t pt-6 ${isLightMode ? "border-black/10" : "border-white/10"}`}
           >
             <p
-              className={`font-['Inter'] text-[14px] md:text-[15px] leading-relaxed italic ${
+              className={`font-inter text-[14px] md:text-[15px] leading-relaxed italic ${
                 isLightMode ? "text-black/75" : "text-white/75"
               }`}
             >
               “{testimonial.quote}”
             </p>
-            <footer className={`mt-3 font-['Inter'] text-[12px] md:text-[13px] ${isLightMode ? "text-black/45" : "text-white/45"}`}>
+            <footer className={`mt-3 font-inter text-[12px] md:text-[13px] ${isLightMode ? "text-black/45" : "text-white/45"}`}>
               <span className="font-semibold text-[#19ad7d]">{testimonial.name}</span>
               <span className="mx-2">·</span>
               <span>{testimonial.role}</span>
