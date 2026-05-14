@@ -64,13 +64,7 @@ export function About() {
         {/* 001 — Who we are */}
         <FadeInSection>
           <section className="pt-2 pb-16 md:pb-24" data-section="001">
-            <p
-              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-black/45" : "text-white/40"
-              }`}
-            >
-              001 — Who we are
-            </p>
+
             <BlurReveal
               as="h1"
               delay={0.1}
@@ -91,13 +85,7 @@ export function About() {
         {/* 002 — What we've learned */}
         <FadeInSection className="pb-16 md:pb-24">
           <section data-section="002">
-            <p
-              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
-              }`}
-            >
-              002 — What we&apos;ve learned
-            </p>
+
 
             <div className={`mt-8 p-8 md:p-12 lg:p-16 rounded-[40px] border transition-all duration-500 liquid-glass ${
               isLightMode
@@ -140,149 +128,38 @@ export function About() {
           </section>
         </FadeInSection>
 
-        {/* 003 — Our System (Slide Content) */}
-        <FadeInSection className="pb-20 md:pb-32">
-          <section data-section="003">
-            <p
-              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-black/45" : "text-white/40"
-              }`}
-            >
-              003 — Our System
-            </p>
+        {/* 003 — Why we exist */}
+        <section data-section="003" className="pb-16 md:pb-24">
 
-            <div className="mt-8 max-w-4xl">
-              <h2 className={`font-ivyora font-medium text-[36px] sm:text-[48px] md:text-[56px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
-                We provide intelligent, real-time performance systems that improve execution, increase accountability, and help teams drive measurable sales growth.
-              </h2>
-              
-              <div className={`mt-12 mb-12 h-[1px] w-full max-w-2xl ${isLightMode ? "bg-black/10" : "bg-white/10"}`} />
 
-              <div className="max-w-3xl">
-                <h3 className={`font-inter text-[20px] md:text-[24px] font-bold tracking-tight mb-8 ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
-                  Key Solutions :
-                </h3>
-                
-                <div className="flex flex-col gap-6">
-                  <div className={`pb-6 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
-                    <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                      <strong className={isLightMode ? "text-black font-bold" : "text-white font-bold"}>Integrate:</strong> Bring your systems into an intelligent ecosystem.
-                    </p>
-                  </div>
-                  <div className={`pb-6 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
-                    <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                      <strong className={isLightMode ? "text-black font-bold" : "text-white font-bold"}>Activate:</strong> EnzyAI provides actionable insight & performance recommendations.
-                    </p>
-                  </div>
-                  <div className={`pb-6 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
-                    <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                      <strong className={isLightMode ? "text-black font-bold" : "text-white font-bold"}>Accelerate:</strong> Turn momentum into sustained performance and revenue growth.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-16">
-                <p className={`font-inter text-[12px] font-bold tracking-widest uppercase ${isLightMode ? "text-black/50" : "text-white/50"}`}>
-                  Create Momentum™
+          <div className="mt-10 max-w-4xl flex flex-col gap-10">
+            <FadeInSection delay={0.1}>
+              <h3 className={`font-ivyora font-medium text-[32px] sm:text-[40px] md:text-[48px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
+                We&apos;ve studied millions of sales interactions across incentives, goals, competitions, workflows, and performance systems. The pattern is always the same: <span className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}>high-performing teams don&apos;t win because they have more data — they win because they turn fragmented behavior into visible momentum.</span>
+              </h3>
+            </FadeInSection>
+            
+            <div className={`flex flex-col gap-6 pl-0 md:pl-8 border-l-0 md:border-l-[3px] ${isLightMode ? "border-[#19ad7d]/20" : "border-[#19ad7d]/30"}`}>
+              <FadeInSection delay={0.2}>
+                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                  That starts with consolidation. Data, tools, processes, incentives, and rep activity must exist in one connected performance layer. Once the system is unified, modern AI can identify the hidden patterns humans miss — the behaviors driving pipeline, the habits creating momentum, and the gaps slowing teams down.
                 </p>
-              </div>
+              </FadeInSection>
+              
+              <FadeInSection delay={0.3}>
+                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                  From there, we help teams operationalize those insights with the right workflows, automations, and technologies to maximize performance at scale.
+                </p>
+              </FadeInSection>
+              
+              <FadeInSection delay={0.4}>
+                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                  <strong className={isLightMode ? "text-black font-bold" : "text-white font-bold"}>Enzy exists because sales performance is not random.</strong> It&apos;s measurable, predictable, and engineerable. We build the infrastructure that turns behavior into revenue.
+                </p>
+              </FadeInSection>
             </div>
-          </section>
-        </FadeInSection>
-
-        {/* 004 — The people */}
-        <FadeInSection className="pb-16 md:pb-24">
-          <section data-section="004">
-            <p
-              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-black/45" : "text-white/40"
-              }`}
-            >
-              004 — The people
-            </p>
-
-            <ul className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-              {[
-                {
-                  initials: "SK",
-                  color: "purple",
-                  name: "Sarah Kavanagh",
-                  role: "Co-founder, CEO",
-                  bio: "12 years building enterprise data systems. Previously led performance analytics at Salesforce.",
-                },
-                {
-                  initials: "DM",
-                  color: "teal",
-                  name: "Daniel Moreno",
-                  role: "Co-founder, CTO",
-                  bio: "Ex-Google DeepMind. Built ML pipelines for ranking and personalization at scale.",
-                },
-                {
-                  initials: "PR",
-                  color: "coral",
-                  name: "Priya Raman",
-                  role: "Head of Research",
-                  bio: "PhD organizational behavior, MIT. Published on incentive design and team performance.",
-                },
-              ].map((p) => {
-                const portraitBg =
-                  p.color === "purple"
-                    ? "bg-[linear-gradient(180deg,rgba(128,90,213,0.22),rgba(128,90,213,0.08))]"
-                    : p.color === "teal"
-                      ? "bg-[linear-gradient(180deg,rgba(25,173,125,0.22),rgba(25,173,125,0.08))]"
-                      : "bg-[linear-gradient(180deg,rgba(255,107,107,0.20),rgba(255,107,107,0.07))]";
-                const portraitRing =
-                  p.color === "purple"
-                    ? "ring-[rgba(128,90,213,0.35)]"
-                    : p.color === "teal"
-                      ? "ring-[#19ad7d]/35"
-                      : "ring-[rgba(255,107,107,0.32)]";
-
-                return (
-                  <li
-                    key={p.name}
-                    className={`pt-1`}
-                  >
-                    <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center ring-1 ring-inset ${portraitBg} ${portraitRing}`}
-                    >
-                      <span
-                        className={`font-inter font-extrabold tracking-[0.12em] ${
-                          isLightMode ? "text-black/75" : "text-white/75"
-                        }`}
-                      >
-                        {p.initials}
-                      </span>
-                    </div>
-
-                    <p
-                      className={`mt-5 font-inter text-[16px] font-semibold ${
-                        isLightMode ? "text-black" : "text-white"
-                      }`}
-                    >
-                      {p.name}
-                    </p>
-                    <p
-                      className={`mt-1 font-inter text-[12px] font-semibold tracking-[0.18em] uppercase ${
-                        isLightMode ? "text-black/50" : "text-white/45"
-                      }`}
-                    >
-                      {p.role}
-                    </p>
-                    <p
-                      className={`mt-4 font-inter text-[14px] leading-relaxed ${
-                        isLightMode ? "text-black/65" : "text-white/65"
-                      }`}
-                    >
-                      {p.bio}
-                    </p>
-                  </li>
-                );
-              })}
-            </ul>
-          </section>
-        </FadeInSection>
+          </div>
+        </section>
 
         {/* Backed by */}
         <FadeInSection className="pb-16 md:pb-24">
@@ -309,16 +186,10 @@ export function About() {
           </section>
         </FadeInSection>
 
-        {/* 005 — Next */}
+        {/* 004 — Next */}
         <FadeInSection className="pb-12 md:pb-16">
-          <section data-section="005">
-            <p
-              className={`font-inter text-[12px] md:text-[13px] font-semibold tracking-[0.18em] uppercase ${
-                isLightMode ? "text-black/45" : "text-white/40"
-              }`}
-            >
-              005 — Next
-            </p>
+          <section data-section="004">
+
 
             <div
               className={`mt-7 relative rounded-[40px] p-10 md:p-16 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass ${
