@@ -363,13 +363,6 @@ export function Solutions() {
                    <span className="font-inter font-black uppercase text-[14px] md:text-[18px] lg:text-[20px] tracking-widest">
                      {t.label}
                    </span>
-                   {mode === t.id && (
-                      <motion.div 
-                        layoutId="activeModeIndicator" 
-                        className="absolute -bottom-2 left-0 right-0 h-[2px] md:h-[3px] bg-[#19ad7d]" 
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                      />
-                   )}
                 </button>
              ))}
           </div>

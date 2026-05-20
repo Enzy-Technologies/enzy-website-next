@@ -11,80 +11,8 @@ function svgDataUri(svg: string) {
 }
 
 const featurePlaceholders = [
-  svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#071018"/>
-          <stop offset="1" stop-color="#0b0f14"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="35%" cy="20%" r="65%">
-          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.35"/>
-          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1200" height="1600" fill="url(#bg)"/>
-      <rect width="1200" height="1600" fill="url(#glow)"/>
-      <g opacity="0.92">
-        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">AI Assistant</text>
-        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Instant answers. Next-best actions.</text>
-      </g>
-      <g transform="translate(90 310)" opacity="0.95">
-        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-        <g transform="translate(46 54)">
-          <rect x="0" y="0" rx="18" width="640" height="56" fill="rgba(255,255,255,0.06)"/>
-          <rect x="0" y="92" rx="18" width="920" height="56" fill="rgba(255,255,255,0.06)"/>
-          <rect x="0" y="184" rx="18" width="780" height="56" fill="rgba(255,255,255,0.06)"/>
-          <g transform="translate(0 300)">
-            <circle cx="14" cy="14" r="6" fill="#19ad7d"/>
-            <rect x="34" y="4" rx="10" width="560" height="20" fill="rgba(245,247,250,0.70)"/>
-            <circle cx="14" cy="82" r="6" fill="#19ad7d"/>
-            <rect x="34" y="72" rx="10" width="720" height="20" fill="rgba(245,247,250,0.65)"/>
-            <circle cx="14" cy="150" r="6" fill="#19ad7d"/>
-            <rect x="34" y="140" rx="10" width="640" height="20" fill="rgba(245,247,250,0.58)"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  `),
-  svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#071018"/>
-          <stop offset="1" stop-color="#0b0f14"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="70%" cy="18%" r="70%">
-          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.32"/>
-          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1200" height="1600" fill="url(#bg)"/>
-      <rect width="1200" height="1600" fill="url(#glow)"/>
-      <g opacity="0.92">
-        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Leaderboards</text>
-        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Make performance visible.</text>
-      </g>
-      <g transform="translate(90 310)">
-        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-        <g transform="translate(54 72)">
-          <rect x="0" y="0" rx="14" width="912" height="18" fill="rgba(245,247,250,0.16)"/>
-          <rect x="0" y="70" rx="14" width="820" height="18" fill="rgba(245,247,250,0.16)"/>
-          <rect x="0" y="140" rx="14" width="760" height="18" fill="rgba(245,247,250,0.16)"/>
-          <rect x="0" y="210" rx="14" width="700" height="18" fill="rgba(245,247,250,0.16)"/>
-          <g transform="translate(0 330)">
-            <rect x="0" y="0" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="0" y="124" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="0" y="248" rx="18" width="912" height="88" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="0" y="372" rx="18" width="912" height="88" fill="rgba(25,173,125,0.10)" stroke="rgba(25,173,125,0.35)"/>
-            <circle cx="46" cy="416" r="14" fill="#19ad7d"/>
-            <rect x="82" y="404" rx="10" width="340" height="24" fill="rgba(245,247,250,0.72)"/>
-            <rect x="560" y="404" rx="10" width="180" height="24" fill="rgba(245,247,250,0.55)"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  `),
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Chat%201.png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/1-1%20Leaderboard%20podium%20(light%20mode).png",
   svgDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
       <defs>
@@ -165,45 +93,7 @@ const featurePlaceholders = [
       </g>
     </svg>
   `),
-  svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#071018"/>
-          <stop offset="1" stop-color="#0b0f14"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="40%" cy="18%" r="70%">
-          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.28"/>
-          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1200" height="1600" fill="url(#bg)"/>
-      <rect width="1200" height="1600" fill="url(#glow)"/>
-      <g opacity="0.92">
-        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Messaging</text>
-        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Announcements, nudges, updates.</text>
-      </g>
-      <g transform="translate(90 310)">
-        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-        <g transform="translate(64 88)">
-          <rect x="0" y="0" rx="22" width="892" height="138" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-          <circle cx="58" cy="56" r="22" fill="rgba(245,247,250,0.12)"/>
-          <rect x="98" y="42" rx="12" width="300" height="18" fill="rgba(245,247,250,0.62)"/>
-          <rect x="98" y="72" rx="12" width="520" height="14" fill="rgba(245,247,250,0.24)"/>
-          <g transform="translate(0 178)">
-            <rect x="0" y="0" rx="22" width="740" height="138" fill="rgba(25,173,125,0.10)" stroke="rgba(25,173,125,0.35)"/>
-            <rect x="24" y="42" rx="12" width="380" height="18" fill="rgba(245,247,250,0.70)"/>
-            <rect x="24" y="72" rx="12" width="540" height="14" fill="rgba(245,247,250,0.30)"/>
-          </g>
-          <g transform="translate(152 356)">
-            <rect x="0" y="0" rx="22" width="740" height="138" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="24" y="42" rx="12" width="420" height="18" fill="rgba(245,247,250,0.58)"/>
-            <rect x="24" y="72" rx="12" width="520" height="14" fill="rgba(245,247,250,0.24)"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  `),
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Chats%20(light%20mode).png",
 ];
 
 const cardsData = [
@@ -270,7 +160,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
   const { isLightMode } = useTheme();
   const isLp = variant === "lp";
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(2);
+  const [activeIndex, setActiveIndex] = useState(0);
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
   const [isHoveringIndex, setIsHoveringIndex] = useState<number | null>(null);
@@ -306,14 +196,14 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
     if (!isCarousel) return;
     if (scrollRef.current) {
       const children = scrollRef.current.children;
-      if (children.length > 2) {
-        const centerChild = children[2] as HTMLElement;
+      if (children.length > 0) {
+        const targetChild = children[0] as HTMLElement;
         requestAnimationFrame(() => {
           if (!scrollRef.current) return;
           const scrollPos =
-            centerChild.offsetLeft -
+            targetChild.offsetLeft -
             scrollRef.current.clientWidth / 2 +
-            centerChild.clientWidth / 2;
+            targetChild.clientWidth / 2;
           scrollRef.current.scrollTo({ left: scrollPos, behavior: "instant" as ScrollBehavior });
         });
       }
@@ -327,20 +217,14 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
 
     const observer = new IntersectionObserver(
       (entries) => {
-        let maxRatio = 0;
-        let maxIndex = activeIndexRef.current;
-
         entries.forEach((entry) => {
-          if (entry.intersectionRatio > maxRatio) {
-            maxRatio = entry.intersectionRatio;
+          if (entry.isIntersecting) {
             const index = Array.from(container.children).indexOf(entry.target);
-            if (index !== -1) maxIndex = index;
+            if (index !== -1) setActiveIndex(index);
           }
         });
-
-        setActiveIndex(maxIndex);
       },
-      { root: container, threshold: [0.4, 0.6, 0.8] }
+      { root: container, threshold: 0.5 }
     );
 
     Array.from(container.children).forEach((child) => observer.observe(child));
@@ -459,7 +343,8 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
             const isCenter = activeIndex === i;
             const isHovering = isHoveringIndex === i;
             const isExpanded = expandedIndex === i;
-            const showDetails = isHovering || isExpanded;
+            // Automatically expand the center card in carousel mode for a smoother experience
+            const showDetails = isCarousel ? (isCenter || isHovering) : (isHovering || isExpanded);
 
             return (
               <button
@@ -476,8 +361,8 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                     !isCarousel
                       ? "opacity-100"
                       : isCenter
-                        ? "ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)]"
-                        : "opacity-60 hover:opacity-90"
+                        ? "ring-2 ring-[#19ad7d] shadow-[0_0_48px_rgba(25,173,125,0.22)] opacity-100"
+                        : "opacity-100 hover:ring-white/30"
                   }
                 `}
               >

@@ -1,295 +1,193 @@
+
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { useTheme } from "@/app/components/ThemeProvider";
-import { CTAButton } from "@/app/components/CTAButton";
-import { HeroPlaygroundExperience } from "@/app/playground/playgroundExperience";
-import { BlurReveal } from "@/app/components/BlurReveal";
+import React, { useRef, useEffect, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 
-type Role = "rep" | "leader" | "ops";
-type Goal = "visibility" | "competition" | "execution";
-type Stack = "salesforce" | "hubspot" | "other";
-
-function pickScenario(role: Role, goal: Goal): "field" | "leaders" | "ops" {
-  if (role === "ops") return "ops";
-  if (role === "leader") return "leaders";
-  // reps
-  if (goal === "competition") return "field";
-  if (goal === "visibility") return "field";
-  return "field";
-}
+const BASE_IMAGES = [
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20iPhone.png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20iPhone-leaderboard.png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20Messaging.png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20iPhoneAI.png",
+];
 
 export function Playground() {
-  const { isLightMode } = useTheme();
-  const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
-  const [role, setRole] = useState<Role>("rep");
-  const [goal, setGoal] = useState<Goal>("visibility");
-  const [stack, setStack] = useState<Stack>("salesforce");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [animValues, setAnimValues] = useState({
+    startX: 0,
+    startY: 0,
+    endX: 0,
+    endY: 0,
+    endScale: 1,
+    cw: 1024,
+    ch: 683,
+  });
 
-  const scenarioKey = useMemo(() => pickScenario(role, goal), [role, goal]);
+  useEffect(() => {
+    setIsMounted(true);
+    const update = () => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-  const containerRef = useRef<HTMLElement>(null);
+      const imageAspect = 8000 / 5772;
+
+      const isMobile = vw < 768;
+      const isDesktop = vw >= 1024;
+
+      let ch;
+      if (isDesktop) {
+        ch = Math.min(vh * 0.95, (vw * 0.55) / imageAspect);
+      } else if (isMobile) {
+        ch = vh * 0.6;
+      } else {
+        ch = Math.min(vh * 0.75, (vw * 0.8) / imageAspect);
+      }
+
+      let cw = ch * imageAspect;
+
+      if (!isDesktop && cw * 0.2294 < vw * 0.4) {
+        cw = (vw * 0.4) / 0.2294;
+        ch = cw / imageAspect;
+      }
+
+      const phoneCenterX_image = cw * 0.4922;
+      const phoneCenterY_image = ch * 0.4567;
+      const phoneH_image = ch * 0.6684;
+
+      let startX = isDesktop ? vw * 0.72 - cw / 2 : vw / 2 - cw / 2;
+
+      let startY;
+      if (isDesktop) {
+        startY = vh * 0.55 - ch / 2;
+      } else if (isMobile) {
+        startY = vh * 0.45 - 0.1225 * ch;
+      } else {
+        startY = vh * 0.5 - 0.1225 * ch;
+      }
+
+      let endScale = Math.min(
+        (vh * 0.78) / phoneH_image,
+        (vw * 0.85) / (cw * 0.2294)
+      );
+      if (endScale > 6) endScale = 6;
+
+      const endX = vw / 2 - phoneCenterX_image * endScale;
+      const endY = vh / 2 + vh * 0.06 - phoneCenterY_image * endScale;
+
+      setAnimValues({ startX, startY, endX, endY, endScale, cw, ch });
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  useEffect(() => {
+    BASE_IMAGES.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"],
+    offset: ["start start", "end end"],
   });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
+  // Phases:
+  // 0.00 -> 0.05: zoom in
+  // 0.05 -> 0.20: home
+  // 0.20 -> 0.40: leaderboard
+  // 0.40 -> 0.60: messaging
+  // 0.60 -> 0.88: AI chat
+  // 0.93 -> 1.00: zoom out
+
+  const x = useTransform(
+    scrollYProgress,
+    [0, 0.05, 0.93, 1.0],
+    [animValues.startX, animValues.endX, animValues.endX, animValues.startX]
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 0.05, 0.88, 1.0],
+    [
+      animValues.startY,
+      animValues.endY + animValues.ch * 0.02,
+      animValues.endY - animValues.ch * 0.02,
+      animValues.startY,
+    ]
+  );
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.05, 0.93, 1.0],
+    [1, animValues.endScale, animValues.endScale, 1]
+  );
+  const textOpacity = useTransform(
+    scrollYProgress,
+    [0.05, 0.09, 0.84, 0.9],
+    [0, 1, 1, 0]
+  );
+
+  const getImageIndex = (progress: number) => {
+    if (progress < 0.2) return 0;
+    if (progress < 0.4) return 1;
+    if (progress < 0.6) return 2;
+    return 3;
+  };
+
+  useMotionValueEvent(scrollYProgress, "change", (progress) => {
+    const nextIndex = getImageIndex(progress);
+    setActiveImageIndex((current) => (current === nextIndex ? current : nextIndex));
+  });
 
   return (
-    <section ref={containerRef} className="relative z-20 w-full px-4 md:px-12 lg:px-20 pt-10 md:pt-16 lg:pt-20 pb-16 md:pb-24 flex flex-col items-center">
-      <motion.div
-        className={`absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${
-          isLightMode ? "opacity-50" : "opacity-100"
-        }`}
-        style={{ y: backgroundY }}
-      />
-      <motion.div
-        className={`absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
-          isLightMode ? "opacity-50" : "opacity-100"
-        }`}
-        style={{ y: backgroundY2 }}
-      />
-      <div className="w-full max-w-[1100px] flex flex-col gap-10 relative z-10">
-        <div className="flex flex-col items-center text-center gap-4">
-          <BlurReveal
-            as="h1"
-            delay={0.1}
-            className={`font-ivyora font-medium tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] ${
-              isLightMode ? "text-[#0b0f14]" : "text-[#f5f7fa]"
-            }`}
-          >
-            AI Playground
-          </BlurReveal>
-          <p
-            className={`font-inter text-[16px] md:text-[18px] leading-relaxed max-w-[720px] ${
-              isLightMode ? "text-black/60" : "text-white/60"
-            }`}
-          >
-            Answer a few questions and we’ll curate a hands-on experience that matches your team, goals, and stack.
-          </p>
-        </div>
+    <motion.div
+      ref={containerRef}
+      className="relative w-full z-40 -mt-[45vh] lg:-mt-[100vh]"
+      style={{ height: "600vh" }}
+    >
+      <div className="sticky top-0 w-full h-screen overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-8 md:top-12 left-0 w-full text-center flex justify-center pointer-events-none z-40"
+          style={{ opacity: textOpacity }}
+        >
+          <h2 className="font-inter font-semibold text-[#111111] text-3xl md:text-5xl tracking-tight">
+            Enzy Goes Agentic
+          </h2>
+        </motion.div>
 
-        {/* Question flow */}
-        <div className="w-full rounded-[28px] p-6 md:p-8 liquid-glass">
-          <div className="flex items-center justify-between gap-4 mb-6">
-            <div className={`font-inter text-sm font-semibold ${isLightMode ? "text-black/70" : "text-white/70"}`}>
-              Setup
-            </div>
-            <div className={`font-inter text-xs ${isLightMode ? "text-black/40" : "text-white/40"}`}>
-              Step {step + 1} of 4
-            </div>
-          </div>
+        <motion.div
+          className="absolute origin-top-left overflow-hidden"
+          style={{
+            width: animValues.cw,
+            height: animValues.ch,
+            x,
+            y,
+            scale,
+            opacity: isMounted ? 1 : 0,
+          }}
+        >
+          <img
+            src={BASE_IMAGES[activeImageIndex]}
+            alt="Phone screen"
+            className="absolute inset-0 w-full h-full object-cover z-40"
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            draggable={false}
+          />
 
-          <AnimatePresence mode="wait">
-            {step === 0 && (
-              <motion.div
-                key="step-role"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col gap-5"
-              >
-                <div>
-                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                    Who are you setting this up for?
-                  </div>
-                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                    We’ll tailor the prompts and outputs to match how you work.
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { id: "rep" as const, title: "Reps", desc: "Stay consistent and win daily." },
-                    { id: "leader" as const, title: "Leaders", desc: "Coach with real-time clarity." },
-                    { id: "ops" as const, title: "Ops", desc: "Automate visibility and alignment." },
-                  ].map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => setRole(o.id)}
-                      className={`text-left rounded-2xl p-4 border transition-colors ${
-                        role === o.id
-                          ? "border-[#19ad7d]/40 bg-[#19ad7d]/10"
-                          : isLightMode
-                            ? "border-black/10 hover:border-black/20 hover:bg-black/5"
-                            : "border-white/10 hover:border-white/20 hover:bg-white/5"
-                      }`}
-                    >
-                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                        {o.title}
-                      </div>
-                      <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                        {o.desc}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 1 && (
-              <motion.div
-                key="step-goal"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col gap-5"
-              >
-                <div>
-                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                    What do you want to improve first?
-                  </div>
-                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                    We’ll prioritize the most relevant workflow.
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { id: "visibility" as const, title: "Visibility", desc: "Live activity + KPIs." },
-                    { id: "competition" as const, title: "Competition", desc: "Leaderboards + incentives." },
-                    { id: "execution" as const, title: "Execution", desc: "Nudges + next steps." },
-                  ].map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => setGoal(o.id)}
-                      className={`text-left rounded-2xl p-4 border transition-colors ${
-                        goal === o.id
-                          ? "border-[#19ad7d]/40 bg-[#19ad7d]/10"
-                          : isLightMode
-                            ? "border-black/10 hover:border-black/20 hover:bg-black/5"
-                            : "border-white/10 hover:border-white/20 hover:bg-white/5"
-                      }`}
-                    >
-                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                        {o.title}
-                      </div>
-                      <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                        {o.desc}
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div
-                key="step-stack"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col gap-5"
-              >
-                <div>
-                  <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                    What’s your primary CRM?
-                  </div>
-                  <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                    This changes the pre-filled demo and the language we use.
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { id: "salesforce" as const, title: "Salesforce" },
-                    { id: "hubspot" as const, title: "HubSpot" },
-                    { id: "other" as const, title: "Other" },
-                  ].map((o) => (
-                    <button
-                      key={o.id}
-                      type="button"
-                      onClick={() => setStack(o.id)}
-                      className={`text-left rounded-2xl p-4 border transition-colors ${
-                        stack === o.id
-                          ? "border-[#19ad7d]/40 bg-[#19ad7d]/10"
-                          : isLightMode
-                            ? "border-black/10 hover:border-black/20 hover:bg-black/5"
-                            : "border-white/10 hover:border-white/20 hover:bg-white/5"
-                      }`}
-                    >
-                      <div className={`font-inter font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                        {o.title}
-                      </div>
-                      <div className={`font-inter text-xs mt-1 ${isLightMode ? "text-black/50" : "text-white/50"}`}>
-                        Used to seed the demo.
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 3 && (
-              <motion.div
-                key="step-ready"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="flex flex-col gap-5"
-              >
-                <div className="flex items-start gap-3">
-                  <CheckCircle2 className="text-[#19ad7d] mt-0.5" size={20} />
-                  <div>
-                    <div className={`font-inter text-lg font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                      Your experience is ready.
-                    </div>
-                    <div className={`font-inter text-sm mt-1 ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                      We curated prompts + outputs for <span className="text-[#19ad7d] font-semibold">{scenarioKey}</span> using{" "}
-                      <span className="text-[#19ad7d] font-semibold">{stack}</span>.
-                    </div>
-                  </div>
-                </div>
-                <CTAButton
-                  type="button"
-                  variant="primary"
-                  className="w-full sm:w-auto justify-center rounded-full px-8 py-4 font-semibold text-[15px] tracking-tight"
-                  onClick={() => {
-                    document.getElementById("playground-experience")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                  }}
-                >
-                  Start experience <ArrowRight size={18} strokeWidth={2.25} />
-                </CTAButton>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="mt-7 flex items-center justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setStep((s) => (s > 0 ? ((s - 1) as any) : s))}
-              className={`text-sm font-inter font-semibold px-3 py-2 rounded-xl transition-colors ${
-                isLightMode ? "text-black/60 hover:bg-black/5" : "text-white/60 hover:bg-white/5"
-              }`}
-              disabled={step === 0}
-            >
-              Back
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep((s) => (s < 3 ? ((s + 1) as any) : s))}
-              className={`text-sm font-inter font-semibold px-3 py-2 rounded-xl transition-colors ${
-                isLightMode ? "text-black/60 hover:bg-black/5" : "text-white/60 hover:bg-white/5"
-              }`}
-              disabled={step === 3}
-            >
-              Next
-            </button>
-          </div>
-        </div>
-
-        {/* Experience */}
-        <div id="playground-experience" className="scroll-mt-28">
-          <HeroPlaygroundExperience isLightMode={isLightMode} scenarioKey={scenarioKey} stack={stack} />
-        </div>
+          <div
+            className="absolute inset-0 pointer-events-none z-50"
+            style={{
+              background:
+                "linear-gradient(to bottom, transparent 80%, var(--color-surface-light) 98%)",
+            }}
+          />
+        </motion.div>
       </div>
-    </section>
+    </motion.div>
   );
 }
-

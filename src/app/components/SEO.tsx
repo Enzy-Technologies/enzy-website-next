@@ -9,8 +9,8 @@ interface SEOProps {
 }
 
 const DEFAULT_SEO = {
-  title: "Enzy - The Operating System for High-Performance Sales Teams",
-  description: "Transform your sales team with Enzy's AI-powered platform. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
+  title: "Enzy - The Agentic Engine for High Performance Sales Teams",
+  description: "Transform your sales team with Enzy's agentic performance system. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
   image: "https://enzy.com/og-image.jpg", // Replace with your actual OG image URL
   url: "https://enzy.com",
 };
@@ -89,7 +89,7 @@ export function OrganizationSchema() {
     "name": "Enzy",
     "url": "https://enzy.com",
     "logo": "https://enzy.com/logo.png", // Replace with your actual logo URL
-    "description": "The Operating System for High-Performance Sales Teams",
+    "description": "The Agentic Engine for High Performance Sales Teams",
     "contactPoint": {
       "@type": "ContactPoint",
       "contactType": "Sales",

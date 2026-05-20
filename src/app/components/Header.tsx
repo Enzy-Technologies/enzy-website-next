@@ -93,6 +93,19 @@ export function Header() {
           )}
         </div>
       </div>
+
+      {/* Floating Book a Demo Button */}
+      {!isLandingPage && (
+        <div 
+          className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] transition-all duration-500 transform pointer-events-none ${
+            isScrolled ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+          }`}
+        >
+          <CTAButton href="/book-demo" variant="primary" className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto px-8 py-4 text-[14px]">
+            Book a demo
+          </CTAButton>
+        </div>
+      )}
     </header>
   );
 }

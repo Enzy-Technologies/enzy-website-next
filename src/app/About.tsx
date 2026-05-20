@@ -8,6 +8,7 @@ import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
 import { BlurReveal } from "./components/BlurReveal";
+import { TestimonialsSection } from "./components/TestimonialsSection";
 
 const FadeInSection = ({
   children,
@@ -75,7 +76,7 @@ export function About() {
             <p
               className={`mt-6 font-inter text-[16px] md:text-[18px] leading-relaxed max-w-2xl ${pageBody}`}
             >
-              EnzyAI is the AI operating layer that turns scattered work data
+              Enzy is the agentic performance system that turns scattered work data
               into decisions that compound. Built for companies who measure
               themselves by outcomes, not activity.
             </p>
@@ -161,31 +162,12 @@ export function About() {
           </div>
         </section>
 
-        {/* Backed by */}
-        <FadeInSection className="pb-16 md:pb-24">
-          <section>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <p className="eyebrow text-[#19ad7d] m-0">Backed by</p>
-              <ul className="flex flex-wrap gap-3">
-                {["Sequoia", "Index Ventures", "Lightspeed", "Y Combinator"].map(
-                  (i) => (
-                    <li
-                      key={i}
-                      className={`px-4 py-2 rounded-full border text-[12px] font-inter font-semibold tracking-tight ${
-                        isLightMode
-                          ? "border-black/10 bg-white/60 text-black/70"
-                          : "border-white/12 bg-white/[0.05] text-white/70"
-                      }`}
-                    >
-                      {i}
-                    </li>
-                  ),
-                )}
-              </ul>
-            </div>
-          </section>
-        </FadeInSection>
 
+
+        <FadeInSection className="pb-16 md:pb-24">
+          <TestimonialsSection />
+        </FadeInSection>
+        
         {/* 004 — Next */}
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="004">
@@ -241,12 +223,11 @@ export function About() {
         {/* About footer */}
         <footer className="pt-2 pb-6">
           <div
-            className={`flex flex-col md:flex-row md:items-center md:justify-between gap-2 font-inter text-[12px] tracking-tight ${
+            className={`flex flex-col md:flex-row md:items-center md:justify-center gap-2 font-inter text-[12px] tracking-tight ${
               isLightMode ? "text-black/45" : "text-white/40"
             }`}
           >
-            <p className="m-0">© EnzyAI 2026</p>
-            <p className="m-0">San Francisco · London</p>
+            <p className="m-0">© ENZY 2026</p>
           </div>
         </footer>
 

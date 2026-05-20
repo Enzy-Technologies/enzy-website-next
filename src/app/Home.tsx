@@ -3,6 +3,7 @@
 import React from "react";
 import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { HeroSection } from "@/app/components/HeroSection";
+import { Playground } from "@/app/playground/playground";
 import { EnzyGlobeSection } from "@/app/components/EnzyGlobeSection";
 import { HowItWorksSection } from "@/app/components/HowItWorksSection";
 import { EvidenceSection } from "@/app/components/EvidenceSection";
@@ -15,6 +16,7 @@ export default function Home() {
     <main className="relative w-full">
       <ScrollProgress />
       <HeroSection />
+      <Playground />
       <EvidenceSection />
       <EnzyGlobeSection />
       <HowItWorksSection />

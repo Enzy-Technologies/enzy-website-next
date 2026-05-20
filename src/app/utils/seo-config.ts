@@ -6,8 +6,8 @@ export interface PageSEO {
 
 export const SEO_CONFIG: Record<string, PageSEO> = {
   home: {
-    title: "Enzy - AI operating system for sales teams",
-    description: "Connect your data, get real-time insights, and take action faster with Enzy’s AI-powered performance system—competitions, incentives, messaging, and leaderboards.",
+    title: "Enzy - Agentic performance system for sales teams",
+    description: "Connect your data, get real-time insights, and take action faster with Enzy’s agentic performance system—competitions, incentives, messaging, and leaderboards.",
   },
   features: {
     title: "Features - Enzy platform",
@@ -27,6 +27,6 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
   },
   partners: {
     title: "Partners - Integrate with Enzy",
-    description: "Partner with Enzy to deliver a complete performance system. See how we connect with your data and tools.",
+    description: "Partner with Enzy to deliver a complete agentic performance system. See how we connect with your data and tools.",
   },
 };

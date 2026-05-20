@@ -18,13 +18,13 @@ import { LeadingLine } from "./components/LeadingLine"
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Enzy - The Operating System for High-Performance Sales Teams",
+    title: "Enzy - The Agentic Engine for High Performance Sales Teams",
     description:
-      "Transform your sales team with Enzy's AI-powered platform. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
+      "Transform your sales team with Enzy's agentic performance system. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
     path: "/",
   }),
   title: {
-    default: "Enzy - The Operating System for High-Performance Sales Teams",
+    default: "Enzy - The Agentic Engine for High Performance Sales Teams",
     template: "%s | Enzy",
   },
 }
@@ -49,7 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     name: siteName,
     url: siteUrl,
     logo: logoUrl,
-    description: "The Operating System for High-Performance Sales Teams",
+    description: "The Agentic Engine for High Performance Sales Teams",
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "Sales",

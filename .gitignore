@@ -39,3 +39,6 @@ coverage/
 .idea/
 .vscode/
 
+
+# pnpm
+.pnpm-store/

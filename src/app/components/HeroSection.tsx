@@ -2,9 +2,9 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from "motion/react";
 import { useTheme } from "./ThemeProvider";
-import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2, TrendingUp } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
@@ -14,46 +14,43 @@ import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
 import { BlurReveal } from "./BlurReveal";
 
-type Question = {
-  id: string;
-  prompt: string;
-  answer: string;
-  followups: string[];
-};
 
-const QUESTIONS: Question[] = [
-  {
-    id: "revenue-drop",
-    prompt: "Why did revenue drop in the West region this week?",
-    answer:
-      "Revenue is down 18% WoW in West. Three drivers:\n\n• Two enterprise deals stalled in Marcus Hill's territory ($84K combined)\n• Demos booked dropped 22% Tue–Thu after the new pricing rolled out\n• Jenna Cole was out Wed–Fri; her pipeline didn't get covered\n\nSuggested next moves: nudge the two stalled deals (drafts ready), run a 30-min pricing-objection refresher, redistribute Jenna's pipeline.",
-    followups: ["Draft the nudges", "Show me the deals", "Build the refresher"],
-  },
-  {
-    id: "top-performer",
-    prompt: "What is Marcus doing that the rest of the team isn't?",
-    answer:
-      "Three patterns separate Marcus from team median:\n\n• 4.2× more multi-threaded deals (avg 3.1 contacts vs 0.7)\n• Responds to inbound in 8 min vs team median of 1h 12m\n• Sends a recap email after every demo — 100% rate vs 34% team avg\n\nThe recap habit alone correlates with a 31% higher close rate across the team. Want to turn it into a workflow?",
-    followups: ["Build the recap workflow", "Show the data", "Coach the team"],
-  },
-  {
-    id: "next-competition",
-    prompt: "What competition would actually move the needle right now?",
-    answer:
-      "Based on this week's data, your highest-leverage play is a 5-day demo sprint, individual format.\n\nWhy: demos are your weakest stage (37% conversion vs 52% benchmark) and the team has bandwidth — call volume is down 14% WoW. A demo sprint with $250 / $150 / $100 incentives would cost ~$500 and projects to add ~$42K in pipeline.\n\nReady to launch with banners + announcement copy?",
-    followups: ["Launch the sprint", "Adjust the rewards", "See the projection"],
-  },
-  {
-    id: "what-changed",
-    prompt: "What changed since yesterday that I should care about?",
-    answer:
-      "Three things worth your attention:\n\n• 14 deals went 48h+ without activity (up from 9 yesterday)\n• Devin Park dropped from #2 to #4 on the leaderboard — his demos halved\n• A new prospect from your ICP (FieldOps Inc., 340 employees) hit the pricing page 6 times in the last 18 hours — no rep has reached out\n\nThe FieldOps signal is your highest-priority action. Want me to assign and draft outreach?",
-    followups: ["Assign FieldOps", "Check on Devin", "Nudge the stalled deals"],
-  },
-];
 
-const TYPING_SPEED_MS = 14;
-const ROTATE_INTERVAL_MS = 18000;
+
+
+
+function useCountUp(target: number, durationMs = 1400) {
+  const [value, setValue] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mq.matches);
+  }, []);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+    const start = performance.now();
+    let raf = 0;
+    const tick = (now: number) => {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / durationMs, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(target * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, target, durationMs, prefersReducedMotion]);
+
+  return { value, ref };
+}
 
 const LP_VALUE_BULLETS = [
   "Live visibility between touches — managers coach what matters, reps act faster.",
@@ -180,174 +177,69 @@ function HeroSectionLp() {
 
 function HeroSectionDefault() {
   const { isLightMode } = useTheme();
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [activeQuestionId, setActiveQuestionId] = useState(QUESTIONS[0].id);
-  const [typedAnswer, setTypedAnswer] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [hasUserInteracted, setHasUserInteracted] = useState(false);
-  const [pulseChipId, setPulseChipId] = useState<string | null>(null);
-  const typingTimerRef = useRef<number | null>(null);
-  const rotateTimerRef = useRef<number | null>(null);
-  const pulseTimerRef = useRef<number | null>(null);
+  const { value: count, ref: countRef } = useCountUp(37);
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-
-  const activeQuestion =
-    QUESTIONS.find((q) => q.id === activeQuestionId) ?? QUESTIONS[0];
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const apply = () => setPrefersReducedMotion(mq.matches);
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, []);
-
-  useEffect(() => {
-    if (typingTimerRef.current !== null) {
-      window.clearInterval(typingTimerRef.current);
-      typingTimerRef.current = null;
-    }
-
-    if (prefersReducedMotion) {
-      setTypedAnswer(activeQuestion.answer);
-      setIsTyping(false);
-      return;
-    }
-
-    setTypedAnswer("");
-    setIsTyping(true);
-    let i = 0;
-
-    typingTimerRef.current = window.setInterval(() => {
-      i += 1;
-      setTypedAnswer(activeQuestion.answer.slice(0, i));
-      if (i >= activeQuestion.answer.length) {
-        if (typingTimerRef.current !== null) {
-          window.clearInterval(typingTimerRef.current);
-          typingTimerRef.current = null;
-        }
-        setIsTyping(false);
-      }
-    }, TYPING_SPEED_MS);
-
-    return () => {
-      if (typingTimerRef.current !== null) {
-        window.clearInterval(typingTimerRef.current);
-        typingTimerRef.current = null;
-      }
-    };
-  }, [activeQuestionId, activeQuestion.answer, prefersReducedMotion]);
-
-  useEffect(() => {
-    if (hasUserInteracted || prefersReducedMotion) return;
-    if (rotateTimerRef.current !== null) {
-      window.clearInterval(rotateTimerRef.current);
-    }
-    rotateTimerRef.current = window.setInterval(() => {
-      setActiveQuestionId((prevId) => {
-        const idx = QUESTIONS.findIndex((q) => q.id === prevId);
-        return QUESTIONS[(idx + 1) % QUESTIONS.length].id;
-      });
-    }, ROTATE_INTERVAL_MS);
-
-    return () => {
-      if (rotateTimerRef.current !== null) {
-        window.clearInterval(rotateTimerRef.current);
-        rotateTimerRef.current = null;
-      }
-    };
-  }, [hasUserInteracted, prefersReducedMotion]);
-
-  useEffect(() => {
-    return () => {
-      if (pulseTimerRef.current !== null) {
-        window.clearTimeout(pulseTimerRef.current);
-      }
-    };
-  }, []);
-
-  const onPickQuestion = (id: string) => {
-    if (id === activeQuestionId) return;
-    setHasUserInteracted(true);
-    setPulseChipId(id);
-    if (pulseTimerRef.current !== null) {
-      window.clearTimeout(pulseTimerRef.current);
-    }
-    pulseTimerRef.current = window.setTimeout(() => {
-      setPulseChipId(null);
-    }, 280);
-
-    if (rotateTimerRef.current !== null) {
-      window.clearInterval(rotateTimerRef.current);
-      rotateTimerRef.current = null;
-    }
-    setActiveQuestionId(id);
-  };
 
   return (
-    <section ref={containerRef} className="relative w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center w-full">
-        <div className="lg:col-span-7 flex flex-col gap-7 text-center items-center lg:text-left lg:items-start max-w-4xl lg:max-w-none mx-auto lg:mx-0 w-full">
-          <h1
-            className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
-              isLightMode ? "text-brand-dark" : "text-brand-light"
-            } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
-          >
-            <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
-            <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
-            <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
-          </h1>
-
-          <p
-            className={`font-inter text-[17px] md:text-[18px] leading-[1.55] max-w-[540px] mx-auto lg:mx-0 ${
-              isLightMode ? "text-black/70" : "text-white/65"
-            }`}
-          >
-            We provide intelligent, real-time performance systems that improve
-            execution, increase accountability, and help teams drive measurable
-            sales growth.
-          </p>
-
-
-          <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-6 pb-4 w-full">
-            <CTAButton
-              href={BOOK_DEMO_HREF}
-              variant="primary"
-              className="w-full sm:w-auto max-w-[320px] sm:max-w-none justify-center rounded-full px-10 py-5 sm:py-6 sm:px-12 gap-3 font-extrabold text-[16px] sm:text-[18px] uppercase tracking-[0.1em] hover:scale-[1.02] active:scale-[0.99] shadow-[0_0_40px_rgba(25,173,125,0.45)]"
+    <section ref={containerRef} className="relative w-full pt-16 pb-6 lg:pt-20 lg:pb-0 lg:min-h-[80vh] flex items-center">
+      <div className="relative mx-auto max-w-[1400px] px-4 md:px-6 lg:px-8 w-full">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+          
+          {/* Left Column: Content */}
+          <div className="flex flex-col gap-7 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 w-full lg:w-[55%] xl:w-[50%] lg:pl-8 xl:pl-12 z-20">
+            <h1
+              className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
+                isLightMode ? "text-brand-dark" : "text-brand-light"
+              } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
             >
-              Book a demo <ArrowRight size={22} strokeWidth={2.25} aria-hidden />
-            </CTAButton>
-            <CTAButton
-              variant="secondary"
-              href="#playground"
-              className="w-full sm:w-auto max-w-[320px] sm:max-w-none justify-center rounded-full px-10 py-5 sm:py-6 sm:px-12 font-extrabold text-[16px] sm:text-[18px] uppercase tracking-[0.1em] hover:scale-[1.02] active:scale-[0.99]"
+              <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
+              <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
+              <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
+            </h1>
+
+            <p
+              className={`font-inter text-[17px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 ${
+                isLightMode ? "text-black/70" : "text-white/65"
+              }`}
             >
-              Try the playground
-            </CTAButton>
+              The Agentic engine for high performance sales teams that improves execution, increases accountability, and helps teams drive measurable sales growth.
+            </p>
+
+            <motion.div 
+              ref={countRef}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className="flex items-center justify-center lg:justify-start gap-3 mt-2 mb-0"
+            >
+              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#19ad7d]/10 text-[#19ad7d]">
+                <TrendingUp size={20} strokeWidth={2.5} />
+              </div>
+              <span className={`font-inter text-[18px] md:text-[20px] font-medium ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                Join teams seeing a <strong className="text-[#19ad7d] font-bold text-[22px] md:text-[24px]">{count}%</strong> median revenue lift
+              </span>
+            </motion.div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-2 pb-4 w-full">
+              <CTAButton
+                href="/book-demo"
+                variant="primary"
+                className="w-full max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-[360px] font-inter font-normal text-[22px] sm:text-[26px] md:text-[30px] h-[64px] sm:h-[76px] md:h-[84px] px-8 sm:px-10 md:px-12 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
+              >
+                Book a Demo
+              </CTAButton>
+            </div>
+
+            <div className="w-full lg:max-w-[560px] mx-auto lg:mx-0">
+              <SimpleLogosMarquee />
+            </div>
+          </div>
+          
+          {/* Right Column: Spacer for Playground Phone */}
+          <div className="hidden lg:block lg:w-[50%] xl:w-[55%]">
           </div>
 
-          <div className="w-full lg:max-w-[560px]">
-            <SimpleLogosMarquee />
-          </div>
-        </div>
-
-        <div className="lg:col-span-5 w-full flex justify-center lg:justify-end" id="playground">
-          <PlaygroundSurface
-            isLightMode={isLightMode}
-            activeQuestion={activeQuestion}
-            typedAnswer={typedAnswer}
-            isTyping={isTyping}
-            questions={QUESTIONS}
-            onPickQuestion={onPickQuestion}
-            pulseChipId={pulseChipId}
-            backgroundY={backgroundY}
-          />
         </div>
       </div>
     </section>
@@ -359,231 +251,5 @@ export function HeroSection({ variant = "default" }: { variant?: "default" | "lp
   return <HeroSectionDefault />;
 }
 
-function PlaygroundSurface({
-  isLightMode,
-  activeQuestion,
-  typedAnswer,
-  isTyping,
-  questions,
-  onPickQuestion,
-  pulseChipId,
-  backgroundY,
-}: {
-  isLightMode: boolean;
-  activeQuestion: Question;
-  typedAnswer: string;
-  isTyping: boolean;
-  questions: Question[];
-  onPickQuestion: (id: string) => void;
-  pulseChipId: string | null;
-  backgroundY?: any;
-}) {
-  const otherQuestions = questions.filter((q) => q.id !== activeQuestion.id);
-  const [isMounted, setIsMounted] = useState(false);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  return (
-    <div className="relative w-full max-w-[480px]">
-      <motion.div
-        className="pointer-events-none absolute -inset-4 rounded-[40px] opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 50% 30%, rgba(25,173,125,0.18), transparent 70%)",
-          y: backgroundY,
-        }}
-        aria-hidden
-      />
-
-      <div
-        className={`relative rounded-[28px] overflow-hidden border shadow-[0_40px_120px_rgba(0,0,0,0.55),0_12px_40px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.08)] ${
-          isLightMode ? "border-black/10" : "border-white/[0.08]"
-        }`}
-        style={{
-          background: isLightMode
-            ? "linear-gradient(180deg, rgba(255,255,255,0.92) 0%, rgba(248,250,252,0.92) 100%)"
-            : "linear-gradient(180deg, rgba(18,20,24,0.94) 0%, rgba(10,11,14,0.96) 100%)",
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 rounded-[28px]"
-          style={{
-            background: isLightMode
-              ? "radial-gradient(120% 70% at 50% -10%, rgba(25,173,125,0.10), transparent 55%)"
-              : "radial-gradient(120% 70% at 50% -10%, rgba(25,173,125,0.10), transparent 55%)",
-          }}
-          aria-hidden
-        />
-
-        <div
-          className={`relative flex items-center justify-between px-5 py-3.5 border-b ${
-            isLightMode ? "border-black/10" : "border-white/[0.06]"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#19ad7d]/15 ring-1 ring-inset ring-[#19ad7d]/30">
-              <Sparkles size={13} className="text-[#19ad7d]" />
-            </span>
-            <div className="flex flex-col leading-tight">
-              <span
-                className={`font-inter text-[12px] font-semibold tracking-tight ${
-                  isLightMode ? "text-brand-dark" : "text-white"
-                }`}
-              >
-                Enzy AI
-              </span>
-              <span
-                className={`font-inter text-[10px] tracking-tight ${
-                  isLightMode ? "text-black/45" : "text-white/40"
-                }`}
-              >
-                Live playground
-              </span>
-            </div>
-          </div>
-
-          <div
-            className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1 ${
-              isLightMode ? "border-black/10 bg-black/[0.03]" : "border-white/10 bg-white/[0.04]"
-            }`}
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-[#19ad7d] opacity-70 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#19ad7d]" />
-            </span>
-            <span
-              className={`font-inter text-[10px] font-medium tracking-[0.06em] uppercase ${
-                isLightMode ? "text-black/55" : "text-white/55"
-              }`}
-            >
-              Connected
-            </span>
-          </div>
-        </div>
-
-        <div className="relative px-5 pt-5 pb-4 min-h-[400px] flex flex-col">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeQuestion.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col gap-3 flex-1"
-            >
-              <div className="flex justify-end">
-                <div className="max-w-[88%] rounded-2xl rounded-tr-md bg-[#19ad7d] text-white px-3.5 py-2.5 shadow-[0_8px_24px_rgba(25,173,125,0.32)]">
-                  <p className="font-inter text-[13px] leading-snug tracking-tight m-0">
-                    {activeQuestion.prompt}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex justify-start">
-                <div
-                  className={`max-w-[94%] rounded-2xl rounded-tl-md border px-3.5 py-3 backdrop-blur-md ${
-                    isLightMode
-                      ? "border-black/10 bg-black/[0.03]"
-                      : "border-white/[0.08] bg-white/[0.04]"
-                  }`}
-                >
-                  <p
-                    className={`font-inter text-[13px] leading-[1.6] tracking-tight whitespace-pre-line m-0 ${
-                      isLightMode ? "text-black/80" : "text-white/90"
-                    }`}
-                  >
-                    {typedAnswer}
-                    {isTyping && (
-                      <span
-                        className={`inline-block w-[6px] h-[12px] ml-[2px] align-middle animate-pulse ${
-                          isLightMode ? "bg-black/55" : "bg-white/70"
-                        }`}
-                      />
-                    )}
-                  </p>
-
-                  {!isTyping && activeQuestion.followups.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.15 }}
-                      className={`mt-3 pt-3 border-t flex flex-wrap gap-1.5 ${
-                        isLightMode ? "border-black/10" : "border-white/[0.06]"
-                      }`}
-                    >
-                      <CornerDownRight
-                        size={11}
-                        className={isLightMode ? "text-black/35 mt-0.5 mr-0.5" : "text-white/35 mt-0.5 mr-0.5"}
-                        aria-hidden
-                      />
-                      {activeQuestion.followups.map((label) => (
-                        <span
-                          key={label}
-                          className={`rounded-full border px-2.5 py-0.5 font-inter text-[10.5px] tracking-tight ${
-                            isLightMode
-                              ? "border-black/10 bg-black/[0.03] text-black/60"
-                              : "border-white/10 bg-white/[0.04] text-white/65"
-                          }`}
-                        >
-                          {label}
-                        </span>
-                      ))}
-                    </motion.div>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        <div
-          className={`relative border-t px-5 py-4 ${
-            isLightMode ? "border-black/10 bg-black/[0.02]" : "border-white/[0.06] bg-black/20"
-          }`}
-        >
-          <p
-            className={`font-inter text-[10px] tracking-[0.14em] uppercase mb-2.5 font-medium ${
-              isLightMode ? "text-black/45" : "text-white/40"
-            }`}
-          >
-            Try another question
-          </p>
-          <div className="flex flex-col gap-1.5">
-            {otherQuestions.slice(0, 3).map((q) => {
-              const isPulsing = pulseChipId === q.id;
-              return (
-                <button
-                  key={q.id}
-                  type="button"
-                  onClick={() => onPickQuestion(q.id)}
-                  className={`group relative text-left rounded-lg border transition-all duration-200 px-3 py-2 ${
-                    isPulsing
-                      ? "border-[#19ad7d]/50 bg-[#19ad7d]/[0.12]"
-                      : isLightMode
-                        ? "border-black/10 bg-black/[0.02] hover:border-black/15 hover:bg-black/[0.04]"
-                        : "border-white/[0.08] bg-white/[0.02] hover:border-white/15 hover:bg-white/[0.05]"
-                  }`}
-                >
-                  <p
-                    className={`font-inter text-[12px] leading-snug tracking-tight transition-colors m-0 ${
-                      isLightMode
-                        ? "text-black/65 group-hover:text-black/80"
-                        : "text-white/75 group-hover:text-white/90"
-                    }`}
-                  >
-                    {q.prompt}
-                  </p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* Tooltip removed */}
-    </div>
-  );
-}
 

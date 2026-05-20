@@ -8,7 +8,7 @@ export const SITE_FAQS: FAQItem[] = [
   {
     question: "What is Enzy?",
     answer:
-      "Enzy is an AI performance system for sales teams. It connects your data, surfaces what changed, and helps you take action through competitions, incentives, messaging, and leaderboards.",
+      "Enzy is an agentic performance system for sales teams. It connects your data, surfaces what changed, and helps you take action through competitions, incentives, messaging, and leaderboards.",
   },
   {
     question: "What is sales gamification?",
