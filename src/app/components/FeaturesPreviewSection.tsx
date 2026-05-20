@@ -260,7 +260,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
   return (
     <section className="relative w-full py-20 md:py-28 bg-transparent">
       <div className="mx-auto max-w-7xl px-4">
-        <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
+        <div className="flex flex-col md:items-center md:text-center items-start text-left mb-10 gap-4">
           <div>
             <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-3">
               {isLp ? "Inside the platform" : "The full system"}
@@ -327,7 +327,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
           ref={scrollRef}
           className={
             isCarousel
-              ? "flex gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide w-full pt-20 pb-32 -mt-16 -mb-24 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              ? "flex gap-5 overflow-x-auto md:overflow-visible md:flex-wrap md:justify-center snap-x snap-mandatory scrollbar-hide w-full pt-20 pb-32 -mt-16 -mb-24 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               : "flex flex-wrap justify-center gap-5 w-full pt-20 pb-32 -mt-16 -mb-24"
           }
           style={
@@ -384,7 +384,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                 </div>
 
                 <div
-                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
+                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left md:text-center md:items-center border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
                     showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
                   }`}
                 >
