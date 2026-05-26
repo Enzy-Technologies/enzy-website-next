@@ -26,8 +26,8 @@ export function SimpleLogosMarquee() {
   const maskRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const logoClass = isLightMode
-    ? "h-full w-full object-contain opacity-70 brightness-0"
-    : "h-full w-full object-contain opacity-90 brightness-0 invert";
+    ? "max-h-full max-w-full h-auto w-auto object-contain opacity-70 brightness-0"
+    : "max-h-full max-w-full h-auto w-auto object-contain opacity-90 brightness-0 invert";
 
   useEffect(() => {
     const mask = maskRef.current;

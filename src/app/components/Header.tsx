@@ -35,17 +35,10 @@ export function Header() {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'py-4' : 'py-6'}`}
+      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'py-2 lg:py-3' : 'py-3 lg:py-5'}`}
     >
-      <div 
-        className={`absolute inset-0 pointer-events-none rounded-none border-x-0 border-t-0 border-b shadow-none transform-gpu will-change-[opacity] transition-[opacity,border-color,background-color] duration-300 ${
-          isScrolled
-            ? "liquid-glass opacity-100 border-white/20"
-            : "bg-transparent opacity-0 border-transparent"
-        }`}
-      />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">
-        <div className="flex-1 flex justify-start">
+        <div className="flex-1 flex justify-start order-1">
           <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
             <Image
               src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
@@ -53,55 +46,61 @@ export function Header() {
               width={220}
               height={40}
               priority
-              className={`h-8 lg:h-10 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
+              className={`h-6 lg:h-9 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
             />
           </Link>
         </div>
-        
-        {/* Desktop Nav Items and mobile menu */}
-        <div className="flex-shrink-0 flex justify-center">
+
+        {/* Desktop Nav Items (centered) + mobile hamburger row. On mobile, the
+            right-side controls column is hidden, so this block falls naturally
+            to the right edge via justify-between. */}
+        <div className="flex-shrink-0 flex justify-end lg:justify-center order-3 lg:order-2">
           {!isLandingPage && <MainNavigation />}
         </div>
 
-        <div className={`flex-1 flex justify-end ${isLandingPage ? 'flex' : 'hidden lg:flex'} relative items-center gap-2 md:gap-4`}>
-          <button 
+        <div className="flex-1 hidden lg:flex justify-end relative items-center gap-2 md:gap-3 order-2 lg:order-3">
+          <button
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
               const cx = rect.left + rect.width / 2;
               const cy = rect.top + rect.height / 2;
               window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { triggerClick: true, x: cx, y: cy, force: true } }));
             }}
-            className={`flex items-center justify-center w-[38px] h-[38px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            className={`hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
             aria-label="Gather pixels"
             title="Gather pixels"
           >
             <Wand2 size={18} />
           </button>
 
-          <button 
+          <button
             onClick={toggleTheme}
-            className={`flex items-center justify-center w-[38px] h-[38px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            className={`hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
             aria-label="Toggle theme"
           >
             {isMounted ? (isLightMode ? <Moon size={18} /> : <Sun size={18} />) : <div className="w-[18px] h-[18px]" />}
           </button>
 
           {!isLandingPage && (
-            <CTAButton href="/about" variant="secondary" className="z-50">
-              Learn more
+            <CTAButton
+              href="/book-demo"
+              variant="primary"
+              className="hidden lg:inline-flex z-50 h-10 px-5 text-[13px] font-semibold rounded-full"
+            >
+              Book a demo
             </CTAButton>
           )}
         </div>
       </div>
 
-      {/* Floating Book a Demo Button */}
+      {/* Floating Book a Demo on mobile only (bottom right, always visible) */}
       {!isLandingPage && (
-        <div 
-          className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[100] transition-all duration-500 transform pointer-events-none ${
-            isScrolled ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
-          }`}
-        >
-          <CTAButton href="/book-demo" variant="primary" className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto px-8 py-4 text-[14px]">
+        <div className="lg:hidden fixed bottom-5 right-5 z-[100] pointer-events-none">
+          <CTAButton
+            href="/book-demo"
+            variant="primary"
+            className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto h-10 px-5 text-[13px] font-semibold rounded-full"
+          >
             Book a demo
           </CTAButton>
         </div>

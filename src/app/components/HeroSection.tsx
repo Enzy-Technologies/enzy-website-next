@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "motion/react";
 import { useTheme } from "./ThemeProvider";
-import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2, TrendingUp } from "lucide-react";
+import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
@@ -177,21 +177,20 @@ function HeroSectionLp() {
 
 function HeroSectionDefault() {
   const { isLightMode } = useTheme();
-  const { value: count, ref: countRef } = useCountUp(37);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
     <section ref={containerRef} className="relative w-full pt-16 pb-6 lg:pt-20 lg:pb-0 lg:min-h-[80vh] flex items-center">
       <div className="relative mx-auto max-w-[1400px] px-4 md:px-6 lg:px-8 w-full">
-        <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           
           {/* Left Column: Content */}
-          <div className="flex flex-col gap-7 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 w-full lg:w-[55%] xl:w-[50%] lg:pl-8 xl:pl-12 z-20">
+          <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 w-full lg:w-[55%] xl:w-[50%] lg:pl-8 xl:pl-12 z-20">
             <h1
               className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
-              } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
+              } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
             >
               <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
               <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
@@ -199,39 +198,31 @@ function HeroSectionDefault() {
             </h1>
 
             <p
-              className={`font-inter text-[17px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 ${
+              className={`font-inter text-[16px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 ${
                 isLightMode ? "text-black/70" : "text-white/65"
               }`}
             >
               The Agentic engine for high performance sales teams that improves execution, increases accountability, and helps teams drive measurable sales growth.
             </p>
 
-            <motion.div 
-              ref={countRef}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="flex items-center justify-center lg:justify-start gap-3 mt-2 mb-0"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-full bg-[#19ad7d]/10 text-[#19ad7d]">
-                <TrendingUp size={20} strokeWidth={2.5} />
-              </div>
-              <span className={`font-inter text-[18px] md:text-[20px] font-medium ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                Join teams seeing a <strong className="text-[#19ad7d] font-bold text-[22px] md:text-[24px]">{count}%</strong> median revenue lift
-              </span>
-            </motion.div>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 pt-2 pb-4 w-full">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1 pb-2 w-full">
               <CTAButton
                 href="/book-demo"
                 variant="primary"
-                className="w-full max-w-[280px] sm:max-w-[340px] md:max-w-[400px] lg:max-w-[360px] font-inter font-normal text-[22px] sm:text-[26px] md:text-[30px] h-[64px] sm:h-[76px] md:h-[84px] px-8 sm:px-10 md:px-12 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
+                className="w-full max-w-[260px] sm:max-w-none sm:w-auto font-inter font-semibold text-[15px] md:text-[16px] h-[48px] md:h-[52px] px-7 md:px-8 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
               >
                 Book a Demo
               </CTAButton>
             </div>
 
             <div className="w-full lg:max-w-[560px] mx-auto lg:mx-0">
+              <p
+                className={`font-inter text-[11px] md:text-[12px] tracking-[0.18em] uppercase font-semibold mb-3 ${
+                  isLightMode ? "text-black/55" : "text-white/55"
+                }`}
+              >
+                Serving 180k users
+              </p>
               <SimpleLogosMarquee />
             </div>
           </div>

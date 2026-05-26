@@ -164,7 +164,6 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
   const activeIndexRef = useRef(activeIndex);
   activeIndexRef.current = activeIndex;
   const [isHoveringIndex, setIsHoveringIndex] = useState<number | null>(null);
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
   const [isCarousel, setIsCarousel] = useState(true);
 
   useEffect(() => {
@@ -177,7 +176,6 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
       // When there is no overflow, treat this like a static row.
       if (!canScroll) {
         setActiveIndex(0);
-        setExpandedIndex(null);
         setIsHoveringIndex(null);
       }
     };
@@ -195,18 +193,10 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
   useEffect(() => {
     if (!isCarousel) return;
     if (scrollRef.current) {
-      const children = scrollRef.current.children;
-      if (children.length > 0) {
-        const targetChild = children[0] as HTMLElement;
-        requestAnimationFrame(() => {
-          if (!scrollRef.current) return;
-          const scrollPos =
-            targetChild.offsetLeft -
-            scrollRef.current.clientWidth / 2 +
-            targetChild.clientWidth / 2;
-          scrollRef.current.scrollTo({ left: scrollPos, behavior: "instant" as ScrollBehavior });
-        });
-      }
+      requestAnimationFrame(() => {
+        if (!scrollRef.current) return;
+        scrollRef.current.scrollTo({ left: 0, behavior: "instant" as ScrollBehavior });
+      });
     }
   }, [isCarousel]);
 
@@ -251,8 +241,10 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
     if (!isCarousel) return;
     if (scrollRef.current) {
       const child = scrollRef.current.children[index] as HTMLElement;
-      const scrollPos =
-        child.offsetLeft - scrollRef.current.clientWidth / 2 + child.clientWidth / 2;
+      const containerPadLeft = parseFloat(
+        getComputedStyle(scrollRef.current).paddingLeft || "0"
+      );
+      const scrollPos = child.offsetLeft - containerPadLeft;
       scrollRef.current.scrollTo({ left: scrollPos, behavior: "smooth" });
     }
   };
@@ -262,9 +254,11 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
       <div className="mx-auto max-w-7xl px-4">
         <div className="flex flex-col md:items-center md:text-center items-start text-left mb-10 gap-4">
           <div>
-            <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-3">
-              {isLp ? "Inside the platform" : "The full system"}
-            </p>
+            {isLp ? (
+              <p className="font-inter text-[11px] tracking-[0.18em] uppercase font-semibold text-[#19ad7d] mb-3">
+                Inside the platform
+              </p>
+            ) : null}
             <h2
               className={`font-ivyora font-medium leading-[0.95] tracking-[-2px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
@@ -296,7 +290,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
         </div>
       </div>
 
-      <div className="relative w-full">
+      <div className="relative w-full mx-auto max-w-7xl px-4 md:px-4">
         {isCarousel ? (
         <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 z-20 hidden md:block">
           <button
@@ -327,36 +321,23 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
           ref={scrollRef}
           className={
             isCarousel
-              ? "flex gap-5 overflow-x-auto md:overflow-visible md:flex-wrap md:justify-center snap-x snap-mandatory scrollbar-hide w-full pt-20 pb-32 -mt-16 -mb-24 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              ? "flex gap-5 overflow-x-auto md:overflow-visible md:flex-wrap md:justify-center snap-x snap-mandatory scrollbar-hide w-auto -mr-4 md:mr-0 pt-20 pb-32 -mt-16 -mb-24 pr-4 md:pr-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               : "flex flex-wrap justify-center gap-5 w-full pt-20 pb-32 -mt-16 -mb-24"
-          }
-          style={
-            isCarousel
-              ? {
-                  paddingLeft: "max(16px, calc(50vw - 190px))",
-                  paddingRight: "max(16px, calc(50vw - 190px))",
-                }
-              : undefined
           }
         >
           {cardsData.map((card, i) => {
             const isCenter = activeIndex === i;
             const isHovering = isHoveringIndex === i;
-            const isExpanded = expandedIndex === i;
-            // Automatically expand the center card in carousel mode for a smoother experience
-            const showDetails = isCarousel ? (isCenter || isHovering) : (isHovering || isExpanded);
+            const showDetails = isHovering || (isCarousel && isCenter);
 
             return (
               <button
                 key={card.id}
                 onMouseEnter={() => setIsHoveringIndex(i)}
                 onMouseLeave={() => setIsHoveringIndex(null)}
-                onClick={() => {
-                  scrollToCard(i);
-                  setExpandedIndex((prev) => (prev === i ? null : i));
-                }}
+                onClick={() => scrollToCard(i)}
                 type="button"
-                className={`relative shrink-0 snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
+                className={`relative shrink-0 snap-start md:snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
                   ${
                     !isCarousel
                       ? "opacity-100"
@@ -384,7 +365,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                 </div>
 
                 <div
-                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left md:text-center md:items-center border-t border-white/20 bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
+                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left md:text-center md:items-center border-t border-white/20 bg-black/55 md:bg-black/35 px-8 pb-10 pt-8 md:backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
                     showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
                   }`}
                 >
@@ -396,19 +377,6 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                   <p className="text-white/90 text-[15px] leading-relaxed drop-shadow-md line-clamp-3">
                     {card.description}
                   </p>
-
-                  <ul
-                    className={`flex flex-col gap-2.5 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
-                      showDetails ? "max-h-[300px] opacity-100 mt-5" : "max-h-0 opacity-0 mt-0"
-                    }`}
-                  >
-                    {card.features.map((feature, j) => (
-                      <li key={j} className="flex items-start gap-3">
-                        <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#19ad7d] shrink-0 shadow-[0_0_8px_rgba(25,173,125,0.8)]" />
-                        <span className="text-sm text-white/85 leading-snug">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
                 </div>
               </button>
             );

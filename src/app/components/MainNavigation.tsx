@@ -379,8 +379,8 @@ export function MainNavigation() {
 
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`relative p-2.5 rounded-xl pointer-events-auto transition-transform active:scale-95 liquid-glass ${
-            isLightMode ? "text-black shadow-sm" : "text-white"
+          className={`relative p-2 pointer-events-auto transition-transform active:scale-95 ${
+            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
           }`}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >

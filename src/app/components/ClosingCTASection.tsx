@@ -30,17 +30,17 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
             isLightMode ? "text-brand-dark" : "text-brand-light"
           } text-[36px] sm:text-[48px] md:text-[60px] lg:text-[68px] mx-auto max-w-[820px]`}
         >
-          See what your sales team could be{" "}
-          <span className="italic font-normal">closing.</span>
+          Your team doesn&rsquo;t need multiple apps.{" "}
+          <span className="italic font-normal">They need Enzy.</span>
         </h2>
 
         <p
-          className={`font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[520px] mx-auto ${
+          className={`font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[640px] mx-auto ${
             isLightMode ? "text-black/65" : "text-white/60"
           }`}
         >
-          Live in 1–2 weeks for most teams. Connects to your CRM and comms stack
-          out of the box.
+          Replace your spreadsheet leaderboards, group texts, and Canva
+          competition graphics. Live in two weeks.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-10">

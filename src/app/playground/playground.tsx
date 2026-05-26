@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "motion/react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+  useSpring,
+  cubicBezier,
+} from "motion/react";
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
 
 const HAND_IMAGE =
@@ -12,6 +19,13 @@ const IMAGE_ASPECT = 8000 / 5772;
 const PHONE_CENTER_X_FRAC = 0.4922;
 const PHONE_CENTER_Y_FRAC = 0.4567;
 const PHONE_HEIGHT_FRAC = 0.6684;
+
+// Gentle ease-in-out for both zoom phases: starts and ends with near-zero
+// velocity so the transition from "in motion" → "held" and "held" → "in motion"
+// is seamless, and so each unit of scroll produces a small, predictable change
+// in scale (rather than the steep snap of a hard ease-out).
+const zoomEase = cubicBezier(0.4, 0, 0.6, 1);
+const linearHold = (t: number) => t;
 
 export function Playground() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -30,7 +44,16 @@ export function Playground() {
     setIsMounted(true);
     const update = () => {
       const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      // On mobile, use the SMALLEST visible viewport (visualViewport
+      // when available, otherwise innerHeight) so the phone always fits
+      // even with the URL bar showing. On desktop, innerHeight is fine.
+      const vh =
+        vw < 1024
+          ? Math.min(
+              window.visualViewport?.height ?? window.innerHeight,
+              window.innerHeight
+            )
+          : window.innerHeight;
 
       const isMobile = vw < 768;
       const isDesktop = vw >= 1024;
@@ -61,26 +84,43 @@ export function Playground() {
       if (isDesktop) {
         startY = vh * 0.55 - ch / 2;
       } else if (isMobile) {
-        startY = vh * 0.45 - 0.1225 * ch;
+        // Position phone in the lower half of the hero with breathing
+        // room between the logo marquee caption above and the phone.
+        startY = vh * 0.38 - 0.1225 * ch;
       } else {
         startY = vh * 0.5 - 0.1225 * ch;
       }
 
+      // Mobile budget: phone fills 88% of viewport height — close to
+      // edge-to-edge. The hand wrist below the phone gets cut off,
+      // which is fine; the bottom gradient fades whatever is left
+      // into the page background.
+      const heightBudget = isMobile ? 0.88 : 0.78;
+      const widthBudget = isMobile ? 0.9 : 0.85;
+
       let endScale = Math.min(
-        (vh * 0.78) / phoneH_image,
-        (vw * 0.85) / (cw * 0.2294)
+        (vh * heightBudget) / phoneH_image,
+        (vw * widthBudget) / (cw * 0.2294)
       );
       if (endScale > 6) endScale = 6;
 
       const endX = vw / 2 - phoneCenterX_image * endScale;
-      const endY = vh / 2 + vh * 0.06 - phoneCenterY_image * endScale;
+      // Mobile: center the phone vertically (no downward bias) so the
+      // bottom bezel sits safely above the visible viewport. Desktop:
+      // keep the existing slight downward offset.
+      const endYOffset = isMobile ? 0 : vh * 0.06;
+      const endY = vh / 2 + endYOffset - phoneCenterY_image * endScale;
 
       setAnimValues({ startX, startY, endX, endY, endScale, cw, ch });
     };
 
     update();
     window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    window.visualViewport?.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.visualViewport?.removeEventListener("resize", update);
+    };
   }, []);
 
   const { scrollYProgress } = useScroll({
@@ -88,39 +128,45 @@ export function Playground() {
     offset: ["start start", "end end"],
   });
 
+  // Smooth out chunky scroll deltas on mobile (iOS momentum scrolling delivers
+  // scrollY updates in bursts). The spring interpolates between bursts so each
+  // animation frame sees a small, continuous progress step — which translates
+  // directly into a small, continuous scale change.
+  const smoothedProgress = useSpring(scrollYProgress, {
+    damping: 28,
+    stiffness: 110,
+    mass: 0.45,
+    restDelta: 0.0005,
+  });
+
   // Phases:
-  // 0.00 -> 0.08  : zoom in
-  // 0.08 -> 0.92  : HOLD at zoom — phone is fully interactive
-  // 0.92 -> 1.00  : zoom out
+  // 0.00 -> 0.35  : zoom in  (gradual, ease-in-out)
+  // 0.35 -> 0.75  : HOLD at zoom — phone is fully interactive
+  // 0.75 -> 1.00  : zoom out (gradual, ease-in-out)
+  const phaseStops = [0, 0.35, 0.75, 1.0] as const;
+  const phaseEase = [zoomEase, linearHold, zoomEase];
+
   const x = useTransform(
-    scrollYProgress,
-    [0, 0.08, 0.92, 1.0],
-    [animValues.startX, animValues.endX, animValues.endX, animValues.startX]
+    smoothedProgress,
+    [...phaseStops],
+    [animValues.startX, animValues.endX, animValues.endX, animValues.startX],
+    { ease: phaseEase }
   );
   const y = useTransform(
-    scrollYProgress,
-    [0, 0.08, 0.92, 1.0],
-    [animValues.startY, animValues.endY, animValues.endY, animValues.startY]
+    smoothedProgress,
+    [...phaseStops],
+    [animValues.startY, animValues.endY, animValues.endY, animValues.startY],
+    { ease: phaseEase }
   );
   const scale = useTransform(
-    scrollYProgress,
-    [0, 0.08, 0.92, 1.0],
-    [1, animValues.endScale, animValues.endScale, 1]
+    smoothedProgress,
+    [...phaseStops],
+    [1, animValues.endScale, animValues.endScale, 1],
+    { ease: phaseEase }
   );
-  const textOpacity = useTransform(
-    scrollYProgress,
-    [0.06, 0.08, 0.88, 0.9],
-    [0, 1, 1, 0]
-  );
-  const textY = useTransform(
-    scrollYProgress,
-    [0.06, 0.08, 0.88, 0.9],
-    [12, 0, 0, -8]
-  );
-
   const [isInteractive, setIsInteractive] = useState(false);
-  useMotionValueEvent(scrollYProgress, "change", (progress) => {
-    const next = progress >= 0.1 && progress <= 0.9;
+  useMotionValueEvent(smoothedProgress, "change", (progress) => {
+    const next = progress >= 0.4 && progress <= 0.72;
     setIsInteractive((cur) => (cur === next ? cur : next));
   });
 
@@ -137,18 +183,9 @@ export function Playground() {
       style={{ height: "200vh" }}
     >
       <div
-        className="sticky top-0 w-full h-screen overflow-hidden"
+        className="sticky top-0 w-full h-[100dvh] overflow-hidden"
         style={{ pointerEvents: isInteractive ? "auto" : "none" }}
       >
-        <motion.div
-          className="absolute top-[9vh] md:top-[10vh] left-0 w-full text-center flex justify-center pointer-events-none z-40 px-6"
-          style={{ opacity: textOpacity, y: textY }}
-        >
-          <h2 className="font-ivyora font-medium text-[#0b0f14] text-5xl md:text-7xl lg:text-[80px] leading-[0.95] tracking-[-2px]">
-            Enzy Goes <span className="italic">Agentic</span>
-          </h2>
-        </motion.div>
-
         <motion.div
           className="absolute origin-top-left"
           style={{
@@ -158,6 +195,7 @@ export function Playground() {
             y,
             scale,
             opacity: isMounted ? 1 : 0,
+            willChange: "transform",
           }}
         >
           <div
@@ -189,7 +227,7 @@ export function Playground() {
             className="absolute inset-0 pointer-events-none z-50"
             style={{
               background:
-                "linear-gradient(to bottom, transparent 80%, var(--color-surface-light) 98%)",
+                "linear-gradient(to bottom, transparent 80%, var(--background) 85%)",
             }}
           />
         </motion.div>

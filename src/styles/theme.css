@@ -361,10 +361,18 @@
 @layer components {
   /* Simple, slow logo marquee */
   .simple-logo-marquee {
-    --gap: 3.25rem;
+    --gap: 1.75rem;
     --speed: 90s;
-    --logo-height: 52px;
-    --logo-width: 176px;
+    --logo-height: 32px;
+    --logo-width: 116px;
+  }
+
+  @media (min-width: 768px) {
+    .simple-logo-marquee {
+      --gap: 2.25rem;
+      --logo-height: 36px;
+      --logo-width: 128px;
+    }
   }
 
   .simple-logo-marquee__mask {
