@@ -6,6 +6,14 @@ import { useTheme } from "@/app/components/ThemeProvider";
 import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/TestimonialsSection";
 import { motion, useScroll, useTransform } from "motion/react";
 import { BlurReveal } from "@/app/components/BlurReveal";
+import { FAQSection } from "@/app/components/FAQSection";
+
+const BOOK_DEMO_STATS = [
+  { value: "24", unit: "m", label: "Weekly page views" },
+  { value: "21", unit: "%", label: "Increase in sales per rep after implementing Enzy" },
+  { value: "7,000", unit: "+", label: "Incentives ran" },
+  { value: "180", unit: "k", label: "Total users" },
+];
 
 declare global {
   interface Window {
@@ -99,21 +107,24 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
         <div className={`grid grid-cols-1 ${hideText ? 'lg:grid-cols-1' : 'lg:grid-cols-12'} gap-10 lg:gap-14 items-start`}>
           {!hideText && (
             <div className="lg:col-span-5 order-1 lg:order-1">
-              <p className="font-inter text-[11px] tracking-[0.18em] uppercase text-[#19ad7d] font-semibold">
+              {/* Eyebrow / subtext / supporting bullets only appear on
+                  large screens. On mobile we lead straight into the form
+                  with just the headline above it. */}
+              <p className="hidden lg:block font-inter text-[11px] tracking-[0.18em] uppercase text-[#19ad7d] font-semibold">
                 Book a demo
               </p>
               <BlurReveal
                 as="h2"
                 delay={0.1}
-                className={`mt-4 font-ivyora font-medium leading-[0.95] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
+                className={`lg:mt-4 font-ivyora font-medium leading-[0.95] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
               >
                 See Enzy turn performance into a system.
               </BlurReveal>
-              <p className={`mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
+              <p className={`hidden lg:block mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
                 Submit the form and pick a time—Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
               </p>
 
-              <div className="mt-7 grid gap-3 max-w-[540px]">
+              <div className="hidden lg:grid mt-7 gap-3 max-w-[540px]">
                 {[
                   "Connect your data and unify KPIs across the org",
                   "Make leaderboards and coaching consistent in real time",
@@ -127,6 +138,47 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
                   </div>
                 ))}
               </div>
+
+              {/* Stat cards. On mobile this is the first thing the user
+                  sees after the headline (eyebrow / subtext / bullets are
+                  all hidden), so the grid stays 2x2 regardless of
+                  breakpoint — `grid-cols-2` works at every width. */}
+              <motion.dl
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
+                className="mt-7 lg:mt-8 grid grid-cols-2 gap-3 sm:gap-4 max-w-[540px]"
+              >
+                {BOOK_DEMO_STATS.map((s) => (
+                  <div
+                    key={s.label}
+                    className={`liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors ${
+                      isLightMode
+                        ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
+                        : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                    }`}
+                  >
+                    <dt
+                      className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
+                        isLightMode ? "text-black" : "text-white"
+                      }`}
+                    >
+                      {s.value}
+                      <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
+                        {s.unit}
+                      </span>
+                    </dt>
+                    <dd
+                      className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
+                        isLightMode ? "text-black/65" : "text-white/65"
+                      }`}
+                    >
+                      {s.label}
+                    </dd>
+                  </div>
+                ))}
+              </motion.dl>
             </div>
           )}
 
@@ -206,6 +258,9 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
           </div>
         </section>
       )}
+
+      {/* FAQ lives at the very bottom of the standalone page only. */}
+      {!hideText && <FAQSection />}
     </main>
   );
 }

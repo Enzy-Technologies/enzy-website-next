@@ -6,6 +6,10 @@ const nextConfig = {
     // If Next's devtools feature is flaky, it causes a cascade into
     // `__webpack_modules__[id] is not a function` and missing client modules.
     devtoolSegmentExplorer: false,
+    // Rewrite barrel imports (e.g. `import { X } from "lucide-react"`) so
+    // only the icons/animations actually used get bundled. Without this we
+    // ship a chunk of unused icons + motion subpaths.
+    optimizePackageImports: ["lucide-react", "motion", "motion/react"],
   },
   images: {
     remotePatterns: [

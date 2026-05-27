@@ -257,6 +257,7 @@ export function MainNavigation() {
                                             <Link 
                                                 href={`/features#${slugify(item)}`}
                                                 onClick={() => setActiveDropdown(null)}
+                                                scroll={false}
                                                 className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
                                             >
                                                 <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>{item}</span>
@@ -519,6 +520,7 @@ export function MainNavigation() {
                                                     setMobileMenuOpen(false);
                                                     setActiveMobileDropdown(null);
                                                 }}
+                                                scroll={false}
                                                 className={`group flex items-center justify-between px-3 py-2.5 mb-1.5 rounded-md border transition-all duration-300 ${
                                                     isLightMode 
                                                         ? 'bg-black/[0.03] border-black/5 hover:bg-black/[0.08] hover:border-[#19ad7d]/30' 

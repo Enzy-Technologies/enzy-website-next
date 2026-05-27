@@ -6,8 +6,7 @@
     {
       "files": [
         "src/app/playground/interactive/**/*.{ts,tsx}",
-        "src/app/playground/interactive-imports/**/*.{ts,tsx}",
-        "src/app/playground/PlaygroundHomeScreen.tsx"
+        "src/app/playground/interactive-imports/**/*.{ts,tsx}"
       ],
       "rules": {
         "react/no-unescaped-entities": "off",

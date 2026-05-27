@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import Script from "next/script";
@@ -18,7 +18,9 @@ export function PartnerFormModal() {
     return () => window.removeEventListener("open-partner-modal", handleOpen);
   }, []);
 
-  const onClose = () => setIsOpen(false);
+  // Stable identity prevents the Escape useEffect below from re-subscribing on
+  // every render (and silences a real react-hooks/exhaustive-deps warning).
+  const onClose = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
     if (!isOpen) return;

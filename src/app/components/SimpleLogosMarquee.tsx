@@ -4,20 +4,65 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { useTheme } from "@/app/components/ThemeProvider";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 
-const LOGOS = [
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Young%20Living.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Quick%20Roofing.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Chipr.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Ecoshield.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Moxie.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Space.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/CH1DX3.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/SPWR.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Greenix.svg",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
-];
+type LogoEntry = {
+  /** Display name (also used as alt text). */
+  name: string;
+  /** Remote SVG URL. */
+  src: string;
+  /** One-line highlight revealed when the logo passes through center.
+   *  Omit to keep the logo in the marquee but render no caption. */
+  caption?: string;
+};
 
-const ACTIVE_LOGO_CAPTION = "Median sales lift, year one.";
+// Add `caption` for any brand we want to call out as it scrolls through
+// the center. Logos without a caption still appear, but pass through
+// at normal speed and do not trigger the slow-down/highlight.
+const LOGOS: LogoEntry[] = [
+  {
+    name: "Young Living",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Young%20Living.svg",
+    caption: "Top 10 Direct Sales Company in the World",
+  },
+  {
+    name: "Quick Roofing",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Quick%20Roofing.svg",
+  },
+  {
+    name: "Chipr",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Chipr.svg",
+  },
+  {
+    name: "Ecoshield",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Ecoshield.svg",
+  },
+  {
+    name: "Moxie",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Moxie.svg",
+    caption: "Top 10 Pest Control Company in the US",
+  },
+  {
+    name: "Space",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Space.svg",
+  },
+  {
+    name: "CH1DX3",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/CH1DX3.svg",
+  },
+  {
+    name: "SPWR",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/SPWR.svg",
+    caption: "Publicly Traded (NASDAQ: SPWR)",
+  },
+  {
+    name: "Greenix",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Greenix.svg",
+    caption: "Top 20 Pest Control Company in the US",
+  },
+  {
+    name: "Nusun",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
+  },
+];
 
 export function SimpleLogosMarquee() {
   const { isLightMode } = useTheme();
@@ -118,8 +163,18 @@ export function SimpleLogosMarquee() {
         }
       }
 
-      // Activate only once per pass, right at center.
-      if (activeIdx === -1 && hasExitedCenter && idx !== lastFeaturedIdx && dist < ENTER_DIST) {
+      // Activate only once per pass, right at center — and only for logos
+      // that actually have a caption to reveal. Caption-less logos pass
+      // through at full speed without the slow-down/highlight, since
+      // there'd be nothing to draw attention to.
+      const hasCaption = !!LOGOS[idx]?.caption;
+      if (
+        activeIdx === -1 &&
+        hasExitedCenter &&
+        idx !== lastFeaturedIdx &&
+        dist < ENTER_DIST &&
+        hasCaption
+      ) {
         children[idx]?.classList.add("is-active");
         children[idx + N]?.classList.add("is-active");
         activeIdx = idx;
@@ -152,16 +207,21 @@ export function SimpleLogosMarquee() {
       <div className="simple-logo-marquee" style={{ ["--speed" as any]: "72s" }}>
         <div className="simple-logo-marquee__mask" ref={maskRef}>
           <div className="simple-logo-marquee__track" ref={trackRef}>
-            {items.map((src, idx) => (
-              <div className="simple-logo-marquee__item" key={`${src}-${idx}`}>
+            {items.map((logo, idx) => (
+              <div
+                className="simple-logo-marquee__item"
+                key={`${logo.src}-${idx}`}
+              >
                 <ImageWithFallback
-                  src={src}
-                  alt=""
+                  src={logo.src}
+                  alt={logo.name}
                   className={logoClass}
                 />
-                <div className="simple-logo-marquee__caption" aria-hidden>
-                  {ACTIVE_LOGO_CAPTION}
-                </div>
+                {logo.caption ? (
+                  <div className="simple-logo-marquee__caption" aria-hidden>
+                    {logo.caption}
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

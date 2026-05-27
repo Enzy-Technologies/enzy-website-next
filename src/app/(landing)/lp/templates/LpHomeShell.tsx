@@ -11,7 +11,6 @@ import { LpBookDemoScrollShell } from "@/app/components/landing/LpBookDemoScroll
 import { LpSingleTestimonial } from "@/app/components/landing/LpSingleTestimonial";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 import { TESTIMONIALS } from "@/app/components/TestimonialsSection";
-import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
 /**
  * Focused `/lp/*` flow: split hero + proof + stat + testimonial + features + closing CTA.

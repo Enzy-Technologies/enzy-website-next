@@ -278,8 +278,13 @@ function FeatureRow({
   isFirst: boolean;
 }) {
   return (
+    // The `id` matches the slug emitted by MainNavigation's slugify(), so
+    // `/features#leaderboards` resolves to this DOM node and the browser
+    // (or the explicit scrollIntoView in FeatureBrowser) lands the user
+    // on the right row. `scroll-mt-*` keeps it clear of the fixed header.
     <div
-      className={`${
+      id={feature.id}
+      className={`scroll-mt-24 md:scroll-mt-28 ${
         isFirst
           ? ""
           : isLightMode
@@ -389,8 +394,9 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
     setOpenId(moduleFeatures[0]?.id ?? null);
   }, [moduleFeatures]);
 
-  // Hash deep-linking: /features#leaderboards selects the right tab +
-  // expands the matching feature.
+  // Hash deep-linking: /features#leaderboards selects the right tab,
+  // expands the matching feature, and scrolls the row into view below
+  // the fixed header.
   useEffect(() => {
     const applyHash = () => {
       const hash = window.location.hash.replace(/^#/, "").toLowerCase();
@@ -399,6 +405,19 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
       if (!match) return;
       setActiveModule(match.module);
       setOpenId(match.id);
+
+      // Wait for the tab switch + accordion to render the target row,
+      // then scroll. Two rAFs is enough for React to flush + the row to
+      // mount; we still guard with a node lookup in case the user
+      // hash-linked something we don't render yet.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const node = document.getElementById(match.id);
+          if (node) {
+            node.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
     };
     applyHash();
     window.addEventListener("hashchange", applyHash);

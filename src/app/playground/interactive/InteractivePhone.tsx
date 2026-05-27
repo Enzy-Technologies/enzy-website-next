@@ -1,16 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "motion/react";
 import Homepage from "../interactive-imports/Homepage/Homepage";
 import { PhoneViewContext } from "./PhoneViewContext";
-import Leaderboard from "../interactive-imports/11LeaderboardPodiumLightMode/11LeaderboardPodiumLightMode";
-import Chats from "../interactive-imports/ChatsLightMode/ChatsLightMode";
 import RoundedNavHome from "../interactive-imports/RoundedNavHome/RoundedNavHome";
 import RoundedNavLeaderboard from "../interactive-imports/RoundedNavLeaderboard/RoundedNavLeaderboard";
 import RoundedNavChats from "../interactive-imports/RoundedNavChats/RoundedNavChats";
-import AiChatInteractive from "./AiChatInteractive";
 import { ClickIndicator } from "./ClickIndicator";
+
+// Lazy-load the inner phone screens that only mount after a tap. Homepage
+// stays eagerly imported because it's the default screen, but Leaderboard,
+// Chats, and AiChat together account for ~3.4k lines of JSX which we can
+// keep out of the initial bundle until the user actually clicks through.
+const Leaderboard = dynamic(
+  () => import("../interactive-imports/11LeaderboardPodiumLightMode/11LeaderboardPodiumLightMode"),
+  { ssr: false }
+);
+const Chats = dynamic(
+  () => import("../interactive-imports/ChatsLightMode/ChatsLightMode"),
+  { ssr: false }
+);
+const AiChatInteractive = dynamic(
+  () => import("./AiChatInteractive"),
+  { ssr: false }
+);
 
 type Screen = "home" | "ai" | "leaderboard" | "chats";
 
