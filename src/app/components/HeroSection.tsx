@@ -181,7 +181,7 @@ function HeroSectionDefault() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section ref={containerRef} className="relative w-full pt-16 pb-6 lg:pt-20 lg:pb-0 lg:min-h-[80vh] flex items-center">
+    <section ref={containerRef} className="relative w-full pt-[12px] pb-6 lg:pt-[28px] lg:pb-0 lg:min-h-[80vh] flex items-center">
       <div className="relative mx-auto max-w-[1400px] px-4 md:px-6 lg:px-8 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           
@@ -202,7 +202,7 @@ function HeroSectionDefault() {
                 isLightMode ? "text-black/70" : "text-white/65"
               }`}
             >
-              The Agentic engine for high performance sales teams that improves execution, increases accountability, and helps teams drive measurable sales growth.
+              The performance operating system for sales teams, built at the intersection of live business intelligence and social media engagement. Your team&rsquo;s data, visible to everyone in real time, with AI that tells leaders exactly what to do next.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1 pb-2 w-full">

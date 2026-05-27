@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
+import Image from "next/image";
 import {
   motion,
   useScroll,
@@ -152,10 +153,12 @@ export function Playground() {
   });
 
   // Phases:
-  // 0.00 -> 0.35  : zoom in  (gradual, ease-in-out)
-  // 0.35 -> 0.75  : HOLD at zoom — phone is fully interactive
-  // 0.75 -> 1.00  : zoom out (gradual, ease-in-out)
-  const phaseStops = [0, 0.35, 0.75, 1.0] as const;
+  // 0.00 -> 0.22  : zoom in  (snappier — gets the user to the action faster)
+  // 0.22 -> 0.85  : HOLD at zoom — phone is fully interactive (~63% of scroll
+  //                 runway, up from 40%, so the click indicators have time to
+  //                 cycle a few times and the user can actually engage)
+  // 0.85 -> 1.00  : zoom out (gradual, ease-in-out)
+  const phaseStops = [0, 0.22, 0.85, 1.0] as const;
   const phaseEase = [zoomEase, linearHold, zoomEase];
 
   const x = useTransform(
@@ -178,7 +181,8 @@ export function Playground() {
   );
   const [isInteractive, setIsInteractive] = useState(false);
   useMotionValueEvent(smoothedProgress, "change", (progress) => {
-    const next = progress >= 0.4 && progress <= 0.72;
+    // Widened to align with the longer HOLD phase (phaseStops above).
+    const next = progress >= 0.26 && progress <= 0.82;
     setIsInteractive((cur) => (cur === next ? cur : next));
   });
 
@@ -227,20 +231,26 @@ export function Playground() {
           {/* Image is pinned to the TOP of the motion container at its
               natural cw × ch size. The motion container is taller (see
               CONTAINER_BOTTOM_PAD), so the PNG's own alpha fade at the
-              bottom of the wrist has room to fall off cleanly. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+              bottom of the wrist has room to fall off cleanly.
+
+              Uses next/image so Next's optimizer compresses the giant
+              8000×5772 source PNG into right-sized AVIF/WebP variants
+              cached on the edge. `sizes` mirrors the runtime layout:
+              ~85vw on mobile, ~55vw on desktop, capped at 1400px. */}
+          <Image
             src={HAND_IMAGE}
             alt="Hand holding phone"
+            width={1600}
+            height={1155}
+            priority
+            sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 60vw, 1400px"
+            quality={85}
             className="absolute top-0 left-0 pointer-events-none select-none z-20"
             style={{
               width: animValues.cw,
               height: animValues.ch,
               objectFit: "cover",
             }}
-            loading="eager"
-            fetchPriority="high"
-            decoding="sync"
             draggable={false}
           />
         </motion.div>
