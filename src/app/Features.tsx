@@ -1,291 +1,510 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "motion/react";
+import React, { useEffect, useMemo, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Plus } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
-type FeatureGroup = "Work" | "Perform" | "AI";
+type ModuleId = "core" | "sell" | "recruit";
+
+type ModuleDef = {
+  id: ModuleId;
+  label: string;
+  tagline: string;
+  alwaysIncluded?: boolean;
+};
+
+const MODULES: ModuleDef[] = [
+  {
+    id: "core",
+    label: "Core",
+    tagline: "Always included. The system everyone runs on.",
+    alwaysIncluded: true,
+  },
+  {
+    id: "sell",
+    label: "Sell",
+    tagline: "Add-on. Field sales execution and pipeline.",
+  },
+  {
+    id: "recruit",
+    label: "Recruit",
+    tagline: "Add-on. Sourcing through onboarding.",
+  },
+];
 
 type Feature = {
   id: string;
   title: string;
   desc: string;
-  group: FeatureGroup;
-  images: string[];
+  module: ModuleId;
+  image: string;
 };
 
 const FEATURES_DATA: Feature[] = [
+  // ---------- Core ----------
   {
-    group: "Work",
-    id: "map",
-    title: "Map",
-    desc: "Plan territories and routes. See the field clearly.",
-    images: [
-      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Work",
-    id: "leads",
-    title: "Leads",
-    desc: "Keep pipelines organized and priorities obvious.",
-    images: [
-      "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Work",
-    id: "calendar",
-    title: "Calendar",
-    desc: "Scheduling that keeps the week on track.",
-    images: [
-      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Work",
-    id: "tasks",
-    title: "Tasks",
-    desc: "Daily actions, owners, and follow-ups—clear.",
-    images: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXNrJTIwbGlzdCUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Work",
-    id: "library",
-    title: "Library",
-    desc: "Store and share approved assets—fast.",
-    images: [
-      "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Work",
-    id: "recruit",
-    title: "Recruit",
-    desc: "Recruiting and onboarding—simplified.",
-    images: [
-      "https://images.unsplash.com/photo-1719400471588-575b23e27bd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWNydWl0aW5nJTIwb25ib2FyZGluZyUyMHRlY2glMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Perform",
+    module: "core",
     id: "leaderboards",
     title: "Leaderboards",
-    desc: "Real-time rankings that keep focus high and goals clear.",
-    images: [
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsZWFkZXJib2FyZCUyMGRhc2hib2FyZCUyMGRhcmt8ZW58MXx8fHwxNzc1Njc3NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
+    desc: "Real-time rankings that keep focus high and goals clear across every team.",
+    image:
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/1-1%20Leaderboard%20podium%20(light%20mode).png",
   },
   {
-    group: "Perform",
-    id: "incentives",
-    title: "Incentives",
-    desc: "Rewards that reinforce the right behavior.",
-    images: [
-      "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Perform",
-    id: "goals",
-    title: "Goals",
-    desc: "Targets that stay visible all week.",
-    images: [
-      "https://images.unsplash.com/photo-1587400563263-e77a5590bfe7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxrJTIwcGklMjBnb2FsJTIwZGFzaGJvYXJkJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
-  },
-  {
-    group: "Perform",
+    module: "core",
     id: "profiles",
     title: "Profiles",
-    desc: "One place for performance, progress, and recognition.",
-    images: [
+    desc: "One place for performance, progress, and recognition for every team member.",
+    image:
       "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcHJvZmlsZSUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
   },
   {
-    group: "Perform",
-    id: "chat",
-    title: "Chat",
-    desc: "Announcements and nudges without switching tools.",
-    images: [
-      "https://images.unsplash.com/photo-1591467454366-fb32b72b20e9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaGF0JTIwbWVzc2FnaW5nJTIwYXBwJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
+    module: "core",
+    id: "badges",
+    title: "Badges",
+    desc: "Recognition that builds loyalty—earned, displayed, and remembered.",
+    image:
+      "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
   {
-    group: "AI",
-    id: "ai",
-    title: "AI Assistant",
-    desc: "Ask about connected data. Get insights and next actions.",
-    images: [
-      "https://images.unsplash.com/photo-1695144244472-a4543101ef35?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxBSSUyMGFzc2lzdGFudCUyMHRlY2glMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    ],
+    module: "core",
+    id: "competitions-and-incentives",
+    title: "Competitions & Incentives",
+    desc: "Launch contests and rewards in minutes—aligned to the KPIs that matter.",
+    image:
+      "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "core",
+    id: "messaging",
+    title: "Messaging",
+    desc: "Group threads, announcements, and DMs without switching tools.",
+    image:
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Chats%20(light%20mode).png",
+  },
+  {
+    module: "core",
+    id: "bot-chats",
+    title: "Bot Chats",
+    desc: "AI-driven nudges and answers from your team's connected data—on demand.",
+    image:
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Chat%201.png",
+  },
+  {
+    module: "core",
+    id: "media-library",
+    title: "Media Library",
+    desc: "Approved assets, scripts, and training—organized and shareable.",
+    image:
+      "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+
+  // ---------- Sell ----------
+  {
+    module: "sell",
+    id: "canvassing",
+    title: "Canvassing",
+    desc: "Plan territories, route the day, and log every door in the field.",
+    image:
+      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "sell",
+    id: "lead-management",
+    title: "Lead Management",
+    desc: "Keep pipelines organized and priorities obvious from first touch to close.",
+    image:
+      "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "sell",
+    id: "digital-business-card",
+    title: "Digital Business Card",
+    desc: "Share your contact and pitch with a tap. Track who opens, when, and what they do next.",
+    image:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  },
+  {
+    module: "sell",
+    id: "appt-scheduling",
+    title: "Appt Scheduling",
+    desc: "Book, confirm, and reschedule appointments without the back-and-forth.",
+    image:
+      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "sell",
+    id: "sms-campaigns",
+    title: "SMS Campaigns",
+    desc: "Drip and broadcast text campaigns with delivery, reply, and conversion tracking.",
+    image:
+      "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  },
+
+  // ---------- Recruit ----------
+  {
+    module: "recruit",
+    id: "recruiting-center",
+    title: "Recruiting Center",
+    desc: "Source, score, and pipeline candidates from one workspace.",
+    image:
+      "https://images.unsplash.com/photo-1719400471588-575b23e27bd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWNydWl0aW5nJTIwb25ib2FyZGluZyUyMHRlY2glMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "recruit",
+    id: "public-recruit-link",
+    title: "Public Recruit Link",
+    desc: "A branded apply page that funnels candidates straight into your pipeline.",
+    image:
+      "https://images.unsplash.com/photo-1586281380349-632531db7ed4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+  },
+  {
+    module: "recruit",
+    id: "onboarding-workflow",
+    title: "Onboarding Workflow",
+    desc: "Automate paperwork, training, and first-week milestones for every new hire.",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXNrJTIwbGlzdCUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+  },
+  {
+    module: "recruit",
+    id: "document-library",
+    title: "Document Library",
+    desc: "Forms, agreements, and training docs—signed, sorted, searchable.",
+    image:
+      "https://images.unsplash.com/photo-1568667256549-094345857637?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
 ];
 
-const ITEM_HEIGHT = 100;
+const TAB_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 
-function FeatureWord({ index, activeIndex, feature, isLightMode }: { index: number, activeIndex: number, feature: Feature, isLightMode: boolean }) {
-  const distance = Math.abs(activeIndex - index);
-  
-  const opacity = distance === 0 ? 1 : distance === 1 ? 0.25 : 0.05;
-  const scale = distance === 0 ? 1 : distance === 1 ? 0.75 : 0.6;
-  
-  // Scribble animation
-  const scribblePathLength = distance === 0 ? 1 : 0;
-  const scribbleOpacity = distance === 0 ? 1 : 0;
-  
+function CategoryTabs({
+  active,
+  onChange,
+  isLightMode,
+}: {
+  active: ModuleId;
+  onChange: (id: ModuleId) => void;
+  isLightMode: boolean;
+}) {
   return (
-    <motion.div
-      className="absolute left-0 w-full flex items-center justify-center lg:justify-start origin-center lg:origin-left"
-      style={{
-        top: index * ITEM_HEIGHT,
-        height: ITEM_HEIGHT,
-      }}
-      initial={false}
-      animate={{
-        opacity,
-        scale,
-      }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
+    <div
+      className={`relative inline-flex items-end gap-6 sm:gap-10 border-b ${
+        isLightMode ? "border-black/10" : "border-white/10"
+      }`}
+      role="tablist"
+      aria-label="Modules"
     >
-      <div className="relative inline-block">
-        <h2 className={`relative z-10 font-ivyora font-medium text-[48px] sm:text-[64px] lg:text-[80px] leading-[0.95] tracking-[-2px] ${isLightMode ? 'text-black' : 'text-white'}`}>
-          {feature.title}
-        </h2>
-        {/* Dynamic Green Scribble Underline */}
-        <motion.svg 
-          viewBox="0 0 100 20" 
-          preserveAspectRatio="none" 
-          className="absolute -bottom-2 left-0 w-full h-[15px] lg:h-[20px] text-[#19ad7d] z-0"
-          initial={false}
-          animate={{ opacity: scribbleOpacity }}
-          transition={{ duration: 0.3 }}
+      {MODULES.map((mod) => {
+        const isActive = mod.id === active;
+        const isIncluded = mod.alwaysIncluded;
+        return (
+          <button
+            key={mod.id}
+            type="button"
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onChange(mod.id)}
+            className="group relative pb-3 sm:pb-4 flex flex-col items-center gap-1.5 transition-opacity"
+          >
+            {/* Status chip — bold green for Included, muted outlined for Add-on */}
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] transition-all ${
+                isIncluded
+                  ? "bg-[#19ad7d] text-white shadow-[0_2px_10px_rgba(25,173,125,0.35)]"
+                  : isLightMode
+                    ? `border ${
+                        isActive
+                          ? "border-black/25 text-black/70 bg-black/[0.04]"
+                          : "border-black/15 text-black/45 bg-transparent group-hover:text-black/60"
+                      }`
+                    : `border ${
+                        isActive
+                          ? "border-white/30 text-white/80 bg-white/[0.06]"
+                          : "border-white/15 text-white/45 bg-transparent group-hover:text-white/65"
+                      }`
+              }`}
+            >
+              {!isIncluded && (
+                <Plus size={9} strokeWidth={3} aria-hidden className="-ml-0.5" />
+              )}
+              {isIncluded ? "Included" : "Add-on"}
+            </span>
+
+            {/* Module label */}
+            <span
+              className={`font-inter text-[13px] sm:text-[15px] font-semibold uppercase tracking-[0.18em] transition-colors ${
+                isActive
+                  ? isLightMode
+                    ? "text-black"
+                    : "text-white"
+                  : isLightMode
+                    ? "text-black/45 group-hover:text-black/70"
+                    : "text-white/45 group-hover:text-white/70"
+              }`}
+            >
+              {mod.label}
+            </span>
+
+            {isActive && (
+              <motion.span
+                layoutId="moduleActiveUnderline"
+                className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#19ad7d]"
+                transition={TAB_TRANSITION}
+                aria-hidden
+              />
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function FeatureRow({
+  feature,
+  isOpen,
+  onToggle,
+  isLightMode,
+  isFirst,
+}: {
+  feature: Feature;
+  isOpen: boolean;
+  onToggle: () => void;
+  isLightMode: boolean;
+  isFirst: boolean;
+}) {
+  return (
+    <div
+      className={`${
+        isFirst
+          ? ""
+          : isLightMode
+            ? "border-t border-black/8"
+            : "border-t border-white/8"
+      }`}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className={`group w-full text-left flex items-center justify-between gap-6 py-5 md:py-6 transition-colors ${
+          isLightMode ? "hover:text-black" : "hover:text-white"
+        }`}
+      >
+        <div className="flex-1 min-w-0 flex flex-col gap-1">
+          <h3
+            className={`font-ivyora font-medium text-[24px] sm:text-[30px] md:text-[36px] leading-[1.05] tracking-[-0.5px] transition-colors ${
+              isOpen
+                ? "text-[#19ad7d]"
+                : isLightMode
+                  ? "text-black"
+                  : "text-white"
+            }`}
+          >
+            {feature.title}
+          </h3>
+          <p
+            className={`font-inter text-[13px] sm:text-[14px] leading-snug line-clamp-1 transition-colors ${
+              isLightMode ? "text-black/55" : "text-white/55"
+            }`}
+          >
+            {feature.desc}
+          </p>
+        </div>
+
+        <motion.span
+          animate={{ rotate: isOpen ? 45 : 0 }}
+          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          className={`shrink-0 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-colors ${
+            isOpen
+              ? "border-[#19ad7d] text-[#19ad7d]"
+              : isLightMode
+                ? "border-black/15 text-black/60 group-hover:border-black/35 group-hover:text-black"
+                : "border-white/15 text-white/55 group-hover:border-white/35 group-hover:text-white"
+          }`}
+          aria-hidden
         >
-          <motion.path 
-            d="M 2 12 Q 25 2 50 10 T 98 8" 
-            fill="transparent" 
-            stroke="currentColor" 
-            strokeWidth="4" 
-            strokeLinecap="round" 
-            initial={false}
-            animate={{ pathLength: scribblePathLength }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          />
-        </motion.svg>
-      </div>
-    </motion.div>
+          <Plus size={18} strokeWidth={2} />
+        </motion.span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pb-6 md:pb-8 flex flex-col gap-5 md:gap-6">
+              <p
+                className={`font-inter text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed max-w-[680px] ${
+                  isLightMode ? "text-black/75" : "text-white/75"
+                }`}
+              >
+                {feature.desc}
+              </p>
+
+              <div
+                className={`relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border ${
+                  isLightMode
+                    ? "border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)]"
+                    : "border-white/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
+                }`}
+              >
+                <ImageWithFallback
+                  src={feature.image}
+                  alt={feature.title}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
 
 function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
+  const [activeModule, setActiveModule] = useState<ModuleId>("core");
 
-  const TOTAL_ITEMS = FEATURES_DATA.length;
-  // Make the float index scrub across the exact number of items
-  const floatIndex = useTransform(scrollYProgress, [0, 1], [0, TOTAL_ITEMS - 1]);
+  const moduleFeatures = useMemo(
+    () => FEATURES_DATA.filter((f) => f.module === activeModule),
+    [activeModule]
+  );
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [openId, setOpenId] = useState<string | null>(
+    moduleFeatures[0]?.id ?? null
+  );
 
-  useMotionValueEvent(floatIndex, "change", (latest) => {
-    const idx = Math.round(latest);
-    if (idx !== activeIndex && idx >= 0 && idx < TOTAL_ITEMS) {
-      setActiveIndex(idx);
-    }
-  });
+  // When module changes, auto-open the first feature in that module.
+  useEffect(() => {
+    setOpenId(moduleFeatures[0]?.id ?? null);
+  }, [moduleFeatures]);
 
-  const activeFeature = FEATURES_DATA[activeIndex];
+  // Hash deep-linking: /features#leaderboards selects the right tab +
+  // expands the matching feature.
+  useEffect(() => {
+    const applyHash = () => {
+      const hash = window.location.hash.replace(/^#/, "").toLowerCase();
+      if (!hash) return;
+      const match = FEATURES_DATA.find((f) => f.id === hash);
+      if (!match) return;
+      setActiveModule(match.module);
+      setOpenId(match.id);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
+  const activeModuleDef = MODULES.find((m) => m.id === activeModule);
 
   return (
-    <section ref={containerRef} className="relative w-full h-[600vh]">
-      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-center max-w-7xl mx-auto px-4 pt-20 lg:pt-32 pb-8 gap-6 lg:gap-12">
-        
-        {/* Header (always on screen while scrolling this section) */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center relative z-10 shrink-0"
-        >
-          <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-4 lg:mb-6 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} font-bold uppercase tracking-[0.25em] text-[10px] lg:text-[11px]`}>
-            Platform Overview
-          </div>
-          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
-            <BlurReveal as="span" delay={0.1}>Everything you need.</BlurReveal><br/>
+    <section className="relative w-full pt-14 md:pt-20 pb-24 md:pb-32 px-4">
+      <div className="max-w-7xl mx-auto">
+        {/* Hero */}
+        <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+          <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
+            Platform &amp; Modules
+          </p>
+          <h1
+            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] max-w-4xl mb-10 md:mb-14 ${
+              isLightMode ? "text-black" : "text-[#f5f7fa]"
+            }`}
+          >
+            <BlurReveal as="span" delay={0.1}>
+              Everything you need.
+            </BlurReveal>
+            <br />
             <span className={isLightMode ? "text-black/40" : "text-white/40"}>
-              <BlurReveal as="span" delay={0.3}>Nothing you don&apos;t.</BlurReveal>
+              <BlurReveal as="span" delay={0.3}>
+                Nothing you don&apos;t.
+              </BlurReveal>
             </span>
           </h1>
-        </motion.div>
 
-        {/* Content Panes */}
-        <div className="w-full flex-1 flex flex-col lg:flex-row items-center justify-center min-h-0 gap-6 lg:gap-16">
-          
-          {/* Left pane: Scrubbing Words */}
-          <div className="w-full lg:w-[45%] h-[30vh] lg:h-full flex items-center justify-center relative shrink-0">
-            <div 
-              className="relative w-full h-full"
-              style={{ 
-                maskImage: "linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)",
-                WebkitMaskImage: "linear-gradient(to bottom, transparent, black 30%, black 70%, transparent)"
-              }}
-            >
-              <div className="absolute top-1/2 left-0 w-full" style={{ marginTop: -ITEM_HEIGHT / 2 }}>
-                <motion.div 
-                  className="relative w-full"
-                  initial={false}
-                  animate={{ y: -(activeIndex * ITEM_HEIGHT) }}
-                  transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
-                >
-                  {FEATURES_DATA.map((f, i) => (
-                    <FeatureWord key={f.id} index={i} activeIndex={activeIndex} feature={f} isLightMode={isLightMode} />
-                  ))}
-                </motion.div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right pane: Active Content */}
-          <div className="w-full lg:w-[55%] flex-1 lg:h-full relative flex flex-col justify-center min-h-0">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeFeature.id}
-                initial={{ opacity: 0, y: 20, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.98 }}
-                transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-                className="absolute inset-0 flex flex-col justify-start lg:justify-center"
-              >
-                <div className={`relative w-full aspect-video lg:aspect-[4/3] rounded-[24px] lg:rounded-[32px] overflow-hidden border shadow-2xl shrink-0 ${isLightMode ? "border-black/10 shadow-black/5" : "border-white/10 shadow-black/50"}`}>
-                  <ImageWithFallback
-                    src={activeFeature.images[0]}
-                    alt={activeFeature.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 hover:scale-105"
-                  />
-                </div>
-                
-                <div className="mt-4 lg:mt-8 flex flex-col gap-1 lg:gap-3 px-2 text-center lg:text-left shrink-0">
-                <div className={`font-inter text-[10px] lg:text-[12px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
-                  {activeFeature.group}
-                </div>
-                  <p className={`font-inter text-[15px] md:text-[18px] lg:text-[24px] font-medium leading-snug ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                    {activeFeature.desc}
-                  </p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
+          <CategoryTabs
+            active={activeModule}
+            onChange={setActiveModule}
+            isLightMode={isLightMode}
+          />
         </div>
+
+        {/* Panel that "opens" when a tab is clicked */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeModule}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -18 }}
+            transition={TAB_TRANSITION}
+            className={`relative rounded-[28px] md:rounded-[36px] border overflow-hidden ${
+              isLightMode
+                ? "bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)]"
+                : "bg-[#0b0f14]/70 border-white/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)]"
+            }`}
+          >
+            {/* Module header row */}
+            <div
+              className={`flex flex-wrap items-center justify-between gap-3 px-6 md:px-10 py-5 md:py-6 border-b ${
+                isLightMode ? "border-black/8" : "border-white/8"
+              }`}
+            >
+              <div className="flex flex-col">
+                <span
+                  className={`font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight ${
+                    isLightMode ? "text-black" : "text-white"
+                  }`}
+                >
+                  {activeModuleDef?.label} Module
+                </span>
+                <span
+                  className={`font-inter text-[13px] md:text-[14px] mt-0.5 ${
+                    isLightMode ? "text-black/55" : "text-white/55"
+                  }`}
+                >
+                  {activeModuleDef?.tagline}
+                </span>
+              </div>
+
+              <span
+                className={`inline-flex items-center px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] ${
+                  activeModuleDef?.alwaysIncluded
+                    ? "bg-[#19ad7d]/12 text-[#19ad7d] border border-[#19ad7d]/25"
+                    : isLightMode
+                      ? "bg-black/[0.04] text-black/55 border border-black/10"
+                      : "bg-white/[0.05] text-white/55 border border-white/10"
+                }`}
+              >
+                {activeModuleDef?.alwaysIncluded ? "Always Included" : "Add-on"}
+              </span>
+            </div>
+
+            {/* Accordion list */}
+            <div className="px-6 md:px-10 py-2 md:py-4">
+              {moduleFeatures.map((feature, idx) => (
+                <FeatureRow
+                  key={feature.id}
+                  feature={feature}
+                  isOpen={feature.id === openId}
+                  onToggle={() =>
+                    setOpenId(openId === feature.id ? null : feature.id)
+                  }
+                  isLightMode={isLightMode}
+                  isFirst={idx === 0}
+                />
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );
@@ -293,8 +512,5 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
 
 export function Features() {
   const { isLightMode } = useTheme();
-
-  return (
-    <FeatureBrowser isLightMode={isLightMode} />
-  );
+  return <FeatureBrowser isLightMode={isLightMode} />;
 }

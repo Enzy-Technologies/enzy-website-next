@@ -37,6 +37,13 @@ export function Header() {
     <header 
       className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'py-2 lg:py-3' : 'py-3 lg:py-5'}`}
     >
+      <div
+        className={`absolute inset-0 pointer-events-none border-x-0 border-t-0 border-b transform-gpu will-change-[opacity] transition-[opacity,border-color] duration-300 ${
+          isScrolled
+            ? "liquid-glass opacity-100 border-white/20"
+            : "bg-transparent opacity-0 border-transparent"
+        }`}
+      />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">
         <div className="flex-1 flex justify-start order-1">
           <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">

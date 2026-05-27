@@ -12,13 +12,23 @@ import {
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
 
 const HAND_IMAGE =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20iPhone-Recovered.png";
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Hand%20Holding%20iPhone%20(2).png";
 
 const IMAGE_ASPECT = 8000 / 5772;
 
-const PHONE_CENTER_X_FRAC = 0.4922;
+const PHONE_CENTER_X_FRAC = 0.4978;
 const PHONE_CENTER_Y_FRAC = 0.4567;
 const PHONE_HEIGHT_FRAC = 0.6684;
+
+// iPhone-style inner screen radius (in PHONE_W=393 coordinate space).
+// Scales with the phone via the same transform applied to the screen overlay.
+const PHONE_SCREEN_RADIUS = 56;
+
+// Extra transparent space appended below the hand image inside the
+// scroll/zoom container so the PNG's natural alpha fade at the wrist
+// has room to fall off — instead of meeting a hard horizontal container
+// edge as the user scrolls out of the zoomed-in state.
+const CONTAINER_BOTTOM_PAD = 0.18; // fraction of ch
 
 // Gentle ease-in-out for both zoom phases: starts and ends with near-zero
 // velocity so the transition from "in motion" → "held" and "held" → "in motion"
@@ -91,12 +101,14 @@ export function Playground() {
         startY = vh * 0.5 - 0.1225 * ch;
       }
 
-      // Mobile budget: phone fills 88% of viewport height — close to
-      // edge-to-edge. The hand wrist below the phone gets cut off,
-      // which is fine; the bottom gradient fades whatever is left
-      // into the page background.
-      const heightBudget = isMobile ? 0.88 : 0.78;
-      const widthBudget = isMobile ? 0.9 : 0.85;
+      // Phone-bezel target fills at full zoom. The wrist below the
+      // phone is allowed to extend past the viewport bottom at full
+      // zoom (we don't render a hard cutoff — see CONTAINER_BOTTOM_PAD
+      // below, which extends the motion container further down so the
+      // image's natural transparent fade never butts up against a
+      // container edge during the zoom-out).
+      const heightBudget = isMobile ? 0.78 : 0.78;
+      const widthBudget = isMobile ? 0.84 : 0.85;
 
       let endScale = Math.min(
         (vh * heightBudget) / phoneH_image,
@@ -183,14 +195,14 @@ export function Playground() {
       style={{ height: "200vh" }}
     >
       <div
-        className="sticky top-0 w-full h-[100dvh] overflow-hidden"
+        className="sticky top-0 w-full h-[100dvh]"
         style={{ pointerEvents: isInteractive ? "auto" : "none" }}
       >
         <motion.div
           className="absolute origin-top-left"
           style={{
             width: animValues.cw,
-            height: animValues.ch,
+            height: animValues.ch * (1 + CONTAINER_BOTTOM_PAD),
             x,
             y,
             scale,
@@ -206,29 +218,30 @@ export function Playground() {
               width: PHONE_W,
               height: PHONE_H,
               transform: `scale(${screenScale})`,
-              borderRadius: 0,
+              borderRadius: PHONE_SCREEN_RADIUS,
             }}
           >
             <InteractivePhone interactive={isInteractive} />
           </div>
 
+          {/* Image is pinned to the TOP of the motion container at its
+              natural cw × ch size. The motion container is taller (see
+              CONTAINER_BOTTOM_PAD), so the PNG's own alpha fade at the
+              bottom of the wrist has room to fall off cleanly. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={HAND_IMAGE}
             alt="Hand holding phone"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-20"
+            className="absolute top-0 left-0 pointer-events-none select-none z-20"
+            style={{
+              width: animValues.cw,
+              height: animValues.ch,
+              objectFit: "cover",
+            }}
             loading="eager"
             fetchPriority="high"
             decoding="sync"
             draggable={false}
-          />
-
-          <div
-            className="absolute inset-0 pointer-events-none z-50"
-            style={{
-              background:
-                "linear-gradient(to bottom, transparent 80%, var(--background) 85%)",
-            }}
           />
         </motion.div>
       </div>
