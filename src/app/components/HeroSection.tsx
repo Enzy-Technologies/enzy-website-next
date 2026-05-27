@@ -99,7 +99,7 @@ function HeroSectionLp() {
             } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
           >
             <BlurReveal as="span" delay={0.1}>
-              More revenue from the team you{" "}
+              More sales from the team you{" "}
             </BlurReveal>
             <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">
               already
@@ -193,7 +193,7 @@ function HeroSectionDefault() {
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               } text-[44px] sm:text-[56px] md:text-[68px] lg:text-[76px]`}
             >
-              <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
+              <BlurReveal as="span" delay={0.1}>More sales from the team you </BlurReveal>
               <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
               <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
             </h1>
