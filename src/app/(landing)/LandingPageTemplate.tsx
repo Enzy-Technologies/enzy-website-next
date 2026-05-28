@@ -11,7 +11,6 @@ import { LpSingleTestimonial } from "../components/landing/LpSingleTestimonial";
 import { EvidenceSection } from "../components/EvidenceSection";
 import { ClosingCTASection } from "../components/ClosingCTASection";
 import { TESTIMONIALS } from "../components/TestimonialsSection";
-import { BookDemoPage } from "../components/BookDemo/BookDemoPage";
 
 function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
   const { isLightMode } = useTheme();

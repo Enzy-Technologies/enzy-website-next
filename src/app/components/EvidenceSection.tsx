@@ -55,7 +55,7 @@ type EvidenceVariant = "default" | "lp";
 export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVariant } = {}) {
   const { isLightMode } = useTheme();
   const showQuoteCard = variant !== "lp";
-  const { value: count, ref: countRef } = useCountUp(37);
+  const { value: count, ref: countRef } = useCountUp(21);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -66,7 +66,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
   const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
 
   return (
-    <section ref={containerRef} className="relative w-full px-4 pt-16 pb-24 md:pt-24 md:pb-32 max-w-7xl mx-auto overflow-hidden">
+    <section ref={containerRef} className="relative w-full px-4 py-20 md:py-28 max-w-7xl mx-auto overflow-hidden">
       <div className="flex flex-col items-center justify-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -101,29 +101,20 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
           <BlurReveal
             as="p"
             delay={0.1}
-            className={`font-inter text-[24px] md:text-[32px] lg:text-[40px] font-medium mt-6 md:mt-8 tracking-tight ${
+            className={`font-inter text-[24px] md:text-[32px] lg:text-[40px] font-bold mt-6 md:mt-8 tracking-tight ${
               isLightMode ? "text-black" : "text-white"
             }`}
           >
-            Average sales increase per sales rep
+            Increase in sales per rep after implementing Enzy
           </BlurReveal>
-          
+
           <p
-            className={`font-inter text-[16px] md:text-[18px] leading-relaxed mt-4 max-w-[500px] mx-auto ${
+            className={`font-inter text-[15px] md:text-[17px] leading-relaxed mt-4 max-w-[640px] mx-auto ${
               isLightMode ? "text-black/55" : "text-white/55"
             }`}
           >
-            In a before and after analysis
+            Across 39 companies controlling for company size, pre-existing growth trajectory, and industry trends.
           </p>
-          {!showQuoteCard ? (
-            <p
-              className={`font-inter text-[13px] md:text-[14px] leading-relaxed mt-3 max-w-[520px] mx-auto ${
-                isLightMode ? "text-black/40" : "text-white/40"
-              }`}
-            >
-              Customer-reported outcomes; methodology shared during onboarding.
-            </p>
-          ) : null}
         </motion.div>
 
         {showQuoteCard ? (

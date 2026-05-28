@@ -22,32 +22,30 @@ export function Footer() {
   return (
     <footer className="relative z-10 w-full bg-black text-white overflow-x-hidden">
       <div className="w-full max-w-[1600px] mx-auto px-5 sm:px-8 md:px-12 lg:px-16 pt-14 md:pt-16 pb-8 md:pb-10">
-        {/* Wordmark — full width at top (same asset as previous footer) */}
-        <div className="w-full mb-12 md:mb-16 lg:mb-20">
+        {/* Wordmark — compact, top-left */}
+        <div className="mb-10 md:mb-14">
           {isLandingPage ? (
-            <div className="block w-full">
+            <div className="inline-block">
               <Image
                 src={ENZY_WORDMARK_SRC}
                 alt=""
-                width={1600}
-                height={240}
-                sizes="(max-width: 768px) 100vw, (max-width: 1600px) 100vw, 1600px"
-                className="w-full h-auto invert brightness-0 contrast-100 pointer-events-none"
+                width={220}
+                height={32}
+                className="h-8 md:h-10 w-auto invert brightness-0 contrast-100 pointer-events-none"
               />
             </div>
           ) : (
             <Link
               href="/"
-              className="block w-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#19ad7d] rounded-sm"
+              className="inline-block focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#19ad7d] rounded-sm"
               aria-label="Enzy home"
             >
               <Image
                 src={ENZY_WORDMARK_SRC}
                 alt=""
-                width={1600}
-                height={240}
-                sizes="(max-width: 768px) 100vw, (max-width: 1600px) 100vw, 1600px"
-                className="w-full h-auto invert brightness-0 contrast-100 pointer-events-none"
+                width={220}
+                height={32}
+                className="h-8 md:h-10 w-auto invert brightness-0 contrast-100 pointer-events-none"
               />
             </Link>
           )}

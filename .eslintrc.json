@@ -1,6 +1,19 @@
 {
   "root": true,
   "extends": ["next/core-web-vitals"],
-  "rules": {}
+  "rules": {},
+  "overrides": [
+    {
+      "files": [
+        "src/app/playground/interactive/**/*.{ts,tsx}",
+        "src/app/playground/interactive-imports/**/*.{ts,tsx}"
+      ],
+      "rules": {
+        "react/no-unescaped-entities": "off",
+        "@next/next/no-img-element": "off",
+        "jsx-a11y/alt-text": "off",
+        "import/no-anonymous-default-export": "off"
+      }
+    }
+  ]
 }
-

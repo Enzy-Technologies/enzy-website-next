@@ -14,7 +14,6 @@ import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
 import { defaultOgImagePath, siteName, siteUrl } from "./lib/site"
 import { SpotlightCursor } from "./components/SpotlightCursor"
-import { LeadingLine } from "./components/LeadingLine"
 
 export const metadata: Metadata = {
   ...buildMetadata({
@@ -97,7 +96,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />
         <ThemeProvider>
-          <LeadingLine />
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
       </body>

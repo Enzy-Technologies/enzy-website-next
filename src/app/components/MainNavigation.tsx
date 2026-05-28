@@ -7,6 +7,15 @@ import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';
 
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+
 const MENU_ITEMS = [
   { id: 'features', label: 'System', path: '/features' },
   { id: 'solutions', label: 'Solutions', path: '/solutions' },
@@ -17,19 +26,38 @@ const MENU_ITEMS = [
 
 const SYSTEM_SECTIONS = [
   {
-    title: "Work",
-    desc: "Move the day forward.",
-    items: ["Map", "Leads", "Calendar", "Tasks", "Library", "Recruit"],
+    title: "Core",
+    desc: "Always included.",
+    items: [
+      "Leaderboards",
+      "Profiles",
+      "Badges",
+      "Competitions & Incentives",
+      "Messaging",
+      "Bot Chats",
+      "Media Library",
+    ],
   },
   {
-    title: "Perform",
-    desc: "Make execution visible.",
-    items: ["Leaderboards", "Incentives", "Goals", "Profiles", "Chat"],
+    title: "Sell",
+    desc: "Field sales add-on.",
+    items: [
+      "Canvassing",
+      "Lead Management",
+      "Digital Business Card",
+      "Appt Scheduling",
+      "SMS Campaigns",
+    ],
   },
   {
-    title: "AI",
-    desc: "Ask. Decide. Generate.",
-    items: ["AI Assistant"],
+    title: "Recruit",
+    desc: "Recruiting add-on.",
+    items: [
+      "Recruiting Center",
+      "Public Recruit Link",
+      "Onboarding Workflow",
+      "Document Library",
+    ],
   },
 ];
 
@@ -227,8 +255,9 @@ export function MainNavigation() {
                                     {section.items.map((item, j) => (
                                         <li key={j}>
                                             <Link 
-                                                href={`/features#${item.toLowerCase().replace(/\s+/g, '-')}`}
+                                                href={`/features#${slugify(item)}`}
                                                 onClick={() => setActiveDropdown(null)}
+                                                scroll={false}
                                                 className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
                                             >
                                                 <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>{item}</span>
@@ -379,8 +408,8 @@ export function MainNavigation() {
 
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`relative p-2.5 rounded-xl pointer-events-auto transition-transform active:scale-95 liquid-glass ${
-            isLightMode ? "text-black shadow-sm" : "text-white"
+          className={`relative p-2 pointer-events-auto transition-transform active:scale-95 ${
+            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
           }`}
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >
@@ -486,11 +515,12 @@ export function MainNavigation() {
                                         {section.items.map((subitem, k) => (
                                             <Link 
                                                 key={k}
-                                                href={`/features#${subitem.toLowerCase().replace(/\s+/g, '-')}`}
+                                                href={`/features#${slugify(subitem)}`}
                                                 onClick={() => {
                                                     setMobileMenuOpen(false);
                                                     setActiveMobileDropdown(null);
                                                 }}
+                                                scroll={false}
                                                 className={`group flex items-center justify-between px-3 py-2.5 mb-1.5 rounded-md border transition-all duration-300 ${
                                                     isLightMode 
                                                         ? 'bg-black/[0.03] border-black/5 hover:bg-black/[0.08] hover:border-[#19ad7d]/30' 

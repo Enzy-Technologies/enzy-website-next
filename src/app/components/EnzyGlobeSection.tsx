@@ -465,30 +465,27 @@ export function EnzyGlobeSection() {
   const { isLightMode } = useTheme();
 
   return (
-    <section className="relative w-full overflow-hidden flex flex-col items-center">
-      <div className="absolute top-16 md:top-24 left-1/2 -translate-x-1/2 z-10 w-full px-4 text-center pointer-events-none flex flex-col items-center">
-        <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 transition-colors mb-4 md:mb-6 backdrop-blur-md ${
-            isLightMode
-              ? "border-black/10 bg-white/70 text-black/70"
-              : "border-white/10 bg-[#0b0f14]/70 text-white/70"
-          }`}>
-          <span className="font-inter text-[11px] tracking-[0.18em] text-[#19ad7d] font-semibold uppercase">
-            Global Impact
-          </span>
-        </div>
-        <BlurReveal
-          as="h2"
-          delay={0.1}
-          className={`font-ivyora font-medium tracking-[-2px] md:tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] transition-colors duration-500 drop-shadow-sm ${
+    <section className="relative w-full overflow-hidden pt-20 md:pt-28 pb-12 md:pb-16 flex flex-col items-center">
+      <div className="relative z-10 w-full px-4 text-center max-w-3xl mx-auto mb-10 md:mb-14 flex flex-col items-center">
+        <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
+          Global Impact
+        </p>
+        <h2
+          className={`font-ivyora font-medium tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2px] leading-[1] text-[28px] sm:text-[40px] md:text-[56px] lg:text-[68px] transition-colors duration-500 drop-shadow-sm ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           }`}
         >
-          50 States. 22 Countries.
-        </BlurReveal>
+          <BlurReveal as="span" delay={0.1} className="block">
+            50 States &amp; Territories.
+          </BlurReveal>
+          <BlurReveal as="span" delay={0.4} className="block">
+            22 Countries.
+          </BlurReveal>
+        </h2>
       </div>
 
       {/* Break out of the max-w-7xl container so the canvas can be completely unrestricted horizontally */}
-      <div className="pt-32 md:pt-40 flex items-center justify-center relative w-full">
+      <div className="flex items-center justify-center relative w-full">
         <div
           className="w-[120vw] h-[100vw] sm:h-[80vw] max-h-[1000px] relative"
           style={{

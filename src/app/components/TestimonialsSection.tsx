@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { animate, motion, useAnimationFrame, useMotionValue, useTransform } from "motion/react";
 import { RotateCw } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { BlurReveal } from "./BlurReveal";
 
 export type Testimonial = {
   id: number;
@@ -69,23 +69,23 @@ export function TestimonialsSection() {
   const { isLightMode } = useTheme();
 
   return (
-    <section className="relative w-full py-24 md:py-32 overflow-hidden z-20"
+    <section className="relative w-full py-20 md:py-28 overflow-hidden z-20"
     >
-      <div className="w-full max-w-[1440px] mx-auto px-4 md:px-12 lg:px-20 flex flex-col gap-12 relative mb-12">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.6 }}
-          className="flex flex-col items-center w-full gap-4 text-center"
-        >
-          <h2 className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${isLightMode ? "text-[#0b0f14]" : "text-white"} tracking-[-2px] leading-[0.95] font-medium`}>
-            Loved by leaders
+      <div className="w-full mx-auto max-w-7xl px-4 md:px-4 flex flex-col gap-8 relative mb-12">
+        <div className="flex flex-col items-start w-full text-left">
+          <h2
+            className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${
+              isLightMode ? "text-[#0b0f14]" : "text-white"
+            } tracking-[-2px] leading-[0.95] font-medium`}
+          >
+            <BlurReveal as="span" delay={0.1}>
+              In their{" "}
+            </BlurReveal>
+            <BlurReveal as="span" delay={0.4} className="italic">
+              words
+            </BlurReveal>
           </h2>
-          <p className={`font-inter text-[15px] md:text-[16px] ${isLightMode ? "text-black/60" : "text-white/60"} max-w-[600px] leading-relaxed`}>
-            See what industry experts are saying about how Enzy transforms their organizations.
-          </p>
-        </motion.div>
+        </div>
       </div>
 
       <TestimonialsMarquee testimonials={TESTIMONIALS} />
@@ -96,7 +96,7 @@ export function TestimonialsSection() {
 export function TestimonialsMarquee({
   testimonials,
   className,
-  sets = 4,
+  sets = 2,
 }: {
   testimonials: readonly Testimonial[];
   className?: string;
@@ -104,42 +104,67 @@ export function TestimonialsMarquee({
 }) {
   const { isLightMode } = useTheme();
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [contentWidth, setContentWidth] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const animationRef = useRef<Animation | null>(null);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
-  // duplicate to wrap seamlessly on any screen
+  // Two sets is enough for a seamless loop when we animate the track by
+  // exactly one set's width.
   const marqueeItems = Array(sets).fill(testimonials).flat();
 
-  const baseX = useMotionValue(0);
-
+  // Drive the auto-scroll with the Web Animations API — runs on the
+  // compositor thread, so it stays smooth on mobile even when the main
+  // thread is busy (BlurReveal, card content, scroll-driven effects).
   useEffect(() => {
-    const updateWidth = () => {
-      if (containerRef.current) {
-        setContentWidth(containerRef.current.scrollWidth / sets);
-      }
-    };
+    const track = trackRef.current;
+    if (!track) return;
 
-    updateWidth();
-    window.addEventListener("resize", updateWidth);
-    return () => window.removeEventListener("resize", updateWidth);
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
+    // The track has `sets` copies of the cards. Translating by
+    // -100/sets % shifts exactly one copy, which means the next copy
+    // takes its place — seamless loop.
+    const distance = `-${100 / sets}%`;
+
+    const animation = track.animate(
+      [
+        { transform: "translate3d(0, 0, 0)" },
+        { transform: `translate3d(${distance}, 0, 0)` },
+      ],
+      {
+        duration: 60000, // 60s for a full set; tweak for taste
+        iterations: Infinity,
+        easing: "linear",
+      }
+    );
+
+    animationRef.current = animation;
+    return () => {
+      animation.cancel();
+      animationRef.current = null;
+    };
   }, [sets]);
 
-  const x = useTransform(baseX, (v) => {
-    if (contentWidth === 0) return "0px";
-    const wrapped = ((v % contentWidth) - contentWidth) % contentWidth;
-    return `${wrapped}px`;
-  });
+  // Pause when a card is flipped, or when desktop user is hovering.
+  useEffect(() => {
+    const animation = animationRef.current;
+    if (!animation) return;
+    const isHoverDevice =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(hover: hover)").matches;
 
-  useAnimationFrame((time, delta) => {
-    void time; // avoid noUnusedParameters noise; only delta drives motion
-    if (flippedIndex !== null || isDragging) return;
-    let moveBy = -0.05 * delta;
-    if (isHovered && matchMedia("(hover: hover)").matches) moveBy = 0;
-    baseX.set(baseX.get() + moveBy);
-  });
+    if (flippedIndex !== null || (isHoverDevice && isHovered)) {
+      animation.pause();
+    } else {
+      animation.play();
+    }
+  }, [flippedIndex, isHovered]);
 
   return (
     <div
@@ -156,30 +181,11 @@ export function TestimonialsMarquee({
         }}
       />
 
-      <div className="w-full relative overflow-visible">
-        <motion.div
-          ref={containerRef}
-          className="flex w-max py-8 touch-pan-y"
-          style={{ x }}
-          onPanStart={() => setIsDragging(true)}
-          onPan={(e, info) => {
-            void e;
-            baseX.set(baseX.get() + info.delta.x);
-          }}
-          onPanEnd={(e, info) => {
-            void e;
-            setIsDragging(false);
-            const velocity = info.velocity.x;
-            if (Math.abs(velocity) > 200) {
-              const target = baseX.get() + velocity * 0.5;
-              animate(baseX, target, {
-                type: "inertia",
-                velocity: velocity,
-                bounceStiffness: 0,
-                bounceDamping: 0,
-              });
-            }
-          }}
+      <div className="w-full relative overflow-hidden">
+        <div
+          ref={trackRef}
+          className="flex w-max py-8"
+          style={{ willChange: "transform" }}
         >
           {marqueeItems.map((testimonial, idx) => {
             const { first, rest } = splitQuote(testimonial.quote);
@@ -194,14 +200,13 @@ export function TestimonialsMarquee({
                   className={`relative w-[300px] md:w-[360px] h-[460px] md:h-[500px] transition-transform duration-700 [transform-style:preserve-3d] cursor-pointer ${
                     isFlipped ? "[transform:rotateY(180deg)]" : ""
                   }`}
-                  onClick={() => {
-                    if (isDragging) return;
-                    setFlippedIndex(isFlipped ? null : idx);
-                  }}
+                  onClick={() => setFlippedIndex(isFlipped ? null : idx)}
                 >
                   <div
-                    className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 liquid-glass ${
-                      isLightMode ? "hover:border-[#19ad7d]/35" : "hover:border-[#19ad7d]/35"
+                    className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] ${
+                      isLightMode
+                        ? "bg-white/95 border-black/10 hover:border-[#19ad7d]/35"
+                        : "bg-[#0f1419]/95 border-white/12 hover:border-[#19ad7d]/35"
                     } ${
                       isFlipped ? "opacity-0 delay-300" : "opacity-100 z-10 delay-100"
                     }`}
@@ -223,10 +228,10 @@ export function TestimonialsMarquee({
                     </div>
 
                     <div
-                      className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b backdrop-blur-md ${
+                      className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b ${
                         isLightMode
-                          ? "border-black/8 bg-[#eaf4f0]/85"
-                          : "border-white/8 bg-[#17312d]/75"
+                          ? "border-black/8 bg-[#eaf4f0]"
+                          : "border-white/8 bg-[#17312d]"
                       }`}
                     >
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full border border-[#19ad7d]/20" />
@@ -273,7 +278,11 @@ export function TestimonialsMarquee({
                   </div>
 
                   <div
-                    className="absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-3xl overflow-hidden flex flex-col p-6 md:p-8 liquid-glass"
+                    className={`absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-[32px] overflow-hidden flex flex-col p-6 md:p-8 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] ${
+                      isLightMode
+                        ? "bg-white/97 border-black/10"
+                        : "bg-[#0f1419]/97 border-white/12"
+                    }`}
                     style={{
                       WebkitBackfaceVisibility: "hidden",
                       backfaceVisibility: "hidden",
@@ -338,7 +347,7 @@ export function TestimonialsMarquee({
               </div>
             );
           })}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
