@@ -83,30 +83,16 @@ function HeroSectionLp() {
 
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-12 md:pb-12 md:pt-16 lg:pt-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto gap-6 md:gap-8">
-          <span
-            className={`inline-flex items-center rounded-full border px-4 py-2 font-inter text-[11px] font-semibold uppercase tracking-[0.14em] md:text-[12px] ${
-              isLightMode
-                ? "border-black/10 bg-black/[0.03] text-black/55"
-                : "border-white/12 bg-white/[0.06] text-white/60"
-            }`}
-          >
-            Built for route-based &amp; field sales orgs
-          </span>
-
           <h1
             className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
               isLightMode ? "text-brand-dark" : "text-brand-light"
             } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
           >
             <BlurReveal as="span" delay={0.1}>
-              More revenue from the team you{" "}
+              Performance has always been a game.{" "}
             </BlurReveal>
             <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">
-              already
-            </BlurReveal>
-            <BlurReveal as="span" delay={1.05}>
-              {" "}
-              have.
+              Now there&rsquo;s an operating system for it.
             </BlurReveal>
           </h1>
 
@@ -115,8 +101,7 @@ function HeroSectionLp() {
               isLightMode ? "text-black/72" : "text-white/68"
             }`}
           >
-            Intelligent performance systems that tighten execution between visits — coaching,
-            accountability, and incentives grounded in live CRM signal.
+            Enzy is the performance operating system for field sales — one that doesn&rsquo;t just visualize your data but tells you what to do with it. Live competitions, public leaderboards, real-time recognition, and AI backed by more sales performance data than any tool in existence.
           </p>
         </div>
         
@@ -181,20 +166,22 @@ function HeroSectionDefault() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section ref={containerRef} className="relative w-full pt-[12px] pb-6 lg:pt-[28px] lg:pb-0 lg:min-h-[80vh] flex items-center">
+    <section ref={containerRef} className="relative w-full pt-[12px] pb-6 lg:pt-[28px] lg:pb-0 lg:h-[calc(100vh-88px)] flex items-center">
       <div className="relative mx-auto max-w-[1400px] px-4 md:px-6 lg:px-8 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           
-          {/* Left Column: Content */}
-          <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 w-full lg:w-[55%] xl:w-[50%] lg:pl-8 xl:pl-12 z-20">
+          {/* Left Column: Content. On desktop the column spans to the page's
+              horizontal center (lg:w-1/2, shrink-0 so the gap eats into the
+              spacer, not the text) and drops its max-width cap so the headline
+              fills the width instead of wrapping tightly. */}
+          <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
             <h1
               className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
             >
-              <BlurReveal as="span" delay={0.1}>More revenue from the team you </BlurReveal>
-              <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">already</BlurReveal>
-              <BlurReveal as="span" delay={1.05}> have.</BlurReveal>
+              <BlurReveal as="span" delay={0.1}>Performance has never had an operating system. </BlurReveal>
+              <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">Until now.</BlurReveal>
             </h1>
 
             <p
@@ -202,16 +189,17 @@ function HeroSectionDefault() {
                 isLightMode ? "text-black/70" : "text-white/65"
               }`}
             >
-              The performance operating system for sales teams, built at the intersection of live business intelligence and social media engagement. Your team&rsquo;s data, visible to everyone in real time, with AI that tells leaders exactly what to do next.
+              The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more field sales performance data than any tool in existence.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1 pb-2 w-full">
               <CTAButton
                 href="/book-demo"
                 variant="primary"
-                className="w-full max-w-[260px] sm:max-w-none sm:w-auto font-inter font-semibold text-[15px] md:text-[16px] h-[48px] md:h-[52px] px-7 md:px-8 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
+                className="book-demo-cta-marker w-full max-w-[260px] sm:max-w-none sm:w-auto font-inter font-semibold text-[15px] md:text-[16px] h-[48px] md:h-[52px] pl-7 md:pl-8 pr-6 md:pr-7 gap-2 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
               >
                 Book a Demo
+                <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
               </CTAButton>
             </div>
 
@@ -227,8 +215,10 @@ function HeroSectionDefault() {
             </div>
           </div>
           
-          {/* Right Column: Spacer for Playground Phone */}
-          <div className="hidden lg:block lg:w-[50%] xl:w-[55%]">
+          {/* Right Column: Spacer for Playground Phone. Takes the remaining
+              width after the text column + gap so the phone overlay has the
+              right half of the page to itself. */}
+          <div className="hidden lg:block lg:flex-1">
           </div>
 
         </div>
