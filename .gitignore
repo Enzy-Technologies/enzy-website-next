@@ -42,3 +42,9 @@ coverage/
 
 # pnpm
 .pnpm-store/
+
+# Other package managers — this repo uses pnpm (see pnpm-workspace.yaml +
+# pnpm-lock.yaml). Don't commit npm/yarn lockfiles or they'll silently
+# diverge from the canonical pnpm resolution graph.
+package-lock.json
+yarn.lock

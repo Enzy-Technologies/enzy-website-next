@@ -1,2 +1,11 @@
 packages:
   - '.'
+
+# Approve native build scripts for trusted packages:
+#   - sharp: powers next/image's production image pipeline.
+#   - unrs-resolver: ESLint module resolver (perf optimization).
+# Without these set to true, pnpm skips their postinstall and the
+# packages fall back to slower JS paths (or fail outright on first use).
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
