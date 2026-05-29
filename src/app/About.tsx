@@ -46,7 +46,7 @@ export function About() {
   const pageBody = isLightMode ? "text-black/65" : "text-white/65";
 
   return (
-    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-8 md:pt-16 lg:pt-24 pb-16 md:pb-20 z-20 transition-colors duration-500">
+    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-20 z-20 transition-colors duration-500">
       {/* Background glows */}
       <motion.div
         className={`absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
@@ -69,7 +69,7 @@ export function About() {
             <BlurReveal
               as="h1"
               delay={0.1}
-              className={`mt-5 font-ivyora font-medium tracking-[-2px] leading-[0.95] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
+              className={`mt-5 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
             >
               Performance is the largest untapped lever in your business.
             </BlurReveal>
@@ -86,46 +86,41 @@ export function About() {
         {/* 002 — What we've learned */}
         <FadeInSection className="pb-16 md:pb-24">
           <section data-section="002">
-
-
-            <div className={`mt-8 p-8 md:p-12 lg:p-16 rounded-[40px] border transition-all duration-500 liquid-glass ${
-              isLightMode
-                ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
-                : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
-            }`}>
-              <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-10 gap-y-12">
-                {[
-                  { value: "24", unit: "m", label: "Weekly Interactions" },
-                  { value: "37", unit: "%", label: "Median revenue lift per rep" },
-                  { value: "7,000", unit: "+", label: "Incentives Ran" },
-                  { value: "180", unit: "k", label: "Total users" },
-                ].map((s) => (
-                  <div key={s.label} className="flex flex-col">
-                    <dt
-                      className={`font-inter font-extrabold tracking-[-2px] leading-none ${
-                        isLightMode ? "text-black" : "text-white"
-                      } text-[56px] md:text-[64px]`}
-                    >
-                      {s.value}
-                      <span
-                        className={`ml-1 text-[20px] font-bold tracking-tight ${
-                          isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"
-                        }`}
-                      >
-                        {s.unit}
-                      </span>
-                    </dt>
-                    <dd
-                      className={`mt-4 font-inter text-[14px] md:text-[15px] font-medium leading-relaxed ${
-                        isLightMode ? "text-black/70" : "text-white/70"
-                      }`}
-                    >
-                      {s.label}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
+            <dl className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {[
+                { value: "24", unit: "M", label: "Weekly Enzy page views" },
+                { value: "21", unit: "%", label: "Increase in sales per rep after implementing Enzy" },
+                { value: "7,000", unit: "+", label: "Incentives ran" },
+                { value: "180", unit: "K", label: "Total users" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  className={`liquid-glass rounded-2xl border p-5 sm:p-6 transition-colors ${
+                    isLightMode
+                      ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
+                      : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                  }`}
+                >
+                  <dt
+                    className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
+                      isLightMode ? "text-black" : "text-white"
+                    }`}
+                  >
+                    {s.value}
+                    <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
+                      {s.unit}
+                    </span>
+                  </dt>
+                  <dd
+                    className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
+                      isLightMode ? "text-black/65" : "text-white/65"
+                    }`}
+                  >
+                    {s.label}
+                  </dd>
+                </div>
+              ))}
+            </dl>
           </section>
         </FadeInSection>
 
@@ -164,10 +159,15 @@ export function About() {
 
 
 
-        <FadeInSection className="pb-16 md:pb-24">
-          <TestimonialsSection />
-        </FadeInSection>
-        
+      </div>
+
+      {/* Testimonials break out of the page's `max-w-6xl` content rail so
+          the marquee can run edge-to-edge of the viewport on every screen. */}
+      <FadeInSection className="w-full pb-16 md:pb-24">
+        <TestimonialsSection />
+      </FadeInSection>
+
+      <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
         {/* 004 — Next */}
         <FadeInSection className="pb-12 md:pb-16">
           <section data-section="004">
@@ -189,7 +189,7 @@ export function About() {
               />
 
               <h2
-                className={`relative z-10 font-ivyora font-medium tracking-[-2px] leading-[0.95] text-3xl md:text-5xl ${
+                className={`relative z-10 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl ${
                   isLightMode ? "text-black" : "text-white"
                 }`}
               >
@@ -201,9 +201,9 @@ export function About() {
                 <CTAButton
                   href={BOOK_DEMO_HREF}
                   variant="primary"
-                  className="w-full sm:w-auto justify-center px-8 py-4 gap-3 font-bold text-sm uppercase tracking-widest hover:scale-[1.02] hover:!opacity-100 shadow-[0_0_28px_rgba(25,173,125,0.35)]"
+                  className="book-demo-cta-marker w-full sm:w-auto justify-center px-8 py-4 gap-3 font-semibold text-[15px] tracking-tight hover:scale-[1.02] hover:!opacity-100 shadow-[0_0_28px_rgba(25,173,125,0.35)]"
                 >
-                  Book a demo <ArrowRight size={18} aria-hidden />
+                  Book a Demo <ArrowRight size={18} aria-hidden />
                 </CTAButton>
                 <Link
                   href="/resources"

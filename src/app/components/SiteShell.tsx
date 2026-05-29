@@ -12,8 +12,11 @@ import { PartnerFormModal } from "./PartnerFormModal"
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { isLightMode } = useTheme()
   const pathname = usePathname()
-  const showParticles = pathname !== "/about"
   const isLp = Boolean(pathname?.startsWith("/lp/"))
+  // Pixel particle background renders globally — every page should share the
+  // same parallax/interactive backdrop. Only landing pages (`/lp/*`) opt out
+  // because they ship their own bespoke marketing surface.
+  const showParticles = !isLp
 
   return (
     <div

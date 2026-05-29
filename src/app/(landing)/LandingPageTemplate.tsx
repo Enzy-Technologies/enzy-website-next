@@ -34,7 +34,7 @@ function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
           </div>
 
           <h1
-            className={`font-ivyora font-medium text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[80px] leading-[0.95] tracking-[-2px] text-center transition-colors duration-500 ${
+            className={`font-ivyora font-medium text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[80px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >
@@ -59,7 +59,7 @@ function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
 
 export function LandingPageTemplate({ config }: { config: LandingPageConfigMarketing }) {
   return (
-    <LpBookDemoScrollShell href="#lp-demo" label="Book a demo">
+    <LpBookDemoScrollShell href="#lp-demo" label="Book a Demo">
       <main className="relative w-full pb-32 md:pb-36 lg:pb-40">
         <LandingHero config={config} />
         {config.productVideo ? <LandingProductVideo {...config.productVideo} /> : null}

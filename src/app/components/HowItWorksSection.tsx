@@ -117,7 +117,7 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
       }}
     >
       <div className="relative z-10 flex flex-col gap-6 max-w-2xl">
-        <h3 className={`font-ivyora font-medium text-[40px] sm:text-[56px] md:text-[64px] leading-[0.95] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
+        <h3 className={`font-ivyora font-medium text-[40px] sm:text-[56px] md:text-[64px] leading-[1.05] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
           {step.title}
         </h3>
         <p className={`font-inter text-[16px] sm:text-[18px] md:text-[20px] font-medium leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
@@ -171,7 +171,7 @@ export function HowItWorksSection() {
             The Methodology
           </p>
           <h2
-            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[80px] leading-[0.95] tracking-[-2px] transition-colors duration-500 ${
+            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[80px] leading-[1.05] tracking-[-2px] transition-colors duration-500 ${
               isLightMode ? "text-black" : "text-white"
             }`}
           >

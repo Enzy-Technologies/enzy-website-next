@@ -25,6 +25,12 @@ const PHONE_HEIGHT_FRAC = 0.6684;
 // Scales with the phone via the same transform applied to the screen overlay.
 const PHONE_SCREEN_RADIUS = 56;
 
+// Color of the Enzy UI's outer surface (matches `bg-[#faf9f6]` set inside
+// `InteractivePhone`). Painted on the screen rect itself so any hairline
+// gap between the UI's content and the inner bezel of the iPhone PNG shows
+// the same off-white as the surrounding UI — never the page background.
+const PHONE_SCREEN_BG = "#faf9f6";
+
 // Extra transparent space appended below the hand image inside the
 // scroll/zoom container so the PNG's natural alpha fade at the wrist
 // has room to fall off — instead of meeting a hard horizontal container
@@ -71,7 +77,9 @@ export function Playground() {
 
       let ch;
       if (isDesktop) {
-        ch = Math.min(vh * 0.95, (vw * 0.55) / IMAGE_ASPECT);
+        // Slightly larger on desktop (was vw * 0.55) so the phone has more
+        // presence in the hero's right half.
+        ch = Math.min(vh * 0.98, (vw * 0.62) / IMAGE_ASPECT);
       } else if (isMobile) {
         ch = vh * 0.6;
       } else {
@@ -93,7 +101,11 @@ export function Playground() {
 
       let startY;
       if (isDesktop) {
-        startY = vh * 0.55 - ch / 2;
+        // Center the phone BODY (not the whole image) on the viewport's
+        // vertical midline. The phone sits at PHONE_CENTER_Y_FRAC down the
+        // image, so offset by that fraction rather than half the image height
+        // — otherwise the wrist/hand below the phone drags the phone too low.
+        startY = vh * 0.5 - PHONE_CENTER_Y_FRAC * ch;
       } else if (isMobile) {
         // Position phone in the lower half of the hero with breathing
         // room between the logo marquee caption above and the phone.
@@ -195,7 +207,7 @@ export function Playground() {
   return (
     <motion.div
       ref={containerRef}
-      className="relative w-full z-40 -mt-[45vh] lg:-mt-[100vh]"
+      className="relative w-full z-40 -mt-[45vh] lg:-mt-[100vh] pointer-events-none"
       style={{ height: "200vh" }}
     >
       <div
@@ -214,6 +226,27 @@ export function Playground() {
             willChange: "transform",
           }}
         >
+          {/* Beige underlay sits behind the interactive screen and a hair
+              outside its bounds. The iPhone bezel PNG (z-20) covers it
+              everywhere except inside the screen cutout — so any hairline
+              gap between the rendered Enzy UI (z-10, exact phone-screen
+              size) and the inner edge of the bezel shows the same off-white
+              as the UI, never the page background. The expansion is kept
+              very small (~1% on each side) so the underlay never bleeds
+              past the bezel hardware around the screen. */}
+          <div
+            className="absolute z-[5]"
+            style={{
+              left: screenLeft - screenW * 0.01,
+              top: screenTop - screenH * 0.008,
+              width: screenW * 1.02,
+              height: screenH * 1.016,
+              backgroundColor: PHONE_SCREEN_BG,
+              borderRadius: PHONE_SCREEN_RADIUS * screenScale * 1.05,
+            }}
+            aria-hidden
+          />
+
           <div
             className="absolute origin-top-left z-10 overflow-hidden"
             style={{

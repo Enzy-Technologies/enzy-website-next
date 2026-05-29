@@ -69,14 +69,14 @@ export function TestimonialsSection() {
   const { isLightMode } = useTheme();
 
   return (
-    <section className="relative w-full py-20 md:py-28 overflow-hidden z-20"
+    <section className="relative w-full py-20 md:py-28 overflow-x-clip z-20"
     >
       <div className="w-full mx-auto max-w-7xl px-4 md:px-4 flex flex-col gap-8 relative mb-12">
         <div className="flex flex-col items-start w-full text-left">
           <h2
             className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${
               isLightMode ? "text-[#0b0f14]" : "text-white"
-            } tracking-[-2px] leading-[0.95] font-medium`}
+            } tracking-[-2px] leading-[1.05] font-medium`}
           >
             <BlurReveal as="span" delay={0.1}>
               In their{" "}
@@ -181,7 +181,11 @@ export function TestimonialsMarquee({
         }}
       />
 
-      <div className="w-full relative overflow-hidden">
+      {/* `overflow-x-clip` (not `overflow-hidden`) hides the off-screen
+          marquee cards horizontally while leaving the Y axis visible, so the
+          cards' large drop shadows aren't sheared off at the bottom. Unlike
+          `hidden`, `clip` doesn't force the other axis to `auto`. */}
+      <div className="w-full relative overflow-x-clip">
         <div
           ref={trackRef}
           className="flex w-max py-8"
@@ -292,23 +296,27 @@ export function TestimonialsMarquee({
                       “
                     </div>
 
-                    <div className="flex-1 overflow-y-auto scrollbar-hide pr-2 relative z-10">
+                    {/* `overflow-y-auto` implicitly forces overflow-x to
+                        `clip`, which would otherwise sever the
+                        text-shadow halo at the left edge of the scroll
+                        container (visible as a hard vertical line of
+                        clipped glow). The `px-3 -mx-3` trick widens the
+                        clip region by 12 px on each side while keeping
+                        the text in its original visual position so the
+                        shadow can render fully on both sides. */}
+                    <div className="flex-1 overflow-y-auto scrollbar-hide px-3 -mx-3 relative z-10">
                       <div className="pt-2 pb-4">
-                        <p
-                          className={`font-inter text-sm md:text-[15px] leading-relaxed ${
-                            isLightMode ? "text-black/80" : "text-white/80"
-                          }`}
-                        >
-                          <span
-                            className={`font-bold block mb-3 text-base md:text-lg leading-[1.3] ${
-                              isLightMode ? "text-black" : "text-white"
-                            }`}
-                          >
+                        {/* White copy + dark text-shadow halo (in both light
+                            and dark mode) keeps the back-side quote crisp
+                            even when the front-face photo bleeds through the
+                            card's slight translucency. */}
+                        <p className="font-inter text-sm md:text-[15px] leading-relaxed text-white [text-shadow:0_0_8px_rgba(0,0,0,0.85),0_0_2px_rgba(0,0,0,0.85)]">
+                          <span className="font-bold block mb-3 text-base md:text-lg leading-[1.3] text-white [text-shadow:0_0_10px_rgba(0,0,0,0.9),0_0_2px_rgba(0,0,0,0.9)]">
                           {"\u201C"}
                           {first}
                           {"\u201D"}
                           </span>
-                          {rest ? <span className="block opacity-80">{rest}</span> : null}
+                          {rest ? <span className="block">{rest}</span> : null}
                         </p>
                       </div>
                     </div>
@@ -326,18 +334,10 @@ export function TestimonialsMarquee({
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span
-                          className={`font-inter text-xs font-bold tracking-wider uppercase ${
-                            isLightMode ? "text-black" : "text-white"
-                          }`}
-                        >
+                        <span className="font-inter text-xs font-bold tracking-wider uppercase text-white [text-shadow:0_0_8px_rgba(0,0,0,0.8),0_0_2px_rgba(0,0,0,0.8)]">
                           {testimonial.name}
                         </span>
-                        <span
-                          className={`font-inter text-[10px] uppercase opacity-60 line-clamp-1 ${
-                            isLightMode ? "text-black" : "text-white"
-                          }`}
-                        >
+                        <span className="font-inter text-[10px] uppercase line-clamp-1 text-white [text-shadow:0_0_8px_rgba(0,0,0,0.85),0_0_2px_rgba(0,0,0,0.85)]">
                           {testimonial.title}
                         </span>
                       </div>

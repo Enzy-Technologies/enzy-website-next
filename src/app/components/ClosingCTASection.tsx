@@ -26,7 +26,7 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
         />
 
         <h2
-          className={`font-ivyora font-medium leading-[0.95] tracking-[-2px] ${
+          className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           } text-[36px] sm:text-[48px] md:text-[60px] lg:text-[68px] mx-auto max-w-[820px]`}
         >
@@ -47,9 +47,9 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
           <CTAButton
             href={demoHref}
             variant="primary"
-            className="justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
+            className="book-demo-cta-marker justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
           >
-            Book a demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
+            Book a Demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
           </CTAButton>
           <CTAButton
             variant="secondary"

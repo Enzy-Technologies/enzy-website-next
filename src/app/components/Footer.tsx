@@ -87,8 +87,8 @@ export function Footer() {
             >
               Become a Partner
             </button>
-            <Link href={BOOK_DEMO_HREF} className={LINK_COLUMN_CLASS}>
-              Book a demo
+            <Link href={BOOK_DEMO_HREF} className={`${LINK_COLUMN_CLASS} book-demo-cta-marker`}>
+              Book a Demo
             </Link>
           </div>
 

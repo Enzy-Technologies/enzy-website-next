@@ -466,12 +466,12 @@ export function EnzyGlobeSection() {
 
   return (
     <section className="relative w-full overflow-hidden pt-20 md:pt-28 pb-12 md:pb-16 flex flex-col items-center">
-      <div className="relative z-10 w-full px-4 text-center max-w-3xl mx-auto mb-10 md:mb-14 flex flex-col items-center">
+      <div className="relative z-10 w-full px-4 text-center max-w-3xl mx-auto mb-2 md:mb-3 flex flex-col items-center">
         <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
           Global Impact
         </p>
         <h2
-          className={`font-ivyora font-medium tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2px] leading-[1] text-[28px] sm:text-[40px] md:text-[56px] lg:text-[68px] transition-colors duration-500 drop-shadow-sm ${
+          className={`font-ivyora font-medium tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2px] leading-[1.05] text-[28px] sm:text-[40px] md:text-[56px] lg:text-[68px] transition-colors duration-500 drop-shadow-sm ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           }`}
         >
