@@ -145,7 +145,7 @@ export function Resources() {
 
   return (
     <>
-      <section ref={containerRef} className="relative flex flex-col items-center justify-start w-full px-4 pt-8 md:pt-16 lg:pt-24 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
+      <section ref={containerRef} className="relative flex flex-col items-center justify-start w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
         <motion.div
           className={`absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${
             isLightMode ? "opacity-50" : "opacity-100"
@@ -164,17 +164,10 @@ export function Resources() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center w-full mb-16 relative z-10"
         >
-          <div
-            className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-8 transition-colors duration-500 ${
-              isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"
-            } eyebrow`}
-          >
-            Resources
-          </div>
           <BlurReveal
             as="h1"
             delay={0.1}
-            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[100px] leading-[0.95] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
+            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[100px] leading-[1.05] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >

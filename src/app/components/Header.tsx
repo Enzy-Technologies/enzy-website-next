@@ -5,17 +5,21 @@ import { MainNavigation } from "./MainNavigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon, Wand2 } from "lucide-react";
+import { Sun, Moon, Wand2, ArrowRight } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 import { CTAButton } from "./CTAButton";
 
+const LOGIN_HREF = "https://app.enzy.co/login";
+
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [anyDemoCtaVisible, setAnyDemoCtaVisible] = useState(true);
   const { isLightMode, toggleTheme } = useTheme();
   const pathname = usePathname();
   const isLandingPage = pathname?.startsWith("/lp/");
+  const isBookDemoPage = pathname === "/book-demo";
 
   useEffect(() => {
     setIsMounted(true);
@@ -32,6 +36,51 @@ export function Header() {
     
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Hide the floating "Book a demo" button whenever any other Book-a-demo CTA
+  // on the page is visible in the viewport. We watch every element marked with
+  // the `book-demo-cta-marker` class via IntersectionObserver, and re-scan the
+  // DOM on route changes (when components mount/unmount) and on resize.
+  useEffect(() => {
+    const visible = new Set<Element>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) visible.add(entry.target);
+          else visible.delete(entry.target);
+        }
+        setAnyDemoCtaVisible(visible.size > 0);
+      },
+      { threshold: 0.01 }
+    );
+
+    const scan = () => {
+      observer.disconnect();
+      visible.clear();
+      const targets = document.querySelectorAll<HTMLElement>(".book-demo-cta-marker");
+      if (targets.length === 0) {
+        // No CTAs on the page — show the floating button so users still
+        // have a way to book a demo.
+        setAnyDemoCtaVisible(false);
+        return;
+      }
+      // The observer will fire its first callbacks shortly after .observe()
+      // and populate the `visible` set with the initial intersection state.
+      targets.forEach((el) => observer.observe(el));
+    };
+
+    scan();
+    // Re-scan after a short delay in case CTAs render asynchronously (e.g.
+    // sections imported via next/dynamic below the fold).
+    const t = window.setTimeout(scan, 600);
+    window.addEventListener("resize", scan);
+
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("resize", scan);
+      observer.disconnect();
+    };
+  }, [pathname]);
 
   return (
     <header 
@@ -66,6 +115,37 @@ export function Header() {
         </div>
 
         <div className="flex-1 hidden lg:flex justify-end relative items-center gap-2 md:gap-3 order-2 lg:order-3">
+          {/* Desktop right-cluster ordering (left → right):
+              Log In · Book a Demo · Pixel sphere · Theme toggle.
+              The two icon buttons live to the RIGHT of the primary CTA so
+              the Book-a-Demo pill stays visually anchored to the centered
+              navigation, with the utility chrome trailing it. */}
+          {!isLandingPage && (
+            <Link
+              href={LOGIN_HREF}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`hidden lg:inline-flex items-center font-inter text-[13px] font-semibold tracking-tight pointer-events-auto z-50 transition-colors ${
+                isLightMode
+                  ? "text-black/70 hover:text-black"
+                  : "text-white/75 hover:text-white"
+              }`}
+            >
+              Log In
+            </Link>
+          )}
+
+          {!isLandingPage && (
+            <CTAButton
+              href="/book-demo"
+              variant="primary"
+              className="book-demo-cta-marker hidden lg:inline-flex z-50 h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
+            >
+              Book a Demo
+              <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
+            </CTAButton>
+          )}
+
           <button
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
@@ -87,28 +167,27 @@ export function Header() {
           >
             {isMounted ? (isLightMode ? <Moon size={18} /> : <Sun size={18} />) : <div className="w-[18px] h-[18px]" />}
           </button>
-
-          {!isLandingPage && (
-            <CTAButton
-              href="/book-demo"
-              variant="primary"
-              className="hidden lg:inline-flex z-50 h-10 px-5 text-[13px] font-semibold rounded-full"
-            >
-              Book a demo
-            </CTAButton>
-          )}
         </div>
       </div>
 
-      {/* Floating Book a Demo on mobile only (bottom right, always visible) */}
-      {!isLandingPage && (
-        <div className="lg:hidden fixed bottom-5 right-5 z-[100] pointer-events-none">
+      {/* Floating Book a Demo (mobile only). Appears in the bottom-right
+          corner only when no other "Book a demo" CTA is visible on screen.
+          Suppressed on the book-demo page itself, where the form is the
+          primary action and a floating CTA would be redundant. */}
+      {!isLandingPage && !isBookDemoPage && (
+        <div
+          aria-hidden={anyDemoCtaVisible}
+          className={`lg:hidden fixed bottom-5 right-5 z-[100] pointer-events-none transition-opacity duration-300 ${
+            anyDemoCtaVisible ? "opacity-0 invisible" : "opacity-100 visible"
+          }`}
+        >
           <CTAButton
             href="/book-demo"
             variant="primary"
-            className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto h-10 px-5 text-[13px] font-semibold rounded-full"
+            className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
           >
-            Book a demo
+            Book a Demo
+            <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
           </CTAButton>
         </div>
       )}

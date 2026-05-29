@@ -22,7 +22,7 @@ export function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`font-ivyora text-5xl md:text-6xl tracking-[-2px] leading-[0.95] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
+            className={`font-ivyora text-5xl md:text-6xl tracking-[-2px] leading-[1.05] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
           >
             Frequently Asked <span className="text-[#19ad7d]">Questions</span>
           </motion.h2>

@@ -251,7 +251,11 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
 
   return (
     <section className="relative w-full py-20 md:py-28 bg-transparent">
-      <div className="mx-auto max-w-7xl px-4">
+      {/* `relative z-20` keeps the heading + "See the full system" link on
+          top of the carousel below — the carousel uses a negative top
+          margin (-mt-16) to tuck under the heading and would otherwise
+          intercept clicks on the link's hit area. */}
+      <div className="relative z-20 mx-auto max-w-7xl px-4">
         <div className="flex flex-col md:items-center md:text-center items-start text-left mb-10 gap-4">
           <div>
             {isLp ? (
@@ -260,7 +264,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
               </p>
             ) : null}
             <h2
-              className={`font-ivyora font-medium leading-[0.95] tracking-[-2px] ${
+              className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${
                 isLightMode ? "text-brand-dark" : "text-brand-light"
               } text-[32px] sm:text-[40px] md:text-[48px]`}
             >

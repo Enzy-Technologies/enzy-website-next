@@ -9,10 +9,10 @@ import { BlurReveal } from "@/app/components/BlurReveal";
 import { FAQSection } from "@/app/components/FAQSection";
 
 const BOOK_DEMO_STATS = [
-  { value: "24", unit: "m", label: "Weekly page views" },
+  { value: "24", unit: "M", label: "Weekly page views" },
   { value: "21", unit: "%", label: "Increase in sales per rep after implementing Enzy" },
   { value: "7,000", unit: "+", label: "Incentives ran" },
-  { value: "180", unit: "k", label: "Total users" },
+  { value: "180", unit: "K", label: "Total users" },
 ];
 
 declare global {
@@ -116,7 +116,7 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
               <BlurReveal
                 as="h2"
                 delay={0.1}
-                className={`lg:mt-4 font-ivyora font-medium leading-[0.95] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
+                className={`lg:mt-4 font-ivyora font-medium leading-[1.05] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
               >
                 See Enzy turn performance into a system.
               </BlurReveal>
@@ -139,16 +139,17 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
                 ))}
               </div>
 
-              {/* Stat cards. On mobile this is the first thing the user
-                  sees after the headline (eyebrow / subtext / bullets are
-                  all hidden), so the grid stays 2x2 regardless of
-                  breakpoint — `grid-cols-2` works at every width. */}
+              {/* Desktop stat cards — sit beneath the supporting copy in
+                  the left column. Hidden on mobile so the form is the
+                  first thing the user reaches after the headline; a
+                  mobile-only copy is rendered below the form further
+                  down so the stats still appear, just deprioritized. */}
               <motion.dl
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
-                className="mt-7 lg:mt-8 grid grid-cols-2 gap-3 sm:gap-4 max-w-[540px]"
+                className="hidden lg:grid mt-7 lg:mt-8 grid-cols-2 gap-3 sm:gap-4 max-w-[540px]"
               >
                 {BOOK_DEMO_STATS.map((s) => (
                   <div
@@ -243,11 +244,54 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
               </div>
             </div>
           </div>
+
+          {/* Mobile-only stat cards — render after the form on phones so
+              the form is the first thing the user reaches after the
+              headline. Hidden on lg+ where the desktop copy already
+              sits in the left column beneath the supporting bullets. */}
+          {!hideText && (
+            <motion.dl
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-80px" }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
+              className="lg:hidden order-3 grid grid-cols-2 gap-3 sm:gap-4 mt-2"
+            >
+              {BOOK_DEMO_STATS.map((s) => (
+                <div
+                  key={s.label}
+                  className={`liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors ${
+                    isLightMode
+                      ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
+                      : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                  }`}
+                >
+                  <dt
+                    className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
+                      isLightMode ? "text-black" : "text-white"
+                    }`}
+                  >
+                    {s.value}
+                    <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
+                      {s.unit}
+                    </span>
+                  </dt>
+                  <dd
+                    className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
+                      isLightMode ? "text-black/65" : "text-white/65"
+                    }`}
+                  >
+                    {s.label}
+                  </dd>
+                </div>
+              ))}
+            </motion.dl>
+          )}
         </div>
       </section>
 
       {!hideTestimonials && (
-        <section className="relative w-full pb-14 md:pb-20 overflow-hidden">
+        <section className="relative w-full pb-14 md:pb-20 overflow-x-clip">
           <div className="mx-auto max-w-7xl px-4">
             <p className={`m-0 font-inter text-[12px] font-semibold ${isLightMode ? "text-black/55" : "text-white/55"}`}>
               Trusted by operators and sales leaders.

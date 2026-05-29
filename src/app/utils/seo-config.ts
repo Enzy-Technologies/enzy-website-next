@@ -26,7 +26,11 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
     description: "Why Enzy exists: a simpler, AI-first way to drive daily execution, engagement, and results.",
   },
   partners: {
-    title: "Partners - Integrate with Enzy",
-    description: "Partner with Enzy to deliver a complete agentic performance system. See how we connect with your data and tools.",
+    title: "Integrations - Connect Enzy with your tools",
+    description: "Enzy integrates with 60+ CRMs, field-service platforms, dialers, and tools. Automatically track activity, sync records, and trigger actions across your stack.",
+  },
+  partnersAffiliates: {
+    title: "Partners & Affiliates - Enzy",
+    description: "Meet the partners that help Enzy customers grow—payroll, commissions, apparel, swag, and background checks—and apply to become an Enzy partner.",
   },
 };

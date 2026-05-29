@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Plus } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
@@ -270,12 +270,20 @@ function FeatureRow({
   onToggle,
   isLightMode,
   isFirst,
+  skipAnim,
 }: {
   feature: Feature;
   isOpen: boolean;
   onToggle: () => void;
   isLightMode: boolean;
   isFirst: boolean;
+  /**
+   * When true, the accordion expands/collapses synchronously with no
+   * height/opacity animation. Used during hash deep-linking so the page
+   * lands at the final layout in a single paint instead of bouncing
+   * through ~0.4s of expanding/collapsing transitions.
+   */
+  skipAnim: boolean;
 }) {
   return (
     // The `id` matches the slug emitted by MainNavigation's slugify(), so
@@ -341,10 +349,14 @@ function FeatureRow({
         {isOpen && (
           <motion.div
             key="content"
-            initial={{ height: 0, opacity: 0 }}
+            initial={skipAnim ? false : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            transition={
+              skipAnim
+                ? { duration: 0 }
+                : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+            }
             className="overflow-hidden"
           >
             <div className="pb-6 md:pb-8 flex flex-col gap-5 md:gap-6">
@@ -389,35 +401,63 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
     moduleFeatures[0]?.id ?? null
   );
 
-  // When module changes, auto-open the first feature in that module.
+  /**
+   * When set to a feature id, the next render is treated as a deep-link
+   * commit: every accordion row and the module panel's enter/exit
+   * transitions are forced to duration 0 so the layout settles in a
+   * single paint, then we scroll the matching row to the top inside
+   * `useLayoutEffect` (i.e. before the browser paints), and finally clear
+   * the flag so subsequent user-driven toggles animate normally again.
+   */
+  const [pendingDeepLinkId, setPendingDeepLinkId] = useState<string | null>(null);
+  const skipAnim = pendingDeepLinkId !== null;
+
+  // When module changes via the user clicking a tab (NOT via deep-link),
+  // auto-open the first feature in that module. Deep-link drives openId
+  // explicitly via setOpenId in applyHash, so we suppress this default to
+  // avoid stomping the target.
   useEffect(() => {
+    if (pendingDeepLinkId) return;
     setOpenId(moduleFeatures[0]?.id ?? null);
-  }, [moduleFeatures]);
+  }, [moduleFeatures, pendingDeepLinkId]);
+
+  // Mirror `openId` into a ref so the hash listener can read the
+  // currently-open feature without forcing the effect to re-subscribe on
+  // every render.
+  const openIdRef = useRef(openId);
+  useEffect(() => {
+    openIdRef.current = openId;
+  }, [openId]);
+
+  // After the deep-link render commits but before paint, snap the target
+  // row to the top. Because `skipAnim` zeroes every transition, the new
+  // module + open row already sit at their final geometry, so this scroll
+  // lands cleanly with the feature title under the fixed header — no
+  // bounce, no two-phase wait. We then clear the flag so future toggles
+  // animate normally.
+  useLayoutEffect(() => {
+    if (!pendingDeepLinkId) return;
+    const node = document.getElementById(pendingDeepLinkId);
+    if (node) node.scrollIntoView({ behavior: "auto", block: "start" });
+    setPendingDeepLinkId(null);
+  }, [pendingDeepLinkId]);
 
   // Hash deep-linking: /features#leaderboards selects the right tab,
-  // expands the matching feature, and scrolls the row into view below
-  // the fixed header.
+  // expands the matching feature, and scrolls the row to the top of the
+  // viewport (below the fixed header thanks to `scroll-mt-*`).
   useEffect(() => {
     const applyHash = () => {
       const hash = window.location.hash.replace(/^#/, "").toLowerCase();
       if (!hash) return;
       const match = FEATURES_DATA.find((f) => f.id === hash);
       if (!match) return;
+
+      // Apply state in one synchronous batch so the next render commits
+      // the final layout (target module active, target row open, all
+      // animations suppressed via `skipAnim`).
       setActiveModule(match.module);
       setOpenId(match.id);
-
-      // Wait for the tab switch + accordion to render the target row,
-      // then scroll. Two rAFs is enough for React to flush + the row to
-      // mount; we still guard with a node lookup in case the user
-      // hash-linked something we don't render yet.
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const node = document.getElementById(match.id);
-          if (node) {
-            node.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        });
-      });
+      setPendingDeepLinkId(match.id);
     };
     applyHash();
     window.addEventListener("hashchange", applyHash);
@@ -427,15 +467,12 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
   const activeModuleDef = MODULES.find((m) => m.id === activeModule);
 
   return (
-    <section className="relative w-full pt-14 md:pt-20 pb-24 md:pb-32 px-4">
+    <section className="relative w-full pt-7 md:pt-10 pb-24 md:pb-32 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Hero */}
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
-          <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
-            Platform &amp; Modules
-          </p>
           <h1
-            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] max-w-4xl mb-10 md:mb-14 ${
+            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl mb-10 md:mb-14 ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >
@@ -461,10 +498,10 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
         <AnimatePresence mode="wait">
           <motion.div
             key={activeModule}
-            initial={{ opacity: 0, y: 18 }}
+            initial={skipAnim ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -18 }}
-            transition={TAB_TRANSITION}
+            transition={skipAnim ? { duration: 0 } : TAB_TRANSITION}
             className={`relative rounded-[28px] md:rounded-[36px] border overflow-hidden ${
               isLightMode
                 ? "bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)]"
@@ -519,6 +556,7 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
                   }
                   isLightMode={isLightMode}
                   isFirst={idx === 0}
+                  skipAnim={skipAnim}
                 />
               ))}
             </div>

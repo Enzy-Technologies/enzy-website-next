@@ -324,12 +324,7 @@ export function Solutions() {
 
   return (
     <section className="relative w-full min-h-[800px] bg-transparent pb-24">
-      {/* Base Background */}
-      <div className="absolute inset-0 w-full h-full -z-20 overflow-hidden">
-        <div className={`absolute inset-0 ${isLightMode ? 'bg-[#faf9f6]' : 'bg-[#0b0f14]'}`} />
-      </div>
-
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-20 lg:pt-32 flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-10 lg:pt-16 flex flex-col items-center">
         
         {/* Header */}
         <motion.div 
@@ -338,10 +333,7 @@ export function Solutions() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center relative z-10 shrink-0 w-full"
         >
-          <div className={`px-4 py-1.5 rounded-full border backdrop-blur-sm mb-4 lg:mb-6 transition-colors duration-500 ${isLightMode ? 'border-black/10 bg-black/5 text-black/60' : 'border-white/10 bg-white/5 text-white/60'} font-bold uppercase tracking-[0.25em] text-[10px] lg:text-[11px]`}>
-            Tailored Solutions
-          </div>
-          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[0.95] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
             <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
             <span className={isLightMode ? "text-black/40" : "text-white/40"}>
               <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
