@@ -50,6 +50,9 @@ export function buildMetadata(input: SeoInput): Metadata {
     openGraph: {
       type: input.type ?? "website",
       siteName,
+      // Social title/description mirror each page's own SEO title/description so
+      // link previews describe the specific page being shared. The OG image is
+      // shared site-wide (see defaultOgImagePath).
       title: input.title,
       description: input.description,
       url: canonical,

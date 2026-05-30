@@ -6,8 +6,8 @@ export interface PageSEO {
 
 export const SEO_CONFIG: Record<string, PageSEO> = {
   home: {
-    title: "Enzy - Agentic performance system for sales teams",
-    description: "Connect your data, get real-time insights, and take action faster with Enzy’s agentic performance system—competitions, incentives, messaging, and leaderboards.",
+    title: "Enzy | The Performance Operating System for Sales Teams",
+    description: "Performance is the largest untapped lever in your business. Enzy is the operating system that surfaces it.",
   },
   features: {
     title: "Features - Enzy platform",

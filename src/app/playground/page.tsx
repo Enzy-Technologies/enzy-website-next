@@ -7,6 +7,7 @@ export const metadata: Metadata = buildMetadata({
   title: "Playground",
   description: "Answer a few questions and preview a tailored Enzy AI experience.",
   path: "/playground",
+  hiddenFromSearchEngines: true,
 });
 
 export default function Page() {

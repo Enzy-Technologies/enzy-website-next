@@ -8,8 +8,8 @@ import { BlurReveal } from "./components/BlurReveal";
 
 const CONTACT_PHONE_DISPLAY = "(855) 520-ENZY";
 const CONTACT_PHONE_HREF = "tel:8555203699";
-const SALES_EMAIL = "sales@enzy.co";
-const SUPPORT_EMAIL = "support@enzy.co";
+const SALES_EMAIL = "sales@enzy.ai";
+const SUPPORT_EMAIL = "support@enzy.ai";
 
 type Reason = "sales" | "support" | "other";
 

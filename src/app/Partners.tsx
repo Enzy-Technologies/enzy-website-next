@@ -275,8 +275,8 @@ export function Partners() {
                   isActive
                     ? "bg-[#19ad7d] border-[#19ad7d] text-white shadow-[0_6px_18px_rgba(25,173,125,0.30)]"
                     : isLightMode
-                      ? "border-black/10 bg-black/[0.03] text-black/65 hover:text-black hover:border-black/20"
-                      : "border-white/10 bg-white/[0.03] text-white/65 hover:text-white hover:border-white/25"
+                      ? "border-black/10 bg-white/90 backdrop-blur-md text-black/65 hover:text-black hover:border-black/20"
+                      : "border-white/10 bg-white/[0.18] backdrop-blur-md text-white/65 hover:text-white hover:border-white/25"
                 }`}
               >
                 {tab.label}

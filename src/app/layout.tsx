@@ -12,7 +12,7 @@ import { ThemeProvider } from "./components/ThemeProvider"
 import { SiteShell } from "./components/SiteShell"
 import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
-import { defaultOgImagePath, siteName, siteUrl } from "./lib/site"
+import { brandLogoUrl, siteName, siteUrl } from "./lib/site"
 import { SpotlightCursor } from "./components/SpotlightCursor"
 
 export const metadata: Metadata = {
@@ -22,6 +22,8 @@ export const metadata: Metadata = {
       "Transform your sales team with Enzy's agentic performance system. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
     path: "/",
   }),
+  // Production origin for resolving every page's relative canonical + OG URLs.
+  metadataBase: new URL(siteUrl),
   title: {
     default: "Enzy - The Agentic Engine for High Performance Sales Teams",
     template: "%s | Enzy",
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const logoUrl =
-    defaultOgImagePath.startsWith("http") ? defaultOgImagePath : `${siteUrl}${defaultOgImagePath.startsWith("/") ? "" : "/"}${defaultOgImagePath}`
+    brandLogoUrl.startsWith("http") ? brandLogoUrl : `${siteUrl}${brandLogoUrl.startsWith("/") ? "" : "/"}${brandLogoUrl}`
 
   const websiteSchema = {
     "@context": "https://schema.org",
@@ -52,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "Sales",
-      email: "sales@enzy.co",
+      email: "sales@enzy.ai",
     },
     sameAs: ["https://twitter.com/enzy", "https://linkedin.com/company/enzy"],
   }

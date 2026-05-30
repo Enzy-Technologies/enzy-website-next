@@ -21,8 +21,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // The Integrations page used to live at /partners.
-      { source: "/partners", destination: "/integrations", permanent: true },
       // Slug renames — keep old URLs working.
       { source: "/features", destination: "/system", permanent: true },
       { source: "/partners-affiliates", destination: "/partners-and-affiliates", permanent: true },

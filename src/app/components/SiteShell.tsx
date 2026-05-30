@@ -12,10 +12,14 @@ import { PartnerFormModal } from "./PartnerFormModal"
 export function SiteShell({ children }: { children: React.ReactNode }) {
   const { isLightMode } = useTheme()
   const pathname = usePathname()
-  const isLp = Boolean(pathname?.startsWith("/lp/"))
+  // The internal pricing tool is a fully self-contained document rendered in an
+  // iframe, so it opts out of the marketing chrome just like landing pages do.
+  const isStandalone =
+    Boolean(pathname?.startsWith("/lp/")) || pathname === "/pricing-tool"
+  const isLp = isStandalone
   // Pixel particle background renders globally — every page should share the
-  // same parallax/interactive backdrop. Only landing pages (`/lp/*`) opt out
-  // because they ship their own bespoke marketing surface.
+  // same parallax/interactive backdrop. Only standalone surfaces (`/lp/*` and
+  // the pricing tool) opt out because they ship their own bespoke layout.
   const showParticles = !isLp
 
   return (
