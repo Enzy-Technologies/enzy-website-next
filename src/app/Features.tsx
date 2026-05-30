@@ -287,7 +287,7 @@ function FeatureRow({
 }) {
   return (
     // The `id` matches the slug emitted by MainNavigation's slugify(), so
-    // `/features#leaderboards` resolves to this DOM node and the browser
+    // `/system#leaderboards` resolves to this DOM node and the browser
     // (or the explicit scrollIntoView in FeatureBrowser) lands the user
     // on the right row. `scroll-mt-*` keeps it clear of the fixed header.
     <div
@@ -412,14 +412,14 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
   const [pendingDeepLinkId, setPendingDeepLinkId] = useState<string | null>(null);
   const skipAnim = pendingDeepLinkId !== null;
 
-  // When module changes via the user clicking a tab (NOT via deep-link),
-  // auto-open the first feature in that module. Deep-link drives openId
-  // explicitly via setOpenId in applyHash, so we suppress this default to
-  // avoid stomping the target.
-  useEffect(() => {
-    if (pendingDeepLinkId) return;
-    setOpenId(moduleFeatures[0]?.id ?? null);
-  }, [moduleFeatures, pendingDeepLinkId]);
+  // When the user clicks a module tab, switch modules and auto-open that
+  // module's first feature. This is driven by the click handler (not a
+  // render effect) so it can never stomp a deep-linked openId after the
+  // pendingDeepLinkId flag clears.
+  const handleModuleChange = (id: ModuleId) => {
+    setActiveModule(id);
+    setOpenId(FEATURES_DATA.find((f) => f.module === id)?.id ?? null);
+  };
 
   // Mirror `openId` into a ref so the hash listener can read the
   // currently-open feature without forcing the effect to re-subscribe on
@@ -429,20 +429,53 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
     openIdRef.current = openId;
   }, [openId]);
 
-  // After the deep-link render commits but before paint, snap the target
-  // row to the top. Because `skipAnim` zeroes every transition, the new
-  // module + open row already sit at their final geometry, so this scroll
-  // lands cleanly with the feature title under the fixed header — no
-  // bounce, no two-phase wait. We then clear the flag so future toggles
-  // animate normally.
+  // After the deep-link render commits, snap the target feature's header to
+  // the top of the viewport (just below the fixed nav). Because `skipAnim`
+  // zeroes every transition, the target row already sits at its final
+  // geometry, so we can scroll to the header's exact position with a fixed
+  // header offset — guaranteeing the feature NAME lands at the top (and the
+  // accordion content reads downward from it) rather than scrolling past it
+  // and showing the bottom of the panel. We retry across a few frames so the
+  // scroll also lands after a cross-module panel swap finishes mounting, and
+  // overrides the browser's own (offset-unaware) fragment scroll.
   useLayoutEffect(() => {
     if (!pendingDeepLinkId) return;
-    const node = document.getElementById(pendingDeepLinkId);
-    if (node) node.scrollIntoView({ behavior: "auto", block: "start" });
-    setPendingDeepLinkId(null);
+    const targetId = pendingDeepLinkId;
+
+    const scrollToHeader = () => {
+      const node = document.getElementById(targetId);
+      if (!node) return;
+      // Match the row's `scroll-mt-24 md:scroll-mt-28` so the title clears
+      // the fixed header on both mobile and desktop.
+      const headerOffset = window.matchMedia("(min-width: 768px)").matches
+        ? 112
+        : 96;
+      const top =
+        window.scrollY + node.getBoundingClientRect().top - headerOffset;
+      window.scrollTo({ top: Math.max(top, 0), behavior: "auto" });
+    };
+
+    // Re-assert the scroll across a few ticks. The early calls land the
+    // position once the deep-link layout commits; the later ones override the
+    // browser's own (offset-unaware) fragment scroll, which can fire late
+    // (e.g. after images decode) and would otherwise leave the feature title
+    // pushed above the viewport. We clear the deep-link flag only on the last
+    // tick so the re-render (and this effect's cleanup) can't cancel the
+    // pending scroll timers early.
+    const timers: number[] = [];
+    [0, 60, 160, 320, 500].forEach((ms, i, arr) => {
+      timers.push(
+        window.setTimeout(() => {
+          scrollToHeader();
+          if (i === arr.length - 1) setPendingDeepLinkId(null);
+        }, ms)
+      );
+    });
+
+    return () => timers.forEach((t) => clearTimeout(t));
   }, [pendingDeepLinkId]);
 
-  // Hash deep-linking: /features#leaderboards selects the right tab,
+  // Hash deep-linking: /system#leaderboards selects the right tab,
   // expands the matching feature, and scrolls the row to the top of the
   // viewport (below the fixed header thanks to `scroll-mt-*`).
   useEffect(() => {
@@ -451,6 +484,17 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
       if (!hash) return;
       const match = FEATURES_DATA.find((f) => f.id === hash);
       if (!match) return;
+
+      // Strip the fragment from the URL immediately. The browser's native
+      // "scroll to #id" can fire on first paint (while the default feature is
+      // still open) and again after images decode, landing on a stale
+      // position; removing the hash neutralizes it so our own offset-aware
+      // scroll below is the single source of truth.
+      window.history.replaceState(
+        null,
+        "",
+        window.location.pathname + window.location.search
+      );
 
       // Apply state in one synchronous batch so the next render commits
       // the final layout (target module active, target row open, all
@@ -489,7 +533,7 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
 
           <CategoryTabs
             active={activeModule}
-            onChange={setActiveModule}
+            onChange={handleModuleChange}
             isLightMode={isLightMode}
           />
         </div>

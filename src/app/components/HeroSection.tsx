@@ -194,7 +194,7 @@ function HeroSectionDefault() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1 pb-2 w-full">
               <CTAButton
-                href="/book-demo"
+                href={BOOK_DEMO_HREF}
                 variant="primary"
                 className="book-demo-cta-marker w-full max-w-[260px] sm:max-w-none sm:w-auto font-inter font-semibold text-[15px] md:text-[16px] h-[48px] md:h-[52px] pl-7 md:pl-8 pr-6 md:pr-7 gap-2 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
               >

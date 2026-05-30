@@ -4,7 +4,21 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
+import { JsonLd } from './JsonLd';
 import { SITE_FAQS } from '@/app/lib/faq-data';
+
+const faqPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: SITE_FAQS.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: faq.answer,
+    },
+  })),
+};
 
 export function FAQSection() {
   const { isLightMode } = useTheme();
@@ -16,6 +30,7 @@ export function FAQSection() {
 
   return (
     <section className="relative py-24 w-full overflow-hidden z-10">
+      <JsonLd data={faqPageSchema} />
       <div className="max-w-4xl mx-auto px-4 relative z-10">
         <div className="text-center mb-16">
           <motion.h2 
@@ -85,9 +100,10 @@ export function FAQSection() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                     >
-                      <div className={`p-6 pt-0 leading-relaxed ${isLightMode ? 'text-gray-600' : 'text-gray-300'}`}>
-                        {faq.answer}
-                      </div>
+                      <div
+                        className={`p-6 pt-0 leading-relaxed [&_p]:mt-4 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_li]:marker:text-[#19ad7d] [&_a]:font-medium [&_a]:text-[#19ad7d] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[#19ad7d]/80 [&_strong]:font-semibold ${isLightMode ? 'text-gray-600 [&_strong]:text-gray-900' : 'text-gray-300 [&_strong]:text-white'}`}
+                        dangerouslySetInnerHTML={{ __html: faq.answer }}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>

@@ -19,6 +19,18 @@ const nextConfig = {
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
   },
+  async redirects() {
+    return [
+      // The Integrations page used to live at /partners.
+      { source: "/partners", destination: "/integrations", permanent: true },
+      // Slug renames — keep old URLs working.
+      { source: "/features", destination: "/system", permanent: true },
+      { source: "/partners-affiliates", destination: "/partners-and-affiliates", permanent: true },
+      { source: "/terms", destination: "/terms-and-conditions", permanent: true },
+      { source: "/privacy", destination: "/privacy-policy", permanent: true },
+      { source: "/book-demo", destination: "/book-a-demo", permanent: true },
+    ]
+  },
 }
 
 export default nextConfig

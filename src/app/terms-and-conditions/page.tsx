@@ -1,15 +1,14 @@
 import React from "react"
 import type { Metadata } from "next"
-import { Privacy } from "@/app/Privacy"
+import { Terms } from "@/app/Terms"
 import { buildMetadata } from "@/app/lib/seo"
 
 export const metadata: Metadata = buildMetadata({
-  title: "Privacy Policy - Enzy",
-  description: "Privacy policy for Enzy Technologies, LLC.",
-  path: "/privacy",
+  title: "Terms and Conditions - Enzy",
+  description: "Terms and conditions for Enzy Technologies, LLC.",
+  path: "/terms-and-conditions",
 })
 
 export default function Page() {
-  return <Privacy />
+  return <Terms />
 }
-

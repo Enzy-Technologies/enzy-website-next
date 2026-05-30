@@ -15,14 +15,14 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isLightMode, setIsLightMode] = useState(false); // Always default to dark for consistent SSR
+  // Default to light so first-time visitors (and SSR) render light mode with
+  // no dark flash. Only an explicit stored "dark" preference switches it.
+  const [isLightMode, setIsLightMode] = useState(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('enzy-theme');
-      if (stored === 'light') {
-        setIsLightMode(true);
-      }
+      setIsLightMode(stored !== 'dark');
     }
   }, []);
 

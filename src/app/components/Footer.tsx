@@ -3,7 +3,6 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 
 import { usePathname } from "next/navigation";
 
@@ -53,73 +52,60 @@ export function Footer() {
 
         {/* Multi-column categories */}
         {!isLandingPage && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-10 md:gap-y-12 mb-14 md:mb-16 lg:mb-20">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 md:gap-y-12 mb-14 md:mb-16 lg:mb-20 max-w-xl">
           <div className="flex flex-col gap-3">
             <h3 className={COL_TITLE_CLASS}>Product</h3>
-            <Link href="/features" className={LINK_COLUMN_CLASS}>
-              Features
+            <Link href="/system" className={LINK_COLUMN_CLASS}>
+              System
             </Link>
             <Link href="/solutions" className={LINK_COLUMN_CLASS}>
               Solutions
             </Link>
-            <Link href="/resources" className={LINK_COLUMN_CLASS}>
-              Resources
+            <Link href="/integrations" className={LINK_COLUMN_CLASS}>
+              Integrations
             </Link>
           </div>
 
           <div className="flex flex-col gap-3">
             <h3 className={COL_TITLE_CLASS}>Company</h3>
-            <Link href="/" className={LINK_COLUMN_CLASS}>
-              Home
-            </Link>
             <Link href="/about" className={LINK_COLUMN_CLASS}>
               About
             </Link>
-            <Link href="/partners" className={LINK_COLUMN_CLASS}>
-              Partners
+            <Link href="/insights" className={LINK_COLUMN_CLASS}>
+              Insights
             </Link>
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                window.dispatchEvent(new CustomEvent("open-partner-modal"));
-              }}
-              className={LINK_COLUMN_CLASS}
-            >
-              Become a Partner
-            </button>
-            <Link href={BOOK_DEMO_HREF} className={`${LINK_COLUMN_CLASS} book-demo-cta-marker`}>
-              Book a Demo
+            <Link href="/partners-and-affiliates" className={LINK_COLUMN_CLASS}>
+              Partners &amp; Affiliates
             </Link>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h3 className={COL_TITLE_CLASS}>Legal</h3>
-            <Link href="/terms" className={LINK_COLUMN_CLASS}>
-              Terms and Conditions
+            <Link href="/contact-us" className={LINK_COLUMN_CLASS}>
+              Contact Us
             </Link>
-            <Link href="/privacy" className={LINK_COLUMN_CLASS}>
-              Privacy Policy
-            </Link>
-          </div>
-
-          <div className="flex flex-col gap-3 col-span-2 md:col-span-1">
-            <h3 className={COL_TITLE_CLASS}>Contact</h3>
-            <a href="tel:855-520-ENZY" className={LINK_COLUMN_CLASS}>
-              (855) 520-ENZY
-            </a>
-            <a href="mailto:sales@enzy.co" className={LINK_COLUMN_CLASS}>
-              sales@enzy.co
-            </a>
           </div>
         </div>
         )}
 
         {/* Bottom bar */}
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 sm:gap-8 pt-6 border-t border-white/12">
-          <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50 max-w-md">
-            © Enzy. 2026. All rights reserved.
-          </p>
-          <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50 text-left sm:text-right max-w-sm leading-relaxed">
+        <div className="flex flex-col gap-6 pt-6 border-t border-white/12 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50">
+              © Enzy. 2026. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/terms-and-conditions"
+                className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
+              >
+                Terms and Conditions
+              </Link>
+              <Link
+                href="/privacy-policy"
+                className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
+              >
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+          <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50 text-left sm:text-right leading-relaxed">
             4100 N Chapel Ridge Rd, Suite 300
             <br />
             Lehi, Utah 84043

@@ -19,7 +19,7 @@ export function Header() {
   const { isLightMode, toggleTheme } = useTheme();
   const pathname = usePathname();
   const isLandingPage = pathname?.startsWith("/lp/");
-  const isBookDemoPage = pathname === "/book-demo";
+  const isBookDemoPage = pathname === "/book-a-demo";
 
   useEffect(() => {
     setIsMounted(true);
@@ -137,7 +137,7 @@ export function Header() {
 
           {!isLandingPage && (
             <CTAButton
-              href="/book-demo"
+              href="/book-a-demo"
               variant="primary"
               className="book-demo-cta-marker hidden lg:inline-flex z-50 h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
             >
@@ -182,7 +182,7 @@ export function Header() {
           }`}
         >
           <CTAButton
-            href="/book-demo"
+            href="/book-a-demo"
             variant="primary"
             className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
           >

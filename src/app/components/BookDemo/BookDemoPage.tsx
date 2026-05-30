@@ -293,7 +293,7 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
       {!hideTestimonials && (
         <section className="relative w-full pb-14 md:pb-20 overflow-x-clip">
           <div className="mx-auto max-w-7xl px-4">
-            <p className={`m-0 font-inter text-[12px] font-semibold ${isLightMode ? "text-black/55" : "text-white/55"}`}>
+            <p className={`m-0 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted}`}>
               Trusted by operators and sales leaders.
             </p>
           </div>

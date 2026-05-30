@@ -304,7 +304,7 @@ export function Partners() {
             Don&apos;t see your tool? We&apos;re adding new integrations
             constantly, and we&apos;ll build custom ones when a customer needs
             them.{" "}
-            <Link href="/book-demo" className="text-[#19ad7d] hover:underline font-semibold">
+            <Link href="/book-a-demo" className="text-[#19ad7d] hover:underline font-semibold">
               Book a demo
             </Link>{" "}
             and let&apos;s map Enzy to your stack.

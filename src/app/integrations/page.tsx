@@ -1,15 +1,15 @@
 import React from "react"
 import type { Metadata } from "next"
-import { PartnersAffiliates } from "@/app/PartnersAffiliates"
+import { Partners } from "@/app/Partners"
 import { SEO_CONFIG } from "@/app/utils/seo-config"
 import { buildMetadata } from "@/app/lib/seo"
 
 export const metadata: Metadata = buildMetadata({
-  title: SEO_CONFIG.partnersAffiliates.title,
-  description: SEO_CONFIG.partnersAffiliates.description,
-  path: "/partners-affiliates",
+  title: SEO_CONFIG.partners.title,
+  description: SEO_CONFIG.partners.description,
+  path: "/integrations",
 })
 
 export default function Page() {
-  return <PartnersAffiliates />
+  return <Partners />
 }

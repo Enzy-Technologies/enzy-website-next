@@ -19,21 +19,31 @@ type LogoEntry = {
 // at normal speed and do not trigger the slow-down/highlight.
 const LOGOS: LogoEntry[] = [
   {
+    name: "SPWR",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/SPWR.svg",
+    caption: "Publicly Traded (NASDAQ: SPWR)",
+  },
+  {
+    name: "Aptive",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/aptive.svg",
+    caption: "Top 5 Pest Control Company in the US",
+  },
+  {
     name: "Young Living",
     src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Young%20Living.svg",
     caption: "Top 10 Direct Sales Company in the World",
   },
   {
+    name: "Nusun",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
+  },
+  {
+    name: "EcoShield",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Ecoshield.svg",
+  },
+  {
     name: "Quick Roofing",
     src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Quick%20Roofing.svg",
-  },
-  {
-    name: "Chipr",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Chipr.svg",
-  },
-  {
-    name: "Ecoshield",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Ecoshield.svg",
   },
   {
     name: "Moxie",
@@ -41,26 +51,30 @@ const LOGOS: LogoEntry[] = [
     caption: "Top 10 Pest Control Company in the US",
   },
   {
-    name: "Space",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Space.svg",
-  },
-  {
-    name: "CH1DX3",
+    name: "Spartan Solar",
     src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/CH1DX3.svg",
   },
   {
-    name: "SPWR",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/SPWR.svg",
-    caption: "Publicly Traded (NASDAQ: SPWR)",
+    name: "Grit",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Grit.svg",
+    caption: "105 Lifetime Golden Door Awards",
+  },
+  {
+    name: "Chipr",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Chipr.svg",
+  },
+  {
+    name: "Fox Pest Control",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/FOX.svg",
+  },
+  {
+    name: "Space",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Space.svg",
   },
   {
     name: "Greenix",
     src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Greenix.svg",
     caption: "Top 20 Pest Control Company in the US",
-  },
-  {
-    name: "Nusun",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/SVG%20Logos/Nusun.svg",
   },
 ];
 
@@ -122,8 +136,11 @@ export function SimpleLogosMarquee() {
     const step = secondRect ? Math.max(itemW, secondRect.left - firstRect.left) : itemW;
 
     let rafId = 0;
-    let activeIdx = -1;
-    let lastFeaturedIdx = -1;
+    // `activeApprox` is the *physical* child index (0..2N-1) currently
+    // featured; `lastFeaturedLogo` is the folded logo index (0..N-1) so we
+    // don't re-fire the same brand on back-to-back passes.
+    let activeApprox = -1;
+    let lastFeaturedLogo = -1;
     let hasExitedCenter = true;
     let rate = 1;
 
@@ -132,6 +149,17 @@ export function SimpleLogosMarquee() {
     // Activate only when *very* close to center; clear after it leaves.
     const ENTER_DIST = Math.min(14, step * 0.1);
     const EXIT_DIST = Math.max(ENTER_DIST * 2.6, 38);
+
+    // Toggle the highlight on *both* copies of a brand so it stays lit
+    // regardless of which copy is physically on screen.
+    const setActive = (logoIdx: number, on: boolean) => {
+      children[logoIdx]?.classList.toggle("is-active", on);
+      children[logoIdx + N]?.classList.toggle("is-active", on);
+    };
+
+    // Screen-space center of a given physical child index.
+    const centerOf = (childIdx: number, offsetPx: number) =>
+      childIdx * step + itemW / 2 - offsetPx;
 
     const tick = (now: number) => {
       void now; // keeps the signature compatible with requestAnimationFrame without using `now`
@@ -143,23 +171,23 @@ export function SimpleLogosMarquee() {
       const loopT = (t % durationMs) / durationMs;
       const offsetPx = loopT * (step * N); // track shifts by N items for -50%
 
-      // Which item center is closest to the viewport center?
+      // Which *physical* item is closest to the viewport center? Keep this
+      // as the unfolded index so the distance below is measured against the
+      // copy that's actually on screen — folding it into 0..N-1 first would
+      // mis-measure any logo currently rendered by the second copy (e.g. the
+      // left-most brands once they wrap back through center).
       const approx = Math.round((centerX + offsetPx - itemW / 2) / step);
-      const idx = ((approx % N) + N) % N;
+      const logoIdx = ((approx % N) + N) % N;
 
-      // Compute current distance-from-center for hysteresis gating.
-      const itemCenterX = (idx * step + itemW / 2) - offsetPx;
-      const dist = Math.abs(itemCenterX - centerX);
+      const dist = Math.abs(centerOf(approx, offsetPx) - centerX);
       if (dist > EXIT_DIST) hasExitedCenter = true;
 
       // Clear active once it leaves the center zone.
-      if (activeIdx !== -1) {
-        const activeCenterX = (activeIdx * step + itemW / 2) - offsetPx;
-        const activeDist = Math.abs(activeCenterX - centerX);
+      if (activeApprox !== -1) {
+        const activeDist = Math.abs(centerOf(activeApprox, offsetPx) - centerX);
         if (activeDist > EXIT_DIST) {
-        children[activeIdx]?.classList.remove("is-active");
-        children[activeIdx + N]?.classList.remove("is-active");
-        activeIdx = -1;
+          setActive(((activeApprox % N) + N) % N, false);
+          activeApprox = -1;
         }
       }
 
@@ -167,23 +195,22 @@ export function SimpleLogosMarquee() {
       // that actually have a caption to reveal. Caption-less logos pass
       // through at full speed without the slow-down/highlight, since
       // there'd be nothing to draw attention to.
-      const hasCaption = !!LOGOS[idx]?.caption;
+      const hasCaption = !!LOGOS[logoIdx]?.caption;
       if (
-        activeIdx === -1 &&
+        activeApprox === -1 &&
         hasExitedCenter &&
-        idx !== lastFeaturedIdx &&
+        logoIdx !== lastFeaturedLogo &&
         dist < ENTER_DIST &&
         hasCaption
       ) {
-        children[idx]?.classList.add("is-active");
-        children[idx + N]?.classList.add("is-active");
-        activeIdx = idx;
-        lastFeaturedIdx = idx;
+        setActive(logoIdx, true);
+        activeApprox = approx;
+        lastFeaturedLogo = logoIdx;
         hasExitedCenter = false;
       }
 
       // Slow exactly while active (pass-through).
-      const targetRate = activeIdx !== -1 ? SLOW_RATE : NORMAL_RATE;
+      const targetRate = activeApprox !== -1 ? SLOW_RATE : NORMAL_RATE;
       rate += (targetRate - rate) * 0.22;
       animation.playbackRate = rate;
 
@@ -195,9 +222,8 @@ export function SimpleLogosMarquee() {
     return () => {
       cancelAnimationFrame(rafId);
       animation.cancel();
-      if (activeIdx !== -1) {
-        children[activeIdx]?.classList.remove("is-active");
-        children[activeIdx + N]?.classList.remove("is-active");
+      if (activeApprox !== -1) {
+        setActive(((activeApprox % N) + N) % N, false);
       }
     };
   }, [isLightMode]);

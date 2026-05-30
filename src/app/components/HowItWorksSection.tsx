@@ -8,31 +8,24 @@ import { BlurReveal } from "./BlurReveal";
 type Step = {
   title: string;
   body: string;
-  placeholderImage: string;
-  imageAlt: string;
+  icon: string;
 };
 
 const STEPS: Step[] = [
   {
-    title: "Real Time Visibility",
-    body: "Connect your data. Every rep, every metric, every trend — live and visible across the whole team. Most managers find out who's slipping at the end of the month. Yours will know in real-time.",
-    placeholderImage:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/1-1%20Leaderboard%20podium%20(light%20mode).png",
-    imageAlt: "Live leaderboard close-up",
+    title: "Live Data Foundation",
+    body: "Enzy integrates with your existing CRM/data sources pulling your team's data into one real-time feed. Everything happening on your team — visible to everyone, all in one place.",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Live%20Data%20Foundation.png",
   },
   {
-    title: "EnzyAI",
-    body: "Enzy's AI runs in the background — watching signals, flagging problems, surfacing the right move. \u201CSales down 5% this week. Launch an incentive.\u201D \u201CThree reps haven't closed in two weeks.\u201D Not analysis requests. Answers.",
-    placeholderImage:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Chat%201.png",
-    imageAlt: "AI insights close-up",
+    title: "Social Engagement",
+    body: "We bring social media-like dynamics to your sales team — profiles, badges, public leaderboards, group messaging, and live competitions. The mechanics that create momentum, drive behavior, and build a high-performance culture that compounds.",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Social%20Engagement.png",
   },
   {
-    title: "An Immersive Experience",
-    body: "Competitions drive urgency. Recognition builds loyalty. Habits form. The team stops feeling like a job and starts feeling like a team. High performers stay. New hires ramp faster. Results compound.",
-    placeholderImage:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Chats%20(light%20mode).png",
-    imageAlt: "Live competition or recognition moment in messaging",
+    title: "AI Performance Intelligence",
+    body: "Our AI doesn't guess. It's trained on real performance outcomes from tens of thousands of sales reps — so every recommendation it surfaces is grounded in what's actually worked. The curated competitions, coaching moments, and incentive structures your team needs, at exactly the right time.",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Performance%20Intelligence.png",
   },
 ];
 
@@ -100,7 +93,7 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
 
   return (
       <motion.div
-      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-12 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-8 md:gap-12 items-start md:items-start justify-between overflow-hidden transition-colors duration-500 origin-top ${
+      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-12 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-8 md:gap-12 items-start md:items-center justify-between overflow-hidden transition-colors duration-500 origin-top ${
         isLightMode
           ? "bg-white border-black/10 text-black"
           : "bg-[#0a0a0c] border-white/10 text-white"
@@ -117,7 +110,7 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
       }}
     >
       <div className="relative z-10 flex flex-col gap-6 max-w-2xl">
-        <h3 className={`font-ivyora font-medium text-[40px] sm:text-[56px] md:text-[64px] leading-[1.05] tracking-[-2px] ${isLightMode ? "text-black" : "text-white"}`}>
+        <h3 className={`font-ivyora font-medium text-[28px] sm:text-[36px] md:text-[44px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
           {step.title}
         </h3>
         <p className={`font-inter text-[16px] sm:text-[18px] md:text-[20px] font-medium leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
@@ -125,16 +118,11 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
         </p>
       </div>
 
-      <div
-        className={`relative z-10 w-full md:w-[44%] shrink-0 aspect-[3/4] sm:aspect-[5/4] md:aspect-[3/4] rounded-2xl overflow-hidden border ${
-          isLightMode ? "border-black/10 bg-black/5" : "border-white/10 bg-white/5"
-        }`}
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
+      <div className="relative z-10 w-full md:w-[44%] mx-auto flex-1 min-h-0 md:flex-none md:aspect-[3/4] flex items-center justify-center">
         <img
-          src={step.placeholderImage}
-          alt={step.imageAlt}
-          className="absolute inset-0 h-full w-full object-cover"
+          src={step.icon}
+          alt={step.title}
+          className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-full md:h-full md:max-w-[80%] md:max-h-[80%] object-contain"
         />
       </div>
     </motion.div>
@@ -165,7 +153,7 @@ export function HowItWorksSection() {
       ref={containerRef}
       className="relative w-full px-4 h-[400vh]"
     >
-      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto pt-24 lg:pt-32">
+      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto pt-24 lg:pt-32 pb-12 lg:pb-20">
         <div className="flex flex-col items-center justify-center text-center mb-8 shrink-0 max-w-[1000px] px-4">
           <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
             The Methodology
@@ -176,12 +164,19 @@ export function HowItWorksSection() {
             }`}
           >
             <BlurReveal as="span" delay={0.1}>
-              How Enzy creates{" "}
+              How it{" "}
             </BlurReveal>
             <BlurReveal as="span" delay={0.5} className="italic">
-              momentum
+              works
             </BlurReveal>
           </h2>
+          <p
+            className={`font-inter text-[16px] md:text-[20px] font-medium mt-5 ${
+              isLightMode ? "text-black/60" : "text-white/60"
+            }`}
+          >
+            Three layers. One operating system.
+          </p>
         </div>
 
         <div className="relative w-full flex-1 flex items-start justify-center max-w-[1000px] mx-auto pb-10">

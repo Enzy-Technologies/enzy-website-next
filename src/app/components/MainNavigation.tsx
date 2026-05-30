@@ -18,7 +18,7 @@ const slugify = (s: string) =>
 
 /**
  * When the user clicks a hash link to a section on a page they're already
- * viewing (e.g. `/features#leaderboards` while on `/features`), Next.js
+ * viewing (e.g. `/system#leaderboards` while on `/system`), Next.js
  * routes via `history.pushState` and does NOT fire `hashchange`. The target
  * page's `applyHash` listeners therefore never re-run and nothing scrolls.
  *
@@ -43,7 +43,7 @@ function navigateToSamePageHash(
 }
 
 const MENU_ITEMS = [
-  { id: 'features', label: 'System', path: '/features' },
+  { id: 'features', label: 'System', path: '/system' },
   { id: 'solutions', label: 'Solutions', path: '/solutions' },
   { id: 'resources', label: 'Resources', path: '/resources' },
   { id: 'about', label: 'About', path: '/about' },
@@ -121,29 +121,22 @@ type LearnItem = {
 const LEARN_ITEMS: LearnItem[] = [
   {
     title: "Insights",
-    desc: "What to measure. What to change."
-  },
-  {
-    title: "Playbooks",
-    desc: "Repeatable setups."
+    desc: "What to measure. What to change.",
+    href: "/insights"
   },
   {
     title: "Customer Stories",
     desc: "Real rollouts. Real results."
   },
   {
-    title: "Guides",
-    desc: "Integrations + workflows."
-  },
-  {
     title: "Partners & Affiliates",
     desc: "Meet our partners. Become one.",
-    href: "/partners-affiliates"
+    href: "/partners-and-affiliates"
   },
   {
     title: "Integrations",
     desc: "Connect Enzy to your tech stack.",
-    href: "/partners"
+    href: "/integrations"
   }
 ];
 
@@ -289,7 +282,7 @@ export function MainNavigation() {
                             See what Enzy does—fast.
                         </h3>
                         <div className="mt-4">
-                            <Link href="/features" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
+                            <Link href="/system" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
                                 Explore the system <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
@@ -310,9 +303,9 @@ export function MainNavigation() {
                                     {section.items.map((item, j) => (
                                         <li key={j}>
                                             <Link 
-                                                href={`/features#${slugify(item)}`}
+                                                href={`/system#${slugify(item)}`}
                                                 onClick={(e) => {
-                                                    navigateToSamePageHash(e, "/features", slugify(item));
+                                                    navigateToSamePageHash(e, "/system", slugify(item));
                                                     setActiveDropdown(null);
                                                 }}
                                                 scroll={false}
@@ -577,7 +570,7 @@ export function MainNavigation() {
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
                                     <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
                                     <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See what Enzy does—fast.</p>
-                                    <Link href="/features" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
+                                    <Link href="/system" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Explore platform <ArrowRight size={12} />
                                     </Link>
                                 </motion.div>
@@ -595,9 +588,9 @@ export function MainNavigation() {
                                         {section.items.map((subitem, k) => (
                                             <Link 
                                                 key={k}
-                                                href={`/features#${slugify(subitem)}`}
+                                                href={`/system#${slugify(subitem)}`}
                                                 onClick={(e) => {
-                                                    navigateToSamePageHash(e, "/features", slugify(subitem));
+                                                    navigateToSamePageHash(e, "/system", slugify(subitem));
                                                     setMobileMenuOpen(false);
                                                     setActiveMobileDropdown(null);
                                                 }}

@@ -99,6 +99,7 @@ const featurePlaceholders = [
 const cardsData = [
   {
     id: "ai",
+    href: "/system#bot-chats",
     title: "AI Assistant",
     description:
       "Ask questions about connected data. Get insights and next-best actions—instantly.",
@@ -111,6 +112,7 @@ const cardsData = [
   },
   {
     id: "leaderboards",
+    href: "/system#leaderboards",
     title: "Leaderboards",
     description: "Make performance visible. Keep teams engaged. Create momentum.",
     features: [
@@ -124,6 +126,7 @@ const cardsData = [
   },
   {
     id: "profiles",
+    href: "/system#profiles",
     title: "Profiles",
     description:
       "Give every rep a single place for performance, recognition, and progress.",
@@ -131,6 +134,7 @@ const cardsData = [
   },
   {
     id: "competitions",
+    href: "/system#competitions-and-incentives",
     title: "Competition Builder",
     description:
       "Launch competitions and incentives in minutes—aligned to the KPIs that matter.",
@@ -143,6 +147,7 @@ const cardsData = [
   },
   {
     id: "messaging",
+    href: "/system#messaging",
     title: "Messaging",
     description: "Send announcements, nudges, and updates—without switching tools.",
     features: [
@@ -281,7 +286,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
             </h2>
           </div>
           <Link
-            href="/features"
+            href="/system"
             className="group inline-flex items-center gap-1.5 font-inter text-[14px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90 pb-2"
           >
             See the full system
@@ -335,13 +340,13 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
             const showDetails = isHovering || (isCarousel && isCenter);
 
             return (
-              <button
+              <Link
                 key={card.id}
+                href={card.href}
                 onMouseEnter={() => setIsHoveringIndex(i)}
                 onMouseLeave={() => setIsHoveringIndex(null)}
-                onClick={() => scrollToCard(i)}
-                type="button"
-                className={`relative shrink-0 snap-start md:snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
+                aria-label={`Explore ${card.title} on the system page`}
+                className={`relative block shrink-0 snap-start md:snap-center w-[85vw] max-w-[380px] h-[510px] rounded-[32px] cursor-pointer text-left transition-all duration-500 ease-out ring-1 ring-white/15 shadow-[0_24px_80px_rgba(0,0,0,0.25)]
                   ${
                     !isCarousel
                       ? "opacity-100"
@@ -382,7 +387,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                     {card.description}
                   </p>
                 </div>
-              </button>
+              </Link>
             );
           })}
         </div>

@@ -381,8 +381,11 @@ export function PixelCanvas() {
       const dy = smoothedMouseRef.current.y - lastMousePosRef.current.y;
       const velocity = Math.sqrt(dx * dx + dy * dy);
 
-      // Smooth scroll for parallax
-      smoothedScrollYRef.current += (window.scrollY - smoothedScrollYRef.current) * 0.05;
+      // Smooth scroll for parallax. Clamp to >= 0 so mobile rubber-band
+      // overscroll (e.g. a partial pull-to-refresh) can't drive the parallax
+      // negative, which otherwise wraps a row of particles in from the top.
+      const parallaxScrollY = Math.max(0, window.scrollY);
+      smoothedScrollYRef.current += (parallaxScrollY - smoothedScrollYRef.current) * 0.05;
 
       const isDesktop = width > 768;
       const isMobile = !isDesktop;

@@ -33,4 +33,12 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
     title: "Partners & Affiliates - Enzy",
     description: "Meet the partners that help Enzy customers grow—payroll, commissions, apparel, swag, and background checks—and apply to become an Enzy partner.",
   },
+  insights: {
+    title: "Insights - Enzy blog, playbooks & case studies",
+    description: "Articles, playbooks, and customer case studies on sales performance, competitions, incentives, and building high-performance teams with Enzy.",
+  },
+  contactUs: {
+    title: "Contact Us - Enzy sales & support",
+    description: "Get in touch with the Enzy team. Reach sales for demos and pricing, or contact support for help with your account—phone and email included.",
+  },
 };

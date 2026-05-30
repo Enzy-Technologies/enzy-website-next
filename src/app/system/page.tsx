@@ -7,10 +7,9 @@ import { buildMetadata } from "@/app/lib/seo"
 export const metadata: Metadata = buildMetadata({
   title: SEO_CONFIG.features.title,
   description: SEO_CONFIG.features.description,
-  path: "/features",
+  path: "/system",
 })
 
 export default function Page() {
   return <Features />
 }
-
