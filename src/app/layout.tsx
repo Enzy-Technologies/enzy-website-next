@@ -1,5 +1,6 @@
 import React from "react"
 import type { Metadata } from "next"
+import { cookies } from "next/headers"
 import "@fontsource/inter/index.css"
 import "@fontsource/inter/500.css"
 import "@fontsource/inter/600.css"
@@ -30,7 +31,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Read the theme preference from a cookie so the server can render the correct
+  // mode in the initial HTML — no flash. Defaults to light when unset.
+  const themeCookie = (await cookies()).get("enzy-theme")?.value
+  const isDark = themeCookie === "dark"
+
   const logoUrl =
     brandLogoUrl.startsWith("http") ? brandLogoUrl : `${siteUrl}${brandLogoUrl.startsWith("/") ? "" : "/"}${brandLogoUrl}`
 
@@ -75,13 +81,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning className={isDark ? "dark" : undefined}>
       <head>
-        {/* Apply the saved theme before first paint to avoid a flash of the
-            wrong mode. Defaults to light when no preference is stored. */}
+        {/* Fallback for visitors who have an old localStorage preference but no
+            cookie yet: read the cookie first, else migrate localStorage into a
+            cookie and apply the class pre-paint. Once the cookie exists, the
+            server renders the correct theme and this is a no-op. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('enzy-theme');if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
         {/* Warm up the HubSpot embed used by the "Become a Partner" form so it
@@ -98,14 +106,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         <link
           rel="preload"
-          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/IvyOraText-Regular.woff2"
+          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Regular.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
         />
         <link
           rel="preload"
-          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/IvyOraText-Medium.woff2"
+          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Medium.woff2"
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
@@ -116,7 +124,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />
-        <ThemeProvider>
+        <ThemeProvider initialIsLightMode={!isDark}>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
       </body>

@@ -14,17 +14,25 @@ const ThemeContext = createContext<ThemeContextType>({
   setIsLightMode: () => {},
 });
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  // Default to light so first-time visitors (and SSR) render light mode with
-  // no dark flash. Only an explicit stored "dark" preference switches it.
-  const [isLightMode, setIsLightMode] = useState(true);
+// Persist the theme to both a cookie (so the server can render the correct mode
+// on the next request — no flash) and localStorage (back-compat).
+const persistTheme = (isLight: boolean) => {
+  const value = isLight ? 'light' : 'dark';
+  try {
+    document.cookie = `enzy-theme=${value};path=/;max-age=31536000;samesite=lax`;
+    localStorage.setItem('enzy-theme', value);
+  } catch (e) {}
+};
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('enzy-theme');
-      setIsLightMode(stored !== 'dark');
-    }
-  }, []);
+export const ThemeProvider = ({
+  children,
+  initialIsLightMode = true,
+}: {
+  children: React.ReactNode;
+  // Resolved server-side from the cookie so the first render matches the server.
+  initialIsLightMode?: boolean;
+}) => {
+  const [isLightMode, setIsLightMode] = useState(initialIsLightMode);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -39,14 +47,14 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const toggleTheme = () => {
     setIsLightMode(prev => {
       const newValue = !prev;
-      localStorage.setItem('enzy-theme', newValue ? 'light' : 'dark');
+      persistTheme(newValue);
       return newValue;
     });
   };
 
   // Also wrap setIsLightMode so direct calls persist too
   const setPersistedTheme = (value: boolean) => {
-    localStorage.setItem('enzy-theme', value ? 'light' : 'dark');
+    persistTheme(value);
     setIsLightMode(value);
   };
 

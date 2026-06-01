@@ -58,7 +58,7 @@ const INTEGRATION_CATEGORIES: IntegrationCategory[] = [
       { name: "Follow Up Boss", domain: "followupboss.com" },
       { name: "AccuLynx", domain: "acculynx.com" },
       { name: "Enerflo", domain: "enerflo.com" },
-      { name: "Sunbase", domain: "sunbase.com" },
+      { name: "Sunbase", domain: "sunbasedata.com" },
       { name: "Leap", domain: "leaptodigital.com" },
       { name: "MarketSharp", domain: "marketsharp.com" },
       { name: "Rooflink", domain: "roof.link" },
@@ -83,7 +83,7 @@ const INTEGRATION_CATEGORIES: IntegrationCategory[] = [
       { name: "PestPac", domain: "pestpac.com" },
       { name: "RealGreen", domain: "realgreen.com" },
       { name: "BrioStack", domain: "briostack.com" },
-      { name: "ServSuite", domain: "servsuite.com" },
+      { name: "ServSuite", domain: "live.theservicepro.net" },
       { name: "SuperMove", domain: "supermove.com" },
     ],
   },
@@ -96,7 +96,6 @@ const INTEGRATION_CATEGORIES: IntegrationCategory[] = [
       { name: "Retreaver", domain: "retreaver.com" },
       { name: "Total Lead Domination", domain: "tldcrm.com" },
       { name: "EnrollHere Dialer", domain: "enrollhere.com" },
-      { name: "KnockVia", domain: "knockvia.com" },
       { name: "SparkEmp", domain: "sparkemp.io" },
     ],
   },
@@ -192,7 +191,7 @@ function IntegrationCard({
   );
 }
 
-export function Partners() {
+export function Integrations() {
   const { isLightMode } = useTheme();
   const [activeTab, setActiveTab] = useState<string>(ALL_TAB.id);
 
