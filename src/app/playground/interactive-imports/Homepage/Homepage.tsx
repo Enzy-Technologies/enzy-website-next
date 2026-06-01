@@ -78,7 +78,7 @@ function Frame17() {
   return (
     <div className="[word-break:break-word] content-stretch flex flex-col gap-[4px] items-center justify-center relative shrink-0 text-[#161513] w-full whitespace-nowrap">
       <p className="font-[ui-monospace,'SF_Mono','Menlo',monospace] leading-[14px] not-italic relative shrink-0 text-[11px] tracking-[0.5px] uppercase">Tues, Apr 27</p>
-      <p className="font-['IvyOra_Text',serif] font-medium leading-[36px] relative shrink-0 text-[28px]">Morning, David.</p>
+      <p className="font-ivyora font-medium leading-[36px] relative shrink-0 text-[28px]">Morning, David.</p>
     </div>
   );
 }
@@ -164,7 +164,7 @@ function Frame30() {
 function Frame32() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-[106px]">
-      <p className="[word-break:break-word] font-['IvyOra_Text',serif] font-medium leading-[28px] max-w-[160px] relative shrink-0 text-[#161513] text-[22px] text-center w-full">Push early.</p>
+      <p className="[word-break:break-word] font-ivyora font-medium leading-[28px] max-w-[160px] relative shrink-0 text-[#161513] text-[22px] text-center w-full">Push early.</p>
     </div>
   );
 }

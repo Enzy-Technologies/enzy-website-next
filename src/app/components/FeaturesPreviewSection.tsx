@@ -330,7 +330,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
           ref={scrollRef}
           className={
             isCarousel
-              ? "flex gap-5 overflow-x-auto md:overflow-visible md:flex-wrap md:justify-center snap-x snap-mandatory scrollbar-hide w-auto -mr-4 md:mr-0 pt-20 pb-32 -mt-16 -mb-24 pr-4 md:pr-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              ? "flex gap-5 overflow-x-auto md:overflow-visible md:flex-wrap md:justify-center snap-x snap-mandatory scroll-pl-4 md:scroll-pl-0 scrollbar-hide w-auto -ml-4 -mr-4 md:ml-0 md:mr-0 pt-20 pb-32 -mt-16 -mb-24 pl-4 pr-4 md:pl-0 md:pr-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
               : "flex flex-wrap justify-center gap-5 w-full pt-20 pb-32 -mt-16 -mb-24"
           }
         >

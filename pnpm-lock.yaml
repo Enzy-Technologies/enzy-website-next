@@ -11,6 +11,9 @@ importers:
       '@fontsource/inter':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource/roboto-mono':
+        specifier: ^5.2.9
+        version: 5.2.9
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -137,6 +140,9 @@ packages:
 
   '@fontsource/inter@5.2.8':
     resolution: {integrity: sha512-P6r5WnJoKiNVV+zvW2xM13gNdFhAEpQ9dQJHt3naLvfg+LkF2ldgSLiF4T41lf1SQCM9QmkqPTn4TH568IRagg==}
+
+  '@fontsource/roboto-mono@5.2.9':
+    resolution: {integrity: sha512-iIeSyrRGoM15uIWqXslW1K9UFnUYfnCFNrNoWjXE0huO1L+hM0Jst0KNLuRc7P21xPpGL0bZouzYSX0Em9eyWg==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2337,6 +2343,8 @@ snapshots:
       levn: 0.4.1
 
   '@fontsource/inter@5.2.8': {}
+
+  '@fontsource/roboto-mono@5.2.9': {}
 
   '@humanfs/core@0.19.2':
     dependencies:

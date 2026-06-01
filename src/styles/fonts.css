@@ -1,19 +1,4 @@
-/* Custom Font Imports - Hardcoded from HubSpot CDN */
-
-/* IvyOra Text - Regular (Headers) */
-@font-face {
-  font-family: 'IvyOra Text';
-  src: url('https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* IvyOra Text - Medium (Large Display Headers) */
-@font-face {
-  font-family: 'IvyOra Text';
-  src: url('https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Medium.woff2') format('woff2');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
+/* IvyOra Text is now self-hosted via next/font/local (see src/app/layout.tsx).
+   next/font generates the @font-face declarations and exposes the family through
+   the --font-ivyora-local CSS variable, which theme.css maps onto --font-ivyora.
+   Inter and Roboto Mono load via @fontsource (imported in layout.tsx). */

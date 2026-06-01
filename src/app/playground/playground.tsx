@@ -13,7 +13,7 @@ import {
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
 
 const HAND_IMAGE =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Hand%20Holding%20iPhone%20(2).png";
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Playground/Hand%20Holding%20iPhone.png";
 
 const IMAGE_ASPECT = 8000 / 5772;
 

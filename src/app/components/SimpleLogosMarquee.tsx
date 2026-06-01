@@ -20,60 +20,60 @@ type LogoEntry = {
 const LOGOS: LogoEntry[] = [
   {
     name: "SPWR",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/SPWR.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/SPWR.svg",
     caption: "Publicly Traded (NASDAQ: SPWR)",
   },
   {
     name: "Aptive",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/aptive.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/aptive.svg",
     caption: "Top 5 Pest Control Company in the US",
   },
   {
     name: "Young Living",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Young%20Living.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Young%20Living.svg",
     caption: "Top 10 Direct Sales Company in the World",
   },
   {
     name: "Nusun",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Nusun.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Nusun.svg",
   },
   {
     name: "EcoShield",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Ecoshield.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Ecoshield.svg",
   },
   {
     name: "Quick Roofing",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Quick%20Roofing.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Quick%20Roofing.svg",
   },
   {
     name: "Moxie",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Moxie.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Moxie.svg",
     caption: "Top 10 Pest Control Company in the US",
   },
   {
     name: "Spartan Solar",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/CH1DX3.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/CH1DX3.svg",
   },
   {
     name: "Grit",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Grit.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Grit.svg",
     caption: "105 Lifetime Golden Door Awards",
   },
   {
     name: "Chipr",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Chipr.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Chipr.svg",
   },
   {
     name: "Fox Pest Control",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/FOX.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/FOX.svg",
   },
   {
     name: "Space",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Space.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Space.svg",
   },
   {
     name: "Greenix",
-    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/SVG%20Logos/Greenix.svg",
+    src: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Customer%20Logos/Greenix.svg",
     caption: "Top 20 Pest Control Company in the US",
   },
 ];

@@ -1,12 +1,14 @@
 import React from "react"
 import type { Metadata } from "next"
 import { cookies } from "next/headers"
+import localFont from "next/font/local"
 import "@fontsource/inter/index.css"
 import "@fontsource/inter/500.css"
 import "@fontsource/inter/600.css"
 import "@fontsource/inter/700.css"
 import "@fontsource/inter/800.css"
 import "@fontsource/inter/900.css"
+import "@fontsource/roboto-mono/index.css"
 import "./globals.css"
 
 import { ThemeProvider } from "./components/ThemeProvider"
@@ -15,6 +17,20 @@ import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
 import { brandLogoUrl, siteName, siteUrl } from "./lib/site"
 import { SpotlightCursor } from "./components/SpotlightCursor"
+
+// Self-hosted IvyOra Text via next/font (subsetting, auto-preload, zero CLS via
+// size-adjusted fallback metrics). Exposes --font-ivyora-local, which theme.css
+// maps onto the --font-ivyora token used by the `font-ivyora` utility.
+const ivyOra = localFont({
+  src: [
+    { path: "./fonts/IvyOraText-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/IvyOraText-RegularItalic.woff2", weight: "400", style: "italic" },
+    { path: "./fonts/IvyOraText-Medium.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/IvyOraText-MediumItalic.woff2", weight: "500", style: "italic" },
+  ],
+  variable: "--font-ivyora-local",
+  display: "swap",
+})
 
 export const metadata: Metadata = {
   ...buildMetadata({
@@ -81,7 +97,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={isDark ? "dark" : undefined}>
+    <html lang="en" suppressHydrationWarning className={`${ivyOra.variable}${isDark ? " dark" : ""}`}>
       <head>
         {/* Fallback for visitors who have an old localStorage preference but no
             cookie yet: read the cookie first, else migrate localStorage into a
@@ -104,20 +120,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           as="script"
           href="https://js-na2.hsforms.net/forms/embed/developer/39823762.js"
         />
-        <link
-          rel="preload"
-          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Regular.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preload"
-          href="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/IvyOraText-Medium.woff2"
-          as="font"
-          type="font/woff2"
-          crossOrigin="anonymous"
-        />
+        {/* IvyOra fonts are now self-hosted via next/font (see ivyOra above),
+            which handles preloading automatically — no manual <link> needed. */}
       </head>
       <body>
         <SpotlightCursor />
