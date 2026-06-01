@@ -97,7 +97,7 @@ export function Header() {
         <div className="flex-1 flex justify-start order-1">
           <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
             <Image
-              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg"
+              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Logo/Enzy_Logo_2026_Wordmark.svg"
               alt="Enzy Logo"
               width={220}
               height={40}

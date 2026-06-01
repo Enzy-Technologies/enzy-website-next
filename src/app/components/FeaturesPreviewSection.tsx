@@ -11,8 +11,8 @@ function svgDataUri(svg: string) {
 }
 
 const featurePlaceholders = [
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Chat%201.png",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/1-1%20Leaderboard%20podium%20(light%20mode).png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
   svgDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
       <defs>
@@ -93,7 +93,7 @@ const featurePlaceholders = [
       </g>
     </svg>
   `),
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Chats%20(light%20mode).png",
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
 ];
 
 const cardsData = [

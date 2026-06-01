@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const ENZY_WORDMARK_SRC =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Enzy_Logo_2026_Wordmark.svg";
+  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Logo/Enzy_Logo_2026_Wordmark.svg";
 
 const LINK_COLUMN_CLASS =
   "font-inter text-[13px] text-white/55 hover:text-[#19ad7d] transition-colors w-fit";

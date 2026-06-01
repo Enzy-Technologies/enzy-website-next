@@ -51,7 +51,7 @@ const FEATURES_DATA: Feature[] = [
     title: "Leaderboards",
     desc: "Real-time rankings that keep focus high and goals clear across every team.",
     image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/1-1%20Leaderboard%20podium%20(light%20mode).png",
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
   },
   {
     module: "core",
@@ -83,7 +83,7 @@ const FEATURES_DATA: Feature[] = [
     title: "Messaging",
     desc: "Group threads, announcements, and DMs without switching tools.",
     image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Chats%20(light%20mode).png",
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
   },
   {
     module: "core",
@@ -91,7 +91,7 @@ const FEATURES_DATA: Feature[] = [
     title: "Bot Chats",
     desc: "AI-driven nudges and answers from your team's connected data—on demand.",
     image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Chat%201.png",
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
   },
   {
     module: "core",

@@ -15,17 +15,17 @@ const STEPS: Step[] = [
   {
     title: "Live Data Foundation",
     body: "Enzy integrates with your existing CRM/data sources pulling your team's data into one real-time feed. Everything happening on your team — visible to everyone, all in one place.",
-    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Live%20Data%20Foundation.png",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Live%20Data%20Foundation.png",
   },
   {
     title: "Social Engagement",
     body: "We bring social media-like dynamics to your sales team — profiles, badges, public leaderboards, group messaging, and live competitions. The mechanics that create momentum, drive behavior, and build a high-performance culture that compounds.",
-    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/Social%20Engagement.png",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Social%20Engagement.png",
   },
   {
     title: "AI Performance Intelligence",
     body: "Our AI doesn't guess. It's trained on real performance outcomes from tens of thousands of sales reps — so every recommendation it surfaces is grounded in what's actually worked. The curated competitions, coaching moments, and incentive structures your team needs, at exactly the right time.",
-    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.co/AI%20Performance%20Intelligence.png",
+    icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Performance%20Intelligence.png",
   },
 ];
 
