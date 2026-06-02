@@ -1014,7 +1014,13 @@ export function PixelCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500"
+      // h-[100lvh] (large viewport) + top-anchored — NOT inset-0. On iOS Safari
+      // a fixed `inset-0` element resolves to the *visual* viewport (the area
+      // above the toolbars), so it stopped at the top edge of the address bar
+      // and left a flat strip behind it — the hard seam. 100lvh is the stable
+      // full-screen height (it doesn't change as the toolbar animates, unlike
+      // dvh/svh), so the particle field now always paints behind the chrome.
+      className="fixed left-0 top-0 z-0 pointer-events-none w-full h-[100lvh] transition-colors duration-500"
       style={{ background: isLightMode ? "#fdfbf7" : "#0b0f14" }}
     />
   );
