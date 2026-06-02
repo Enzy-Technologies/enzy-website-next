@@ -3,17 +3,14 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
+import Script from "next/script";
 import { useTheme } from "./ThemeProvider";
-import { useHubSpotEmbedForm } from "./useHubSpotEmbedForm";
 
 export function PartnerFormModal() {
   const { isLightMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
+  const [formsMounted, setFormsMounted] = useState(false);
   const [formsBlocked, setFormsBlocked] = useState(false);
-
-  // Re-inject the HubSpot embed every time the modal opens so the form
-  // re-renders reliably on subsequent opens (see hook for details).
-  useHubSpotEmbedForm(isOpen);
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -26,8 +23,19 @@ export function PartnerFormModal() {
   const onClose = useCallback(() => setIsOpen(false), []);
 
   useEffect(() => {
-    // Reset the blocked state on close so the next open re-evaluates cleanly.
-    if (!isOpen) setFormsBlocked(false);
+    if (!isOpen) return;
+    
+    // Mark mounted once HubSpot injects the form markup.
+    const t = window.setInterval(() => {
+      const hasMarkup = !!document.querySelector(
+        "#partner-form-container .hs-form, #partner-form-container form.hs-form"
+      );
+      if (hasMarkup) {
+        setFormsMounted(true);
+        window.clearInterval(t);
+      }
+    }, 250);
+    return () => window.clearInterval(t);
   }, [isOpen]);
 
   useEffect(() => {
@@ -35,7 +43,7 @@ export function PartnerFormModal() {
     
     const t = window.setTimeout(() => {
       const hasMarkup = !!document.querySelector(
-        "#partner-form-container .hs-form, #partner-form-container form.hs-form, #partner-form-container input, #partner-form-container select, #partner-form-container textarea, #partner-form-container iframe"
+        "#partner-form-container .hs-form, #partner-form-container form.hs-form"
       );
       // @ts-ignore
       const available = !!window.hbspt;
@@ -108,7 +116,18 @@ export function PartnerFormModal() {
             </div>
 
             <div className="min-h-[400px] relative">
+              <Script
+                src="https://js-na2.hsforms.net/forms/embed/developer/39823762.js"
+                strategy="afterInteractive"
+              />
+
               <div id="partner-form-container" className="enzy-hubspot-embed">
+                {!formsMounted && !formsBlocked ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className={`m-0 font-inter text-[13px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>Loading form…</p>
+                  </div>
+                ) : null}
+
                 {formsBlocked ? (
                   <div className="text-left">
                     <p className={`m-0 font-inter text-[13px] font-semibold ${isLightMode ? "text-black" : "text-white"}`}>

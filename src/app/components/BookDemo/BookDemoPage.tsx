@@ -7,7 +7,6 @@ import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/Testimonials
 import { motion, useScroll, useTransform } from "motion/react";
 import { BlurReveal } from "@/app/components/BlurReveal";
 import { FAQSection } from "@/app/components/FAQSection";
-import { useHubSpotEmbedForm } from "@/app/components/useHubSpotEmbedForm";
 
 const BOOK_DEMO_STATS = [
   { value: "24", unit: "M", label: "Weekly page views" },
@@ -32,6 +31,7 @@ declare global {
 export function BookDemoPage({ hideTestimonials = false, hideText = false }: { hideTestimonials?: boolean; hideText?: boolean } = {}) {
   const { isLightMode } = useTheme();
   const [formsBlocked, setFormsBlocked] = useState(false);
+  const [formsMounted, setFormsMounted] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [meetingsReady, setMeetingsReady] = useState(false);
 
@@ -48,9 +48,19 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
   });
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
-  // Re-inject the HubSpot embed on every mount so the form renders reliably
-  // even on client-side navigations to this page (see hook for details).
-  useHubSpotEmbedForm(true);
+  useEffect(() => {
+    // Mark mounted once HubSpot injects the form markup.
+    const t = window.setInterval(() => {
+      const hasMarkup = !!document.querySelector(
+        ".hs-form-html .hs-form, .hs-form-html form.hs-form, .hs-form-html input, .hs-form-html select, .hs-form-html textarea"
+      );
+      if (hasMarkup) {
+        setFormsMounted(true);
+        window.clearInterval(t);
+      }
+    }, 250);
+    return () => window.clearInterval(t);
+  }, []);
 
   useEffect(() => {
     const onSubmit = (e: Event) => {
@@ -183,6 +193,10 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
                 <div className="pointer-events-none absolute inset-0 rounded-[32px] md:rounded-[36px] ring-1 ring-white/10" aria-hidden />
 
                 <Script
+                  src="https://js-na2.hsforms.net/forms/embed/developer/39823762.js"
+                  strategy="afterInteractive"
+                />
+                <Script
                   type="text/javascript"
                   src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"
                   strategy="afterInteractive"
@@ -190,6 +204,10 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
                 />
 
                 <div className="flex flex-col gap-7 enzy-hubspot-embed">
+                  {!formsMounted && !formsBlocked ? (
+                    <p className={`m-0 font-inter text-[13px] ${muted}`}>Loading form…</p>
+                  ) : null}
+
                   {formsBlocked ? (
                     <div className="text-left">
                       <p className={`m-0 font-inter text-[13px] font-semibold ${containerText}`}>
