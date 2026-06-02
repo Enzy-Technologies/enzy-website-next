@@ -183,7 +183,7 @@ function HeroSectionDefault() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section ref={containerRef} className="relative w-full pt-[12px] pb-6 lg:pt-[28px] lg:pb-0 lg:h-[calc(100dvh-88px)] flex items-center">
+    <section ref={containerRef} className="relative w-full pt-[12px] pb-6 lg:pt-[28px] lg:pb-0 lg:h-[calc(100vh-88px)] flex items-center">
       <div className="relative mx-auto max-w-[1400px] px-4 md:px-6 lg:px-8 w-full">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           

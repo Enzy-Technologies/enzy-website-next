@@ -323,29 +323,13 @@ export function PixelCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Measure the FULL height the canvas actually occupies, not just
-    // window.innerHeight. The canvas element is `fixed inset-0 h-full` with an
-    // opaque background, so on iOS Safari (viewport-fit=cover) it covers the
-    // whole screen — including the strip behind the translucent top/bottom
-    // toolbars. window.innerHeight reports only the *visual* viewport (toolbars
-    // excluded), so sizing the drawing buffer to it left an un-drawn flat band
-    // behind the bottom address bar — a visible "cut off" seam. clientHeight of
-    // the fixed element resolves to the large (full-screen) viewport, so the
-    // particle field now fills edge-to-edge behind the chrome on every page.
-    const measureHeight = () =>
-      Math.max(
-        window.innerHeight,
-        document.documentElement?.clientHeight ?? 0,
-        canvas.clientHeight,
-      );
-
     let width = window.innerWidth;
-    let height = measureHeight();
+    let height = window.innerHeight;
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
     const resizeCanvas = () => {
       width = window.innerWidth;
-      height = measureHeight();
+      height = window.innerHeight;
       dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -1014,13 +998,7 @@ export function PixelCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      // h-[100lvh] (large viewport) + top-anchored — NOT inset-0. On iOS Safari
-      // a fixed `inset-0` element resolves to the *visual* viewport (the area
-      // above the toolbars), so it stopped at the top edge of the address bar
-      // and left a flat strip behind it — the hard seam. 100lvh is the stable
-      // full-screen height (it doesn't change as the toolbar animates, unlike
-      // dvh/svh), so the particle field now always paints behind the chrome.
-      className="fixed left-0 top-0 z-0 pointer-events-none w-full h-[100lvh] transition-colors duration-500"
+      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500"
       style={{ background: isLightMode ? "#fdfbf7" : "#0b0f14" }}
     />
   );

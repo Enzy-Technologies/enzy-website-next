@@ -24,12 +24,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      // min-h-[100svh] (small viewport height) instead of min-h-screen (100vh,
-      // the iOS *large* viewport): keeps layout height independent of whether
-      // Safari's toolbars are expanded/collapsed, so the bottom behaves the same
-      // on every page. The bg lives here AND on html/body so the iOS safe areas
-      // and the regions behind the translucent toolbars always show page color.
-      className={`relative w-full min-h-[100svh] font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip [overflow-clip-margin:100px] ${
+      className={`relative w-full min-h-screen font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip [overflow-clip-margin:100px] ${
         isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
       }`}
     >

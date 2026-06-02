@@ -491,10 +491,7 @@ export function MainNavigation() {
             animate={{ opacity: 1, backdropFilter: 'blur(40px)' }}
             exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
             transition={{ duration: 0.4, ease: easeOutExpo }}
-            // h-[100lvh] (full-screen large viewport), top-anchored — NOT
-            // inset-0, which on iOS Safari resolves to the visual viewport and
-            // left the menu's tint/blur stopping at the address bar (a seam).
-            className={`fixed top-0 left-0 right-0 h-[100lvh] z-[55] lg:hidden pointer-events-auto overflow-y-auto ${
+            className={`fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto ${
               isLightMode 
                 ? 'bg-white/60' 
                 : 'bg-[#0b0f14]/80'
@@ -502,7 +499,7 @@ export function MainNavigation() {
           >
             <div className={`absolute top-0 inset-x-0 h-64 blur-[100px] pointer-events-none ${isLightMode ? 'bg-[#19ad7d]/10' : 'bg-[#19ad7d]/5'}`} />
 
-            <div className="flex flex-col pt-32 px-6 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-full relative z-10">
+            <div className="flex flex-col pt-32 px-6 pb-20 min-h-full relative z-10">
               {MENU_ITEMS.map((item, i) => (
                 <motion.div 
                   key={item.id} 
