@@ -84,7 +84,7 @@ export function Header() {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'py-2 lg:py-3' : 'py-3 lg:py-5'}`}
+      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'pb-2 lg:pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.5rem)] lg:pt-[calc(env(safe-area-inset-top,0px)+0.75rem)]' : 'pb-3 lg:pb-5 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] lg:pt-[calc(env(safe-area-inset-top,0px)+1.25rem)]'}`}
     >
       <div
         className={`absolute inset-0 pointer-events-none border-x-0 border-t-0 border-b transform-gpu will-change-[opacity] transition-[opacity,border-color] duration-300 ${
@@ -177,7 +177,7 @@ export function Header() {
       {!isLandingPage && !isBookDemoPage && (
         <div
           aria-hidden={anyDemoCtaVisible}
-          className={`lg:hidden fixed bottom-5 right-5 z-[100] pointer-events-none transition-opacity duration-300 ${
+          className={`lg:hidden fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom,0px))] right-5 z-[100] pointer-events-none transition-opacity duration-300 ${
             anyDemoCtaVisible ? "opacity-0 invisible" : "opacity-100 visible"
           }`}
         >

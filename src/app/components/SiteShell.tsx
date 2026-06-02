@@ -24,7 +24,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div
-      className={`relative w-full min-h-screen font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip ${
+      className={`relative w-full min-h-screen font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip [overflow-clip-margin:100px] ${
         isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
       }`}
     >
@@ -35,7 +35,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
 
         <main
           className={`w-full flex-1 flex flex-col items-center relative ${
-            isLp ? "pt-0" : "pt-[88px]"
+            isLp ? "pt-0" : "pt-[calc(88px+env(safe-area-inset-top,0px))]"
           }`}
         >
           {children}

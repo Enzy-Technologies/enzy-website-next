@@ -137,8 +137,18 @@
     @apply border-border outline-ring/50;
   }
 
+  /* Root background lives on html/body (not just the SiteShell layer) so the
+     iOS safe areas and the region behind Safari's toolbar always show the page
+     color — consistently across every page, top and bottom. */
+  html,
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #faf9f6;
+  }
+
+  html.dark,
+  html.dark body {
+    background-color: #0b0f14;
   }
 
   /**

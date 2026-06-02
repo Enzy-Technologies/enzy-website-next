@@ -1,5 +1,5 @@
 import React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { cookies } from "next/headers"
 import localFont from "next/font/local"
 import "@fontsource/inter/index.css"
@@ -45,6 +45,19 @@ export const metadata: Metadata = {
     default: "Enzy - The Agentic Engine for High Performance Sales Teams",
     template: "%s | Enzy",
   },
+}
+
+// viewportFit "cover" lets the page draw edge-to-edge into the iOS safe areas
+// (under the dynamic island and behind Safari's bottom toolbar). Pair with the
+// root background below + env(safe-area-inset-*) padding on fixed UI.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#faf9f6" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0f14" },
+  ],
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

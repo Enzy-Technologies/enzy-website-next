@@ -6,6 +6,7 @@ import { ChevronDown } from 'lucide-react';
 import { useTheme } from './ThemeProvider';
 import { JsonLd } from './JsonLd';
 import { SITE_FAQS } from '@/app/lib/faq-data';
+import { usePathname } from 'next/navigation';
 
 const faqPageSchema = {
   '@context': 'https://schema.org',
@@ -23,9 +24,20 @@ const faqPageSchema = {
 export function FAQSection() {
   const { isLightMode } = useTheme();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const pathname = usePathname();
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
+  };
+
+  // If an answer links to /book-a-demo but we're already on that page, scroll to
+  // the top instead of triggering a same-page navigation (which reloads).
+  const handleAnswerClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const link = (e.target as HTMLElement).closest('a');
+    if (link?.getAttribute('href') === '/book-a-demo' && pathname === '/book-a-demo') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -101,6 +113,7 @@ export function FAQSection() {
                       transition={{ duration: 0.3, ease: 'easeInOut' }}
                     >
                       <div
+                        onClick={handleAnswerClick}
                         className={`p-6 pt-0 leading-relaxed [&_p]:mt-4 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_li]:marker:text-[#19ad7d] [&_a]:font-medium [&_a]:text-[#19ad7d] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[#19ad7d]/80 [&_strong]:font-semibold ${isLightMode ? 'text-gray-600 [&_strong]:text-gray-900' : 'text-gray-300 [&_strong]:text-white'}`}
                         dangerouslySetInnerHTML={{ __html: faq.answer }}
                       />

@@ -24,7 +24,7 @@ const STEPS: Step[] = [
   },
   {
     title: "AI Performance Intelligence",
-    body: "Our AI doesn't guess. It's trained on real performance outcomes from tens of thousands of sales reps — so every recommendation it surfaces is grounded in what's actually worked. The curated competitions, coaching moments, and incentive structures your team needs, at exactly the right time.",
+    body: "Our AI doesn't guess. It's trained on real performance outcomes from tens of thousands of sales reps — so every competition, coaching moment, and incentive it surfaces is grounded in what's actually worked, at exactly the right time.",
     icon: "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Icons%20and%20Images/AI%20Performance%20Intelligence.png",
   },
 ];
@@ -93,7 +93,7 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
 
   return (
       <motion.div
-      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-12 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-8 md:gap-12 items-start md:items-center justify-between overflow-hidden transition-colors duration-500 origin-top ${
+      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-10 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-5 sm:gap-8 md:gap-12 items-start md:items-center justify-between overflow-hidden transition-colors duration-500 origin-top ${
         isLightMode
           ? "bg-white border-black/10 text-black"
           : "bg-[#0a0a0c] border-white/10 text-white"
@@ -109,20 +109,20 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
           : "0 -15px 40px rgba(0,0,0,0.4), 0 25px 50px -12px rgba(0,0,0,0.4)"
       }}
     >
-      <div className="relative z-10 flex flex-col gap-6 max-w-2xl">
-        <h3 className={`font-ivyora font-medium text-[28px] sm:text-[36px] md:text-[44px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
+      <div className="relative z-10 flex flex-col gap-4 sm:gap-6 max-w-2xl shrink-0 md:shrink">
+        <h3 className={`font-ivyora font-medium text-[26px] sm:text-[36px] md:text-[44px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
           {step.title}
         </h3>
-        <p className={`font-inter text-[16px] sm:text-[18px] md:text-[20px] font-medium leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+        <p className={`font-inter text-[15px] sm:text-[18px] md:text-[20px] font-medium leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
           {step.body}
         </p>
       </div>
 
-      <div className="relative z-10 w-full md:w-[44%] mx-auto flex-1 min-h-0 md:flex-none md:aspect-[3/4] flex items-center justify-center">
+      <div className="relative z-10 w-full md:w-[44%] mx-auto flex-1 min-h-0 md:flex-none md:aspect-[3/4] flex items-center justify-center overflow-hidden md:overflow-visible">
         <img
           src={step.icon}
           alt={step.title}
-          className="relative w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] md:w-full md:h-full md:max-w-[80%] md:max-h-[80%] object-contain"
+          className="relative w-auto h-full max-h-[180px] max-w-full sm:max-h-[280px] md:w-full md:h-full md:max-w-[80%] md:max-h-[80%] object-contain"
         />
       </div>
     </motion.div>

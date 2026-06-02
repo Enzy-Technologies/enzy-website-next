@@ -14,6 +14,23 @@ import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
 import { BlurReveal } from "./BlurReveal";
 
+// Time (seconds) at which a char-mode BlurReveal starting at `startDelay` fully
+// settles, matching BlurReveal's internal timing (0.03s per-character stagger +
+// 0.8s per-character duration). Used to start the italic phrase exactly when the
+// lead line finishes, so the reveal reads as one continuous motion.
+// NOTE: HERO_LEAD / HERO_LEAD_ALT must mirror the lead text rendered below.
+const charRevealEnd = (text: string, startDelay = 0.1) =>
+  startDelay + Math.max(0, text.replace(/\s+/g, "").length - 1) * 0.03 + 0.8;
+
+const HERO_LEAD = "Performance has always been a game. ";
+const HERO_LEAD_ALT = "Performance has never had an operating system. ";
+
+// How early (in seconds) the italic phrase starts before the lead line fully
+// settles. 0 = waits for the lead to completely finish (feels gappy); higher =
+// more overlap (feels rushed). ~0.5 overlaps just the lead's final settle tail
+// so the two reveals flow as one continuous motion.
+const LEAD_OVERLAP = 0.8;
+
 
 
 
@@ -91,7 +108,7 @@ function HeroSectionLp() {
             <BlurReveal as="span" delay={0.1}>
               Performance has always been a game.{" "}
             </BlurReveal>
-            <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">
+            <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD) - LEAD_OVERLAP} className="font-ivyora font-medium italic">
               Now there&rsquo;s an operating system for it.
             </BlurReveal>
           </h1>
@@ -181,7 +198,7 @@ function HeroSectionDefault() {
               } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
             >
               <BlurReveal as="span" delay={0.1}>Performance has never had an operating system. </BlurReveal>
-              <BlurReveal as="span" delay={0.85} className="font-ivyora font-medium italic">Until now.</BlurReveal>
+              <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD_ALT) - LEAD_OVERLAP} className="font-ivyora font-medium italic">Until now.</BlurReveal>
             </h1>
 
             <p

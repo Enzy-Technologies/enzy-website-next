@@ -107,16 +107,13 @@ export function BookDemoPage({ hideTestimonials = false, hideText = false }: { h
         <div className={`grid grid-cols-1 ${hideText ? 'lg:grid-cols-1' : 'lg:grid-cols-12'} gap-10 lg:gap-14 items-start`}>
           {!hideText && (
             <div className="lg:col-span-5 order-1 lg:order-1">
-              {/* Eyebrow / subtext / supporting bullets only appear on
-                  large screens. On mobile we lead straight into the form
-                  with just the headline above it. */}
-              <p className="hidden lg:block font-inter text-[11px] tracking-[0.18em] uppercase text-[#19ad7d] font-semibold">
-                Book a demo
-              </p>
+              {/* Subtext + supporting bullets only appear on large screens.
+                  On mobile we lead straight into the form with just the
+                  headline above it. */}
               <BlurReveal
                 as="h2"
                 delay={0.1}
-                className={`lg:mt-4 font-ivyora font-medium leading-[1.05] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
+                className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
               >
                 See Enzy turn performance into a system.
               </BlurReveal>
