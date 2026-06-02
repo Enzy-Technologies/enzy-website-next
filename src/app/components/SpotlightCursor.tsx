@@ -8,6 +8,18 @@ import { useEffect } from "react";
  */
 export function SpotlightCursor() {
   useEffect(() => {
+    // The spotlight follows a real cursor, so it does nothing useful on touch
+    // devices — yet the rAF loop below runs every frame and forces a layout
+    // (getBoundingClientRect on every .liquid-glass card) on each one. Skip the
+    // whole effect on devices without a fine, hovering pointer (i.e. mobile).
+    if (
+      typeof window === "undefined" ||
+      typeof window.matchMedia !== "function" ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return;
+    }
+
     let mouseX = 0;
     let mouseY = 0;
 

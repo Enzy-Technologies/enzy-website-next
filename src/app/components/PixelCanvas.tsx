@@ -341,8 +341,10 @@ export function PixelCanvas() {
 
     resizeCanvas();
 
-    // Initialize ambient particles - slightly denser on mobile for the hold interaction
-    const particleCount = width > 768 ? 500 : 420;
+    // Initialize ambient particles. Counts were reduced for mobile performance:
+    // the always-on 60fps loop does per-particle math every frame, so a high
+    // mobile count was a constant CPU/GPU drain. Desktop trimmed modestly too.
+    const particleCount = width > 768 ? 300 : 140;
     if (ambientParticlesRef.current.length === 0) {
       for (let i = 0; i < particleCount; i++) {
         const x = Math.random() * width;
@@ -968,7 +970,8 @@ export function PixelCanvas() {
       // when the mobile browser's address bar hides or shows during scrolling.
       if (width !== lastWidth) {
         ambientParticlesRef.current = [];
-        const particleCount = width > 768 ? 500 : 420;
+        // Keep in sync with the initial count above (reduced for mobile perf).
+        const particleCount = width > 768 ? 300 : 140;
         for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;

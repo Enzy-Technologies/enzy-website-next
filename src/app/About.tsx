@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
@@ -8,7 +9,18 @@ import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
 import { BlurReveal } from "./components/BlurReveal";
-import { TestimonialsSection } from "./components/TestimonialsSection";
+
+// Below-the-fold social proof: the visitor only reaches it after scrolling past
+// three sections, so we load its JS lazily (after hydration) instead of bundling
+// it into the initial page payload. The placeholder reserves vertical space so
+// there's no layout shift when it swaps in. Same pattern Home uses for the globe.
+const TestimonialsSection = dynamic(
+  () => import("./components/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })),
+  {
+    ssr: false,
+    loading: () => <div className="min-h-[60vh]" aria-hidden />,
+  }
+);
 
 const FadeInSection = ({
   children,
