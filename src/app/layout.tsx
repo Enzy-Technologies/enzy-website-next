@@ -54,10 +54,9 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0f14" },
-  ],
+  // Default tint (light, the site default). ThemeProvider overrides this live to
+  // match the manual theme toggle — see its theme-color effect.
+  themeColor: "#faf9f6",
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

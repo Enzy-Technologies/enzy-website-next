@@ -41,6 +41,17 @@ export const ThemeProvider = ({
       } else {
         document.documentElement.classList.add('dark');
       }
+
+      // Drive the iOS Safari status-bar / toolbar tint from the *site* theme
+      // (a manual toggle), not the OS color scheme. Remove any media-scoped
+      // theme-color tags so they can't override, then set a single one.
+      document
+        .querySelectorAll('meta[name="theme-color"]')
+        .forEach((el) => el.remove());
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = isLightMode ? '#faf9f6' : '#0b0f14';
+      document.head.appendChild(meta);
     }
   }, [isLightMode]);
 
