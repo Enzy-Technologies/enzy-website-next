@@ -9,6 +9,7 @@ import { Sun, Moon, Wand2, ArrowRight } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 import { CTAButton } from "./CTAButton";
+import { requestParticlesToggle } from "../lib/particles";
 
 const LOGIN_HREF = "https://app.enzy.co/login";
 
@@ -97,7 +98,7 @@ export function Header() {
         <div className="flex-1 flex justify-start order-1">
           <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
             <Image
-              src="https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Enzy%20Logo/Enzy_Logo_2026_Wordmark.svg"
+              src="/enzy-wordmark.svg"
               alt="Enzy Logo"
               width={220}
               height={40}
@@ -149,13 +150,11 @@ export function Header() {
           <button
             onClick={(e) => {
               const rect = e.currentTarget.getBoundingClientRect();
-              const cx = rect.left + rect.width / 2;
-              const cy = rect.top + rect.height / 2;
-              window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { triggerClick: true, x: cx, y: cy, force: true } }));
+              requestParticlesToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
             }}
             className={`hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
-            aria-label="Gather pixels"
-            title="Gather pixels"
+            aria-label="Toggle pixels"
+            title="Toggle pixels"
           >
             <Wand2 size={18} />
           </button>

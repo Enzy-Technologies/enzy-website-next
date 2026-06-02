@@ -557,13 +557,34 @@
     outline: none;
   }
 
+  /* Keep the fields themselves on the standard light treatment in dark mode too:
+     white field, black text. This way ALL text typed into a field (and the hint
+     text) stays standard black instead of inverting to white with the theme. */
   .dark .enzy-hubspot-embed .hs-form-html input:not([type="checkbox"]):not([type="radio"]),
   .dark .enzy-hubspot-embed .hs-form-html select,
   .dark .enzy-hubspot-embed .hs-form-html textarea {
-    border-color: rgba(255, 255, 255, 0.14);
-    background: rgba(0, 0, 0, 0.18);
-    color: rgba(255, 255, 255, 0.88) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 0, 0, 0.14);
+    background: rgba(255, 255, 255, 0.92);
+    color: rgba(0, 0, 0, 0.88) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  }
+
+  /* Phone field country-code control (the flag button + "+1" dial code) sits on
+     its own white chip and reads as part of the field, so keep it black-on-white
+     in BOTH modes — don't let dark mode invert the dial text to white. This is
+     scoped to the dial input only (direct child of .hsfc-PhoneInput); the actual
+     phone-number input and every other field still theme normally. */
+  .enzy-hubspot-embed .hs-form-html .hsfc-PhoneInput > input.hsfc-TextInput,
+  .dark .enzy-hubspot-embed .hs-form-html .hsfc-PhoneInput > input.hsfc-TextInput {
+    color: rgba(7, 7, 7, 0.92) !important;
+    background: #ffffff !important;
+    border-color: rgba(0, 0, 0, 0.14) !important;
+  }
+
+  .enzy-hubspot-embed .hs-form-html .hsfc-PhoneInput__FlagAndCaret,
+  .dark .enzy-hubspot-embed .hs-form-html .hsfc-PhoneInput__FlagAndCaret {
+    background: #ffffff !important;
+    color: rgba(7, 7, 7, 0.92) !important;
   }
 
   /* Extra-frosty glass shell specifically for the Book Demo panel */
@@ -582,14 +603,34 @@
     opacity: 0.24;
   }
 
+  /* In-field hint/example text ("e.g. Elon", "e.g. elon@tesla.com").
+     Intentionally a single fixed color in BOTH modes — these placeholders
+     should stay visually consistent and not follow light/dark. */
   .enzy-hubspot-embed .hs-form-html input::placeholder,
-  .enzy-hubspot-embed .hs-form-html textarea::placeholder {
-    color: rgba(0, 0, 0, 0.52) !important;
-  }
-
+  .enzy-hubspot-embed .hs-form-html textarea::placeholder,
   .dark .enzy-hubspot-embed .hs-form-html input::placeholder,
   .dark .enzy-hubspot-embed .hs-form-html textarea::placeholder {
-    color: rgba(255, 255, 255, 0.48) !important;
+    color: rgba(115, 115, 115, 0.9) !important;
+  }
+
+  /* Multi-step progress indicator ("1/2", "2/2"). The counter text defaults to
+     near-black, so it vanishes in dark mode — make it follow light/dark like the
+     field labels. The green fill is left exactly as HubSpot renders it. */
+  .enzy-hubspot-embed .hs-form-html .hsfc-ProgressBar__Text {
+    color: rgba(0, 0, 0, 0.74) !important;
+  }
+
+  .dark .enzy-hubspot-embed .hs-form-html .hsfc-ProgressBar__Text {
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  /* Unfilled track behind the green progress fill. */
+  .enzy-hubspot-embed .hs-form-html .hsfc-ProgressBar__Progress {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+  }
+
+  .dark .enzy-hubspot-embed .hs-form-html .hsfc-ProgressBar__Progress {
+    background-color: rgba(255, 255, 255, 0.16) !important;
   }
 
   /* Some HubSpot themes apply low-contrast inline styles; normalize key text nodes. */
@@ -634,7 +675,7 @@
   .dark .enzy-hubspot-embed .hs-form-html textarea:focus {
     box-shadow:
       0 0 0 4px rgba(25, 173, 125, 0.22),
-      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      inset 0 1px 0 rgba(255, 255, 255, 0.75);
   }
 
   .enzy-hubspot-embed .hs-form-html .hs-error-msg,

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
+import { writeParticlesDisabled } from "../lib/particles";
 
 interface TrailDot {
   x: number;
@@ -861,6 +862,10 @@ export function PixelCanvas() {
         sphereReadyRef.current = false;
         gatherBoostedRef.current = false;
         renderCenterRef.current = { x: 0, y: 0 };
+        // Persist the off-state site-wide so the canvas stays gone across page
+        // navigations and reloads (SiteShell reads this and stops rendering us).
+        // The particles are already cleared above, so unmounting is seamless.
+        writeParticlesDisabled(true);
       }
 
       lastHoldingRef.current = holding;

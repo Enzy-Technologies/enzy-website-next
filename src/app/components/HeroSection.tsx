@@ -6,7 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform, useInView } from "mot
 import { useTheme } from "./ThemeProvider";
 import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
 import { CTAButton } from "./CTAButton";
-import { BOOK_DEMO_HREF } from "@/app/lib/booking";
+import { BOOK_DEMO_HREF, LP_DEMO_FORM_ID } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
 import { HeroVideoPlaceholder } from "@/app/components/HeroVideoPlaceholder";
 import { LpBookDemoInline } from "@/app/components/landing/LpBookDemoScroll";
@@ -156,7 +156,7 @@ function HeroSectionLp() {
 
         <div className="mt-16 md:mt-24 w-full max-w-3xl mx-auto">
           <div id="lp-demo" className="scroll-mt-8 w-full">
-            <BookDemoPage hideTestimonials hideText />
+            <BookDemoPage hideTestimonials hideText formId={LP_DEMO_FORM_ID} />
           </div>
         </div>
 

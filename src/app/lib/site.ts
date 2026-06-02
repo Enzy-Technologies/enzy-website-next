@@ -9,8 +9,9 @@ export const siteUrl =
 // Graph / Twitter image for every page on the site.
 export const defaultOgImagePath = "/og-default.png"
 
-// The actual Enzy brand logo (wordmark). Used for structured data
-// (Organization schema) where the real logo — not the social card — belongs.
-export const brandLogoUrl =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Enzy%20Logo/Enzy_Logo_2026_Wordmark.svg"
+// The actual Enzy brand logo (wordmark). Self-hosted in /public so it ships
+// with the app (same-origin, edge-cached, no third-party dependency). Used for
+// structured data (Organization schema) where the real logo — not the social
+// card — belongs; layout.tsx resolves it to an absolute URL via siteUrl.
+export const brandLogoUrl = "/enzy-wordmark.svg"
 

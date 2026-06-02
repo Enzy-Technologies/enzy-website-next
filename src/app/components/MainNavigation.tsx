@@ -6,6 +6,7 @@ import { ChevronDown, ArrowRight, Menu, X, Sun, Moon, Wand2 } from 'lucide-react
 import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';
+import { requestParticlesToggle } from "../lib/particles";
 
 const slugify = (s: string) =>
   s
@@ -424,15 +425,13 @@ export function MainNavigation() {
         <button 
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
-            const cx = rect.left + rect.width / 2;
-            const cy = rect.top + rect.height / 2;
-            window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { triggerClick: true, x: cx, y: cy, force: true } }));
+            requestParticlesToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
           }}
           className={`p-2.5 transition-colors active:scale-95 ${
             isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
           }`}
-          aria-label="Gather pixels"
-          title="Gather pixels"
+          aria-label="Toggle pixels"
+          title="Toggle pixels"
         >
           <Wand2 size={18} />
         </button>

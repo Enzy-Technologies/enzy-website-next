@@ -8,8 +8,15 @@ import { Footer } from "./Footer"
 import { useTheme } from "./ThemeProvider"
 
 import { PartnerFormModal } from "./PartnerFormModal"
+import { PARTICLES_EVENT, readParticlesDisabled } from "../lib/particles"
 
-export function SiteShell({ children }: { children: React.ReactNode }) {
+export function SiteShell({
+  children,
+  initialParticlesDisabled = false,
+}: {
+  children: React.ReactNode
+  initialParticlesDisabled?: boolean
+}) {
   const { isLightMode } = useTheme()
   const pathname = usePathname()
   // The internal pricing tool is a fully self-contained document rendered in an
@@ -17,10 +24,28 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
   const isStandalone =
     Boolean(pathname?.startsWith("/lp/")) || pathname === "/pricing-tool"
   const isLp = isStandalone
-  // Pixel particle background renders globally — every page should share the
-  // same parallax/interactive backdrop. Only standalone surfaces (`/lp/*` and
-  // the pricing tool) opt out because they ship their own bespoke layout.
-  const showParticles = !isLp
+
+  // Site-wide pixel-canvas toggle. The "magic wand" turns this off for the whole
+  // site (persisted), so once it's off it stays off across pages and reloads.
+  const [particlesDisabled, setParticlesDisabled] = React.useState(
+    initialParticlesDisabled
+  )
+  React.useEffect(() => {
+    // Re-sync on mount in case the cookie wasn't set but localStorage was.
+    setParticlesDisabled(readParticlesDisabled())
+    const onChange = (e: Event) => {
+      const ev = e as CustomEvent<{ disabled?: boolean }>
+      setParticlesDisabled(!!ev.detail?.disabled)
+    }
+    window.addEventListener(PARTICLES_EVENT, onChange as EventListener)
+    return () =>
+      window.removeEventListener(PARTICLES_EVENT, onChange as EventListener)
+  }, [])
+
+  // Pixel particle background renders globally — every page shares the same
+  // parallax/interactive backdrop. Standalone surfaces (`/lp/*` and the pricing
+  // tool) opt out, and so does the whole site once the wand turns it off.
+  const showParticles = !isLp && !particlesDisabled
 
   return (
     <div
@@ -28,7 +53,7 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
         isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
       }`}
     >
-      {showParticles && !isLp ? <PixelCanvas /> : null}
+      {showParticles ? <PixelCanvas /> : null}
 
       <div className="relative z-10 w-full flex flex-col items-center">
         {isLp ? null : <Header />}

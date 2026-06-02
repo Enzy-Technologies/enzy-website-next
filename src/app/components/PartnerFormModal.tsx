@@ -3,14 +3,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
-import Script from "next/script";
 import { useTheme } from "./ThemeProvider";
+import { HubSpotForm } from "./HubSpotForm";
 
 export function PartnerFormModal() {
   const { isLightMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [formsMounted, setFormsMounted] = useState(false);
-  const [formsBlocked, setFormsBlocked] = useState(false);
 
   useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -21,36 +19,6 @@ export function PartnerFormModal() {
   // Stable identity prevents the Escape useEffect below from re-subscribing on
   // every render (and silences a real react-hooks/exhaustive-deps warning).
   const onClose = useCallback(() => setIsOpen(false), []);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    // Mark mounted once HubSpot injects the form markup.
-    const t = window.setInterval(() => {
-      const hasMarkup = !!document.querySelector(
-        "#partner-form-container .hs-form, #partner-form-container form.hs-form"
-      );
-      if (hasMarkup) {
-        setFormsMounted(true);
-        window.clearInterval(t);
-      }
-    }, 250);
-    return () => window.clearInterval(t);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    
-    const t = window.setTimeout(() => {
-      const hasMarkup = !!document.querySelector(
-        "#partner-form-container .hs-form, #partner-form-container form.hs-form"
-      );
-      // @ts-ignore
-      const available = !!window.hbspt;
-      if (!available && !hasMarkup) setFormsBlocked(true);
-    }, 10_000);
-    return () => window.clearTimeout(t);
-  }, [isOpen]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
@@ -115,38 +83,14 @@ export function PartnerFormModal() {
               </p>
             </div>
 
-            <div className="min-h-[400px] relative">
-              <Script
-                src="https://js-na2.hsforms.net/forms/embed/developer/39823762.js"
-                strategy="afterInteractive"
+            <div className="min-h-[400px] relative enzy-hubspot-embed">
+              {/* Re-mounts (and re-runs the HubSpot embed) every time the modal
+                  opens, because the modal subtree is unmounted while closed. */}
+              <HubSpotForm
+                formId="d9f856f3-0be8-43a5-8997-9900695d8214"
+                isLightMode={isLightMode}
+                loadingAlign="center"
               />
-
-              <div id="partner-form-container" className="enzy-hubspot-embed">
-                {!formsMounted && !formsBlocked ? (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <p className={`m-0 font-inter text-[13px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>Loading form…</p>
-                  </div>
-                ) : null}
-
-                {formsBlocked ? (
-                  <div className="text-left">
-                    <p className={`m-0 font-inter text-[13px] font-semibold ${isLightMode ? "text-black" : "text-white"}`}>
-                      HubSpot embed didn’t load.
-                    </p>
-                    <p className={`m-0 mt-1 font-inter text-[12px] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
-                      This is usually caused by an ad blocker / privacy extension or a network policy blocking `js-na2.hsforms.net`.
-                      Try disabling extensions for `localhost` and refresh.
-                    </p>
-                  </div>
-                ) : null}
-
-                <div
-                  className={formsBlocked ? "hidden" : "hs-form-html"}
-                  data-region="na2"
-                  data-form-id="d9f856f3-0be8-43a5-8997-9900695d8214"
-                  data-portal-id="39823762"
-                />
-              </div>
             </div>
           </motion.div>
         </div>
