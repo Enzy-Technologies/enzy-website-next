@@ -50,13 +50,16 @@ export const metadata: Metadata = {
 // viewportFit "cover" lets the page draw edge-to-edge into the iOS safe areas
 // (under the dynamic island and behind Safari's bottom toolbar). Pair with the
 // root background below + env(safe-area-inset-*) padding on fixed UI.
+//
+// NOTE: theme-color is intentionally NOT set here. The site theme is a manual,
+// cookie-persisted toggle (not the OS color scheme), so the correct browser-
+// chrome tint can only be known per-request. We render <meta name="theme-color">
+// directly in <head> below from the cookie, so the iOS status-bar / address-bar
+// tint is correct on the very first paint — no flash, no reload-to-reload flip.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  // Default tint (light, the site default). ThemeProvider overrides this live to
-  // match the manual theme toggle — see its theme-color effect.
-  themeColor: "#faf9f6",
 }
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -111,6 +114,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning className={`${ivyOra.variable}${isDark ? " dark" : ""}`}>
       <head>
+        {/* Server-rendered browser-chrome tint, resolved per-request from the
+            theme cookie so iOS Safari's status bar + address bar are correctly
+            tinted on the FIRST paint. ThemeProvider keeps this in sync live when
+            the user toggles the theme. Driving it from the cookie (not from
+            prefers-color-scheme) is deliberate: the site theme is a manual
+            toggle, so a media-scoped tag would desync from the toggle. */}
+        <meta name="theme-color" content={isDark ? "#0b0f14" : "#faf9f6"} />
         {/* Fallback for visitors who have an old localStorage preference but no
             cookie yet: read the cookie first, else migrate localStorage into a
             cookie and apply the class pre-paint. Once the cookie exists, the
