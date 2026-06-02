@@ -35,25 +35,6 @@ export function SiteShell({ children }: { children: React.ReactNode }) {
     >
       {showParticles && !isLp ? <PixelCanvas /> : null}
 
-      {/* Persistent safe-area scrims. Fixed, full-width frosted bands pinned to
-          the top (behind the Dynamic Island / status bar) and bottom (behind
-          Safari's address bar) so the chrome blur is consistent on EVERY page
-          and at every scroll position — not only when the header glass shows on
-          scroll. Height collapses to 0 on devices without insets, so they are
-          invisible on desktop. */}
-      {isLp ? null : (
-        <>
-          <div
-            aria-hidden
-            className="fixed inset-x-0 top-0 z-[90] pointer-events-none h-[env(safe-area-inset-top,0px)] backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)]"
-          />
-          <div
-            aria-hidden
-            className="fixed inset-x-0 bottom-0 z-[90] pointer-events-none h-[env(safe-area-inset-bottom,0px)] backdrop-blur-xl [-webkit-backdrop-filter:blur(24px)]"
-          />
-        </>
-      )}
-
       <div className="relative z-10 w-full flex flex-col items-center">
         {isLp ? null : <Header />}
 
