@@ -323,13 +323,29 @@ export function PixelCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Measure the FULL height the canvas actually occupies, not just
+    // window.innerHeight. The canvas element is `fixed inset-0 h-full` with an
+    // opaque background, so on iOS Safari (viewport-fit=cover) it covers the
+    // whole screen — including the strip behind the translucent top/bottom
+    // toolbars. window.innerHeight reports only the *visual* viewport (toolbars
+    // excluded), so sizing the drawing buffer to it left an un-drawn flat band
+    // behind the bottom address bar — a visible "cut off" seam. clientHeight of
+    // the fixed element resolves to the large (full-screen) viewport, so the
+    // particle field now fills edge-to-edge behind the chrome on every page.
+    const measureHeight = () =>
+      Math.max(
+        window.innerHeight,
+        document.documentElement?.clientHeight ?? 0,
+        canvas.clientHeight,
+      );
+
     let width = window.innerWidth;
-    let height = window.innerHeight;
+    let height = measureHeight();
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
 
     const resizeCanvas = () => {
       width = window.innerWidth;
-      height = window.innerHeight;
+      height = measureHeight();
       dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
