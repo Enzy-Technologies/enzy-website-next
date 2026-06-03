@@ -5,7 +5,25 @@ import { motion, AnimatePresence } from "motion/react";
 import { Plus } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { useTheme } from "./components/ThemeProvider";
-import { BlurReveal } from "./components/BlurReveal";
+// ⚠️ TEMPORARY EXPERIMENT — measure how much entrance animations inflate LCP.
+// BlurReveal is swapped for a plain, non-animated shim (same props, renders the
+// text immediately with no blur/opacity reveal). TO REVERT: delete the shim
+// below and restore this line:
+//   import { BlurReveal } from "./components/BlurReveal";
+function BlurReveal({
+  children,
+  className = "",
+  as: Component = "span",
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+  duration?: number;
+  as?: React.ElementType;
+  splitBy?: "char" | "word";
+}) {
+  return <Component className={className}>{children}</Component>;
+}
 
 type ModuleId = "core" | "sell" | "recruit";
 
@@ -410,7 +428,11 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
    * the flag so subsequent user-driven toggles animate normally again.
    */
   const [pendingDeepLinkId, setPendingDeepLinkId] = useState<string | null>(null);
-  const skipAnim = pendingDeepLinkId !== null;
+  // ⚠️ TEMPORARY EXPERIMENT — force-disable the panel/accordion entrance
+  // animations so the tab panel (which holds the LCP element) renders at full
+  // opacity in the first paint instead of fading in. TO REVERT, restore:
+  //   const skipAnim = pendingDeepLinkId !== null;
+  const skipAnim = true;
 
   // When the user clicks a module tab, switch modules and auto-open that
   // module's first feature. This is driven by the click handler (not a
