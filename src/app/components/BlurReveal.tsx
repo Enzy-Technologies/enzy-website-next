@@ -70,15 +70,19 @@ export function BlurReveal({
     },
   };
 
+  // Reveal animates opacity + a small vertical slide only. The original also
+  // animated `filter: blur(10px) -> blur(0)` per glyph, but animated CSS filters
+  // are very expensive on mobile GPUs and force a repaint every frame — and
+  // because the element is the page heading, that delay was pushing back when
+  // the largest text "settled," inflating LCP. Dropping the blur keeps the
+  // staggered fade/slide reveal while removing the costly part.
   const itemVariants = {
     hidden: {
       opacity: 0,
-      filter: "blur(10px)",
       y: 10,
     },
     visible: {
       opacity: 1,
-      filter: "blur(0px)",
       y: 0,
       transition: {
         duration: duration,
@@ -115,7 +119,7 @@ export function BlurReveal({
                 variants={itemVariants}
                 style={{
                   display: "inline-block",
-                  willChange: "filter, opacity, transform",
+                  willChange: "opacity, transform",
                 }}
               >
                 {word}
@@ -128,7 +132,7 @@ export function BlurReveal({
                     variants={itemVariants}
                     style={{
                       display: "inline-block",
-                      willChange: "filter, opacity, transform",
+                      willChange: "opacity, transform",
                     }}
                   >
                     {char}
