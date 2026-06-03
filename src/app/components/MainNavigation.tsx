@@ -486,13 +486,22 @@ export function MainNavigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(40px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            // Frosted blur is now applied STATICALLY rather than animated.
+            // Previously this ramped backdrop-filter from blur(0px) -> blur(40px)
+            // (and back on close), which forces the GPU to re-blur the entire
+            // screen every frame — the cause of the lag when opening the menu and
+            // the stutter when tapping a link (the close-blur animation competed
+            // with the page navigation). Holding the blur at a fixed 40px and only
+            // fading opacity keeps the identical frosted look with none of the
+            // per-frame cost. (WebkitBackdropFilter is included for iOS Safari.)
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: easeOutExpo }}
+            style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
             className={`fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto ${
-              isLightMode 
-                ? 'bg-white/60' 
+              isLightMode
+                ? 'bg-white/60'
                 : 'bg-[#0b0f14]/80'
             }`}
           >
