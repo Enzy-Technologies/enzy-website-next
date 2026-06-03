@@ -5,7 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
 import { BOOK_DEMO_HREF } from "./lib/booking";
@@ -51,7 +50,6 @@ function Cover({
 }
 
 export function Insights({ posts }: { posts: PostSummary[] }) {
-  const { isLightMode } = useTheme();
   const [activeCategory, setActiveCategory] = useState<"All" | Category>("All");
 
   // Newest post (posts arrive pre-sorted newest-first) headlines the "All" view.
@@ -66,7 +64,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
     [activeCategory, featured, posts]
   );
 
-  const pageBody = isLightMode ? "text-black/60" : "text-white/60";
+  const pageBody = "text-black/60 dark:text-white/60";
 
   return (
     <div className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 z-20 transition-colors duration-500">
@@ -82,17 +80,13 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
             >
               <BlurReveal
                 as="h1"
-                className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 ${
-                  isLightMode ? "text-brand-dark" : "text-brand-light"
-                }`}
+                className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
               >
                 Ideas that drive performance
               </BlurReveal>
 
               <p
-                className={`font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
-                  isLightMode ? "text-black/60" : "text-white/60"
-                }`}
+                className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
               >
                 Articles, playbooks, and customer stories on building
                 high-performance sales teams—straight from the people building
@@ -120,9 +114,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
                 className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2 font-inter text-[13px] font-semibold transition-all duration-300 ${
                   isActive
                     ? "bg-[#19ad7d] border-[#19ad7d] text-white shadow-[0_6px_18px_rgba(25,173,125,0.30)]"
-                    : isLightMode
-                      ? "border-black/10 bg-white/90 backdrop-blur-md text-black/65 hover:text-black hover:border-black/20"
-                      : "border-white/10 bg-white/[0.18] backdrop-blur-md text-white/65 hover:text-white hover:border-white/25"
+                    : "border-black/10 bg-white/90 dark:bg-white/[0.18] backdrop-blur-md text-black/65 dark:text-white/65 hover:text-black hover:border-black/20 dark:border-white/10 dark:hover:text-white dark:hover:border-white/25"
                 }`}
               >
                 {cat === "All" ? "All" : pillLabel(cat)}
@@ -141,11 +133,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
           >
             <Link
               href={`/insights/${featured.slug}`}
-              className={`group grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 rounded-[28px] border overflow-hidden p-4 md:p-5 transition-colors ${
-                isLightMode
-                  ? "border-black/10 bg-white/70 hover:border-black/20"
-                  : "border-white/10 bg-white/[0.03] hover:border-white/25"
-              }`}
+              className="group grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 rounded-[28px] border overflow-hidden p-4 md:p-5 transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] hover:border-black/20 dark:hover:border-white/25"
             >
               <div className="relative aspect-[16/10] rounded-[20px] overflow-hidden">
                 <Cover
@@ -166,17 +154,13 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
                   </span>
                 </div>
                 <h2
-                  className={`font-ivyora font-medium text-[28px] sm:text-[36px] md:text-[40px] leading-[1.1] tracking-[-1px] ${
-                    isLightMode ? "text-black" : "text-white"
-                  }`}
+                  className="font-ivyora font-medium text-[28px] sm:text-[36px] md:text-[40px] leading-[1.1] tracking-[-1px] text-black dark:text-white"
                 >
                   {featured.title}
                 </h2>
                 {featured.description ? (
                   <p
-                    className={`mt-4 font-inter text-[15px] md:text-[17px] leading-relaxed ${
-                      isLightMode ? "text-black/70" : "text-white/70"
-                    }`}
+                    className="mt-4 font-inter text-[15px] md:text-[17px] leading-relaxed text-black/70 dark:text-white/70"
                   >
                     {featured.description}
                   </p>
@@ -206,11 +190,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
             >
               <Link
                 href={`/insights/${post.slug}`}
-                className={`group flex flex-col h-full rounded-[24px] border overflow-hidden transition-colors ${
-                  isLightMode
-                    ? "border-black/10 bg-white/70 hover:border-black/20"
-                    : "border-white/10 bg-white/[0.03] hover:border-white/25"
-                }`}
+                className="group flex flex-col h-full rounded-[24px] border overflow-hidden transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] hover:border-black/20 dark:hover:border-white/25"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <Cover
@@ -229,17 +209,13 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
                       .join(" · ")}
                   </span>
                   <h3
-                    className={`mt-3 font-ivyora font-medium text-[21px] md:text-[23px] leading-[1.15] tracking-[-0.5px] ${
-                      isLightMode ? "text-black" : "text-white"
-                    }`}
+                    className="mt-3 font-ivyora font-medium text-[21px] md:text-[23px] leading-[1.15] tracking-[-0.5px] text-black dark:text-white"
                   >
                     {post.title}
                   </h3>
                   {post.description ? (
                     <p
-                      className={`mt-3 font-inter text-[14px] leading-relaxed line-clamp-3 ${
-                        isLightMode ? "text-black/65" : "text-white/65"
-                      }`}
+                      className="mt-3 font-inter text-[14px] leading-relaxed line-clamp-3 text-black/65 dark:text-white/65"
                     >
                       {post.description}
                     </p>
@@ -266,16 +242,10 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
 
         {/* CTA */}
         <div
-          className={`mt-16 md:mt-24 relative rounded-[32px] p-10 md:p-14 text-center flex flex-col items-center overflow-hidden liquid-glass ${
-            isLightMode
-              ? "border-[#19ad7d]/20 bg-[#19ad7d]/5"
-              : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]"
-          }`}
+          className="mt-16 md:mt-24 relative rounded-[32px] p-10 md:p-14 text-center flex flex-col items-center overflow-hidden liquid-glass border-[#19ad7d]/20 dark:border-[#19ad7d]/30 bg-[#19ad7d]/5 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]"
         >
           <h2
-            className={`relative z-10 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl max-w-2xl ${
-              isLightMode ? "text-black" : "text-white"
-            }`}
+            className="relative z-10 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl max-w-2xl text-black dark:text-white"
           >
             See what Enzy can do for your team.
           </h2>

@@ -4,7 +4,6 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 import { motion, AnimatePresence } from "motion/react";
 import { Plus, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
 type ModuleId = "core" | "sell" | "recruit";
@@ -186,11 +185,9 @@ const TAB_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 function ModuleRail({
   active,
   onChange,
-  isLightMode,
 }: {
   active: ModuleId;
   onChange: (id: ModuleId) => void;
-  isLightMode: boolean;
 }) {
   return (
     <div
@@ -203,12 +200,8 @@ function ModuleRail({
         const isActive = mod.id === active;
         const Icon = mod.icon;
         const activeColor = isActive
-          ? isLightMode
-            ? "text-black"
-            : "text-white"
-          : isLightMode
-            ? "text-black/40 group-hover:text-black/65"
-            : "text-white/40 group-hover:text-white/65";
+          ? "text-black dark:text-white"
+          : "text-black/40 group-hover:text-black/65 dark:text-white/40 dark:group-hover:text-white/65";
         return (
           <button
             key={mod.id}
@@ -255,14 +248,12 @@ function FeatureRow({
   feature,
   isOpen,
   onToggle,
-  isLightMode,
   isFirst,
   skipAnim,
 }: {
   feature: Feature;
   isOpen: boolean;
   onToggle: () => void;
-  isLightMode: boolean;
   isFirst: boolean;
   /**
    * When true, the accordion expands/collapses synchronously with no
@@ -282,35 +273,27 @@ function FeatureRow({
       className={`scroll-mt-24 md:scroll-mt-28 ${
         isFirst
           ? ""
-          : isLightMode
-            ? "border-t border-black/8"
-            : "border-t border-white/8"
+          : "border-t border-black/8 dark:border-white/8"
       }`}
     >
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={isOpen}
-        className={`group w-full text-left flex items-center justify-between gap-6 py-5 md:py-6 transition-colors ${
-          isLightMode ? "hover:text-black" : "hover:text-white"
-        }`}
+        className="group w-full text-left flex items-center justify-between gap-6 py-5 md:py-6 transition-colors hover:text-black dark:hover:text-white"
       >
         <div className="flex-1 min-w-0 flex flex-col gap-1">
           <h3
             className={`font-ivyora font-medium text-[24px] sm:text-[30px] md:text-[36px] leading-[1.05] tracking-[-0.5px] transition-colors ${
               isOpen
                 ? "text-[#19ad7d]"
-                : isLightMode
-                  ? "text-black"
-                  : "text-white"
+                : "text-black dark:text-white"
             }`}
           >
             {feature.title}
           </h3>
           <p
-            className={`font-inter text-[13px] sm:text-[14px] leading-snug line-clamp-1 transition-colors ${
-              isLightMode ? "text-black/55" : "text-white/55"
-            }`}
+            className="font-inter text-[13px] sm:text-[14px] leading-snug line-clamp-1 transition-colors text-black/55 dark:text-white/55"
           >
             {feature.desc}
           </p>
@@ -322,9 +305,7 @@ function FeatureRow({
           className={`shrink-0 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-colors ${
             isOpen
               ? "border-[#19ad7d] text-[#19ad7d]"
-              : isLightMode
-                ? "border-black/15 text-black/60 group-hover:border-black/35 group-hover:text-black"
-                : "border-white/15 text-white/55 group-hover:border-white/35 group-hover:text-white"
+              : "border-black/15 text-black/60 group-hover:border-black/35 group-hover:text-black dark:border-white/15 dark:text-white/55 dark:group-hover:border-white/35 dark:group-hover:text-white"
           }`}
           aria-hidden
         >
@@ -348,19 +329,13 @@ function FeatureRow({
           >
             <div className="pb-6 md:pb-8 flex flex-col gap-5 md:gap-6">
               <p
-                className={`font-inter text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed max-w-[680px] ${
-                  isLightMode ? "text-black/75" : "text-white/75"
-                }`}
+                className="font-inter text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed max-w-[680px] text-black/75 dark:text-white/75"
               >
                 {feature.desc}
               </p>
 
               <div
-                className={`relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border ${
-                  isLightMode
-                    ? "border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)]"
-                    : "border-white/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
-                }`}
+                className="relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)] dark:border-white/8 dark:shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
               >
                 <ImageWithFallback
                   src={feature.image}
@@ -376,7 +351,7 @@ function FeatureRow({
   );
 }
 
-function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
+function FeatureBrowser() {
   const [activeModule, setActiveModule] = useState<ModuleId>("core");
 
   const moduleFeatures = useMemo(
@@ -503,15 +478,13 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
         {/* Hero */}
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
           <h1
-            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl ${
-              isLightMode ? "text-black" : "text-[#f5f7fa]"
-            }`}
+            className="font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl text-black dark:text-[#f5f7fa]"
           >
             <BlurReveal as="span" delay={0.1}>
               Everything you need.
             </BlurReveal>
             <br />
-            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
+            <span className="text-black/40 dark:text-white/40">
               <BlurReveal as="span" delay={0.3}>
                 Nothing you don&apos;t.
               </BlurReveal>
@@ -526,7 +499,6 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
             <ModuleRail
               active={activeModule}
               onChange={handleModuleChange}
-              isLightMode={isLightMode}
             />
           </div>
 
@@ -539,30 +511,20 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -18 }}
                 transition={skipAnim ? { duration: 0 } : TAB_TRANSITION}
-                className={`relative rounded-[28px] md:rounded-[36px] border overflow-hidden ${
-                  isLightMode
-                    ? "bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)]"
-                    : "bg-[#0b0f14]/70 border-white/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)]"
-                }`}
+                className="relative rounded-[28px] md:rounded-[36px] border overflow-hidden bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)] dark:bg-[#0b0f14]/70 dark:border-white/8 dark:shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)]"
               >
                 {/* Module header row */}
                 <div
-                  className={`px-6 md:px-10 py-5 md:py-6 border-b ${
-                    isLightMode ? "border-black/8" : "border-white/8"
-                  }`}
+                  className="px-6 md:px-10 py-5 md:py-6 border-b border-black/8 dark:border-white/8"
                 >
                   <div className="flex flex-col">
                     <span
-                      className={`font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight ${
-                        isLightMode ? "text-black" : "text-white"
-                      }`}
+                      className="font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight text-black dark:text-white"
                     >
                       {activeModuleDef?.label} Module
                     </span>
                     <span
-                      className={`font-inter text-[13px] md:text-[14px] mt-0.5 ${
-                        isLightMode ? "text-black/55" : "text-white/55"
-                      }`}
+                      className="font-inter text-[13px] md:text-[14px] mt-0.5 text-black/55 dark:text-white/55"
                     >
                       {activeModuleDef?.tagline}
                     </span>
@@ -579,7 +541,6 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
                       onToggle={() =>
                         setOpenId(openId === feature.id ? null : feature.id)
                       }
-                      isLightMode={isLightMode}
                       isFirst={idx === 0}
                       skipAnim={skipAnim}
                     />
@@ -595,6 +556,5 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
 }
 
 export function Features() {
-  const { isLightMode } = useTheme();
-  return <FeatureBrowser isLightMode={isLightMode} />;
+  return <FeatureBrowser />;
 }

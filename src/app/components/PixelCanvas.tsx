@@ -958,8 +958,7 @@ export function PixelCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500 max-[768px]:hidden"
-      style={{ background: isLightMode ? "#fdfbf7" : "#0b0f14" }}
+      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500 max-[768px]:hidden bg-[#fdfbf7] dark:bg-[#0b0f14]"
     />
   );
 }

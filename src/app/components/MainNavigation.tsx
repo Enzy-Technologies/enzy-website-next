@@ -222,7 +222,7 @@ export function MainNavigation() {
         onMouseLeave={handleMouseLeave}
       >
         {/* Main Navigation Items */}
-        <div className={`flex gap-8 px-4 py-3.5 font-inter text-[12px] uppercase tracking-[0.15em] font-medium relative ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+        <div className="flex gap-8 px-4 py-3.5 font-inter text-[12px] uppercase tracking-[0.15em] font-medium relative text-black dark:text-[#f5f7fa]">
           {MENU_ITEMS.map((item) => (
             <Link 
               href={item.path}
@@ -241,11 +241,9 @@ export function MainNavigation() {
               }}
               onMouseEnter={() => handleMouseEnter(item.id)}
               className={`flex items-center gap-1.5 transition-all duration-500 ease-out relative ${
-                activeDropdown === item.id 
-                  ? 'text-[#19ad7d]' 
-                  : isLightMode 
-                    ? 'text-black/70 hover:text-black' 
-                    : 'text-white/80 hover:text-white'
+                activeDropdown === item.id
+                  ? 'text-[#19ad7d]'
+                  : 'text-black/70 hover:text-black dark:text-white/80 dark:hover:text-white'
               }`}
             >
               {item.label}
@@ -254,7 +252,7 @@ export function MainNavigation() {
                   animate={{ rotate: activeDropdown === item.id ? 180 : 0 }}
                   transition={{ duration: 0.4, ease: easeOutExpo }}
                 >
-                  <ChevronDown size={14} className={isLightMode ? 'opacity-50' : 'opacity-70'} />
+                  <ChevronDown size={14} className="opacity-50 dark:opacity-70" />
                 </motion.div>
               )}
               {activeDropdown === item.id && (
@@ -287,8 +285,8 @@ export function MainNavigation() {
                 {activeDropdown === 'features' && (
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
-                        <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
+                        <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
                             See what Enzy does—fast.
                         </h3>
                         <div className="mt-4">
@@ -298,15 +296,15 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className={`hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 ${isLightMode ? 'text-black/10' : 'text-white/10'}`} />
+                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                         {SYSTEM_SECTIONS.map((section, i) => (
                             <motion.div key={i} variants={itemVariants} className="flex flex-col">
-                                <span className={`font-inter text-[15px] font-semibold mb-1 ${isLightMode ? 'text-black' : 'text-white'}`}>
+                                <span className="font-inter text-[15px] font-semibold mb-1 text-black dark:text-white">
                                     {section.title}
                                 </span>
-                                <span className={`text-[13px] mb-4 leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+                                <span className="text-[13px] mb-4 leading-snug text-black/60 dark:text-white/60">
                                     {section.desc}
                                 </span>
                                 <ul className="flex flex-col gap-1.5">
@@ -319,9 +317,9 @@ export function MainNavigation() {
                                                     setActiveDropdown(null);
                                                 }}
                                                 scroll={false}
-                                                className={`group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 ${isLightMode ? 'border-transparent hover:bg-black/5 hover:border-black/5' : 'border-transparent hover:bg-white/[0.06] hover:border-white/10'}`}
+                                                className="group flex items-center justify-between px-3 py-2 -ml-3 rounded-lg border transition-all duration-300 border-transparent hover:bg-black/5 hover:border-black/5 dark:hover:bg-white/[0.06] dark:hover:border-white/10"
                                             >
-                                                <span className={`font-inter text-[13px] font-medium transition-colors ${isLightMode ? 'text-black/80 group-hover:text-black' : 'text-white/80 group-hover:text-white'}`}>{item}</span>
+                                                <span className="font-inter text-[13px] font-medium transition-colors text-black/80 group-hover:text-black dark:text-white/80 dark:group-hover:text-white">{item}</span>
                                                 <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                             </Link>
                                         </li>
@@ -336,8 +334,8 @@ export function MainNavigation() {
                 {activeDropdown === 'solutions' && (
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
-                        <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
+                        <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
                             Built for action. Built to scale.
                         </h3>
                         <div className="mt-4">
@@ -347,7 +345,7 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className={`hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 ${isLightMode ? 'text-black/10' : 'text-white/10'}`} />
+                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                         {USE_CASES.map((uc, i) => {
@@ -360,13 +358,13 @@ export function MainNavigation() {
                                         navigateToSamePageHash(e, "/solutions", slug);
                                         setActiveDropdown(null);
                                     }}
-                                    className={`group flex flex-col -m-3 p-3 rounded-xl transition-colors duration-300 ${isLightMode ? 'hover:bg-black/[0.04]' : 'hover:bg-white/[0.06]'}`}
+                                    className="group flex flex-col -m-3 p-3 rounded-xl transition-colors duration-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                                 >
-                                    <span className={`font-inter text-[15px] font-semibold mb-1 inline-flex items-center gap-1.5 transition-colors ${isLightMode ? 'text-black group-hover:text-[#19ad7d]' : 'text-white group-hover:text-[#19ad7d]'}`}>
+                                    <span className="font-inter text-[15px] font-semibold mb-1 inline-flex items-center gap-1.5 transition-colors text-black group-hover:text-[#19ad7d] dark:text-white dark:group-hover:text-[#19ad7d]">
                                         {uc.title}
                                         <ArrowRight size={14} className="text-[#19ad7d] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" strokeWidth={2.5} />
                                     </span>
-                                    <span className={`text-[13px] leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+                                    <span className="text-[13px] leading-snug text-black/60 dark:text-white/60">
                                         {uc.desc}
                                     </span>
                                 </Link>
@@ -380,8 +378,8 @@ export function MainNavigation() {
                 {activeDropdown === 'resources' && (
                   <div className="p-8 lg:p-10 w-[90vw] lg:w-[1000px] max-w-[1000px] flex flex-col md:flex-row gap-10 lg:gap-16">
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
-                        <span className={`uppercase tracking-[0.2em] text-[11px] font-bold ${isLightMode ? 'text-black/40' : 'text-white/40'}`}>Overview</span>
-                        <h3 className={`font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight ${isLightMode ? 'text-black' : 'text-white'}`}>
+                        <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
+                        <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
                             Learn the playbooks that work.
                         </h3>
                         <div className="mt-4">
@@ -391,7 +389,7 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className={`hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 ${isLightMode ? 'text-black/10' : 'text-white/10'}`} />
+                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                         {LEARN_ITEMS.map((item, i) => {
@@ -407,13 +405,13 @@ export function MainNavigation() {
                                           }
                                           setActiveDropdown(null);
                                       }}
-                                      className={`group flex flex-col -m-3 p-3 rounded-xl transition-colors duration-300 ${isLightMode ? 'hover:bg-black/[0.04]' : 'hover:bg-white/[0.06]'}`}
+                                      className="group flex flex-col -m-3 p-3 rounded-xl transition-colors duration-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
                                   >
-                                      <span className={`font-inter text-[15px] font-semibold mb-1 inline-flex items-center gap-1.5 transition-colors ${isLightMode ? 'text-black group-hover:text-[#19ad7d]' : 'text-white group-hover:text-[#19ad7d]'}`}>
+                                      <span className="font-inter text-[15px] font-semibold mb-1 inline-flex items-center gap-1.5 transition-colors text-black group-hover:text-[#19ad7d] dark:text-white dark:group-hover:text-[#19ad7d]">
                                           {item.title}
                                           <ArrowRight size={14} className="text-[#19ad7d] opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" strokeWidth={2.5} />
                                       </span>
-                                      <span className={`text-[13px] leading-snug ${isLightMode ? 'text-black/60' : 'text-white/60'}`}>
+                                      <span className="text-[13px] leading-snug text-black/60 dark:text-white/60">
                                           {item.desc}
                                       </span>
                                   </Link>
@@ -435,9 +433,7 @@ export function MainNavigation() {
             canvas doesn't run on phones, so the control had nothing to toggle. */}
         <button
           onClick={toggleTheme}
-          className={`p-2.5 transition-colors active:scale-95 ${
-            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
-          }`}
+          className="p-2.5 transition-colors active:scale-95 text-black/80 hover:text-black dark:text-white/85 dark:hover:text-white"
           aria-label={
             mounted
               ? isLightMode
@@ -460,9 +456,7 @@ export function MainNavigation() {
 
         <button 
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className={`relative p-2 pointer-events-auto transition-transform active:scale-95 ${
-            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
-          }`}
+          className="relative p-2 pointer-events-auto transition-transform active:scale-95 text-black/80 hover:text-black dark:text-white/85 dark:hover:text-white"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
         >
         <AnimatePresence mode="wait">
@@ -496,13 +490,9 @@ export function MainNavigation() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4, ease: easeOutExpo }}
             style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
-            className={`fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto ${
-              isLightMode
-                ? 'bg-white/60'
-                : 'bg-[#0b0f14]/80'
-            }`}
+            className="fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto bg-white/60 dark:bg-[#0b0f14]/80"
           >
-            <div className={`absolute top-0 inset-x-0 h-64 blur-[100px] pointer-events-none ${isLightMode ? 'bg-[#19ad7d]/10' : 'bg-[#19ad7d]/5'}`} />
+            <div className="absolute top-0 inset-x-0 h-64 blur-[100px] pointer-events-none bg-[#19ad7d]/10 dark:bg-[#19ad7d]/5" />
 
             <div className="flex flex-col pt-32 px-6 pb-20 min-h-full relative z-10">
               {MENU_ITEMS.map((item, i) => (
@@ -511,7 +501,7 @@ export function MainNavigation() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 + i * 0.05, duration: 0.5, ease: easeOutExpo }}
-                  className={`mb-2 border-b ${isLightMode ? 'border-black/5' : 'border-white/5'}`}
+                  className="mb-2 border-b border-black/5 dark:border-white/5"
                 >
                   {item.id !== 'about' ? (
                     // Items with a submenu: tapping the whole row (label or
@@ -528,15 +518,13 @@ export function MainNavigation() {
                         className={`font-inter text-2xl font-medium tracking-[0.1em] uppercase transition-colors flex-1 ${
                           activeMobileDropdown === item.id
                             ? 'text-[#19ad7d]'
-                            : isLightMode ? 'text-black/90' : 'text-white/90'
+                            : 'text-black/90 dark:text-white/90'
                         }`}
                       >
                         {item.label}
                       </span>
                       <span
-                        className={`p-2 -mr-2 transition-colors ${
-                          isLightMode ? 'text-black/40' : 'text-white/40'
-                        }`}
+                        className="p-2 -mr-2 transition-colors text-black/40 dark:text-white/40"
                       >
                         <motion.div
                           animate={{ rotate: activeMobileDropdown === item.id ? 180 : 0 }}
@@ -551,9 +539,7 @@ export function MainNavigation() {
                       <Link
                         href={item.path}
                         onClick={() => setMobileMenuOpen(false)}
-                        className={`font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 ${
-                          isLightMode ? 'text-black/90' : 'text-white/90'
-                        }`}
+                        className="font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 text-black/90 dark:text-white/90"
                       >
                         {item.label}
                       </Link>
@@ -571,10 +557,10 @@ export function MainNavigation() {
                       >
                         <div className="pb-8 pt-2">
                           {item.id === 'features' && (
-                            <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
+                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>See what Enzy does—fast.</p>
+                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
+                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">See what Enzy does—fast.</p>
                                     <Link href="/system" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Explore platform <ArrowRight size={12} />
                                     </Link>
@@ -587,8 +573,8 @@ export function MainNavigation() {
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: j * 0.05 + 0.1 }}
                                 >
-                                    <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-1 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>{section.title}</div>
-                                    <p className={`text-[13px] mb-3 leading-snug ${isLightMode ? 'text-black/50' : 'text-white/50'}`}>{section.desc}</p>
+                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-1 text-black/40 dark:text-white/30">{section.title}</div>
+                                    <p className="text-[13px] mb-3 leading-snug text-black/50 dark:text-white/50">{section.desc}</p>
                                     <div className="flex flex-col gap-2.5">
                                         {section.items.map((subitem, k) => (
                                             <Link 
@@ -600,13 +586,9 @@ export function MainNavigation() {
                                                     setActiveMobileDropdown(null);
                                                 }}
                                                 scroll={false}
-                                                className={`group flex items-center justify-between px-3 py-2.5 mb-1.5 rounded-md border transition-all duration-300 ${
-                                                    isLightMode 
-                                                        ? 'bg-black/[0.03] border-black/5 hover:bg-black/[0.08] hover:border-[#19ad7d]/30' 
-                                                        : 'bg-white/[0.03] border-white/5 hover:bg-white/[0.08] hover:border-[#19ad7d]/30'
-                                                }`}
+                                                className="group flex items-center justify-between px-3 py-2.5 mb-1.5 rounded-md border transition-all duration-300 bg-black/[0.03] border-black/5 hover:bg-black/[0.08] hover:border-[#19ad7d]/30 dark:bg-white/[0.03] dark:border-white/5 dark:hover:bg-white/[0.08] dark:hover:border-[#19ad7d]/30"
                                             >
-                                                <span className={`text-[14px] font-semibold font-inter ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>{subitem}</span>
+                                                <span className="text-[14px] font-semibold font-inter text-black/90 dark:text-white/90">{subitem}</span>
                                                 <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                             </Link>
                                         ))}
@@ -617,10 +599,10 @@ export function MainNavigation() {
                           )}
 
                           {item.id === 'solutions' && (
-                            <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
+                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Built for action. Built to scale.</p>
+                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
+                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">Built for action. Built to scale.</p>
                                     <Link href="/solutions" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Explore solutions <ArrowRight size={12} />
                                     </Link>
@@ -645,8 +627,8 @@ export function MainNavigation() {
                                         className="group flex items-center justify-between gap-3"
                                     >
                                         <span className="flex flex-col">
-                                            <span className={`font-inter text-[15px] font-semibold ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>{uc.title}</span>
-                                            <span className={`text-[13px] leading-snug ${isLightMode ? 'text-black/50' : 'text-white/50'}`}>{uc.desc}</span>
+                                            <span className="font-inter text-[15px] font-semibold text-black/90 dark:text-white/90">{uc.title}</span>
+                                            <span className="text-[13px] leading-snug text-black/50 dark:text-white/50">{uc.desc}</span>
                                         </span>
                                         <ArrowRight size={16} className="text-[#19ad7d] shrink-0 group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                     </Link>
@@ -657,10 +639,10 @@ export function MainNavigation() {
                           )}
 
                           {item.id === 'resources' && (
-                            <div className={`flex flex-col gap-8 pl-4 border-l ${isLightMode ? 'border-black/10' : 'border-white/10'}`}>
+                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
                                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className={`uppercase tracking-[0.2em] text-[10px] font-bold mb-2 ${isLightMode ? 'text-black/40' : 'text-white/30'}`}>Overview</div>
-                                    <p className={`text-[15px] font-inter leading-snug mb-3 ${isLightMode ? 'text-black/80' : 'text-white/80'}`}>Learn the playbooks that work.</p>
+                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
+                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">Learn the playbooks that work.</p>
                                     <Link href="/resources" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
                                         Browse resources <ArrowRight size={12} strokeWidth={2.5} />
                                     </Link>
@@ -688,8 +670,8 @@ export function MainNavigation() {
                                         className="group flex items-center justify-between gap-3"
                                     >
                                         <span className="flex flex-col">
-                                            <span className={`font-inter text-[15px] font-semibold ${isLightMode ? 'text-black/90' : 'text-white/90'}`}>{item.title}</span>
-                                            <span className={`text-[13px] leading-snug ${isLightMode ? 'text-black/50' : 'text-white/50'}`}>{item.desc}</span>
+                                            <span className="font-inter text-[15px] font-semibold text-black/90 dark:text-white/90">{item.title}</span>
+                                            <span className="text-[13px] leading-snug text-black/50 dark:text-white/50">{item.desc}</span>
                                         </span>
                                         <ArrowRight size={16} className="text-[#19ad7d] shrink-0 group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
                                     </Link>
@@ -711,7 +693,7 @@ export function MainNavigation() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + MENU_ITEMS.length * 0.05, duration: 0.5, ease: easeOutExpo }}
-                className={`mb-2 border-b ${isLightMode ? 'border-black/5' : 'border-white/5'}`}
+                className="mb-2 border-b border-black/5 dark:border-white/5"
               >
                 <div className="flex items-center justify-between w-full py-6 group">
                   <Link
@@ -719,9 +701,7 @@ export function MainNavigation() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 ${
-                      isLightMode ? 'text-black/90' : 'text-white/90'
-                    }`}
+                    className="font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 text-black/90 dark:text-white/90"
                   >
                     Log In
                   </Link>

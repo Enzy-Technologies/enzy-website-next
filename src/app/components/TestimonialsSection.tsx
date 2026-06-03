@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { RotateCw } from "lucide-react";
-import { useTheme } from "./ThemeProvider";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { BlurReveal } from "./BlurReveal";
 
@@ -66,17 +65,13 @@ function splitQuote(quote: string) {
 }
 
 export function TestimonialsSection() {
-  const { isLightMode } = useTheme();
-
   return (
     <section className="relative w-full py-20 md:py-28 overflow-x-clip z-20"
     >
       <div className="w-full mx-auto max-w-7xl px-4 md:px-4 flex flex-col gap-8 relative mb-12">
         <div className="flex flex-col items-start w-full text-left">
           <h2
-            className={`font-ivyora text-5xl md:text-7xl lg:text-[96px] ${
-              isLightMode ? "text-[#0b0f14]" : "text-white"
-            } tracking-[-2px] leading-[1.05] font-medium`}
+            className="font-ivyora text-5xl md:text-7xl lg:text-[96px] text-[#0b0f14] dark:text-white tracking-[-2px] leading-[1.05] font-medium"
           >
             <BlurReveal as="span" delay={0.1}>
               In their{" "}
@@ -102,8 +97,6 @@ export function TestimonialsMarquee({
   className?: string;
   sets?: number;
 }) {
-  const { isLightMode } = useTheme();
-
   const trackRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation | null>(null);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
@@ -207,11 +200,7 @@ export function TestimonialsMarquee({
                   onClick={() => setFlippedIndex(isFlipped ? null : idx)}
                 >
                   <div
-                    className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] ${
-                      isLightMode
-                        ? "bg-white/95 border-black/10 hover:border-[#19ad7d]/35"
-                        : "bg-[#0f1419]/95 border-white/12 hover:border-[#19ad7d]/35"
-                    } ${
+                    className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] bg-white/95 border-black/10 hover:border-[#19ad7d]/35 dark:bg-[#0f1419]/95 dark:border-white/12 dark:hover:border-[#19ad7d]/35 ${
                       isFlipped ? "opacity-0 delay-300" : "opacity-100 z-10 delay-100"
                     }`}
                     style={{
@@ -232,11 +221,7 @@ export function TestimonialsMarquee({
                     </div>
 
                     <div
-                      className={`relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b ${
-                        isLightMode
-                          ? "border-black/8 bg-[#eaf4f0]"
-                          : "border-white/8 bg-[#17312d]"
-                      }`}
+                      className="relative h-[55%] w-full flex items-end justify-center pt-12 overflow-hidden border-b border-black/8 bg-[#eaf4f0] dark:border-white/8 dark:bg-[#17312d]"
                     >
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] aspect-square rounded-full border border-[#19ad7d]/20" />
                       <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] aspect-square rounded-full border border-[#19ad7d]/10" />
@@ -252,9 +237,7 @@ export function TestimonialsMarquee({
 
                     <div className="relative h-[45%] w-full p-6 md:p-8 flex flex-col justify-between">
                       <h3
-                        className={`font-inter text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 ${
-                          isLightMode ? "text-[#0b0f14]" : "text-white"
-                        }`}
+                        className="font-inter text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 text-[#0b0f14] dark:text-white"
                       >
                         {"\u201C"}
                         {first}
@@ -264,16 +247,12 @@ export function TestimonialsMarquee({
                       <div className="mt-auto flex flex-col relative">
                         <div className="w-10 h-[2px] bg-[#19ad7d] mb-4" />
                         <span
-                          className={`font-inter text-[14px] font-bold tracking-[0.1em] uppercase ${
-                            isLightMode ? "text-[#0b0f14]" : "text-white"
-                          }`}
+                          className="font-inter text-[14px] font-bold tracking-[0.1em] uppercase text-[#0b0f14] dark:text-white"
                         >
                           {testimonial.name}
                         </span>
                         <span
-                          className={`font-inter text-[11px] font-medium uppercase tracking-wider mt-1 ${
-                            isLightMode ? "text-[#0b0f14]/60" : "text-white/40"
-                          }`}
+                          className="font-inter text-[11px] font-medium uppercase tracking-wider mt-1 text-[#0b0f14]/60 dark:text-white/40"
                         >
                           {testimonial.title}
                         </span>
@@ -282,11 +261,7 @@ export function TestimonialsMarquee({
                   </div>
 
                   <div
-                    className={`absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-[32px] overflow-hidden flex flex-col p-6 md:p-8 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] ${
-                      isLightMode
-                        ? "bg-white/97 border-black/10"
-                        : "bg-[#0f1419]/97 border-white/12"
-                    }`}
+                    className="absolute inset-0 backface-hidden [transform:rotateY(180deg)] rounded-[32px] overflow-hidden flex flex-col p-6 md:p-8 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] bg-white/97 border-black/10 dark:bg-[#0f1419]/97 dark:border-white/12"
                     style={{
                       WebkitBackfaceVisibility: "hidden",
                       backfaceVisibility: "hidden",
@@ -322,9 +297,7 @@ export function TestimonialsMarquee({
                     </div>
 
                     <div
-                      className={`mt-4 pt-4 border-t flex items-center gap-3 shrink-0 ${
-                        isLightMode ? "border-black/10" : "border-white/10"
-                      }`}
+                      className="mt-4 pt-4 border-t flex items-center gap-3 shrink-0 border-black/10 dark:border-white/10"
                     >
                       <div className="w-10 h-10 rounded-full overflow-hidden border border-[#19ad7d]/30 shrink-0">
                         <ImageWithFallback

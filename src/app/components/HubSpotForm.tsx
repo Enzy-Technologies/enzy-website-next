@@ -38,8 +38,6 @@ type Status = "loading" | "ready" | "blocked";
 type Props = {
   /** HubSpot form id (the GUID from the embed code). */
   formId: string;
-  /** Theme flag, used for the loading/blocked message styling. */
-  isLightMode?: boolean;
   /** Alignment of the "Loading form…" message. */
   loadingAlign?: "left" | "center";
   /** Fires once the form markup is rendered and interactive. */
@@ -59,7 +57,6 @@ function hasRenderedForm(container: HTMLElement | null): boolean {
 
 export function HubSpotForm({
   formId,
-  isLightMode = false,
   loadingAlign = "left",
   onReady,
   onSubmitted,
@@ -146,8 +143,8 @@ export function HubSpotForm({
     };
   }, [formId]);
 
-  const muted = isLightMode ? "text-black/60" : "text-white/60";
-  const strong = isLightMode ? "text-black" : "text-white";
+  const muted = "text-black/60 dark:text-white/60";
+  const strong = "text-black dark:text-white";
 
   return (
     <div className={`relative ${className ?? ""}`}>

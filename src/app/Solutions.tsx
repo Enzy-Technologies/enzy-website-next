@@ -2,7 +2,6 @@
 
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "motion/react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { CheckCircle2 } from "lucide-react";
@@ -247,21 +246,17 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
   },
 };
 
-function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean }) {
+function PlaybookCard({ play }: { play: Play }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div
-      className={`relative py-5 md:py-6 border-b transition-all duration-300 ${
-        isLightMode ? "border-black/10 last:border-0" : "border-white/10 last:border-0"
-      }`}
-    >
+    <div className="relative py-5 md:py-6 border-b transition-all duration-300 border-black/10 last:border-0 dark:border-white/10">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <div className={`font-inter text-[13px] md:text-[14px] font-bold uppercase tracking-widest ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+          <div className="font-inter text-[13px] md:text-[14px] font-bold uppercase tracking-widest text-[#19ad7d]">
             {play.title}
           </div>
-          <div className={`font-inter text-[13px] md:text-[14px] font-medium leading-relaxed max-w-sm lg:max-w-md ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+          <div className="font-inter text-[13px] md:text-[14px] font-medium leading-relaxed max-w-sm lg:max-w-md text-black/70 dark:text-white/70">
             {play.description}
           </div>
         </div>
@@ -269,11 +264,7 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className={`shrink-0 w-full md:w-auto px-4 py-2 rounded-xl border font-inter text-[10px] font-bold uppercase tracking-widest transition-all duration-300 ${
-            isLightMode
-              ? "border-black/15 bg-transparent text-black hover:bg-black/5"
-              : "border-white/15 bg-transparent text-white hover:bg-white/5"
-          }`}
+          className="shrink-0 w-full md:w-auto px-4 py-2 rounded-xl border font-inter text-[10px] font-bold uppercase tracking-widest transition-all duration-300 border-black/15 bg-transparent text-black hover:bg-black/5 dark:border-white/15 dark:text-white dark:hover:bg-white/5"
           aria-expanded={open}
         >
           {open ? "HIDE STEPS" : "VIEW STEPS"}
@@ -292,10 +283,10 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
             <ul className="mt-4 flex flex-col gap-3 pt-4 border-t border-black/5 dark:border-white/5">
               {play.steps.map((s, i) => (
                 <li key={s} className="flex items-start gap-3">
-                  <div className={`flex items-center justify-center shrink-0 w-5 h-5 rounded-full border ${isLightMode ? "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]" : "border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d]"} font-bold text-[10px]`}>
+                  <div className="flex items-center justify-center shrink-0 w-5 h-5 rounded-full border border-[#19ad7d]/30 bg-[#19ad7d]/10 text-[#19ad7d] font-bold text-[10px]">
                     {i + 1}
                   </div>
-                  <span className={`font-inter text-[13px] md:text-[14px] font-medium leading-snug mt-0.5 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <span className="font-inter text-[13px] md:text-[14px] font-medium leading-snug mt-0.5 text-black dark:text-white">
                     {s}
                   </span>
                 </li>
@@ -309,7 +300,6 @@ function PlaybookCard({ play, isLightMode }: { play: Play; isLightMode: boolean 
 }
 
 export function Solutions() {
-  const { isLightMode } = useTheme();
   const [mode, setMode] = useState<SalesMode>("field");
   const content = MODE_CONTENT[mode];
   
@@ -333,9 +323,9 @@ export function Solutions() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-center relative z-10 shrink-0 w-full"
         >
-          <h1 className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${isLightMode ? 'text-black' : 'text-[#f5f7fa]'}`}>
+          <h1 className="font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 text-black dark:text-[#f5f7fa]">
             <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
-            <span className={isLightMode ? "text-black/40" : "text-white/40"}>
+            <span className="text-black/40 dark:text-white/40">
               <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
             </span>
           </h1>
@@ -347,9 +337,9 @@ export function Solutions() {
                    key={t.id} 
                    onClick={() => setMode(t.id as SalesMode)}
                    className={`relative transition-all duration-300 px-2 py-1 cursor-pointer ${
-                      mode === t.id 
-                        ? (isLightMode ? "text-black scale-105" : "text-white scale-105") 
-                        : (isLightMode ? "text-black/40 scale-100 hover:text-black/70" : "text-white/40 scale-100 hover:text-white/70")
+                      mode === t.id
+                        ? "text-black scale-105 dark:text-white"
+                        : "text-black/40 scale-100 hover:text-black/70 dark:text-white/40 dark:hover:text-white/70"
                    }`}
                 >
                    <span className="font-inter font-black uppercase text-[14px] md:text-[18px] lg:text-[20px] tracking-widest">
@@ -365,7 +355,7 @@ export function Solutions() {
           
           {/* Left pane: Navigation / Focus Areas */}
           <div className="w-full lg:w-[35%] flex flex-col gap-4 shrink-0">
-            <div className={`font-inter text-[11px] font-bold uppercase tracking-[0.25em] mb-2 pl-2 ${isLightMode ? "text-black/40" : "text-white/40"}`}>
+            <div className="font-inter text-[11px] font-bold uppercase tracking-[0.25em] mb-2 pl-2 text-black/40 dark:text-white/40">
               Select a focus area
             </div>
             <div className="flex flex-row lg:flex-col gap-3 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden pb-4 lg:pb-0 snap-x snap-mandatory">
@@ -376,15 +366,15 @@ export function Solutions() {
                     key={p.id}
                     onClick={() => setActiveIndex(i)}
                     className={`text-left px-5 py-4 lg:px-6 lg:py-5 rounded-[24px] transition-all duration-300 border snap-start shrink-0 w-[280px] lg:w-full ${
-                      isActive 
-                        ? (isLightMode ? "bg-white/80 border-black/10 shadow-sm backdrop-blur-md" : "bg-black/80 border-white/10 shadow-sm backdrop-blur-md") 
-                        : (isLightMode ? "bg-white/20 border-transparent hover:bg-white/40" : "bg-black/20 border-transparent hover:bg-black/40")
+                      isActive
+                        ? "bg-white/80 border-black/10 shadow-sm backdrop-blur-md dark:bg-black/80 dark:border-white/10"
+                        : "bg-white/20 border-transparent hover:bg-white/40 dark:bg-black/20 dark:hover:bg-black/40"
                     }`}
                   >
-                    <h3 className={`font-ivyora text-3xl lg:text-4xl tracking-tight mb-2 transition-colors ${isActive ? (isLightMode ? "text-black" : "text-white") : (isLightMode ? "text-black/60" : "text-white/60")}`}>
+                    <h3 className={`font-ivyora text-3xl lg:text-4xl tracking-tight mb-2 transition-colors ${isActive ? "text-black dark:text-white" : "text-black/60 dark:text-white/60"}`}>
                       {p.label}
                     </h3>
-                    <p className={`font-inter text-sm leading-snug transition-colors ${isActive ? (isLightMode ? "text-black/80" : "text-white/80") : (isLightMode ? "text-black/40" : "text-white/40")}`}>
+                    <p className={`font-inter text-sm leading-snug transition-colors ${isActive ? "text-black/80 dark:text-white/80" : "text-black/40 dark:text-white/40"}`}>
                       {p.summary}
                     </p>
                   </button>
@@ -403,16 +393,16 @@ export function Solutions() {
               className="flex flex-col gap-6 lg:gap-8 w-full"
             >
               {/* Problem & Outcome Row */}
-                <div className={`flex flex-col sm:flex-row gap-8 lg:gap-12 w-full pb-8 border-b ${isLightMode ? "border-black/10" : "border-white/10"}`}>
+                <div className="flex flex-col sm:flex-row gap-8 lg:gap-12 w-full pb-8 border-b border-black/10 dark:border-white/10">
                   <div className="flex-1 flex flex-col gap-4">
-                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+                    <div className="font-inter text-[10px] font-bold uppercase tracking-[0.25em] text-black/60 dark:text-white/60">
                       The Problem
                     </div>
                     <ul className="flex flex-col gap-3">
                       {activePain.pains.map((p) => (
                         <li key={p} className="flex items-start gap-3">
-                          <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${isLightMode ? "bg-[#19ad7d]" : "bg-[#19ad7d]"}`} />
-                          <span className={`font-inter text-[14px] lg:text-[15px] font-medium leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <div className="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 bg-[#19ad7d]" />
+                          <span className="font-inter text-[14px] lg:text-[15px] font-medium leading-snug text-black/90 dark:text-white/90">
                             {p}
                           </span>
                         </li>
@@ -421,14 +411,14 @@ export function Solutions() {
                   </div>
 
                   <div className="flex-1 flex flex-col gap-4">
-                    <div className={`font-inter text-[10px] font-bold uppercase tracking-[0.25em] ${isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}`}>
+                    <div className="font-inter text-[10px] font-bold uppercase tracking-[0.25em] text-[#19ad7d]">
                       The Outcome
                     </div>
                     <ul className="flex flex-col gap-3.5">
                       {activePain.outcomes.map((o) => (
                         <li key={o.value} className="flex items-center gap-3">
-                          <CheckCircle2 size={18} strokeWidth={2.5} className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"} />
-                          <div className={`font-inter text-[14px] lg:text-[15px] leading-snug ${isLightMode ? "text-black/90" : "text-white/90"}`}>
+                          <CheckCircle2 size={18} strokeWidth={2.5} className="text-[#19ad7d]" />
+                          <div className="font-inter text-[14px] lg:text-[15px] leading-snug text-black/90 dark:text-white/90">
                             <span className="font-bold">{o.value}</span> {o.label}
                           </div>
                         </li>
@@ -439,11 +429,11 @@ export function Solutions() {
 
                 {/* Playbooks */}
                 <div className="flex flex-col">
-                  <div className={`font-inter text-[11px] font-bold uppercase tracking-[0.25em] mt-2 ${isLightMode ? "text-black/40" : "text-white/40"}`}>
+                  <div className="font-inter text-[11px] font-bold uppercase tracking-[0.25em] mt-2 text-black/40 dark:text-white/40">
                     Playbooks
                   </div>
                   {activePain.plays.map((play) => (
-                    <PlaybookCard key={play.title} play={play} isLightMode={isLightMode} />
+                    <PlaybookCard key={play.title} play={play} />
                   ))}
                 </div>
               </motion.div>

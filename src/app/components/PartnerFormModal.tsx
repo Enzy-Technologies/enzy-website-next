@@ -3,11 +3,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
-import { useTheme } from "./ThemeProvider";
 import { HubSpotForm } from "./HubSpotForm";
 
 export function PartnerFormModal() {
-  const { isLightMode } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -58,27 +56,21 @@ export function PartnerFormModal() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-            className={`relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[24px] md:rounded-[32px] p-6 md:p-10 border shadow-2xl ${
-              isLightMode 
-                ? "bg-white border-black/10" 
-                : "bg-[#0b0f14] border-white/10"
-            } [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
+            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[24px] md:rounded-[32px] p-6 md:p-10 border shadow-2xl bg-white border-black/10 dark:bg-[#0b0f14] dark:border-white/10 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           >
             <button
               onClick={onClose}
-              className={`absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full transition-colors ${
-                isLightMode ? "hover:bg-black/5 text-black/60 hover:text-black" : "hover:bg-white/5 text-white/60 hover:text-white"
-              }`}
+              className="absolute top-4 right-4 md:top-6 md:right-6 p-2 rounded-full transition-colors hover:bg-black/5 text-black/60 hover:text-black dark:hover:bg-white/5 dark:text-white/60 dark:hover:text-white"
               aria-label="Close modal"
             >
               <X size={24} />
             </button>
 
             <div className="mb-8">
-              <h2 className={`font-ivyora text-4xl md:text-5xl tracking-tight mb-3 ${isLightMode ? "text-black" : "text-white"}`}>
+              <h2 className="font-ivyora text-4xl md:text-5xl tracking-tight mb-3 text-black dark:text-white">
                 Become a Partner
               </h2>
-              <p className={`font-inter text-sm md:text-base ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+              <p className="font-inter text-sm md:text-base text-black/60 dark:text-white/60">
                 Fill out the form below and our partner team will be in touch shortly.
               </p>
             </div>
@@ -88,7 +80,6 @@ export function PartnerFormModal() {
                   opens, because the modal subtree is unmounted while closed. */}
               <HubSpotForm
                 formId="d9f856f3-0be8-43a5-8997-9900695d8214"
-                isLightMode={isLightMode}
                 loadingAlign="center"
               />
             </div>

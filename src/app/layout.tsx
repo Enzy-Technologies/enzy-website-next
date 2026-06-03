@@ -1,7 +1,6 @@
 import React from "react"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
-import { cookies } from "next/headers"
 import localFont from "next/font/local"
 import "@fontsource/inter/index.css"
 import "@fontsource/inter/500.css"
@@ -73,15 +72,13 @@ export const viewport: Viewport = {
   ],
 }
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  // Read the theme preference from a cookie so the server can render the correct
-  // mode in the initial HTML — no flash. Defaults to light when unset.
-  const cookieStore = await cookies()
-  const themeCookie = cookieStore.get("enzy-theme")?.value
-  const isDark = themeCookie === "dark"
-  // Site-wide pixel-canvas state — resolved server-side so the canvas doesn't
-  // flash on for a frame before the client learns it was turned off.
-  const particlesDisabled = cookieStore.get("enzy-particles")?.value === "off"
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // Theme + pixel-canvas state are applied entirely client-side by the inline
+  // pre-paint script below (which sets `.dark` / `.particles-off` on <html>
+  // before first paint, from the cookie/localStorage). The server intentionally
+  // does NOT read those cookies — that keeps every route statically renderable
+  // and prefetchable (reading cookies() here would force dynamic rendering of
+  // the whole site). Theme appearance is driven by CSS `dark:` variants.
 
   const logoUrl =
     brandLogoUrl.startsWith("http") ? brandLogoUrl : `${siteUrl}${brandLogoUrl.startsWith("/") ? "" : "/"}${brandLogoUrl}`
@@ -127,15 +124,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${ivyOra.variable}${isDark ? " dark" : ""}`}>
+    <html lang="en" suppressHydrationWarning className={ivyOra.variable}>
       <head>
-        {/* Fallback for visitors who have an old localStorage preference but no
-            cookie yet: read the cookie first, else migrate localStorage into a
-            cookie and apply the class pre-paint. Once the cookie exists, the
-            server renders the correct theme and this is a no-op. */}
+        {/* Apply theme + pixel-canvas state BEFORE first paint, fully client-side,
+            so routes can stay static (no server cookie read). Reads the
+            enzy-theme / enzy-particles cookies (falling back to localStorage and
+            migrating it into a cookie), then sets `.dark` / `.particles-off` on
+            <html>. CSS `dark:` variants + SiteShell key off these classes, so
+            the correct theme paints immediately with no flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
+            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}var pm=document.cookie.match(/(?:^|; )enzy-particles=([^;]*)/);var p=pm?decodeURIComponent(pm[1]):null;if(!p){p=localStorage.getItem('enzy-particles');}if(p==='off'){document.documentElement.classList.add('particles-off');}else{document.documentElement.classList.remove('particles-off');}}catch(e){}})();`,
           }}
         />
         {/* Warm up the HubSpot embed used by the "Become a Partner" form so it
@@ -198,8 +197,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />
-        <ThemeProvider initialIsLightMode={!isDark}>
-          <SiteShell initialParticlesDisabled={particlesDisabled}>{children}</SiteShell>
+        <ThemeProvider>
+          <SiteShell>{children}</SiteShell>
         </ThemeProvider>
       </body>
     </html>

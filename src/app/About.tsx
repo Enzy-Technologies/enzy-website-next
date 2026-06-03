@@ -5,7 +5,6 @@ import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
-import { useTheme } from "./components/ThemeProvider";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
 import { BlurReveal } from "./components/BlurReveal";
@@ -43,7 +42,6 @@ const FadeInSection = ({
 );
 
 export function About() {
-  const { isLightMode } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -54,22 +52,18 @@ export function About() {
   const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
   const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
-  const pageTitle = isLightMode ? "text-black" : "text-[#f5f7fa]";
-  const pageBody = isLightMode ? "text-black/65" : "text-white/65";
+  const pageTitle = "text-black dark:text-[#f5f7fa]";
+  const pageBody = "text-black/65 dark:text-white/65";
 
   return (
     <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-20 z-20 transition-colors duration-500">
       {/* Background glows */}
       <motion.div
-        className={`absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
-          isLightMode ? "opacity-45" : "opacity-100"
-        }`}
+        className="absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
         style={{ y: backgroundY }}
       />
       <motion.div
-        className={`absolute top-[55%] left-[-12%] w-[560px] h-[560px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.07)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
-          isLightMode ? "opacity-45" : "opacity-100"
-        }`}
+        className="absolute top-[55%] left-[-12%] w-[560px] h-[560px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.07)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
         style={{ y: backgroundY2 }}
       />
 
@@ -107,16 +101,10 @@ export function About() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className={`liquid-glass rounded-2xl border p-5 sm:p-6 transition-colors ${
-                    isLightMode
-                      ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
-                      : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
-                  }`}
+                  className="liquid-glass rounded-2xl border p-5 sm:p-6 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
                 >
                   <dt
-                    className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
-                      isLightMode ? "text-black" : "text-white"
-                    }`}
+                    className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
                   >
                     {s.value}
                     <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
@@ -124,9 +112,7 @@ export function About() {
                     </span>
                   </dt>
                   <dd
-                    className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
-                      isLightMode ? "text-black/65" : "text-white/65"
-                    }`}
+                    className="mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug text-black/65 dark:text-white/65"
                   >
                     {s.label}
                   </dd>
@@ -142,27 +128,27 @@ export function About() {
 
           <div className="mt-10 max-w-4xl flex flex-col gap-10">
             <FadeInSection delay={0.1}>
-              <h3 className={`font-ivyora font-medium text-[32px] sm:text-[40px] md:text-[48px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
-                We&apos;ve studied millions of sales interactions across incentives, goals, competitions, workflows, and performance systems. The pattern is always the same: <span className={isLightMode ? "text-[#19ad7d]" : "text-[#19ad7d]"}>high-performing teams don&apos;t win because they have more data — they win because they turn fragmented behavior into visible momentum.</span>
+              <h3 className="font-ivyora font-medium text-[32px] sm:text-[40px] md:text-[48px] leading-[1.1] tracking-[-1px] text-black dark:text-white">
+                We&apos;ve studied millions of sales interactions across incentives, goals, competitions, workflows, and performance systems. The pattern is always the same: <span className="text-[#19ad7d]">high-performing teams don&apos;t win because they have more data — they win because they turn fragmented behavior into visible momentum.</span>
               </h3>
             </FadeInSection>
             
-            <div className={`flex flex-col gap-6 pl-0 md:pl-8 border-l-0 md:border-l-[3px] ${isLightMode ? "border-[#19ad7d]/20" : "border-[#19ad7d]/30"}`}>
+            <div className="flex flex-col gap-6 pl-0 md:pl-8 border-l-0 md:border-l-[3px] border-[#19ad7d]/20 dark:border-[#19ad7d]/30">
               <FadeInSection delay={0.2}>
-                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                <p className="font-inter text-[18px] md:text-[20px] leading-relaxed text-black/80 dark:text-white/80">
                   That starts with consolidation. Data, tools, processes, incentives, and rep activity must exist in one connected performance layer. Once the system is unified, modern AI can identify the hidden patterns humans miss — the behaviors driving pipeline, the habits creating momentum, and the gaps slowing teams down.
                 </p>
               </FadeInSection>
               
               <FadeInSection delay={0.3}>
-                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
+                <p className="font-inter text-[18px] md:text-[20px] leading-relaxed text-black/80 dark:text-white/80">
                   From there, we help teams operationalize those insights with the right workflows, automations, and technologies to maximize performance at scale.
                 </p>
               </FadeInSection>
               
               <FadeInSection delay={0.4}>
-                <p className={`font-inter text-[18px] md:text-[20px] leading-relaxed ${isLightMode ? "text-black/80" : "text-white/80"}`}>
-                  <strong className={isLightMode ? "text-black font-bold" : "text-white font-bold"}>Enzy exists because sales performance is not random.</strong> It&apos;s measurable, predictable, and engineerable. We build the infrastructure that turns behavior into revenue.
+                <p className="font-inter text-[18px] md:text-[20px] leading-relaxed text-black/80 dark:text-white/80">
+                  <strong className="text-black font-bold dark:text-white">Enzy exists because sales performance is not random.</strong> It&apos;s measurable, predictable, and engineerable. We build the infrastructure that turns behavior into revenue.
                 </p>
               </FadeInSection>
             </div>
@@ -186,24 +172,14 @@ export function About() {
 
 
             <div
-              className={`mt-7 relative rounded-[40px] p-10 md:p-16 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass ${
-                isLightMode
-                  ? "border-[#19ad7d]/20 bg-[#19ad7d]/5"
-                  : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]"
-              }`}
+              className="mt-7 relative rounded-[40px] p-10 md:p-16 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass border-[#19ad7d]/20 bg-[#19ad7d]/5 dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]"
             >
               <div
-                className={`absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(25,173,125,0.2)_0%,transparent_70%)] transition-opacity duration-700 pointer-events-none ${
-                  isLightMode
-                    ? "opacity-20 group-hover:opacity-40"
-                    : "opacity-50 group-hover:opacity-100"
-                }`}
+                className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(25,173,125,0.2)_0%,transparent_70%)] transition-opacity duration-700 pointer-events-none opacity-20 group-hover:opacity-40 dark:opacity-50 dark:group-hover:opacity-100"
               />
 
               <h2
-                className={`relative z-10 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl ${
-                  isLightMode ? "text-black" : "text-white"
-                }`}
+                className="relative z-10 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-3xl md:text-5xl text-black dark:text-white"
               >
                 See what your performance data is{" "}
                 <em className="not-italic text-[#19ad7d]">trying to tell you.</em>
@@ -219,11 +195,7 @@ export function About() {
                 </CTAButton>
                 <Link
                   href="/resources"
-                  className={`w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-inter text-sm font-semibold rounded-full transition-colors ${
-                    isLightMode
-                      ? "text-black/70 hover:text-black hover:bg-black/5 border border-black/10"
-                      : "text-white/70 hover:text-white hover:bg-white/[0.06] border border-white/10"
-                  }`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-inter text-sm font-semibold rounded-full transition-colors text-black/70 hover:text-black hover:bg-black/5 border border-black/10 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.06] dark:border-white/10"
                 >
                   Read customer stories →
                 </Link>
@@ -235,9 +207,7 @@ export function About() {
         {/* About footer */}
         <footer className="pt-2 pb-6">
           <div
-            className={`flex flex-col md:flex-row md:items-center md:justify-center gap-2 font-inter text-[12px] tracking-tight ${
-              isLightMode ? "text-black/45" : "text-white/40"
-            }`}
+            className="flex flex-col md:flex-row md:items-center md:justify-center gap-2 font-inter text-[12px] tracking-tight text-black/45 dark:text-white/40"
           >
             <p className="m-0">© ENZY 2026</p>
           </div>

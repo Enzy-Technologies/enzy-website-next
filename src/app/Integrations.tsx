@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
 const FadeInSection = ({
@@ -140,11 +139,9 @@ const ALL_TAB = { id: "all", label: "All" };
 
 function IntegrationCard({
   integration,
-  isLightMode,
   index,
 }: {
   integration: Integration;
-  isLightMode: boolean;
   index: number;
 }) {
   const [logoFailed, setLogoFailed] = useState(false);
@@ -153,11 +150,7 @@ function IntegrationCard({
     <FadeInSection delay={Math.min(index, 14) * 0.025} className="flex">
       <div className="group flex w-full flex-col items-center gap-3 text-center">
         <span
-          className={`flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-all duration-300 group-hover:scale-110 ${
-            isLightMode
-              ? "bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] ring-1 ring-black/5"
-              : "bg-white shadow-[0_4px_14px_rgba(0,0,0,0.35)] ring-1 ring-white/10"
-          }`}
+          className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-all duration-300 group-hover:scale-110 bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.35)] ring-1 ring-black/5 dark:ring-white/10"
         >
           {logoFailed ? (
             <span className="font-inter text-lg font-bold text-[#19ad7d]">
@@ -180,9 +173,7 @@ function IntegrationCard({
           )}
         </span>
         <span
-          className={`font-inter text-[13px] font-medium leading-tight ${
-            isLightMode ? "text-black/75" : "text-white/75"
-          }`}
+          className="font-inter text-[13px] font-medium leading-tight text-black/75 dark:text-white/75"
         >
           {integration.name}
         </span>
@@ -192,7 +183,6 @@ function IntegrationCard({
 }
 
 export function Integrations() {
-  const { isLightMode } = useTheme();
   const [activeTab, setActiveTab] = useState<string>(ALL_TAB.id);
 
   const tabs = useMemo(
@@ -229,17 +219,13 @@ export function Integrations() {
           >
             <BlurReveal
               as="h1"
-              className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              }`}
+              className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
             >
               Integrated with the tools you use
             </BlurReveal>
 
             <p
-              className={`font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
-                isLightMode ? "text-black/60" : "text-white/60"
-              }`}
+              className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
             >
               Connect Enzy to your existing tech stack to automatically track
               activities, update records, and trigger actions across{" "}
@@ -273,9 +259,7 @@ export function Integrations() {
                 className={`shrink-0 whitespace-nowrap rounded-full border px-4 py-2 font-inter text-[13px] font-semibold transition-all duration-300 ${
                   isActive
                     ? "bg-[#19ad7d] border-[#19ad7d] text-white shadow-[0_6px_18px_rgba(25,173,125,0.30)]"
-                    : isLightMode
-                      ? "border-black/10 bg-white/90 backdrop-blur-md text-black/65 hover:text-black hover:border-black/20"
-                      : "border-white/10 bg-white/[0.18] backdrop-blur-md text-white/65 hover:text-white hover:border-white/25"
+                    : "border-black/10 bg-white/90 dark:bg-white/[0.18] backdrop-blur-md text-black/65 dark:text-white/65 hover:text-black hover:border-black/20 dark:border-white/10 dark:hover:text-white dark:hover:border-white/25"
                 }`}
               >
                 {tab.label}
@@ -292,14 +276,13 @@ export function Integrations() {
             <IntegrationCard
               key={`${activeTab}-${integration.name}`}
               integration={integration}
-              isLightMode={isLightMode}
               index={i}
             />
           ))}
         </div>
 
         <FadeInSection delay={0.2} className="mt-16 text-center">
-          <p className={`font-inter text-sm md:text-base mx-auto max-w-2xl leading-relaxed ${isLightMode ? "text-black/60" : "text-white/60"}`}>
+          <p className="font-inter text-sm md:text-base mx-auto max-w-2xl leading-relaxed text-black/60 dark:text-white/60">
             Don&apos;t see your tool? We&apos;re adding new integrations
             constantly, and we&apos;ll build custom ones when a customer needs
             them.{" "}

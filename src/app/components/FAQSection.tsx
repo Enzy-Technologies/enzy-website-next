@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown } from 'lucide-react';
-import { useTheme } from './ThemeProvider';
 import { JsonLd } from './JsonLd';
 import { SITE_FAQS } from '@/app/lib/faq-data';
 import { usePathname } from 'next/navigation';
@@ -22,7 +21,6 @@ const faqPageSchema = {
 };
 
 export function FAQSection() {
-  const { isLightMode } = useTheme();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const pathname = usePathname();
 
@@ -49,7 +47,7 @@ export function FAQSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`font-ivyora text-5xl md:text-6xl tracking-[-2px] leading-[1.05] font-medium mb-6 ${isLightMode ? 'text-[#0b0f14]' : 'text-white'}`}
+            className="font-ivyora text-5xl md:text-6xl tracking-[-2px] leading-[1.05] font-medium mb-6 text-[#0b0f14] dark:text-white"
           >
             Frequently Asked <span className="text-[#19ad7d]">Questions</span>
           </motion.h2>
@@ -58,7 +56,7 @@ export function FAQSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className={`font-inter text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed ${isLightMode ? 'text-black/60' : 'text-white/60'}`}
+            className="font-inter text-[15px] md:text-[16px] max-w-2xl mx-auto leading-relaxed text-black/60 dark:text-white/60"
           >
             Quick answers about the platform, setup, and where Enzy fits.
           </motion.p>
@@ -86,18 +84,16 @@ export function FAQSection() {
                   onClick={() => toggleFAQ(index)}
                   className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
                 >
-                  <span className={`font-semibold text-lg ${isLightMode ? 'text-gray-900' : 'text-white'}`}>
+                  <span className="font-semibold text-lg text-gray-900 dark:text-white">
                     {faq.question}
                   </span>
                   <motion.div
                     animate={{ rotate: isOpen ? 180 : 0 }}
                     transition={{ duration: 0.3 }}
                     className={`flex-shrink-0 ml-4 p-2 rounded-full transition-colors ${
-                      isOpen 
-                        ? 'bg-[#19ad7d] text-white' 
-                        : isLightMode 
-                          ? 'bg-black/5 text-gray-500' 
-                          : 'bg-white/5 text-gray-400'
+                      isOpen
+                        ? 'bg-[#19ad7d] text-white'
+                        : 'bg-black/5 text-gray-500 dark:bg-white/5 dark:text-gray-400'
                     }`}
                   >
                     <ChevronDown size={20} />
@@ -114,7 +110,7 @@ export function FAQSection() {
                     >
                       <div
                         onClick={handleAnswerClick}
-                        className={`p-6 pt-0 leading-relaxed [&_p]:mt-4 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_li]:marker:text-[#19ad7d] [&_a]:font-medium [&_a]:text-[#19ad7d] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[#19ad7d]/80 [&_strong]:font-semibold ${isLightMode ? 'text-gray-600 [&_strong]:text-gray-900' : 'text-gray-300 [&_strong]:text-white'}`}
+                        className="p-6 pt-0 leading-relaxed [&_p]:mt-4 [&_ul]:mt-3 [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-5 [&_li]:marker:text-[#19ad7d] [&_a]:font-medium [&_a]:text-[#19ad7d] [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-[#19ad7d]/80 [&_strong]:font-semibold text-gray-600 [&_strong]:text-gray-900 dark:text-gray-300 dark:[&_strong]:text-white"
                         dangerouslySetInnerHTML={{ __html: faq.answer }}
                       />
                     </motion.div>

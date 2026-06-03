@@ -1,6 +1,9 @@
 # dependencies
 node_modules/
 
+# local Claude Code tooling (per-machine preview/launch config)
+.claude/
+
 # next.js
 .next/
 out/

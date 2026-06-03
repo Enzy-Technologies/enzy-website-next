@@ -5,19 +5,15 @@ import { usePathname } from "next/navigation"
 import { PixelCanvas } from "./PixelCanvas"
 import { Header } from "./Header"
 import { Footer } from "./Footer"
-import { useTheme } from "./ThemeProvider"
 
 import { PartnerFormModal } from "./PartnerFormModal"
 import { PARTICLES_EVENT, readParticlesDisabled } from "../lib/particles"
 
 export function SiteShell({
   children,
-  initialParticlesDisabled = false,
 }: {
   children: React.ReactNode
-  initialParticlesDisabled?: boolean
 }) {
-  const { isLightMode } = useTheme()
   const pathname = usePathname()
   // The internal pricing tool is a fully self-contained document rendered in an
   // iframe, so it opts out of the marketing chrome just like landing pages do.
@@ -27,8 +23,14 @@ export function SiteShell({
 
   // Site-wide pixel-canvas toggle. The "magic wand" turns this off for the whole
   // site (persisted), so once it's off it stays off across pages and reloads.
-  const [particlesDisabled, setParticlesDisabled] = React.useState(
-    initialParticlesDisabled
+  // Seed from the `particles-off` class that the inline pre-paint script in the
+  // root layout sets synchronously (from the enzy-particles cookie) — so the
+  // canvas never flashes on for a frame before the client learns it was off,
+  // without the server needing to read the cookie.
+  const [particlesDisabled, setParticlesDisabled] = React.useState(() =>
+    typeof document !== "undefined"
+      ? document.documentElement.classList.contains("particles-off")
+      : false
   )
   React.useEffect(() => {
     // Re-sync on mount in case the cookie wasn't set but localStorage was.
@@ -52,9 +54,7 @@ export function SiteShell({
 
   return (
     <div
-      className={`relative w-full min-h-screen font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip [overflow-clip-margin:100px] ${
-        isLightMode ? "bg-[#faf9f6]" : "bg-[#0b0f14]"
-      }`}
+      className="relative w-full min-h-screen font-inter selection:bg-[#19ad7d] selection:text-white transition-colors duration-500 overflow-x-clip [overflow-clip-margin:100px] bg-[#faf9f6] dark:bg-[#0b0f14]"
     >
       {showParticles ? <PixelCanvas /> : null}
 

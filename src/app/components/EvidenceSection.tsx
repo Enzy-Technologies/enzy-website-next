@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView, useScroll, useTransform } from "motion/react";
-import { useTheme } from "./ThemeProvider";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -53,7 +52,6 @@ import { BlurReveal } from "./BlurReveal";
 type EvidenceVariant = "default" | "lp";
 
 export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVariant } = {}) {
-  const { isLightMode } = useTheme();
   const showQuoteCard = variant !== "lp";
   const { value: count, ref: countRef } = useCountUp(21);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -89,9 +87,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
               aria-hidden
             />
             <p
-              className={`font-ivyora font-medium tracking-[-15px] md:tracking-[-25px] leading-[0.8] tabular-nums flex items-center justify-center ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              } text-[160px] sm:text-[220px] md:text-[320px] lg:text-[400px]`}
+              className="font-ivyora font-medium tracking-[-15px] md:tracking-[-25px] leading-[0.8] tabular-nums flex items-center justify-center text-brand-dark dark:text-brand-light text-[160px] sm:text-[220px] md:text-[320px] lg:text-[400px]"
             >
               <span ref={countRef}>{count}</span>
               <span className="text-[#19ad7d]">%</span>
@@ -101,17 +97,13 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
           <BlurReveal
             as="p"
             delay={0.1}
-            className={`font-inter text-[24px] md:text-[32px] lg:text-[40px] font-bold mt-6 md:mt-8 tracking-tight ${
-              isLightMode ? "text-black" : "text-white"
-            }`}
+            className="font-inter text-[24px] md:text-[32px] lg:text-[40px] font-bold mt-6 md:mt-8 tracking-tight text-black dark:text-white"
           >
             Increase in sales per rep after implementing Enzy
           </BlurReveal>
 
           <p
-            className={`font-inter text-[15px] md:text-[17px] leading-relaxed mt-4 max-w-[640px] mx-auto ${
-              isLightMode ? "text-black/55" : "text-white/55"
-            }`}
+            className="font-inter text-[15px] md:text-[17px] leading-relaxed mt-4 max-w-[640px] mx-auto text-black/55 dark:text-white/55"
           >
             Across 39 companies controlling for company size, pre-existing growth trajectory, and industry trends.
           </p>
@@ -123,9 +115,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
-          className={`mt-16 md:mt-24 w-full max-w-[900px] liquid-glass relative rounded-[32px] p-8 md:p-12 text-left ring-1 ${
-            isLightMode ? "ring-[#19ad7d]/20" : "ring-[#19ad7d]/25"
-          }`}
+          className="mt-16 md:mt-24 w-full max-w-[900px] liquid-glass relative rounded-[32px] p-8 md:p-12 text-left ring-1 ring-[#19ad7d]/20 dark:ring-[#19ad7d]/25"
         >
           <div
             className="pointer-events-none absolute left-12 right-12 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent"
@@ -141,24 +131,18 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
 
           <blockquote className="m-0 relative z-10">
             <p
-              className={`font-ivyora italic text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.5px] ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              }`}
+              className="font-ivyora italic text-[24px] md:text-[32px] lg:text-[36px] leading-[1.3] tracking-[-0.5px] text-brand-dark dark:text-brand-light"
             >
               {FEATURED_QUOTE.text}
             </p>
           </blockquote>
 
           <footer
-            className={`flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-8 md:mt-10 pt-6 md:pt-8 border-t relative z-10 ${
-              isLightMode ? "border-black/10" : "border-white/10"
-            }`}
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-8 md:mt-10 pt-6 md:pt-8 border-t relative z-10 border-black/10 dark:border-white/10"
           >
             <div className="flex-1 min-w-0">
               <p
-                className={`font-inter text-[16px] md:text-[18px] font-semibold tracking-tight m-0 ${
-                  isLightMode ? "text-brand-dark" : "text-brand-light"
-                }`}
+                className="font-inter text-[16px] md:text-[18px] font-semibold tracking-tight m-0 text-brand-dark dark:text-brand-light"
               >
                 {FEATURED_QUOTE.name}, {FEATURED_QUOTE.role}
               </p>

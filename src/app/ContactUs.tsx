@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { ArrowRight, Phone, Mail, MapPin, Headset, Briefcase, Check } from "lucide-react";
 import { motion } from "motion/react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
 const CONTACT_PHONE_DISPLAY = "(855) 520-ENZY";
@@ -14,7 +13,6 @@ const SUPPORT_EMAIL = "support@enzy.ai";
 type Reason = "sales" | "support" | "other";
 
 export function ContactUs() {
-  const { isLightMode } = useTheme();
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -24,19 +22,14 @@ export function ContactUs() {
     message: "",
   });
 
-  const pageTitle = isLightMode ? "text-black" : "text-[#f5f7fa]";
-  const pageBody = isLightMode ? "text-black/60" : "text-white/60";
-  const cardClass = isLightMode
-    ? "border-black/10 bg-white/70"
-    : "border-white/10 bg-white/[0.03]";
-  const labelClass = `font-inter text-[13px] font-semibold ${
-    isLightMode ? "text-black/70" : "text-white/70"
-  }`;
-  const inputClass = `mt-2 w-full rounded-xl border px-4 py-3 font-inter text-[15px] outline-none transition-colors focus:border-[#19ad7d] ${
-    isLightMode
-      ? "border-black/12 bg-white text-black placeholder:text-black/35"
-      : "border-white/12 bg-white/[0.04] text-white placeholder:text-white/35"
-  }`;
+  const pageTitle = "text-black dark:text-[#f5f7fa]";
+  const pageBody = "text-black/60 dark:text-white/60";
+  const cardClass =
+    "border-black/10 bg-white/70 dark:border-white/10 dark:bg-white/[0.03]";
+  const labelClass =
+    "font-inter text-[13px] font-semibold text-black/70 dark:text-white/70";
+  const inputClass =
+    "mt-2 w-full rounded-xl border px-4 py-3 font-inter text-[15px] outline-none transition-colors focus:border-[#19ad7d] border-black/12 bg-white text-black placeholder:text-black/35 dark:border-white/12 dark:bg-white/[0.04] dark:text-white dark:placeholder:text-white/35";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,11 +101,7 @@ export function ContactUs() {
                       <Icon size={20} strokeWidth={1.75} aria-hidden />
                     </span>
                     <div>
-                      <h2
-                        className={`font-ivyora font-medium text-[22px] tracking-[-0.5px] ${
-                          isLightMode ? "text-black" : "text-white"
-                        }`}
-                      >
+                      <h2 className="font-ivyora font-medium text-[22px] tracking-[-0.5px] text-black dark:text-white">
                         {m.title}
                       </h2>
                       <p className={`font-inter text-[13px] ${pageBody}`}>
@@ -123,22 +112,14 @@ export function ContactUs() {
                   <div className="flex flex-col gap-2.5">
                     <a
                       href={`mailto:${m.email}`}
-                      className={`group inline-flex items-center gap-2.5 font-inter text-[15px] transition-colors ${
-                        isLightMode
-                          ? "text-black/80 hover:text-[#19ad7d]"
-                          : "text-white/80 hover:text-[#19ad7d]"
-                      }`}
+                      className="group inline-flex items-center gap-2.5 font-inter text-[15px] transition-colors text-black/80 dark:text-white/80 hover:text-[#19ad7d]"
                     >
                       <Mail size={16} className="text-[#19ad7d]" aria-hidden />
                       {m.email}
                     </a>
                     <a
                       href={CONTACT_PHONE_HREF}
-                      className={`group inline-flex items-center gap-2.5 font-inter text-[15px] transition-colors ${
-                        isLightMode
-                          ? "text-black/80 hover:text-[#19ad7d]"
-                          : "text-white/80 hover:text-[#19ad7d]"
-                      }`}
+                      className="group inline-flex items-center gap-2.5 font-inter text-[15px] transition-colors text-black/80 dark:text-white/80 hover:text-[#19ad7d]"
                     >
                       <Phone size={16} className="text-[#19ad7d]" aria-hidden />
                       {m.phone}
@@ -156,9 +137,7 @@ export function ContactUs() {
                 <span className="inline-flex items-center justify-center w-11 h-11 rounded-2xl bg-[#19ad7d]/12 border border-[#19ad7d]/30 text-[#19ad7d]">
                   <MapPin size={20} strokeWidth={1.75} aria-hidden />
                 </span>
-                <div className={`font-inter text-[15px] leading-relaxed ${
-                  isLightMode ? "text-black/80" : "text-white/80"
-                }`}>
+                <div className="font-inter text-[15px] leading-relaxed text-black/80 dark:text-white/80">
                   4100 N Chapel Ridge Rd, Suite 300
                   <br />
                   Lehi, Utah 84043
@@ -178,11 +157,7 @@ export function ContactUs() {
                 <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#19ad7d]/15 border border-[#19ad7d]/30 text-[#19ad7d] mb-5">
                   <Check size={26} strokeWidth={2.5} aria-hidden />
                 </span>
-                <h2
-                  className={`font-ivyora font-medium text-[26px] tracking-[-0.5px] ${
-                    isLightMode ? "text-black" : "text-white"
-                  }`}
-                >
+                <h2 className="font-ivyora font-medium text-[26px] tracking-[-0.5px] text-black dark:text-white">
                   Thanks for reaching out!
                 </h2>
                 <p className={`mt-3 font-inter text-[15px] max-w-sm ${pageBody}`}>

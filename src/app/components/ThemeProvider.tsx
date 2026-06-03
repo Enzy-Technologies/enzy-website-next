@@ -26,13 +26,23 @@ const persistTheme = (isLight: boolean) => {
 
 export const ThemeProvider = ({
   children,
-  initialIsLightMode = true,
 }: {
   children: React.ReactNode;
-  // Resolved server-side from the cookie so the first render matches the server.
-  initialIsLightMode?: boolean;
 }) => {
-  const [isLightMode, setIsLightMode] = useState(initialIsLightMode);
+  // Initialize from the `.dark` class that the inline pre-paint script in the
+  // root layout sets synchronously before first paint (from the enzy-theme
+  // cookie / localStorage). This makes the client state match the already-
+  // rendered theme with zero flash, and removes the need for the server to read
+  // the cookie — so every route can be statically rendered + prefetched.
+  // Theme appearance itself is driven by CSS `dark:` variants keyed off this
+  // class; this state only drives JS consumers (canvas/3D globe colors) and the
+  // toggle button's icon.
+  const [isLightMode, setIsLightMode] = useState(() => {
+    if (typeof document !== 'undefined') {
+      return !document.documentElement.classList.contains('dark');
+    }
+    return true;
+  });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

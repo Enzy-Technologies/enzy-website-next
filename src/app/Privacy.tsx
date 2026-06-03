@@ -1,19 +1,16 @@
 "use client";
 
 import React from "react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
 export function Privacy() {
-  const { isLightMode } = useTheme();
-
   return (
-    <main className={`w-full pt-4 md:pt-8 lg:pt-12 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
+    <main className="w-full pt-4 md:pt-8 lg:pt-12 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
         <BlurReveal as="h1" delay={0.1} className="text-4xl md:text-5xl font-bold tracking-tight mb-3 font-inter">Privacy Policy</BlurReveal>
         <p className="opacity-70 mb-1 font-inter">Enzy Technologies, LLC</p>
         <p className="opacity-70 mb-8 font-inter text-sm">Effective Date: August 09, 2024</p>
 
-        <div className={`prose max-w-none ${isLightMode ? 'prose-slate' : 'prose-invert'} prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]`}>
+        <div className="prose max-w-none prose-slate dark:prose-invert prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]">
           <p className="mb-4">Thank you for doing business with Enzy Technologies, LLC (“Enzy,” “Company,” “we,” “our,” or “us”). We welcome you and hope you find our websites, web applications, mobile application, and our other services and tools (collectively, the “Services”) helpful and useful. We have adopted this privacy policy (“Privacy Policy”) to help our website visitors, contractors, employees, current and potential customers, end users, and other business partners (“you” or “your,”) understand what Data we process, how and why we do so, and what your rights are regarding that Data.</p>
           <p className="mb-4">Any capitalized terms not otherwise defined herein have the meanings given to them in our Terms and Conditions.</p>
           <p className="mb-4">We always seek to improve our Services to you, and that requires that we process information about you and your usage preferences. As we do so, we are absolutely committed to protecting your privacy and the security of your Personal Information.</p>

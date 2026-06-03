@@ -2,7 +2,6 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
-import { useTheme } from "@/app/components/ThemeProvider";
 import { BlurReveal } from "./BlurReveal";
 
 type Step = {
@@ -29,7 +28,7 @@ const STEPS: Step[] = [
   },
 ];
 
-function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step: Step, index: number, totalSteps: number, isLightMode: boolean, scrollYProgress: any }) {
+function Card({ step, index, totalSteps, scrollYProgress }: { step: Step, index: number, totalSteps: number, scrollYProgress: any }) {
   // Create distinct phases: Read -> Transition -> Read -> Transition -> Read
   const totalUnits = totalSteps * 2 - 1;
   const stepSize = 1 / totalUnits;
@@ -93,27 +92,20 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
 
   return (
       <motion.div
-      className={`absolute top-0 left-0 w-full h-full rounded-[32px] border py-10 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-5 sm:gap-8 md:gap-12 items-start md:items-center justify-between overflow-hidden transition-colors duration-500 origin-top ${
-        isLightMode
-          ? "bg-white border-black/10 text-black"
-          : "bg-[#0a0a0c] border-white/10 text-white"
-      }`}
-      style={{ 
+      className="absolute top-0 left-0 w-full h-full rounded-[32px] border py-10 px-8 sm:py-16 sm:px-12 md:py-20 md:px-16 lg:py-24 lg:px-20 flex flex-col md:flex-row gap-5 sm:gap-8 md:gap-12 items-start md:items-center justify-between overflow-hidden transition-colors duration-500 origin-top bg-white border-black/10 text-black dark:bg-[#0a0a0c] dark:border-white/10 dark:text-white shadow-[0_-15px_40px_rgba(0,0,0,0.08),0_25px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-[0_-15px_40px_rgba(0,0,0,0.4),0_25px_50px_-12px_rgba(0,0,0,0.4)]"
+      style={{
         y,
         scale,
         visibility,
         zIndex: index + 10,
         willChange: "transform",
-        boxShadow: isLightMode 
-          ? "0 -15px 40px rgba(0,0,0,0.08), 0 25px 50px -12px rgba(0,0,0,0.1)" 
-          : "0 -15px 40px rgba(0,0,0,0.4), 0 25px 50px -12px rgba(0,0,0,0.4)"
       }}
     >
       <div className="relative z-10 flex flex-col gap-4 sm:gap-6 max-w-2xl shrink-0 md:shrink">
-        <h3 className={`font-ivyora font-medium text-[26px] sm:text-[36px] md:text-[44px] leading-[1.1] tracking-[-1px] ${isLightMode ? "text-black" : "text-white"}`}>
+        <h3 className="font-ivyora font-medium text-[26px] sm:text-[36px] md:text-[44px] leading-[1.1] tracking-[-1px] text-black dark:text-white">
           {step.title}
         </h3>
-        <p className={`font-inter text-[15px] sm:text-[18px] md:text-[20px] font-medium leading-snug ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+        <p className="font-inter text-[15px] sm:text-[18px] md:text-[20px] font-medium leading-snug text-black/70 dark:text-white/70">
           {step.body}
         </p>
       </div>
@@ -130,7 +122,6 @@ function Card({ step, index, totalSteps, isLightMode, scrollYProgress }: { step:
 }
 
 export function HowItWorksSection() {
-  const { isLightMode } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -159,9 +150,7 @@ export function HowItWorksSection() {
             The Methodology
           </p>
           <h2
-            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[80px] leading-[1.05] tracking-[-2px] transition-colors duration-500 ${
-              isLightMode ? "text-black" : "text-white"
-            }`}
+            className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[80px] leading-[1.05] tracking-[-2px] transition-colors duration-500 text-black dark:text-white"
           >
             <BlurReveal as="span" delay={0.1}>
               How it{" "}
@@ -171,9 +160,7 @@ export function HowItWorksSection() {
             </BlurReveal>
           </h2>
           <p
-            className={`font-inter text-[16px] md:text-[20px] font-medium mt-5 ${
-              isLightMode ? "text-black/60" : "text-white/60"
-            }`}
+            className="font-inter text-[16px] md:text-[20px] font-medium mt-5 text-black/60 dark:text-white/60"
           >
             Three layers. One operating system.
           </p>
@@ -181,12 +168,11 @@ export function HowItWorksSection() {
 
         <div className="relative w-full flex-1 flex items-start justify-center max-w-[1000px] mx-auto pb-10">
           {STEPS.map((step, idx) => (
-            <Card 
-              key={step.title} 
-              step={step} 
-              index={idx} 
-              totalSteps={STEPS.length} 
-              isLightMode={isLightMode} 
+            <Card
+              key={step.title}
+              step={step}
+              index={idx}
+              totalSteps={STEPS.length}
               scrollYProgress={smoothScrollYProgress}
             />
           ))}

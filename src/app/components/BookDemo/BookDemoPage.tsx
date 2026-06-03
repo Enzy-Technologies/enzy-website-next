@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Script from "next/script";
-import { useTheme } from "@/app/components/ThemeProvider";
 import { HubSpotForm } from "@/app/components/HubSpotForm";
 import { DEMO_FORM_ID } from "@/app/lib/booking";
 import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/TestimonialsSection";
@@ -30,15 +29,14 @@ export function BookDemoPage({
   hideText = false,
   formId = DEMO_FORM_ID,
 }: { hideTestimonials?: boolean; hideText?: boolean; formId?: string } = {}) {
-  const { isLightMode } = useTheme();
   const [showCalendar, setShowCalendar] = useState(false);
   const [meetingsReady, setMeetingsReady] = useState(false);
 
-  const containerText = isLightMode ? "text-brand-dark" : "text-brand-light";
-  const muted = isLightMode ? "text-black/65" : "text-white/60";
-  const bg = isLightMode ? "bg-[rgba(245,245,245,0.42)]" : "bg-white/[0.03]";
-  const border = isLightMode ? "border-[rgba(25,173,125,0.28)]" : "border-white/10";
-  const panelText = isLightMode ? "text-[rgba(219,219,219,1)]" : "";
+  const containerText = "text-brand-dark dark:text-brand-light";
+  const muted = "text-black/65 dark:text-white/60";
+  const bg = "bg-[rgba(245,245,245,0.42)] dark:bg-white/[0.03]";
+  const border = "border-[rgba(25,173,125,0.28)] dark:border-white/10";
+  const panelText = "text-[rgba(219,219,219,1)] dark:text-inherit";
 
   const containerRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -88,7 +86,7 @@ export function BookDemoPage({
                 ].map((t) => (
                   <div key={t} className="flex items-start gap-3">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#19ad7d] shrink-0" aria-hidden />
-                    <p className={`m-0 font-inter text-[14px] leading-[1.55] ${isLightMode ? "text-black/70" : "text-white/70"}`}>
+                    <p className="m-0 font-inter text-[14px] leading-[1.55] text-black/70 dark:text-white/70">
                       {t}
                     </p>
                   </div>
@@ -110,16 +108,10 @@ export function BookDemoPage({
                 {BOOK_DEMO_STATS.map((s) => (
                   <div
                     key={s.label}
-                    className={`liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors ${
-                      isLightMode
-                        ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
-                        : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
-                    }`}
+                    className="liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
                   >
                     <dt
-                      className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
-                        isLightMode ? "text-black" : "text-white"
-                      }`}
+                      className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
                     >
                       {s.value}
                       <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
@@ -127,9 +119,7 @@ export function BookDemoPage({
                       </span>
                     </dt>
                     <dd
-                      className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
-                        isLightMode ? "text-black/65" : "text-white/65"
-                      }`}
+                      className="mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug text-black/65 dark:text-white/65"
                     >
                       {s.label}
                     </dd>
@@ -161,7 +151,6 @@ export function BookDemoPage({
                 <div className="flex flex-col gap-7 enzy-hubspot-embed">
                   <HubSpotForm
                     formId={formId}
-                    isLightMode={isLightMode}
                     loadingAlign="left"
                     onSubmitted={() => setShowCalendar(true)}
                   />
@@ -196,16 +185,10 @@ export function BookDemoPage({
               {BOOK_DEMO_STATS.map((s) => (
                 <div
                   key={s.label}
-                  className={`liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors ${
-                    isLightMode
-                      ? "border-[#19ad7d]/20 bg-[#19ad7d]/[0.03]"
-                      : "border-[#19ad7d]/30 bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
-                  }`}
+                  className="liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
                 >
                   <dt
-                    className={`font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] ${
-                      isLightMode ? "text-black" : "text-white"
-                    }`}
+                    className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
                   >
                     {s.value}
                     <span className="ml-1 text-[15px] sm:text-[16px] font-bold tracking-tight text-[#19ad7d]">
@@ -213,9 +196,7 @@ export function BookDemoPage({
                     </span>
                   </dt>
                   <dd
-                    className={`mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug ${
-                      isLightMode ? "text-black/65" : "text-white/65"
-                    }`}
+                    className="mt-2 font-inter text-[12px] sm:text-[13px] font-medium leading-snug text-black/65 dark:text-white/65"
                   >
                     {s.label}
                   </dd>

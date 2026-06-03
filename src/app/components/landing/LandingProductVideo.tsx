@@ -2,7 +2,6 @@
 
 import React from "react";
 import { ArrowRight } from "lucide-react";
-import { useTheme } from "@/app/components/ThemeProvider";
 import { CTAButton } from "@/app/components/CTAButton";
 
 type Props = {
@@ -16,7 +15,6 @@ type Props = {
 };
 
 export function LandingProductVideo({ id = "product-video", eyebrow, title, description, embedSrc, cta }: Props) {
-  const { isLightMode } = useTheme();
   if (!embedSrc?.trim()) return null;
 
   return (
@@ -29,26 +27,20 @@ export function LandingProductVideo({ id = "product-video", eyebrow, title, desc
         {eyebrow ? <p className="eyebrow text-[#19ad7d] mb-2">{eyebrow}</p> : null}
         <h2
           id={`${id}-heading`}
-          className={`font-ivyora font-medium text-2xl sm:text-3xl md:text-4xl tracking-[-1.2px] leading-[1.12] ${
-            isLightMode ? "text-black" : "text-white"
-          }`}
+          className="font-ivyora font-medium text-2xl sm:text-3xl md:text-4xl tracking-[-1.2px] leading-[1.12] text-black dark:text-white"
         >
           {title}
         </h2>
         {description ? (
           <p
-            className={`mt-3 max-w-lg font-inter text-[15px] md:text-base leading-relaxed ${
-              isLightMode ? "text-black/60" : "text-white/60"
-            }`}
+            className="mt-3 max-w-lg font-inter text-[15px] md:text-base leading-relaxed text-black/60 dark:text-white/60"
           >
             {description}
           </p>
         ) : null}
 
         <div
-          className={`mt-8 w-full overflow-hidden rounded-2xl border shadow-2xl aspect-video ${
-            isLightMode ? "border-black/10 bg-black/5" : "border-white/10 bg-black/20"
-          }`}
+          className="mt-8 w-full overflow-hidden rounded-2xl border shadow-2xl aspect-video border-black/10 bg-black/5 dark:border-white/10 dark:bg-black/20"
         >
           <iframe
             className="h-full w-full"

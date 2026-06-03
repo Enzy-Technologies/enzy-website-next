@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef } from "react";
-import { useTheme } from "@/app/components/ThemeProvider";
 import { ImageWithFallback } from "@/app/components/figma/ImageWithFallback";
 
 type LogoEntry = {
@@ -79,14 +78,11 @@ const LOGOS: LogoEntry[] = [
 ];
 
 export function SimpleLogosMarquee() {
-  const { isLightMode } = useTheme();
-
   const items = useMemo(() => [...LOGOS, ...LOGOS], []);
   const maskRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const logoClass = isLightMode
-    ? "max-h-full max-w-full h-auto w-auto object-contain opacity-70 brightness-0"
-    : "max-h-full max-w-full h-auto w-auto object-contain opacity-90 brightness-0 invert";
+  const logoClass =
+    "max-h-full max-w-full h-auto w-auto object-contain opacity-70 brightness-0 dark:opacity-90 dark:invert";
 
   useEffect(() => {
     const mask = maskRef.current;
@@ -226,7 +222,7 @@ export function SimpleLogosMarquee() {
         setActive(((activeApprox % N) + N) % N, false);
       }
     };
-  }, [isLightMode]);
+  }, []);
 
   return (
     <div className="w-full mt-5 md:mt-6" aria-label="Logos">

@@ -1,17 +1,14 @@
 "use client";
 
 import React from "react";
-import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
 
 export function Terms() {
-  const { isLightMode } = useTheme();
-
   return (
-    <main className={`w-full pt-4 md:pt-8 lg:pt-12 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto ${isLightMode ? 'text-[#0b0f14]' : 'text-[#f5f7fa]'}`}>
+    <main className="w-full pt-4 md:pt-8 lg:pt-12 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
         <BlurReveal as="h1" delay={0.1} className="text-4xl md:text-5xl font-bold tracking-tight mb-3 font-inter">Terms and Conditions</BlurReveal>
         <p className="italic opacity-70 mb-8 font-inter">Last updated May 22nd, 2025</p>
-        <div className={`prose max-w-none ${isLightMode ? 'prose-slate' : 'prose-invert'} prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]`}>
+        <div className="prose max-w-none prose-slate dark:prose-invert prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]">
           <p className="mb-4">These Terms and Conditions (“Terms”) sets forth the terms and conditions that apply to access and use of the Services (as defined below) of Enzy Technologies, LLC (“Provider”) by the customer set forth on an Order Form submitted to Provider (“Customer”). These Terms, together with (i) any order form submitted by Customer and accepted by Provider (“Order Form”), any statement of work submitted to and accepted by Provider (“SOW”), and (iii) Provider&rsquo;s Privacy Policy found at <a href="/privacy-policy">https://enzy.ai/privacy-policy</a>, constitute the “Agreement.” Provider and Customer may be referred to herein individually as a “Party” or collectively as the “Parties.”</p>
           <p className="mb-4">This Agreement becomes binding and effective on Customer upon the earliest of: (1) when you access or use the Services, including accessing the Services after changes to this Agreement in accordance to Section 11.6 below, (2) when you click an “I Accept,” “Sign up” or similar button or check box referencing this Agreement, or (3) when you enter into an Order Form (“Effective Date”).</p>
           <p className="mb-4">BEFORE ACCEPTING THIS AGREEMENT, CUSTOMER IS ADVISED TO CAREFULLY READ THE TERMS OF THIS AGREEMENT AND ANY APPLICABLE DOCUMENTATION. BY CLICKING TO ACCEPT THIS AGREEMENT, CUSTOMER (1) AGREES TO BE BOUND BY AND BECOMES A PARTY TO THIS AGREEMENT AND (2) CONFIRMS THAT THE INDIVIDUAL ENTERING THIS AGREEMENT HAS AUTHORITY TO SO BIND CUSTOMER WITHOUT FURTHER ACTION BY CUSTOMER. IF CUSTOMER DOES NOT AGREE TO THE TERMS OF THIS AGREEMENT, CUSTOMER SHOULD NOT CLICK THE “AGREE” BUTTON AND THE SERVICES WILL NOT BE USABLE.</p>

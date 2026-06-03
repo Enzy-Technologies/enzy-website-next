@@ -3,7 +3,6 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { CTAButton } from "./CTAButton";
-import { useTheme } from "./ThemeProvider";
 import { BOOK_DEMO_HREF } from "@/app/lib/booking";
 
 type ClosingCTASectionProps = {
@@ -11,14 +10,10 @@ type ClosingCTASectionProps = {
 };
 
 export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASectionProps = {}) {
-  const { isLightMode } = useTheme();
-
   return (
     <section className="relative w-full px-4 py-20 md:py-28 max-w-7xl mx-auto">
       <div
-        className={`liquid-glass relative rounded-[32px] md:rounded-[40px] px-6 py-14 md:px-16 md:py-20 text-center ring-1 ${
-          isLightMode ? "ring-[#19ad7d]/20" : "ring-[#19ad7d]/25"
-        }`}
+        className="liquid-glass relative rounded-[32px] md:rounded-[40px] px-6 py-14 md:px-16 md:py-20 text-center ring-1 ring-[#19ad7d]/20 dark:ring-[#19ad7d]/25"
       >
         <div
           className="pointer-events-none absolute left-12 right-12 top-0 h-px bg-gradient-to-r from-transparent via-[#19ad7d]/45 to-transparent"
@@ -26,18 +21,14 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
         />
 
         <h2
-          className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${
-            isLightMode ? "text-brand-dark" : "text-brand-light"
-          } text-[36px] sm:text-[48px] md:text-[60px] lg:text-[68px] mx-auto max-w-[820px]`}
+          className="font-ivyora font-medium leading-[1.05] tracking-[-2px] text-brand-dark dark:text-brand-light text-[36px] sm:text-[48px] md:text-[60px] lg:text-[68px] mx-auto max-w-[820px]"
         >
           Your team doesn&rsquo;t need multiple apps.{" "}
           <span className="italic font-normal">They need Enzy.</span>
         </h2>
 
         <p
-          className={`font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[640px] mx-auto ${
-            isLightMode ? "text-black/65" : "text-white/60"
-          }`}
+          className="font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[640px] mx-auto text-black/65 dark:text-white/60"
         >
           Replace your spreadsheet leaderboards, group texts, and Canva
           competition graphics. Live in two weeks.

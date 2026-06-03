@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "motion/react";
-import { useTheme } from "./ThemeProvider";
 import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF, LP_DEMO_FORM_ID } from "@/app/lib/booking";
@@ -76,17 +75,11 @@ const LP_VALUE_BULLETS = [
 ];
 
 function HeroSectionLp() {
-  const { isLightMode } = useTheme();
-
   return (
     <section className="relative w-full">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
         <div
-          className={`absolute inset-0 ${
-            isLightMode
-              ? "bg-[radial-gradient(120%_90%_at_50%_-28%,rgba(25,173,125,0.14),transparent_52%),linear-gradient(180deg,var(--color-surface-light)_0%,#ffffff_58%)]"
-              : "bg-[radial-gradient(95%_72%_at_88%_-8%,rgba(25,173,125,0.17),transparent_56%),radial-gradient(72%_58%_at_4%_58%,rgba(25,173,125,0.09),transparent_62%),linear-gradient(180deg,#0b0f14_0%,#060809_100%)]"
-          }`}
+          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-28%,rgba(25,173,125,0.14),transparent_52%),linear-gradient(180deg,var(--color-surface-light)_0%,#ffffff_58%)] dark:bg-[radial-gradient(95%_72%_at_88%_-8%,rgba(25,173,125,0.17),transparent_56%),radial-gradient(72%_58%_at_4%_58%,rgba(25,173,125,0.09),transparent_62%),linear-gradient(180deg,#0b0f14_0%,#060809_100%)]"
         />
         <div
           className="absolute inset-x-0 top-0 h-[min(460px,50vh)] opacity-[0.42] [mask-image:linear-gradient(to_bottom,black,transparent)]"
@@ -101,9 +94,7 @@ function HeroSectionLp() {
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-12 md:pb-12 md:pt-16 lg:pt-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto gap-6 md:gap-8">
           <h1
-            className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
-              isLightMode ? "text-brand-dark" : "text-brand-light"
-            } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
+            className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]"
           >
             <BlurReveal as="span" delay={0.1}>
               Performance has always been a game.{" "}
@@ -114,9 +105,7 @@ function HeroSectionLp() {
           </h1>
 
           <p
-            className={`max-w-[640px] font-inter text-[17px] leading-[1.55] md:text-[19px] ${
-              isLightMode ? "text-black/72" : "text-white/68"
-            }`}
+            className="max-w-[640px] font-inter text-[17px] leading-[1.55] md:text-[19px] text-black/72 dark:text-white/68"
           >
             Enzy is the performance operating system for field sales — one that doesn&rsquo;t just visualize your data but tells you what to do with it. Live competitions, public leaderboards, real-time recognition, and AI backed by more sales performance data than any tool in existence.
           </p>
@@ -139,9 +128,7 @@ function HeroSectionLp() {
             />
             <div className="relative rounded-[28px] border border-[#19ad7d]/25 bg-gradient-to-br from-[#19ad7d]/20 via-transparent to-[#19ad7d]/10 p-[1px] shadow-[0_24px_80px_-24px_rgba(25,173,125,0.55)] sm:rounded-[32px] md:rounded-[36px]">
               <div
-                className={`overflow-hidden rounded-[27px] sm:rounded-[31px] md:rounded-[35px] ${
-                  isLightMode ? "bg-[#faf9f6]" : "bg-[#07090c]"
-                }`}
+                className="overflow-hidden rounded-[27px] sm:rounded-[31px] md:rounded-[35px] bg-[#faf9f6] dark:bg-[#07090c]"
               >
                 <HeroVideoPlaceholder
                   variant="lp"
@@ -162,9 +149,7 @@ function HeroSectionLp() {
 
         <div className="mt-12 md:mt-16 w-full max-w-4xl mx-auto text-center">
           <p
-            className={`mb-4 font-inter text-[10px] font-semibold uppercase tracking-[0.18em] md:text-[11px] ${
-              isLightMode ? "text-black/45" : "text-white/45"
-            }`}
+            className="mb-4 font-inter text-[10px] font-semibold uppercase tracking-[0.18em] md:text-[11px] text-black/45 dark:text-white/45"
           >
             Trusted by revenue teams worldwide
           </p>
@@ -178,8 +163,6 @@ function HeroSectionLp() {
 }
 
 function HeroSectionDefault() {
-  const { isLightMode } = useTheme();
-
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -193,18 +176,14 @@ function HeroSectionDefault() {
               fills the width instead of wrapping tightly. */}
           <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
             <h1
-              className={`font-inter font-bold tracking-[-0.05em] leading-[1.02] ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              } text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]`}
+              className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]"
             >
               <BlurReveal as="span" delay={0.1}>Performance has never had an operating system. </BlurReveal>
               <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD_ALT) - LEAD_OVERLAP} className="font-ivyora font-medium italic">Until now.</BlurReveal>
             </h1>
 
             <p
-              className={`font-inter text-[16px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 ${
-                isLightMode ? "text-black/70" : "text-white/65"
-              }`}
+              className="font-inter text-[16px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 text-black/70 dark:text-white/65"
             >
               The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more field sales performance data than any tool in existence.
             </p>
@@ -222,9 +201,7 @@ function HeroSectionDefault() {
 
             <div className="w-full lg:max-w-[560px] mx-auto lg:mx-0">
               <p
-                className={`font-inter text-[11px] md:text-[12px] tracking-[0.18em] uppercase font-semibold mb-3 ${
-                  isLightMode ? "text-black/55" : "text-white/55"
-                }`}
+                className="font-inter text-[11px] md:text-[12px] tracking-[0.18em] uppercase font-semibold mb-3 text-black/55 dark:text-white/55"
               >
                 Serving 180k users
               </p>

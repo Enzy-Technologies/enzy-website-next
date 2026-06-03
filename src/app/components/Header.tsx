@@ -103,7 +103,7 @@ export function Header() {
               width={220}
               height={40}
               priority
-              className={`h-6 lg:h-9 w-auto ${isLightMode ? 'brightness-0' : 'invert brightness-0'}`}
+              className="h-6 lg:h-9 w-auto brightness-0 dark:invert dark:brightness-0"
             />
           </Link>
         </div>
@@ -126,11 +126,7 @@ export function Header() {
               href={LOGIN_HREF}
               target="_blank"
               rel="noopener noreferrer"
-              className={`hidden lg:inline-flex items-center font-inter text-[13px] font-semibold tracking-tight pointer-events-auto z-50 transition-colors ${
-                isLightMode
-                  ? "text-black/70 hover:text-black"
-                  : "text-white/75 hover:text-white"
-              }`}
+              className="hidden lg:inline-flex items-center font-inter text-[13px] font-semibold tracking-tight pointer-events-auto z-50 transition-colors text-black/70 hover:text-black dark:text-white/75 dark:hover:text-white"
             >
               Log In
             </Link>
@@ -152,7 +148,7 @@ export function Header() {
               const rect = e.currentTarget.getBoundingClientRect();
               requestParticlesToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
             }}
-            className={`hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            className="hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 border-black/20 bg-black/5 hover:bg-black/10 text-black dark:border-white/20 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white"
             aria-label="Toggle pixels"
             title="Toggle pixels"
           >
@@ -161,7 +157,7 @@ export function Header() {
 
           <button
             onClick={toggleTheme}
-            className={`hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 ${isLightMode ? 'border-black/20 bg-black/5 hover:bg-black/10 text-black' : 'border-white/20 bg-white/5 hover:bg-white/10 text-white'}`}
+            className="hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 border-black/20 bg-black/5 hover:bg-black/10 text-black dark:border-white/20 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white"
             aria-label="Toggle theme"
           >
             {isMounted ? (isLightMode ? <Moon size={18} /> : <Sun size={18} />) : <div className="w-[18px] h-[18px]" />}

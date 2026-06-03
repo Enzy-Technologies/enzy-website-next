@@ -4,7 +4,6 @@ import React from "react";
 import { motion } from "motion/react";
 
 import type { LandingPageConfigMarketing } from "./lp/config/types";
-import { useTheme } from "../components/ThemeProvider";
 import { LandingProductVideo } from "../components/landing/LandingProductVideo";
 import { LpBookDemoInline, LpBookDemoScrollShell } from "../components/landing/LpBookDemoScroll";
 import { LpSingleTestimonial } from "../components/landing/LpSingleTestimonial";
@@ -13,7 +12,6 @@ import { ClosingCTASection } from "../components/ClosingCTASection";
 import { TESTIMONIALS } from "../components/TestimonialsSection";
 
 function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
-  const { isLightMode } = useTheme();
   const hero = config.hero;
 
   return (
@@ -26,17 +24,13 @@ function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
           className="flex flex-col items-center"
         >
           <div
-            className={`px-5 py-2 rounded-full border backdrop-blur-sm mb-6 md:mb-8 transition-colors duration-500 eyebrow ${
-              isLightMode ? "border-black/10 bg-black/5 text-black/60" : "border-white/10 bg-white/5 text-white/60"
-            }`}
+            className="px-5 py-2 rounded-full border backdrop-blur-sm mb-6 md:mb-8 transition-colors duration-500 eyebrow border-black/10 bg-black/5 text-black/60 dark:border-white/10 dark:bg-white/5 dark:text-white/60"
           >
             {hero.eyebrow}
           </div>
 
           <h1
-            className={`font-ivyora font-medium text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[80px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 ${
-              isLightMode ? "text-black" : "text-[#f5f7fa]"
-            }`}
+            className="font-ivyora font-medium text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[80px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-black dark:text-[#f5f7fa]"
           >
             <span className="block">{hero.headline}</span>
             {hero.highlight ? (
@@ -45,9 +39,7 @@ function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
           </h1>
 
           <p
-            className={`font-inter text-base md:text-lg mt-6 max-w-xl text-center leading-relaxed transition-colors duration-500 ${
-              isLightMode ? "text-black/60" : "text-white/55"
-            }`}
+            className="font-inter text-base md:text-lg mt-6 max-w-xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/55"
           >
             {hero.subhead}
           </p>

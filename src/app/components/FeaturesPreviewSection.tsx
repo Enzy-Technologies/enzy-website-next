@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { useTheme } from "./ThemeProvider";
 
 function svgDataUri(svg: string) {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
@@ -162,7 +161,6 @@ const cardsData = [
 ];
 
 export function FeaturesPreviewSection({ variant = "default" }: { variant?: "default" | "lp" } = {}) {
-  const { isLightMode } = useTheme();
   const isLp = variant === "lp";
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -269,9 +267,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
               </p>
             ) : null}
             <h2
-              className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${
-                isLightMode ? "text-brand-dark" : "text-brand-light"
-              } text-[32px] sm:text-[40px] md:text-[48px]`}
+              className="font-ivyora font-medium leading-[1.05] tracking-[-2px] text-brand-dark dark:text-brand-light text-[32px] sm:text-[40px] md:text-[48px]"
             >
               {isLp ? (
                 <>
@@ -402,7 +398,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
             className={`h-2 rounded-full transition-all duration-300 ${
               activeIndex === i
                 ? "w-8 bg-[#19ad7d]"
-                : `w-2 ${isLightMode ? "bg-black/20 hover:bg-black/40" : "bg-white/20 hover:bg-white/40"}`
+                : "w-2 bg-black/20 hover:bg-black/40 dark:bg-white/20 dark:hover:bg-white/40"
             }`}
             aria-label={`Go to feature ${i + 1}`}
             type="button"

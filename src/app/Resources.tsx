@@ -3,7 +3,6 @@
 import React, { useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
 import { X, ArrowRight } from "lucide-react";
-import { useTheme } from "./components/ThemeProvider";
 import { CTAButton } from "./components/CTAButton";
 import { BlurReveal } from "./components/BlurReveal";
 import Image from "next/image";
@@ -80,7 +79,6 @@ const LEARN_DATA = [
 ];
 
 export function Resources() {
-  const { isLightMode } = useTheme();
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -147,15 +145,11 @@ export function Resources() {
     <>
       <section ref={containerRef} className="relative flex flex-col items-center justify-start w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-12 md:pb-16 max-w-7xl mx-auto z-20">
         <motion.div
-          className={`absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none ${
-            isLightMode ? "opacity-50" : "opacity-100"
-          }`}
+          className="absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none opacity-50 dark:opacity-100"
           style={{ y: backgroundY }}
         />
         <motion.div
-          className={`absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none ${
-            isLightMode ? "opacity-50" : "opacity-100"
-          }`}
+          className="absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-50 dark:opacity-100"
           style={{ y: backgroundY2 }}
         />
         <motion.div
@@ -167,16 +161,12 @@ export function Resources() {
           <BlurReveal
             as="h1"
             delay={0.1}
-            className={`font-ivyora font-medium text-5xl md:text-7xl lg:text-[100px] leading-[1.05] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 ${
-              isLightMode ? "text-black" : "text-[#f5f7fa]"
-            }`}
+            className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[100px] leading-[1.05] tracking-[-2px] text-center max-w-4xl transition-colors duration-500 text-black dark:text-[#f5f7fa]"
           >
             Learn in minutes
           </BlurReveal>
           <p
-            className={`font-inter text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 ${
-              isLightMode ? "text-black/60" : "text-white/60"
-            }`}
+            className="font-inter text-base md:text-lg mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
           >
             Skimmable playbooks, guides, and stories you can apply immediately.
           </p>
@@ -232,27 +222,19 @@ export function Resources() {
 
                 {/* Right/Bottom Half: Expanded Content */}
                 <div
-                  className={`flex-1 w-full md:w-1/2 h-[60%] md:h-full border-l p-8 backdrop-blur-xl md:p-12 flex flex-col relative z-20 overflow-y-auto ${
-                    isLightMode
-                      ? "border-black/10 bg-white/92 text-black"
-                      : "border-white/10 bg-[#0b0f14]/92 text-white"
-                  }`}
+                  className="flex-1 w-full md:w-1/2 h-[60%] md:h-full border-l p-8 backdrop-blur-xl md:p-12 flex flex-col relative z-20 overflow-y-auto border-black/10 bg-white/92 text-black dark:border-white/10 dark:bg-[#0b0f14]/92 dark:text-white"
                 >
                   <button
                     onClick={() => setSelectedId(null)}
-                    className={`absolute top-6 right-6 p-2 rounded-full transition-colors ${
-                      isLightMode
-                        ? "bg-black/5 hover:bg-black/10 text-black"
-                        : "bg-white/10 hover:bg-white/20 text-white"
-                    }`}
+                    className="absolute top-6 right-6 p-2 rounded-full transition-colors bg-black/5 hover:bg-black/10 text-black dark:bg-white/10 dark:hover:bg-white/20 dark:text-white"
                   >
                     <X size={20} />
                   </button>
 
-                  <h2 className={`font-ivyora font-medium text-4xl md:text-5xl tracking-[-2px] mb-6 mt-4 ${isLightMode ? "text-black" : "text-white"}`}>
+                  <h2 className="font-ivyora font-medium text-4xl md:text-5xl tracking-[-2px] mb-6 mt-4 text-black dark:text-white">
                     {selectedItem.title}
                   </h2>
-                  <p className={`font-inter text-base md:text-[17px] mb-8 leading-relaxed whitespace-pre-line ${isLightMode ? "text-black/65" : "text-white/65"}`}>
+                  <p className="font-inter text-base md:text-[17px] mb-8 leading-relaxed whitespace-pre-line text-black/65 dark:text-white/65">
                     {selectedItem.content}
                   </p>
 

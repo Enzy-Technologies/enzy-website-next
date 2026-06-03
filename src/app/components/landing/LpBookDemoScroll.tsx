@@ -12,7 +12,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/app/components/ui/utils";
 import { CTAButton } from "@/app/components/CTAButton";
-import { useTheme } from "@/app/components/ThemeProvider";
 
 /**
  * Landing CTA pattern aligned with common high-converting SaaS LP behavior:
@@ -126,14 +125,12 @@ function LpBookDemoDock({
   href: string;
   label: string;
 }) {
-  const { isLightMode } = useTheme();
   const reduceMotion = useReducedMotion();
 
-  const dockBg = isLightMode
-    ? "bg-[#faf9f6]/92 supports-[backdrop-filter]:bg-[#faf9f6]/78"
-    : "bg-[#0b0f14]/92 supports-[backdrop-filter]:bg-[#0b0f14]/78";
+  const dockBg =
+    "bg-[#faf9f6]/92 supports-[backdrop-filter]:bg-[#faf9f6]/78 dark:bg-[#0b0f14]/92 dark:supports-[backdrop-filter]:bg-[#0b0f14]/78";
 
-  const border = isLightMode ? "border-black/[0.08]" : "border-white/[0.10]";
+  const border = "border-black/[0.08] dark:border-white/[0.10]";
 
   return (
     <AnimatePresence>
@@ -179,7 +176,7 @@ function LpBookDemoDock({
                 /* Impact: hero-adjacent glow + crisp ring */
                 "shadow-[0_0_0_1px_rgba(255,255,255,0.35)_inset,0_12px_40px_-10px_rgba(25,173,125,0.55),0_0_56px_-8px_rgba(25,173,125,0.45)]",
                 "ring-[1.5px] ring-[#19ad7d]/35 ring-offset-2 md:ring-2 md:ring-[#19ad7d]/40",
-                isLightMode ? "ring-offset-[#faf9f6]" : "ring-offset-[#0b0f14]",
+                "ring-offset-[#faf9f6] dark:ring-offset-[#0b0f14]",
                 /* Mobile: wide + thumb-friendly */
                 "gap-2.5 sm:gap-3 px-10 py-[17px] text-[13px] tracking-[0.12em] sm:px-12 sm:py-[18px] sm:text-[14px] sm:tracking-[0.13em]",
                 /* Desktop: wider pill, slightly larger type */
