@@ -2,11 +2,10 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown, ArrowRight, Menu, X, Sun, Moon, Wand2 } from 'lucide-react';
+import { ChevronDown, ArrowRight, Menu, X, Sun, Moon } from 'lucide-react';
 import Link from "next/link";
 
 import { useTheme } from './ThemeProvider';
-import { requestParticlesToggle } from "../lib/particles";
 
 const slugify = (s: string) =>
   s
@@ -432,20 +431,8 @@ export function MainNavigation() {
 
       {/* Mobile header controls (theme + menu) */}
       <div className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
-        <button 
-          onClick={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            requestParticlesToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
-          }}
-          className={`p-2.5 transition-colors active:scale-95 ${
-            isLightMode ? "text-black/80 hover:text-black" : "text-white/85 hover:text-white"
-          }`}
-          aria-label="Toggle pixels"
-          title="Toggle pixels"
-        >
-          <Wand2 size={18} />
-        </button>
-
+        {/* The pixel-toggle "magic wand" was removed on mobile — the particle
+            canvas doesn't run on phones, so the control had nothing to toggle. */}
         <button
           onClick={toggleTheme}
           className={`p-2.5 transition-colors active:scale-95 ${

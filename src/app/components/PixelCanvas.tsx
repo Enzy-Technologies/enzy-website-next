@@ -337,6 +337,12 @@ export function PixelCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Mobile: skip the entire animation loop. The canvas is also hidden via CSS
+    // (max-[768px]:hidden) so it never paints — not even for a single frame —
+    // and this guard ensures none of the per-frame drawing/particle work runs on
+    // phones. Desktop keeps the full animated canvas.
+    if (window.matchMedia("(max-width: 768px)").matches) return;
+
     let width = window.innerWidth;
     let height = window.innerHeight;
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -952,7 +958,7 @@ export function PixelCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500"
+      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500 max-[768px]:hidden"
       style={{ background: isLightMode ? "#fdfbf7" : "#0b0f14" }}
     />
   );

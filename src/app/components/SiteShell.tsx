@@ -42,9 +42,12 @@ export function SiteShell({
       window.removeEventListener(PARTICLES_EVENT, onChange as EventListener)
   }, [])
 
-  // Pixel particle background renders globally — every page shares the same
-  // parallax/interactive backdrop. Standalone surfaces (`/lp/*` and the pricing
-  // tool) opt out, and so does the whole site once the wand turns it off.
+  // Pixel particle background renders globally on desktop — every page shares the
+  // same parallax/interactive backdrop. Standalone surfaces (`/lp/*` and the
+  // pricing tool) opt out, and the whole site opts out once the wand turns it
+  // off. Mobile opts out inside PixelCanvas itself — it's hidden via CSS
+  // (so it never paints, not even for one frame) and its animation loop is
+  // skipped on phones — which is why there's no mobile check here.
   const showParticles = !isLp && !particlesDisabled
 
   return (
