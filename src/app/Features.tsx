@@ -2,7 +2,7 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus } from "lucide-react";
+import { Plus, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { useTheme } from "./components/ThemeProvider";
 import { BlurReveal } from "./components/BlurReveal";
@@ -13,25 +13,27 @@ type ModuleDef = {
   id: ModuleId;
   label: string;
   tagline: string;
-  alwaysIncluded?: boolean;
+  icon: LucideIcon;
 };
 
 const MODULES: ModuleDef[] = [
   {
     id: "core",
     label: "Core",
-    tagline: "Always included. The system everyone runs on.",
-    alwaysIncluded: true,
+    tagline: "The system everyone runs on.",
+    icon: Trophy,
   },
   {
     id: "sell",
     label: "Sell",
-    tagline: "Add-on. Field sales execution and pipeline.",
+    tagline: "Field sales execution and pipeline.",
+    icon: DollarSign,
   },
   {
     id: "recruit",
     label: "Recruit",
-    tagline: "Add-on. Sourcing through onboarding.",
+    tagline: "Sourcing through onboarding.",
+    icon: Users,
   },
 ];
 
@@ -181,7 +183,7 @@ const FEATURES_DATA: Feature[] = [
 
 const TAB_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 
-function CategoryTabs({
+function ModuleRail({
   active,
   onChange,
   isLightMode,
@@ -192,15 +194,21 @@ function CategoryTabs({
 }) {
   return (
     <div
-      className={`relative inline-flex items-end gap-6 sm:gap-10 border-b ${
-        isLightMode ? "border-black/10" : "border-white/10"
-      }`}
+      className="relative flex flex-col gap-1 sm:gap-1.5"
       role="tablist"
       aria-label="Modules"
+      aria-orientation="vertical"
     >
       {MODULES.map((mod) => {
         const isActive = mod.id === active;
-        const isIncluded = mod.alwaysIncluded;
+        const Icon = mod.icon;
+        const activeColor = isActive
+          ? isLightMode
+            ? "text-black"
+            : "text-white"
+          : isLightMode
+            ? "text-black/40 group-hover:text-black/65"
+            : "text-white/40 group-hover:text-white/65";
         return (
           <button
             key={mod.id}
@@ -208,55 +216,34 @@ function CategoryTabs({
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(mod.id)}
-            className="group relative pb-3 sm:pb-4 flex flex-col items-center gap-1.5 transition-opacity"
+            aria-label={mod.label}
+            title={mod.label}
+            className="group relative w-full text-left pl-3 sm:pl-4 pr-1 py-2.5 sm:py-3 transition-colors"
           >
-            {/* Status chip — bold green for Included, muted outlined for Add-on */}
+            {/* Active indicator bar on the left edge */}
             <span
-              className={`inline-flex items-center gap-1 px-2 py-[3px] rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.18em] transition-all ${
-                isIncluded
-                  ? "bg-[#19ad7d] text-white shadow-[0_2px_10px_rgba(25,173,125,0.35)]"
-                  : isLightMode
-                    ? `border ${
-                        isActive
-                          ? "border-black/25 text-black/70 bg-black/[0.04]"
-                          : "border-black/15 text-black/45 bg-transparent group-hover:text-black/60"
-                      }`
-                    : `border ${
-                        isActive
-                          ? "border-white/30 text-white/80 bg-white/[0.06]"
-                          : "border-white/15 text-white/45 bg-transparent group-hover:text-white/65"
-                      }`
-              }`}
-            >
-              {!isIncluded && (
-                <Plus size={9} strokeWidth={3} aria-hidden className="-ml-0.5" />
-              )}
-              {isIncluded ? "Included" : "Add-on"}
-            </span>
-
-            {/* Module label */}
-            <span
-              className={`font-inter text-[13px] sm:text-[15px] font-semibold uppercase tracking-[0.18em] transition-colors ${
+              className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-full transition-all ${
                 isActive
-                  ? isLightMode
-                    ? "text-black"
-                    : "text-white"
-                  : isLightMode
-                    ? "text-black/45 group-hover:text-black/70"
-                    : "text-white/45 group-hover:text-white/70"
+                  ? "h-[58%] bg-[#19ad7d]"
+                  : "h-0 bg-transparent"
               }`}
+              aria-hidden
+            />
+
+            {/* Icon — shown on mobile only */}
+            <Icon
+              size={24}
+              strokeWidth={2}
+              aria-hidden
+              className={`sm:hidden transition-colors ${activeColor}`}
+            />
+
+            {/* Word label — shown on sm and up */}
+            <span
+              className={`hidden sm:block font-inter text-[15px] sm:text-[17px] md:text-[19px] font-semibold uppercase tracking-[0.16em] transition-colors ${activeColor}`}
             >
               {mod.label}
             </span>
-
-            {isActive && (
-              <motion.span
-                layoutId="moduleActiveUnderline"
-                className="absolute left-0 right-0 -bottom-px h-[2px] bg-[#19ad7d]"
-                transition={TAB_TRANSITION}
-                aria-hidden
-              />
-            )}
           </button>
         );
       })}
@@ -516,7 +503,7 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
         {/* Hero */}
         <div className="flex flex-col items-center text-center mb-12 md:mb-16">
           <h1
-            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl mb-10 md:mb-14 ${
+            className={`font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl ${
               isLightMode ? "text-black" : "text-[#f5f7fa]"
             }`}
           >
@@ -530,82 +517,78 @@ function FeatureBrowser({ isLightMode }: { isLightMode: boolean }) {
               </BlurReveal>
             </span>
           </h1>
-
-          <CategoryTabs
-            active={activeModule}
-            onChange={handleModuleChange}
-            isLightMode={isLightMode}
-          />
         </div>
 
-        {/* Panel that "opens" when a tab is clicked */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeModule}
-            initial={skipAnim ? false : { opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -18 }}
-            transition={skipAnim ? { duration: 0 } : TAB_TRANSITION}
-            className={`relative rounded-[28px] md:rounded-[36px] border overflow-hidden ${
-              isLightMode
-                ? "bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)]"
-                : "bg-[#0b0f14]/70 border-white/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)]"
-            }`}
-          >
-            {/* Module header row */}
-            <div
-              className={`flex flex-wrap items-center justify-between gap-3 px-6 md:px-10 py-5 md:py-6 border-b ${
-                isLightMode ? "border-black/8" : "border-white/8"
-              }`}
-            >
-              <div className="flex flex-col">
-                <span
-                  className={`font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight ${
-                    isLightMode ? "text-black" : "text-white"
-                  }`}
-                >
-                  {activeModuleDef?.label} Module
-                </span>
-                <span
-                  className={`font-inter text-[13px] md:text-[14px] mt-0.5 ${
-                    isLightMode ? "text-black/55" : "text-white/55"
-                  }`}
-                >
-                  {activeModuleDef?.tagline}
-                </span>
-              </div>
+        {/* Two-column: compact module rail (left) + wide feature panel (right) */}
+        <div className="flex items-start gap-3 sm:gap-4 md:gap-6">
+          {/* Left rail — kept narrow so features take most of the width */}
+          <div className="shrink-0 w-[48px] sm:w-[112px] md:w-[132px] sticky top-24 md:top-28">
+            <ModuleRail
+              active={activeModule}
+              onChange={handleModuleChange}
+              isLightMode={isLightMode}
+            />
+          </div>
 
-              <span
-                className={`inline-flex items-center px-3 py-1.5 rounded-full text-[10px] md:text-[11px] font-bold uppercase tracking-[0.18em] ${
-                  activeModuleDef?.alwaysIncluded
-                    ? "bg-[#19ad7d]/12 text-[#19ad7d] border border-[#19ad7d]/25"
-                    : isLightMode
-                      ? "bg-black/[0.04] text-black/55 border border-black/10"
-                      : "bg-white/[0.05] text-white/55 border border-white/10"
+          {/* Right panel that "opens" when a module is clicked */}
+          <div className="flex-1 min-w-0">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeModule}
+                initial={skipAnim ? false : { opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -18 }}
+                transition={skipAnim ? { duration: 0 } : TAB_TRANSITION}
+                className={`relative rounded-[28px] md:rounded-[36px] border overflow-hidden ${
+                  isLightMode
+                    ? "bg-white/70 border-black/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.16)]"
+                    : "bg-[#0b0f14]/70 border-white/8 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.6)]"
                 }`}
               >
-                {activeModuleDef?.alwaysIncluded ? "Always Included" : "Add-on"}
-              </span>
-            </div>
+                {/* Module header row */}
+                <div
+                  className={`px-6 md:px-10 py-5 md:py-6 border-b ${
+                    isLightMode ? "border-black/8" : "border-white/8"
+                  }`}
+                >
+                  <div className="flex flex-col">
+                    <span
+                      className={`font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight ${
+                        isLightMode ? "text-black" : "text-white"
+                      }`}
+                    >
+                      {activeModuleDef?.label} Module
+                    </span>
+                    <span
+                      className={`font-inter text-[13px] md:text-[14px] mt-0.5 ${
+                        isLightMode ? "text-black/55" : "text-white/55"
+                      }`}
+                    >
+                      {activeModuleDef?.tagline}
+                    </span>
+                  </div>
+                </div>
 
-            {/* Accordion list */}
-            <div className="px-6 md:px-10 py-2 md:py-4">
-              {moduleFeatures.map((feature, idx) => (
-                <FeatureRow
-                  key={feature.id}
-                  feature={feature}
-                  isOpen={feature.id === openId}
-                  onToggle={() =>
-                    setOpenId(openId === feature.id ? null : feature.id)
-                  }
-                  isLightMode={isLightMode}
-                  isFirst={idx === 0}
-                  skipAnim={skipAnim}
-                />
-              ))}
-            </div>
-          </motion.div>
-        </AnimatePresence>
+                {/* Accordion list */}
+                <div className="px-6 md:px-10 py-2 md:py-4">
+                  {moduleFeatures.map((feature, idx) => (
+                    <FeatureRow
+                      key={feature.id}
+                      feature={feature}
+                      isOpen={feature.id === openId}
+                      onToggle={() =>
+                        setOpenId(openId === feature.id ? null : feature.id)
+                      }
+                      isLightMode={isLightMode}
+                      isFirst={idx === 0}
+                      skipAnim={skipAnim}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </section>
   );

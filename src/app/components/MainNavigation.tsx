@@ -189,8 +189,18 @@ export function MainNavigation() {
     } else {
       document.body.style.overflow = '';
     }
+    // Pause the decorative background canvas while the full-screen menu is open
+    // (it's hidden behind the overlay). This frees the main thread so opening
+    // the menu and tapping a link feel immediate instead of waiting on the
+    // canvas's per-frame work. PixelCanvas listens for this event.
+    window.dispatchEvent(
+      new CustomEvent('enzy-bg-pause', { detail: { paused: mobileMenuOpen } })
+    );
     return () => {
       document.body.style.overflow = '';
+      window.dispatchEvent(
+        new CustomEvent('enzy-bg-pause', { detail: { paused: false } })
+      );
     };
   }, [mobileMenuOpen]);
 

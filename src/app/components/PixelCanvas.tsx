@@ -4,14 +4,6 @@ import React, { useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
 import { writeParticlesDisabled } from "../lib/particles";
 
-interface TrailDot {
-  x: number;
-  y: number;
-  life: number;
-  maxLife: number;
-  size: number;
-}
-
 interface AmbientParticle {
   x: number;
   y: number;
@@ -32,7 +24,11 @@ export function PixelCanvas() {
   const { isLightMode } = useTheme();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const trailDotsRef = useRef<TrailDot[]>([]);
+  // When true, the animation loop idles (skips its per-frame work). Set while a
+  // full-screen overlay like the mobile menu is open — the canvas is hidden
+  // behind it, so there's no reason to keep redrawing and stealing the main
+  // thread right when the user is trying to tap/navigate.
+  const pausedRef = useRef(false);
   const ambientParticlesRef = useRef<AmbientParticle[]>([]);
   const easterEggConsumedRef = useRef(false);
   const easterEggHoldingRef = useRef(false);
@@ -67,9 +63,7 @@ export function PixelCanvas() {
     y: typeof window !== "undefined" ? window.innerHeight / 2 : 0 
   });
   
-  const lastTrailAddTimeRef = useRef(0);
-  const mousePathRef = useRef<Array<{ x: number; y: number }>>([]);
-  const smoothedMouseRef = useRef({ 
+  const smoothedMouseRef = useRef({
     x: typeof window !== "undefined" ? window.innerWidth / 2 : 0, 
     y: typeof window !== "undefined" ? window.innerHeight / 2 : 0 
   });
@@ -87,6 +81,25 @@ export function PixelCanvas() {
     
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Pause/resume the loop on request (mobile menu open) and when the tab is
+  // backgrounded, so the decorative canvas isn't burning the main thread when
+  // it can't even be seen.
+  useEffect(() => {
+    const onPause = (e: Event) => {
+      const ev = e as CustomEvent<{ paused?: boolean }>;
+      pausedRef.current = !!ev.detail?.paused;
+    };
+    const onVisibility = () => {
+      pausedRef.current = document.hidden;
+    };
+    window.addEventListener("enzy-bg-pause", onPause as EventListener);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("enzy-bg-pause", onPause as EventListener);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   useEffect(() => {
@@ -368,8 +381,18 @@ export function PixelCanvas() {
     }
 
     let animationFrameId: number;
-
+    // Cap the heavy per-frame work to ~30fps. The ambient particle drift doesn't
     const animate = () => {
+      // Paused (e.g. mobile menu open, or tab backgrounded): keep the loop alive
+      // cheaply but do no drawing or particle math, so the thread stays free for
+      // interactions. Runs at the native 60fps otherwise — the per-frame cost was
+      // cut instead (no canvas shadow-blur), so smoothness no longer means a
+      // pegged main thread.
+      if (pausedRef.current) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
       ctx.clearRect(0, 0, width, height);
 
       const mousePosition = mousePositionRef.current;
@@ -675,14 +698,16 @@ export function PixelCanvas() {
             : 1;
 
         if (particle.isGreen) {
-          // Vivid Enzy Green for the distinct particles, with a subtle glow
-          ctx.fillStyle = isLightMode 
+          // Vivid Enzy Green for the distinct particles.
+          ctx.fillStyle = isLightMode
             ? `rgba(25, 173, 125, ${0.8 + intensity * 0.2})`
             : `rgba(25, 173, 125, ${0.8 + intensity * 0.2})`;
-            
-          // Keep a very slight bloom/glow so they still blur slightly behind glass, but aren't blinding
-          ctx.shadowBlur = 5;
-          ctx.shadowColor = `rgba(25, 173, 125, ${isLightMode ? 0.3 : 0.5})`;
+          // NOTE: previously these used ctx.shadowBlur=5 for a soft bloom, but
+          // canvas shadow-blur is one of the most expensive 2D ops and it ran on
+          // ~20% of particles every frame — the main reason the loop was costly.
+          // Dropping it lets the canvas run smoothly at 60fps without pegging the
+          // main thread. The dots stay green; they just no longer glow.
+          ctx.shadowBlur = 0;
         } else {
           // Standard particles (Original)
           ctx.shadowBlur = 0;
@@ -859,7 +884,6 @@ export function PixelCanvas() {
         sphereFocusRef.current.active = false;
         sphereFocusRef.current.strength = 0;
         ambientParticlesRef.current = [];
-        trailDotsRef.current = [];
         sphereFormedAtRef.current = null;
         sphereReadyRef.current = false;
         gatherBoostedRef.current = false;
@@ -872,86 +896,8 @@ export function PixelCanvas() {
 
       lastHoldingRef.current = holding;
 
-      // Add smoothed mouse position to path for uniform trail spacing
-      const currentTime = Date.now();
-      if (isDesktop && velocity > 0.3) {
-        mousePathRef.current.push({ x: smoothedMouseRef.current.x, y: smoothedMouseRef.current.y });
-        
-        // Keep path limited to recent positions
-        if (mousePathRef.current.length > 100) {
-          mousePathRef.current.shift();
-        }
-      }
-
-      // Add trail dots with uniform spacing using smoothed positions
-      if (isDesktop && velocity > 0.3 && currentTime - lastTrailAddTimeRef.current > 16) {
-        lastTrailAddTimeRef.current = currentTime;
-        
-        // Calculate total distance from last trail dot position
-        if (trailDotsRef.current.length > 0) {
-          const lastDot = trailDotsRef.current[trailDotsRef.current.length - 1];
-          const distFromLast = Math.sqrt(
-            (smoothedMouseRef.current.x - lastDot.x) ** 2 + (smoothedMouseRef.current.y - lastDot.y) ** 2
-          );
-          
-          // Only add a dot if we've traveled at least 15 pixels
-          const spacing = 15;
-          if (distFromLast >= spacing) {
-            const numDotsToAdd = Math.floor(distFromLast / spacing);
-            
-            for (let i = 1; i <= numDotsToAdd; i++) {
-              const t = (i * spacing) / distFromLast;
-              const x = lastDot.x + (smoothedMouseRef.current.x - lastDot.x) * t;
-              const y = lastDot.y + (smoothedMouseRef.current.y - lastDot.y) * t;
-              
-              trailDotsRef.current.push({
-                x,
-                y,
-                life: 1,
-                maxLife: 1,
-                size: 2.5,
-              });
-            }
-          }
-        } else {
-          // First dot
-          trailDotsRef.current.push({
-            x: smoothedMouseRef.current.x,
-            y: smoothedMouseRef.current.y,
-            life: 1,
-            maxLife: 1,
-            size: 2.5,
-          });
-        }
-      }
-
-      // LAYER 3: Draw trail dots (top layer - always visible)
-      trailDotsRef.current = trailDotsRef.current.filter((dot) => {
-        dot.life -= 0.018;
-
-        if (dot.life <= 0) return false;
-
-        const alpha = dot.life;
-        const pixelSize = dot.size * 2;
-
-        // Draw trail pixel as square
-        ctx.fillStyle = isLightMode
-          ? `rgba(0, 0, 0, ${alpha * 0.5})`
-          : `rgba(255, 255, 255, ${alpha * 0.5})`;
-        ctx.fillRect(
-          dot.x - pixelSize / 2,
-          dot.y - pixelSize / 2,
-          pixelSize,
-          pixelSize
-        );
-
-        return true;
-      });
-
-      // Limit number of trail dots
-      if (trailDotsRef.current.length > 250) {
-        trailDotsRef.current = trailDotsRef.current.slice(-250);
-      }
+      // (Cursor trail removed — the fading "snake" of dots that followed the
+      // mouse on desktop is no longer drawn.)
 
       lastMousePosRef.current = { x: smoothedMouseRef.current.x, y: smoothedMouseRef.current.y };
       animationFrameId = requestAnimationFrame(animate);
