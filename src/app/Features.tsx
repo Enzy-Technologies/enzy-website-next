@@ -66,7 +66,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "badges",
     title: "Badges",
-    desc: "Recognition that builds loyalty—earned, displayed, and remembered.",
+    desc: "Recognition that builds loyalty — earned, displayed, and remembered.",
     image:
       "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -74,7 +74,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "competitions-and-incentives",
     title: "Competitions & Incentives",
-    desc: "Launch contests and rewards in minutes—aligned to the KPIs that matter.",
+    desc: "Launch contests and rewards in minutes — aligned to the KPIs that matter.",
     image:
       "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -90,7 +90,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "bot-chats",
     title: "Bot Chats",
-    desc: "AI-driven nudges and answers from your team's connected data—on demand.",
+    desc: "AI-driven nudges and answers from your team's connected data — on demand.",
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
   },
@@ -98,7 +98,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "media-library",
     title: "Media Library",
-    desc: "Approved assets, scripts, and training—organized and shareable.",
+    desc: "Approved assets, scripts, and training — organized and shareable.",
     image:
       "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -174,7 +174,7 @@ const FEATURES_DATA: Feature[] = [
     module: "recruit",
     id: "document-library",
     title: "Document Library",
-    desc: "Forms, agreements, and training docs—signed, sorted, searchable.",
+    desc: "Forms, agreements, and training docs — signed, sorted, searchable.",
     image:
       "https://images.unsplash.com/photo-1568667256549-094345857637?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -476,9 +476,9 @@ function FeatureBrowser() {
     <section className="relative w-full pt-7 md:pt-10 pb-24 md:pb-32 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Hero */}
-        <div className="flex flex-col items-center text-center mb-12 md:mb-16">
+        <div className="enzy-hero-reveal flex flex-col items-center text-center mb-12 md:mb-16">
           <h1
-            className="font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] max-w-4xl text-black dark:text-[#f5f7fa]"
+            className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] max-w-4xl text-black dark:text-[#f5f7fa]"
           >
             <BlurReveal as="span" delay={0.1}>
               Everything you need.

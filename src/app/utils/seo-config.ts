@@ -11,15 +11,15 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
   },
   features: {
     title: "Features - Enzy platform",
-    description: "Explore the system: AI assistant, competitions, incentives, messaging, leaderboards, and integrations—built to drive daily execution.",
+    description: "Explore the system: AI assistant, competitions, incentives, messaging, leaderboards, and integrations — built to drive daily execution.",
   },
   solutions: {
     title: "Solutions - Enzy for your team",
-    description: "See how Enzy fits your role—from reps to leaders to ops—turning connected data into actions and outcomes.",
+    description: "See how Enzy fits your role — from reps to leaders to ops — turning connected data into actions and outcomes.",
   },
   resources: {
     title: "Resources - Enzy",
-    description: "Guides, playbooks, and customer stories for building momentum, running competitions, and improving performance.",
+    description: "Insights, customer stories, partners, and integrations — everything to help your sales team build momentum and get more out of Enzy.",
   },
   about: {
     title: "About Enzy",
@@ -29,9 +29,17 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
     title: "Integrations - Connect Enzy with your tools",
     description: "Enzy integrates with 60+ CRMs, field-service platforms, dialers, and tools. Automatically track activity, sync records, and trigger actions across your stack.",
   },
-  partnersAffiliates: {
-    title: "Partners & Affiliates - Enzy",
-    description: "Meet the partners that help Enzy customers grow—payroll, commissions, apparel, swag, and background checks—and apply to become an Enzy partner.",
+  partners: {
+    title: "Partners - Enzy",
+    description: "Meet the partners that help Enzy customers grow — payroll, commissions, apparel, swag, and background checks — and apply to become an Enzy partner.",
+  },
+  affiliateProgram: {
+    title: "Affiliate Program - Enzy",
+    description: "Join the Enzy Affiliate Program. Refer sales organizations to Enzy and earn 10% of first-year ARR for every referral that signs.",
+  },
+  customerStories: {
+    title: "Customer Stories - Enzy",
+    description: "Real teams, real rollouts, real results. See how sales organizations turn fragmented activity into visible momentum with Enzy.",
   },
   insights: {
     title: "Insights - Enzy blog, playbooks & case studies",
@@ -39,6 +47,6 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
   },
   contactUs: {
     title: "Contact Us - Enzy sales & support",
-    description: "Get in touch with the Enzy team. Reach sales for demos and pricing, or contact support for help with your account—phone and email included.",
+    description: "Get in touch with the Enzy team. Reach sales for demos and pricing, or contact support for help with your account — phone and email included.",
   },
 };

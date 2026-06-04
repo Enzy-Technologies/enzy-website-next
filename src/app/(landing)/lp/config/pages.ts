@@ -17,7 +17,7 @@ export const LANDING_PAGES: Record<string, LandingPageConfig> = {
     seo: {
       title: "Field Sales Coaching Software & Execution Platform | Enzy",
       description:
-        "Field sales execution for route-based teams: visibility between visits, daily coaching, and playbooks that turn CRM signal into rep action—without another dashboard. Book a demo.",
+        "Field sales execution for route-based teams: visibility between visits, daily coaching, and playbooks that turn CRM signal into rep action — without another dashboard. Book a demo.",
       type: "website",
     },
   },
@@ -28,7 +28,7 @@ export const LANDING_PAGES: Record<string, LandingPageConfig> = {
     seo: {
       title: "Field Sales Coaching Software & Execution Platform | Enzy",
       description:
-        "Field sales execution for route-based teams: visibility between visits, daily coaching, and playbooks that turn CRM signal into rep action—without another dashboard. Book a demo.",
+        "Field sales execution for route-based teams: visibility between visits, daily coaching, and playbooks that turn CRM signal into rep action — without another dashboard. Book a demo.",
       type: "website",
     },
   },

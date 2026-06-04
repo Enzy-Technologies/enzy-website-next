@@ -32,11 +32,36 @@ body::-webkit-scrollbar {
   }
 }
 
+/* Desktop-only variant that also blurs each piece in (the original cinematic
+   character reveal). Kept separate from the base keyframe because animated
+   `filter: blur()` is expensive on mobile GPUs — mobile uses the no-blur
+   keyframe above. */
+@keyframes enzy-reveal-up-blur {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
 .enzy-reveal {
   display: inline-block;
   animation: enzy-reveal-up var(--enzy-reveal-duration, 0.8s)
     cubic-bezier(0.16, 1, 0.3, 1) var(--enzy-reveal-delay, 0s) both;
-  will-change: opacity, transform;
+}
+
+/* Desktop only: swap in the blurred reveal keyframe (mobile keeps the cheap
+   no-blur one above). Placed before the reduced-motion rule so that rule still
+   wins and disables the animation for users who prefer reduced motion. */
+@media (min-width: 769px) {
+  .enzy-reveal {
+    animation-name: enzy-reveal-up-blur;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -46,3 +71,58 @@ body::-webkit-scrollbar {
     transform: none;
   }
 }
+
+/* On phones, reveal every piece together (no per-character cascade) by zeroing
+   the per-element stagger — the character-by-character reveal is a desktop-only
+   touch. The pieces still fade/slide in (and the hero container still animates),
+   just without the sequential stagger. */
+@media (max-width: 768px) {
+  .enzy-reveal {
+    animation-delay: 0s !important;
+  }
+}
+
+/* Standard hero entrance — a single fade + gentle scale, applied to the
+   header + subtext block on EVERY page so they animate identically. Kept as
+   one CSS class (not per-page Framer Motion) so it's the single source of
+   truth that overrides any page-specific hero animation, runs at first paint,
+   and can be switched off per-breakpoint. Matches the original /insights
+   animation (scale 0.95 -> 1, 0.8s, same easing). */
+@keyframes enzy-hero-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.enzy-hero-reveal {
+  animation: enzy-hero-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Off on phones (header just appears) and for reduced-motion users. */
+@media (prefers-reduced-motion: reduce) {
+  .enzy-hero-reveal {
+    animation: none;
+  }
+}
+
+/* The home hero has its own (desktop) reveal, so it doesn't use
+   .enzy-hero-reveal. This gives it the SAME standard page-header entrance
+   (fade + gentle scale) on MOBILE ONLY — matching how every other page header
+   animates on phones. Desktop is intentionally left untouched. */
+@media (max-width: 768px) {
+  .mobile-hero-reveal {
+    animation: enzy-hero-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-hero-reveal {
+    animation: none;
+  }
+}
+

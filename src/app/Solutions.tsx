@@ -76,7 +76,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
       {
         id: "coaching",
         label: "In-field coaching",
-        summary: "Coach in minutes—without chasing updates.",
+        summary: "Coach in minutes — without chasing updates.",
         placeholderImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHhkYXNoYm9hcmR8ZW58MXx8fHwxNzc1Njc3NDE5fDA&ixlib=rb-4.1.0&q=80&w=1080",
         pains: [
           "Managers get updates late",
@@ -310,20 +310,33 @@ export function Solutions() {
     setActiveIndex(0);
   }, [mode]);
 
+  // Deep-link support: the nav's Solutions submenu links to
+  // /solutions#for-field-sales and /solutions#for-virtual-sales, so open on
+  // the matching tab. Runs on mount (cross-page navigation) and on
+  // `hashchange` (same-page navigation dispatches it via navigateToSamePageHash).
+  React.useEffect(() => {
+    const applyHash = () => {
+      const hash = window.location.hash.replace(/^#/, "").toLowerCase();
+      if (hash.includes("virtual")) setMode("virtual");
+      else if (hash.includes("field")) setMode("field");
+      else return;
+      // Open at the top with the tab toggled — never scroll down to the hash.
+      window.scrollTo(0, 0);
+    };
+    applyHash();
+    window.addEventListener("hashchange", applyHash);
+    return () => window.removeEventListener("hashchange", applyHash);
+  }, []);
+
   const activePain = content.pains[activeIndex];
 
   return (
     <section className="relative w-full min-h-[800px] bg-transparent pb-24">
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-10 lg:pt-16 flex flex-col items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 pt-7 md:pt-10 flex flex-col items-center">
         
         {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="flex flex-col items-center relative z-10 shrink-0 w-full"
-        >
-          <h1 className="font-ivyora font-medium text-4xl md:text-5xl lg:text-[80px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 text-black dark:text-[#f5f7fa]">
+        <motion.div className="enzy-hero-reveal flex flex-col items-center relative z-10 shrink-0 w-full">
+          <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 text-black dark:text-[#f5f7fa]">
             <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
             <span className="text-black/40 dark:text-white/40">
               <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>

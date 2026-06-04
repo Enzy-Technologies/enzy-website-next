@@ -56,7 +56,7 @@ export function About() {
   const pageBody = "text-black/65 dark:text-white/65";
 
   return (
-    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-20 z-20 transition-colors duration-500">
+    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-20 z-20 transition-colors duration-500">
       {/* Background glows */}
       <motion.div
         className="absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
@@ -69,13 +69,13 @@ export function About() {
 
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
         {/* 001 — Who we are */}
-        <FadeInSection>
-          <section className="pt-2 pb-16 md:pb-24" data-section="001">
+        <div className="enzy-hero-reveal">
+          <section className="pb-16 md:pb-24" data-section="001">
 
             <BlurReveal
               as="h1"
               delay={0.1}
-              className={`mt-5 font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[44px] sm:text-[56px] md:text-[72px] ${pageTitle}`}
+              className={`font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[40px] sm:text-[50px] md:text-[64px] ${pageTitle}`}
             >
               Performance is the largest untapped lever in your business.
             </BlurReveal>
@@ -87,11 +87,10 @@ export function About() {
               themselves by outcomes, not activity.
             </p>
           </section>
-        </FadeInSection>
+        </div>
 
         {/* 002 — What we've learned */}
-        <FadeInSection className="pb-16 md:pb-24">
-          <section data-section="002">
+        <section data-section="002" className="pb-16 md:pb-24">
             <dl className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
               {[
                 { value: "24", unit: "M", label: "Weekly Enzy page views" },
@@ -120,7 +119,6 @@ export function About() {
               ))}
             </dl>
           </section>
-        </FadeInSection>
 
         {/* 003 — Why we exist */}
         <section data-section="003" className="pb-16 md:pb-24">

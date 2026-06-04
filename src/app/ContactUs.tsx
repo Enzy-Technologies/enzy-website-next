@@ -64,17 +64,17 @@ export function ContactUs() {
   ];
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 z-20 transition-colors duration-500">
+    <div className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-24 z-20 transition-colors duration-500">
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
         {/* Header */}
-        <section className="pt-2 pb-10 md:pb-14 text-center flex flex-col items-center">
+        <section className="enzy-hero-reveal pb-10 md:pb-14 text-center flex flex-col items-center">
           <p className="font-inter text-[12px] md:text-[13px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-5">
             Contact Us
           </p>
           <BlurReveal
             as="h1"
             delay={0.1}
-            className={`font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[44px] sm:text-[56px] md:text-[72px] max-w-3xl ${pageTitle}`}
+            className={`font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[40px] sm:text-[50px] md:text-[64px] max-w-3xl ${pageTitle}`}
           >
             Let&apos;s talk
           </BlurReveal>

@@ -67,20 +67,15 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
   const pageBody = "text-black/60 dark:text-white/60";
 
   return (
-    <div className="relative w-full flex flex-col items-center justify-start pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24 z-20 transition-colors duration-500">
+    <div className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-24 z-20 transition-colors duration-500">
       <div className="w-full max-w-7xl px-5 sm:px-6 md:px-8">
         {/* Header */}
-        <section className="pt-2 pb-12 md:pb-16">
+        <section className="pb-12 md:pb-16">
           <div className="flex flex-col items-center justify-center text-center relative z-10">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-col items-center max-w-4xl"
-            >
+            <motion.div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
               <BlurReveal
                 as="h1"
-                className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
+                className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
               >
                 Ideas that drive performance
               </BlurReveal>
@@ -89,7 +84,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
                 className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
               >
                 Articles, playbooks, and customer stories on building
-                high-performance sales teams—straight from the people building
+                high-performance sales teams — straight from the people building
                 Enzy.
               </p>
             </motion.div>

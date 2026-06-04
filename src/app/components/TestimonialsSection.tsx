@@ -14,7 +14,7 @@ export type Testimonial = {
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: 1,
-    quote: "Honestly, the biggest impact Enzy has had on our company isn’t just the features themselves, it’s how it reshapes our thinking and behavior as an organization. Before Enzy, we were reacting to results; now we’re anticipating them. Because every KPI, leaderboard, and real-time insight is visible at the moment decisions are made—so if you asked me where the magic really sits, it’s not just the tool—it’s what it enables. Enzy turned data into decision velocity, visibility into alignment, and motivation into momentum. That’s been the difference-maker for us this year.",
+    quote: "Honestly, the biggest impact Enzy has had on our company isn’t just the features themselves, it’s how it reshapes our thinking and behavior as an organization. Before Enzy, we were reacting to results; now we’re anticipating them. Because every KPI, leaderboard, and real-time insight is visible at the moment decisions are made — so if you asked me where the magic really sits, it’s not just the tool — it’s what it enables. Enzy turned data into decision velocity, visibility into alignment, and motivation into momentum. That’s been the difference-maker for us this year.",
     name: "Ashleigh Pepper",
     title: "CEO of Kaizen Promittere",
     image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/697a960ca83443bd4afd2051_Screenshot%202026-01-28%20at%204.04.32%E2%80%AFPM.png"

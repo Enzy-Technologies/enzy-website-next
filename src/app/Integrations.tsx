@@ -209,17 +209,12 @@ export function Integrations() {
     <main className="relative w-full pb-24 md:pb-32">
       {/* Hero — padding matches the other directory-style pages so it sits
           the same distance below the fixed nav. */}
-      <section className="relative w-full px-4 pt-4 md:pt-8 lg:pt-12 pb-12 md:pb-16 max-w-7xl mx-auto overflow-hidden">
+      <section className="relative w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col items-center max-w-4xl"
-          >
+          <motion.div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
             <BlurReveal
               as="h1"
-              className="font-ivyora font-medium text-5xl md:text-7xl lg:text-[90px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
+              className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
             >
               Integrated with the tools you use
             </BlurReveal>

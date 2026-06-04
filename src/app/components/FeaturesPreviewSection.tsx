@@ -101,7 +101,7 @@ const cardsData = [
     href: "/system#bot-chats",
     title: "AI Assistant",
     description:
-      "Ask questions about connected data. Get insights and next-best actions—instantly.",
+      "Ask questions about connected data. Get insights and next-best actions — instantly.",
     features: [
       "Monitor any KPI and flag what changed",
       "Draft messages and nudges from context",
@@ -136,7 +136,7 @@ const cardsData = [
     href: "/system#competitions-and-incentives",
     title: "Competition Builder",
     description:
-      "Launch competitions and incentives in minutes—aligned to the KPIs that matter.",
+      "Launch competitions and incentives in minutes — aligned to the KPIs that matter.",
     features: [
       "AI-assisted competition drafts",
       "Individual or team formats",
@@ -148,7 +148,7 @@ const cardsData = [
     id: "messaging",
     href: "/system#messaging",
     title: "Messaging",
-    description: "Send announcements, nudges, and updates—without switching tools.",
+    description: "Send announcements, nudges, and updates — without switching tools.",
     features: [
       "Group messaging at any scale",
       "Announcement channels",

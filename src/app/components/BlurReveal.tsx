@@ -45,7 +45,7 @@ export function BlurReveal({
   // glyph's paint box — fall back to word-level reveal. The class must appear
   // as a standalone token so "not-italic" / "non-italic" don't trip this on.
   const looksItalic = /(?:^|\s)italic(?:$|\s)/.test(className);
-  const mode: "char" | "word" = splitBy ?? (looksItalic ? "word" : "word");
+  const mode: "char" | "word" = splitBy ?? (looksItalic ? "word" : "char");
 
   let text = "";
   if (typeof children === "string") {

@@ -5,7 +5,7 @@ import { BlurReveal } from "./components/BlurReveal";
 
 export function Terms() {
   return (
-    <main className="w-full pt-4 md:pt-8 lg:pt-12 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
+    <main className="w-full pt-7 md:pt-10 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
         <BlurReveal as="h1" delay={0.1} className="text-4xl md:text-5xl font-bold tracking-tight mb-3 font-inter">Terms and Conditions</BlurReveal>
         <p className="italic opacity-70 mb-8 font-inter">Last updated May 22nd, 2025</p>
         <div className="prose max-w-none prose-slate dark:prose-invert prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]">
@@ -108,7 +108,7 @@ export function Terms() {
           </ul>
 
           <h2 className="text-2xl font-bold mt-10 mb-4">11. User Contributions &amp; Media Release</h2>
-          <p className="mb-4">Client agrees that any content provided to the Company—whether written, audio, video, or visual—including but not limited to comments, testimonials, submitted materials, Zoom recordings, and participation in any recorded sessions, may be captured, recorded, and used by the Company for marketing, promotional, educational, or commercial purposes. This includes but is not limited to use on social media, websites, advertisements, sales materials, and internal training. By engaging with the Company, the Client grants the Company a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, edit, distribute, and publicly display such content, in whole or in part, in any format or medium now known or later developed. If the Client does not wish for specific content to be used, they must notify the Company in writing in advance of the recording or submission. Any such opt-out will apply only to future content, not to content already created or used prior to notice.</p>
+          <p className="mb-4">Client agrees that any content provided to the Company — whether written, audio, video, or visual — including but not limited to comments, testimonials, submitted materials, Zoom recordings, and participation in any recorded sessions, may be captured, recorded, and used by the Company for marketing, promotional, educational, or commercial purposes. This includes but is not limited to use on social media, websites, advertisements, sales materials, and internal training. By engaging with the Company, the Client grants the Company a perpetual, irrevocable, worldwide, royalty-free license to use, reproduce, edit, distribute, and publicly display such content, in whole or in part, in any format or medium now known or later developed. If the Client does not wish for specific content to be used, they must notify the Company in writing in advance of the recording or submission. Any such opt-out will apply only to future content, not to content already created or used prior to notice.</p>
 
           <h2 className="text-2xl font-bold mt-10 mb-4">12. Miscellaneous</h2>
           <p className="mb-4"><strong>12.1. Force Majeure.</strong> Provider is excused from performance of the Agreement to the extent that performance is prevented, delayed or obstructed by causes beyond its reasonable control.</p>

@@ -174,7 +174,7 @@ function HeroSectionDefault() {
               horizontal center (lg:w-1/2, shrink-0 so the gap eats into the
               spacer, not the text) and drops its max-width cap so the headline
               fills the width instead of wrapping tightly. */}
-          <div className="flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
+          <div className="mobile-hero-reveal flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
             <h1
               className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]"
             >
@@ -185,7 +185,7 @@ function HeroSectionDefault() {
             <p
               className="font-inter text-[16px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 text-black/70 dark:text-white/65"
             >
-              The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more field sales performance data than any tool in existence.
+              The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more sales performance data than any tool in existence.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-1 pb-2 w-full">

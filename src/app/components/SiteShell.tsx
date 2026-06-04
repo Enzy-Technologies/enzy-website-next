@@ -7,6 +7,7 @@ import { Header } from "./Header"
 import { Footer } from "./Footer"
 
 import { PartnerFormModal } from "./PartnerFormModal"
+import { AffiliateFormModal } from "./AffiliateFormModal"
 import { PARTICLES_EVENT, readParticlesDisabled } from "../lib/particles"
 
 export function SiteShell({
@@ -72,6 +73,7 @@ export function SiteShell({
         {isLp ? null : <Footer />}
       </div>
       <PartnerFormModal />
+      <AffiliateFormModal />
     </div>
   )
 }

@@ -88,20 +88,12 @@ const SYSTEM_SECTIONS = [
 
 const USE_CASES = [
   {
-    title: "For Reps",
-    desc: "Stay consistent. Win more."
+    title: "For Field Sales",
+    desc: "Route-based execution and in-field coaching."
   },
   {
-    title: "For Leaders",
-    desc: "See signal. Drive action."
-  },
-  {
-    title: "For Solar",
-    desc: "Drive field activity. Book more."
-  },
-  {
-    title: "For Roofing",
-    desc: "Turn effort into revenue."
+    title: "For Virtual Sales",
+    desc: "Speed to lead and consistent messaging."
   }
 ];
 
@@ -112,8 +104,8 @@ type LearnItem = {
    * Optional explicit destination. When omitted the dropdown links into
    * `/resources#${slug}` (in-page anchor on the Resources hub). When
    * provided the dropdown renders a regular `next/link` to this exact
-   * route — used by Partners & Affiliates to deep-link to the
-   * standalone `/partners` page.
+   * route — used by Partners to deep-link to the standalone
+   * `/partners` page.
    */
   href?: string;
 };
@@ -126,12 +118,13 @@ const LEARN_ITEMS: LearnItem[] = [
   },
   {
     title: "Customer Stories",
-    desc: "Real rollouts. Real results."
+    desc: "Real rollouts. Real results.",
+    href: "/customer-stories"
   },
   {
-    title: "Partners & Affiliates",
-    desc: "Meet our partners. Become one.",
-    href: "/partners-and-affiliates"
+    title: "Partners",
+    desc: "Meet the companies we trust.",
+    href: "/partners"
   },
   {
     title: "Integrations",
@@ -287,11 +280,11 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
                         <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
-                            See what Enzy does—fast.
+                            See what Enzy does — fast.
                         </h3>
                         <div className="mt-4">
                             <Link href="/system" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Explore the system <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                Explore the full system <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
                         </div>
                     </motion.div>
@@ -340,7 +333,7 @@ export function MainNavigation() {
                         </h3>
                         <div className="mt-4">
                             <Link href="/solutions" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Explore solutions <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
+                                Explore all solutions <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
                             </Link>
                         </div>
                     </motion.div>
@@ -384,7 +377,7 @@ export function MainNavigation() {
                         </h3>
                         <div className="mt-4">
                             <Link href="/resources" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Browse resources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
+                                Browse all resources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
                             </Link>
                         </div>
                     </motion.div>
@@ -563,7 +556,7 @@ export function MainNavigation() {
                                   onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
                                   className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
                                 >
-                                  Explore platform <ArrowRight size={12} />
+                                  Explore the full system <ArrowRight size={12} />
                                 </Link>
                                 {SYSTEM_SECTIONS.map((section, j) => (
                                   <div key={j}>
@@ -599,7 +592,7 @@ export function MainNavigation() {
                                   onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
                                   className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
                                 >
-                                  Explore solutions <ArrowRight size={12} />
+                                  Explore all solutions <ArrowRight size={12} />
                                 </Link>
                                 {USE_CASES.map((uc, j) => {
                                   const slug = uc.title.toLowerCase().replace(/\s+/g, "-");
@@ -632,7 +625,7 @@ export function MainNavigation() {
                                   onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
                                   className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
                                 >
-                                  Browse resources <ArrowRight size={12} strokeWidth={2.5} />
+                                  Browse all resources <ArrowRight size={12} strokeWidth={2.5} />
                                 </Link>
                                 {LEARN_ITEMS.map((li, j) => {
                                   const slug = li.title.toLowerCase().replace(/\s+/g, "-");

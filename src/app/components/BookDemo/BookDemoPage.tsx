@@ -75,7 +75,7 @@ export function BookDemoPage({
                 See Enzy turn performance into a system.
               </BlurReveal>
               <p className={`hidden lg:block mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
-                Submit the form and pick a time—Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
+                Submit the form and pick a time — Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
               </p>
 
               <div className="hidden lg:grid mt-7 gap-3 max-w-[540px]">

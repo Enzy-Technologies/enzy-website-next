@@ -23,7 +23,6 @@ const nextConfig = {
     return [
       // Slug renames — keep old URLs working.
       { source: "/features", destination: "/system", permanent: true },
-      { source: "/partners-affiliates", destination: "/partners-and-affiliates", permanent: true },
       { source: "/terms", destination: "/terms-and-conditions", permanent: true },
       { source: "/privacy", destination: "/privacy-policy", permanent: true },
       { source: "/book-demo", destination: "/book-a-demo", permanent: true },

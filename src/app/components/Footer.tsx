@@ -73,8 +73,11 @@ export function Footer() {
             <Link href="/insights" className={LINK_COLUMN_CLASS}>
               Insights
             </Link>
-            <Link href="/partners-and-affiliates" className={LINK_COLUMN_CLASS}>
-              Partners &amp; Affiliates
+            <Link href="/partners" className={LINK_COLUMN_CLASS}>
+              Partners
+            </Link>
+            <Link href="/affiliate-program" className={LINK_COLUMN_CLASS}>
+              Affiliate Program
             </Link>
             <Link href="/contact-us" className={LINK_COLUMN_CLASS}>
               Contact Us
