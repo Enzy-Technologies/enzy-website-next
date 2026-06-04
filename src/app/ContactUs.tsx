@@ -68,9 +68,6 @@ export function ContactUs() {
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
         {/* Header */}
         <section className="enzy-hero-reveal pb-10 md:pb-14 text-center flex flex-col items-center">
-          <p className="font-inter text-[12px] md:text-[13px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-5">
-            Contact Us
-          </p>
           <BlurReveal
             as="h1"
             delay={0.1}

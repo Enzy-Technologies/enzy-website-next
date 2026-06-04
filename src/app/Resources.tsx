@@ -81,7 +81,7 @@ const LEARN_DATA: LearnCard[] = [
     textColor: "text-black dark:text-white",
     descColor: "text-black/70 dark:text-white/70",
     content:
-      "Plug Enzy into the tools you already use.\n\n- CRMs, dialers & field-service platforms\n- Automatically track activity\n- Sync records and trigger actions\n- 60+ integrations",
+      "Plug Enzy into the tools you already use.\n\n- CRMs, dialers & field-service platforms\n- Automatically track activity\n- Sync records and trigger actions\n- 50+ integrations",
   },
 ];
 

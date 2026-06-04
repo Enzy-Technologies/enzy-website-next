@@ -101,6 +101,11 @@ export function TestimonialsMarquee({
   const animationRef = useRef<Animation | null>(null);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+  // Pause the marquee while it's scrolled off-screen so it isn't compositing a
+  // wide, many-layered 3D track in the background — that work was making other
+  // interactions (e.g. opening the nav menu at the top of the page) feel laggy.
+  const [inView, setInView] = useState(true);
+  const rootRef = useRef<HTMLDivElement>(null);
 
   // Two sets is enough for a seamless loop when we animate the track by
   // exactly one set's width.
@@ -143,7 +148,20 @@ export function TestimonialsMarquee({
     };
   }, [sets]);
 
-  // Pause when a card is flipped, or when desktop user is hovering.
+  // Only run the marquee while it's actually on-screen.
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { rootMargin: "300px 0px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Pause when off-screen, when a card is flipped, or when a desktop user is
+  // hovering.
   useEffect(() => {
     const animation = animationRef.current;
     if (!animation) return;
@@ -152,15 +170,16 @@ export function TestimonialsMarquee({
       window.matchMedia &&
       window.matchMedia("(hover: hover)").matches;
 
-    if (flippedIndex !== null || (isHoverDevice && isHovered)) {
+    if (!inView || flippedIndex !== null || (isHoverDevice && isHovered)) {
       animation.pause();
     } else {
       animation.play();
     }
-  }, [flippedIndex, isHovered]);
+  }, [flippedIndex, isHovered, inView]);
 
   return (
     <div
+      ref={rootRef}
       className={className}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -231,6 +250,7 @@ export function TestimonialsMarquee({
                           src={testimonial.image}
                           alt={testimonial.name}
                           sizes="(max-width: 768px) 260px, 320px"
+                          loading="eager"
                           className="w-full h-full object-cover object-top grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
                         />
                       </div>

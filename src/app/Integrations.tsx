@@ -200,11 +200,6 @@ export function Integrations() {
     );
   }, [activeTab]);
 
-  const totalCount = useMemo(
-    () => INTEGRATION_CATEGORIES.reduce((sum, c) => sum + c.integrations.length, 0),
-    []
-  );
-
   return (
     <main className="relative w-full pb-24 md:pb-32">
       {/* Hero — padding matches the other directory-style pages so it sits
@@ -223,8 +218,8 @@ export function Integrations() {
               className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
             >
               Connect Enzy to your existing tech stack to automatically track
-              activities, update records, and trigger actions across{" "}
-              {totalCount}+ integrations.
+              activities, update records, and trigger actions across 50+
+              integrations.
             </p>
           </motion.div>
         </div>

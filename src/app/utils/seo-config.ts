@@ -27,7 +27,7 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
   },
   integrations: {
     title: "Integrations - Connect Enzy with your tools",
-    description: "Enzy integrates with 60+ CRMs, field-service platforms, dialers, and tools. Automatically track activity, sync records, and trigger actions across your stack.",
+    description: "Enzy integrates with 50+ CRMs, field-service platforms, dialers, and tools. Automatically track activity, sync records, and trigger actions across your stack.",
   },
   partners: {
     title: "Partners - Enzy",
