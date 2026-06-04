@@ -473,243 +473,214 @@ export function MainNavigation() {
       </button>
       </div>
 
-      {/* Mobile Fullscreen Overlay */}
+      {/* ---------- Mobile menu (contained dropdown panel) ----------
+          A header-anchored panel instead of a full-screen overlay. The old
+          version covered the whole viewport with backdrop-filter: blur(40px),
+          which is enormously expensive to composite on phones — that was the
+          cause of the laggy/glitchy open + close. This panel is sized to its
+          content (≈ the nav rows, roughly half the screen) and grows + scrolls
+          internally when a submenu expands. The only blur is the small
+          liquid-glass panel itself; the backdrop is a plain translucent scrim. */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            // Frosted blur is now applied STATICALLY rather than animated.
-            // Previously this ramped backdrop-filter from blur(0px) -> blur(40px)
-            // (and back on close), which forces the GPU to re-blur the entire
-            // screen every frame — the cause of the lag when opening the menu and
-            // the stutter when tapping a link (the close-blur animation competed
-            // with the page navigation). Holding the blur at a fixed 40px and only
-            // fading opacity keeps the identical frosted look with none of the
-            // per-frame cost. (WebkitBackdropFilter is included for iOS Safari.)
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4, ease: easeOutExpo }}
-            style={{ backdropFilter: 'blur(40px)', WebkitBackdropFilter: 'blur(40px)' }}
-            className="fixed inset-0 z-[55] lg:hidden pointer-events-auto overflow-y-auto bg-white/60 dark:bg-[#0b0f14]/80"
-          >
-            <div className="absolute top-0 inset-x-0 h-64 blur-[100px] pointer-events-none bg-[#19ad7d]/10 dark:bg-[#19ad7d]/5" />
+          <>
+            {/* Scrim — plain fill, no blur. Tap to close. */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18, ease: 'easeOut' }}
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setActiveMobileDropdown(null);
+              }}
+              className="fixed inset-0 z-[54] lg:hidden bg-black/40"
+            />
 
-            <div className="flex flex-col pt-32 px-6 pb-20 min-h-full relative z-10">
-              {MENU_ITEMS.map((item, i) => (
-                <motion.div 
-                  key={item.id} 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.1 + i * 0.05, duration: 0.5, ease: easeOutExpo }}
-                  className="mb-2 border-b border-black/5 dark:border-white/5"
-                >
-                  {item.id !== 'about' ? (
-                    // Items with a submenu: tapping the whole row (label or
-                    // chevron) toggles the dropdown instead of navigating.
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setActiveMobileDropdown(activeMobileDropdown === item.id ? null : item.id)
-                      }
-                      className="flex items-center justify-between w-full py-6 group text-left"
-                      aria-expanded={activeMobileDropdown === item.id}
-                    >
-                      <span
-                        className={`font-inter text-2xl font-medium tracking-[0.1em] uppercase transition-colors flex-1 ${
-                          activeMobileDropdown === item.id
-                            ? 'text-[#19ad7d]'
-                            : 'text-black/90 dark:text-white/90'
-                        }`}
+            {/* Panel — anchored under the header like the desktop dropdowns. */}
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{ duration: 0.2, ease: easeOutExpo }}
+              style={{ transformOrigin: 'top center' }}
+              className="fixed top-[calc(76px+env(safe-area-inset-top,0px))] inset-x-3 z-[55] lg:hidden max-h-[calc(100dvh-96px)] overflow-y-auto rounded-[28px] liquid-glass border border-black/10 dark:border-white/10 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
+            >
+              <div className="flex flex-col p-2">
+                {MENU_ITEMS.map((item) => (
+                  <div key={item.id} className="flex flex-col">
+                    {item.id !== 'about' ? (
+                      // Submenu items: tapping the row toggles its dropdown.
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveMobileDropdown(activeMobileDropdown === item.id ? null : item.id)
+                        }
+                        className="flex items-center justify-between w-full px-4 py-3.5 rounded-2xl text-left transition-colors hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
+                        aria-expanded={activeMobileDropdown === item.id}
                       >
-                        {item.label}
-                      </span>
-                      <span
-                        className="p-2 -mr-2 transition-colors text-black/40 dark:text-white/40"
-                      >
-                        <motion.div
-                          animate={{ rotate: activeMobileDropdown === item.id ? 180 : 0 }}
-                          transition={{ duration: 0.3, ease: "easeOut" }}
+                        <span
+                          className={`font-inter text-[17px] font-semibold tracking-wide transition-colors ${
+                            activeMobileDropdown === item.id
+                              ? 'text-[#19ad7d]'
+                              : 'text-black/90 dark:text-white/90'
+                          }`}
                         >
-                          <ChevronDown size={20} />
-                        </motion.div>
-                      </span>
-                    </button>
-                  ) : (
-                    <div className="flex items-center justify-between w-full py-6 group">
+                          {item.label}
+                        </span>
+                        <motion.span
+                          animate={{ rotate: activeMobileDropdown === item.id ? 180 : 0 }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className="text-black/40 dark:text-white/40"
+                        >
+                          <ChevronDown size={18} />
+                        </motion.span>
+                      </button>
+                    ) : (
                       <Link
                         href={item.path}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 text-black/90 dark:text-white/90"
+                        className="flex items-center w-full px-4 py-3.5 rounded-2xl font-inter text-[17px] font-semibold tracking-wide transition-colors text-black/90 dark:text-white/90 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-[#19ad7d]"
                       >
                         {item.label}
                       </Link>
-                    </div>
-                  )}
-
-                  <AnimatePresence>
-                    {activeMobileDropdown === item.id && item.id !== 'about' && (
-                      <motion.div 
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.4, ease: easeOutExpo }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pb-8 pt-2">
-                          {item.id === 'features' && (
-                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
-                                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
-                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">See what Enzy does—fast.</p>
-                                    <Link href="/system" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        Explore platform <ArrowRight size={12} />
-                                    </Link>
-                                </motion.div>
-
-                              {SYSTEM_SECTIONS.map((section, j) => (
-                                <motion.div 
-                                  key={j}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: j * 0.05 + 0.1 }}
-                                >
-                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-1 text-black/40 dark:text-white/30">{section.title}</div>
-                                    <p className="text-[13px] mb-3 leading-snug text-black/50 dark:text-white/50">{section.desc}</p>
-                                    <div className="flex flex-col gap-2.5">
-                                        {section.items.map((subitem, k) => (
-                                            <Link 
-                                                key={k}
-                                                href={`/system#${slugify(subitem)}`}
-                                                onClick={(e) => {
-                                                    navigateToSamePageHash(e, "/system", slugify(subitem));
-                                                    setMobileMenuOpen(false);
-                                                    setActiveMobileDropdown(null);
-                                                }}
-                                                scroll={false}
-                                                className="group flex items-center justify-between px-3 py-2.5 mb-1.5 rounded-md border transition-all duration-300 bg-black/[0.03] border-black/5 hover:bg-black/[0.08] hover:border-[#19ad7d]/30 dark:bg-white/[0.03] dark:border-white/5 dark:hover:bg-white/[0.08] dark:hover:border-[#19ad7d]/30"
-                                            >
-                                                <span className="text-[14px] font-semibold font-inter text-black/90 dark:text-white/90">{subitem}</span>
-                                                <ArrowRight size={14} className="text-[#19ad7d] group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
-                                            </Link>
-                                        ))}
-                                    </div>
-                                </motion.div>
-                              ))}
-                            </div>
-                          )}
-
-                          {item.id === 'solutions' && (
-                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
-                                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
-                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">Built for action. Built to scale.</p>
-                                    <Link href="/solutions" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        Explore solutions <ArrowRight size={12} />
-                                    </Link>
-                                </motion.div>
-
-                              {USE_CASES.map((uc, j) => {
-                                const slug = uc.title.toLowerCase().replace(/\s+/g, "-");
-                                return (
-                                <motion.div 
-                                  key={j}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: j * 0.05 + 0.1 }}
-                                >
-                                    <Link
-                                        href={`/solutions#${slug}`}
-                                        onClick={(e) => {
-                                            navigateToSamePageHash(e, "/solutions", slug);
-                                            setMobileMenuOpen(false);
-                                            setActiveMobileDropdown(null);
-                                        }}
-                                        className="group flex items-center justify-between gap-3"
-                                    >
-                                        <span className="flex flex-col">
-                                            <span className="font-inter text-[15px] font-semibold text-black/90 dark:text-white/90">{uc.title}</span>
-                                            <span className="text-[13px] leading-snug text-black/50 dark:text-white/50">{uc.desc}</span>
-                                        </span>
-                                        <ArrowRight size={16} className="text-[#19ad7d] shrink-0 group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
-                                    </Link>
-                                </motion.div>
-                                );
-                              })}
-                            </div>
-                          )}
-
-                          {item.id === 'resources' && (
-                            <div className="flex flex-col gap-8 pl-4 border-l border-black/10 dark:border-white/10">
-                                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
-                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-2 text-black/40 dark:text-white/30">Overview</div>
-                                    <p className="text-[15px] font-inter leading-snug mb-3 text-black/80 dark:text-white/80">Learn the playbooks that work.</p>
-                                    <Link href="/resources" onClick={() => setMobileMenuOpen(false)} className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest flex items-center gap-1.5">
-                                        Browse resources <ArrowRight size={12} strokeWidth={2.5} />
-                                    </Link>
-                                </motion.div>
-
-                              {LEARN_ITEMS.map((item, j) => {
-                                const slug = item.title.toLowerCase().replace(/\s+/g, "-");
-                                const href = item.href ?? `/resources#${slug}`;
-                                return (
-                                <motion.div 
-                                  key={j}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: j * 0.05 + 0.1 }}
-                                >
-                                    <Link
-                                        href={href}
-                                        onClick={(e) => {
-                                            if (!item.href) {
-                                                navigateToSamePageHash(e, "/resources", slug);
-                                            }
-                                            setMobileMenuOpen(false);
-                                            setActiveMobileDropdown(null);
-                                        }}
-                                        className="group flex items-center justify-between gap-3"
-                                    >
-                                        <span className="flex flex-col">
-                                            <span className="font-inter text-[15px] font-semibold text-black/90 dark:text-white/90">{item.title}</span>
-                                            <span className="text-[13px] leading-snug text-black/50 dark:text-white/50">{item.desc}</span>
-                                        </span>
-                                        <ArrowRight size={16} className="text-[#19ad7d] shrink-0 group-hover:translate-x-1 transition-all duration-300" strokeWidth={2.5} />
-                                    </Link>
-                                </motion.div>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
                     )}
-                  </AnimatePresence>
-                </motion.div>
-              ))}
 
-              {/* Log In ships below "About" so reps with an existing account
-                  can jump straight into the app from the mobile menu. */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + MENU_ITEMS.length * 0.05, duration: 0.5, ease: easeOutExpo }}
-                className="mb-2 border-b border-black/5 dark:border-white/5"
-              >
-                <div className="flex items-center justify-between w-full py-6 group">
-                  <Link
-                    href="https://app.enzy.co/login"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="font-inter text-2xl font-medium tracking-[0.1em] uppercase hover:text-[#19ad7d] active:text-[#19ad7d] transition-colors flex-1 text-black/90 dark:text-white/90"
-                  >
-                    Log In
-                  </Link>
-                </div>
-              </motion.div>
+                    <AnimatePresence initial={false}>
+                      {activeMobileDropdown === item.id && item.id !== 'about' && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.22, ease: easeOutExpo }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 pb-4 pt-1">
+                            {item.id === 'features' && (
+                              <div className="flex flex-col gap-5 pl-3 border-l border-black/10 dark:border-white/10">
+                                <Link
+                                  href="/system"
+                                  onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
+                                  className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
+                                >
+                                  Explore platform <ArrowRight size={12} />
+                                </Link>
+                                {SYSTEM_SECTIONS.map((section, j) => (
+                                  <div key={j}>
+                                    <div className="uppercase tracking-[0.2em] text-[10px] font-bold mb-1 text-black/40 dark:text-white/30">{section.title}</div>
+                                    <p className="text-[12px] mb-2 leading-snug text-black/50 dark:text-white/50">{section.desc}</p>
+                                    <div className="flex flex-col gap-1.5">
+                                      {section.items.map((subitem, k) => (
+                                        <Link
+                                          key={k}
+                                          href={`/system#${slugify(subitem)}`}
+                                          onClick={(e) => {
+                                            navigateToSamePageHash(e, "/system", slugify(subitem));
+                                            setMobileMenuOpen(false);
+                                            setActiveMobileDropdown(null);
+                                          }}
+                                          scroll={false}
+                                          className="group flex items-center justify-between px-3 py-2 rounded-lg border transition-colors bg-black/[0.03] border-black/5 hover:bg-black/[0.07] hover:border-[#19ad7d]/30 dark:bg-white/[0.03] dark:border-white/5 dark:hover:bg-white/[0.08] dark:hover:border-[#19ad7d]/30"
+                                        >
+                                          <span className="text-[13px] font-semibold font-inter text-black/90 dark:text-white/90">{subitem}</span>
+                                          <ArrowRight size={13} className="text-[#19ad7d] group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
+                                        </Link>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
 
-            </div>
-          </motion.div>
+                            {item.id === 'solutions' && (
+                              <div className="flex flex-col gap-3.5 pl-3 border-l border-black/10 dark:border-white/10">
+                                <Link
+                                  href="/solutions"
+                                  onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
+                                  className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
+                                >
+                                  Explore solutions <ArrowRight size={12} />
+                                </Link>
+                                {USE_CASES.map((uc, j) => {
+                                  const slug = uc.title.toLowerCase().replace(/\s+/g, "-");
+                                  return (
+                                    <Link
+                                      key={j}
+                                      href={`/solutions#${slug}`}
+                                      onClick={(e) => {
+                                        navigateToSamePageHash(e, "/solutions", slug);
+                                        setMobileMenuOpen(false);
+                                        setActiveMobileDropdown(null);
+                                      }}
+                                      className="group flex items-center justify-between gap-3"
+                                    >
+                                      <span className="flex flex-col">
+                                        <span className="font-inter text-[14px] font-semibold text-black/90 dark:text-white/90">{uc.title}</span>
+                                        <span className="text-[12px] leading-snug text-black/50 dark:text-white/50">{uc.desc}</span>
+                                      </span>
+                                      <ArrowRight size={15} className="text-[#19ad7d] shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+                            )}
+
+                            {item.id === 'resources' && (
+                              <div className="flex flex-col gap-3.5 pl-3 border-l border-black/10 dark:border-white/10">
+                                <Link
+                                  href="/resources"
+                                  onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
+                                  className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
+                                >
+                                  Browse resources <ArrowRight size={12} strokeWidth={2.5} />
+                                </Link>
+                                {LEARN_ITEMS.map((li, j) => {
+                                  const slug = li.title.toLowerCase().replace(/\s+/g, "-");
+                                  const href = li.href ?? `/resources#${slug}`;
+                                  return (
+                                    <Link
+                                      key={j}
+                                      href={href}
+                                      onClick={(e) => {
+                                        if (!li.href) {
+                                          navigateToSamePageHash(e, "/resources", slug);
+                                        }
+                                        setMobileMenuOpen(false);
+                                        setActiveMobileDropdown(null);
+                                      }}
+                                      className="group flex items-center justify-between gap-3"
+                                    >
+                                      <span className="flex flex-col">
+                                        <span className="font-inter text-[14px] font-semibold text-black/90 dark:text-white/90">{li.title}</span>
+                                        <span className="text-[12px] leading-snug text-black/50 dark:text-white/50">{li.desc}</span>
+                                      </span>
+                                      <ArrowRight size={15} className="text-[#19ad7d] shrink-0 group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                ))}
+
+                {/* Log In — ships below "About" so reps with an account can jump
+                    straight into the app from the menu. */}
+                <Link
+                  href="https://app.enzy.co/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center w-full px-4 py-3.5 mt-1 rounded-2xl font-inter text-[17px] font-semibold tracking-wide transition-colors text-black/90 dark:text-white/90 hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-[#19ad7d]"
+                >
+                  Log In
+                </Link>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </>

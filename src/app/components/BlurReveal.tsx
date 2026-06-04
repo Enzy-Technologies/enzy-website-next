@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useRef } from "react";
-import { motion, useInView } from "motion/react";
+import React from "react";
 
 interface BlurRevealProps {
   children: React.ReactNode;
@@ -12,31 +11,27 @@ interface BlurRevealProps {
   /**
    * How to break the text into independently-animated pieces.
    *
-   * - "char" (default): each glyph animates on its own stagger. Looks more
-   *   cinematic, but every glyph is wrapped in an `inline-block` with a
-   *   transient `filter: blur(...)` — and CSS `filter` paints into a box
-   *   the size of the glyph's advance width. For italic faces the
-   *   rightward overhang of a character (e.g. the swash on an italic
-   *   "d" or "y") sits OUTSIDE that advance-width box and gets clipped
-   *   by the filter layer's bounds. Combined with negative letter-spacing
-   *   on parent headings, the slant of one character can also be visually
-   *   overrun by the next character's box.
-   * - "word": animates each whole word as a single unit. Kerning + italic
-   *   overhang stay intact because the painted box covers the full word.
+   * - "word" (default): animates each whole word on its own stagger. Fewer
+   *   animated nodes than per-char, so it's smooth on mobile, and kerning +
+   *   italic overhang stay intact because the painted box covers the full word.
+   * - "char": each glyph animates on its own stagger for a more cinematic feel.
    *
-   * If `splitBy` is unset, italic content is auto-detected from
-   * `className` and switched to "word" to avoid the clipping above.
+   * Italic content is auto-detected from `className` and always uses "word" so
+   * the slanted glyphs aren't clipped by their own per-character paint box.
    */
   splitBy?: "char" | "word";
 }
 
 /**
- * A cinematic text reveal that staggers in either character-by-character
- * or word-by-word, fading in from 0 opacity and a heavy blur (10px) to
- * fully sharp.
+ * A staggered entrance reveal (fade + small upward slide).
  *
- * Italic text is auto-detected and rendered with word-level splitting so
- * the slanted glyphs aren't clipped by their own per-character paint box.
+ * Implemented as a PURE CSS animation (see `.enzy-reveal` in globals.css)
+ * rather than Framer Motion. CSS animations run at first paint on the
+ * compositor, so the text appears and animates immediately without waiting
+ * for React to hydrate — this is what keeps hero headings from sitting blank
+ * and then animating in late/janky on heavier pages. Each piece gets its
+ * stagger via a per-element `animation-delay` (set with a CSS variable), and
+ * `animation-fill-mode: both` holds the hidden state during that delay.
  */
 export function BlurReveal({
   children,
@@ -46,50 +41,11 @@ export function BlurReveal({
   as: Component = "span",
   splitBy,
 }: BlurRevealProps) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-100px" });
-
   // Italic faces have rightward overhang that doesn't fit inside a single
-  // glyph's advance-width filter layer — fall back to word-level reveal so
-  // the painted box always contains the full kerned word. The class must
-  // appear as a standalone token in the className string (separated by
-  // whitespace or string boundary) so that "not-italic" / "non-italic"
-  // don't trip this on.
+  // glyph's paint box — fall back to word-level reveal. The class must appear
+  // as a standalone token so "not-italic" / "non-italic" don't trip this on.
   const looksItalic = /(?:^|\s)italic(?:$|\s)/.test(className);
-  const mode: "char" | "word" = splitBy ?? (looksItalic ? "word" : "char");
-
-  const containerVariants = {
-    hidden: {},
-    visible: {
-      transition: {
-        // Word-level reveals are coarser, so tighten the stagger a bit
-        // to keep total runtime in line with the per-char version.
-        staggerChildren: mode === "word" ? 0.08 : 0.03,
-        delayChildren: delay,
-      },
-    },
-  };
-
-  // Reveal animates opacity + a small vertical slide only. The original also
-  // animated `filter: blur(10px) -> blur(0)` per glyph, but animated CSS filters
-  // are very expensive on mobile GPUs and force a repaint every frame — and
-  // because the element is the page heading, that delay was pushing back when
-  // the largest text "settled," inflating LCP. Dropping the blur keeps the
-  // staggered fade/slide reveal while removing the costly part.
-  const itemVariants = {
-    hidden: {
-      opacity: 0,
-      y: 10,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: duration,
-        ease: [0.16, 1, 0.3, 1] as const,
-      },
-    },
-  };
+  const mode: "char" | "word" = splitBy ?? (looksItalic ? "word" : "word");
 
   let text = "";
   if (typeof children === "string") {
@@ -101,49 +57,51 @@ export function BlurReveal({
   }
   const words = text.split(" ");
 
+  // Word-level reveals are coarser, so tighten the stagger a bit to keep total
+  // runtime in line with the per-char version.
+  const stagger = mode === "word" ? 0.08 : 0.03;
+
+  const durationStyle = { ["--enzy-reveal-duration" as string]: `${duration}s` };
+
+  // Running index across all animated pieces so the stagger is continuous
+  // even when split per-character across multiple words.
+  let pieceIndex = 0;
+
   return (
-    <Component ref={ref} className={className}>
-      <motion.span
-        variants={containerVariants}
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        style={{ display: "inline" }}
-      >
-        {words.map((word, wordIndex) => (
-          <React.Fragment key={wordIndex}>
-            {mode === "word" ? (
-              // One inline-block per word — the filter layer is sized to
-              // the kerned word, so italic overhang stays inside its
-              // own paint box and is never clipped.
-              <motion.span
-                variants={itemVariants}
-                style={{
-                  display: "inline-block",
-                  willChange: "opacity, transform",
-                }}
-              >
-                {word}
-              </motion.span>
-            ) : (
-              <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>
-                {word.split("").map((char, charIndex) => (
-                  <motion.span
-                    key={charIndex}
-                    variants={itemVariants}
-                    style={{
-                      display: "inline-block",
-                      willChange: "opacity, transform",
-                    }}
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </span>
-            )}
-            {wordIndex < words.length - 1 && " "}
-          </React.Fragment>
-        ))}
-      </motion.span>
+    <Component className={className} style={durationStyle as React.CSSProperties}>
+      {words.map((word, wordIndex) => (
+        <React.Fragment key={wordIndex}>
+          {mode === "word" ? (
+            <span
+              className="enzy-reveal"
+              style={
+                {
+                  ["--enzy-reveal-delay" as string]: `${delay + pieceIndex++ * stagger}s`,
+                } as React.CSSProperties
+              }
+            >
+              {word}
+            </span>
+          ) : (
+            <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>
+              {word.split("").map((char, charIndex) => (
+                <span
+                  key={charIndex}
+                  className="enzy-reveal"
+                  style={
+                    {
+                      ["--enzy-reveal-delay" as string]: `${delay + pieceIndex++ * stagger}s`,
+                    } as React.CSSProperties
+                  }
+                >
+                  {char}
+                </span>
+              ))}
+            </span>
+          )}
+          {wordIndex < words.length - 1 && " "}
+        </React.Fragment>
+      ))}
     </Component>
   );
 }
