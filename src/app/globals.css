@@ -126,3 +126,16 @@ body::-webkit-scrollbar {
   }
 }
 
+/* Partner logo carousel: the track holds two identical copies, so translating
+   exactly -50% places the second copy where the first began — a seamless,
+   continuous loop. (Uniform fixed-width items with no flex gap keep the -50%
+   boundary perfectly aligned.) */
+@keyframes enzy-partner-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+

@@ -141,13 +141,6 @@ export function BookDemoPage({
               >
                 <div className="pointer-events-none absolute inset-0 rounded-[32px] md:rounded-[36px] ring-1 ring-white/10" aria-hidden />
 
-                <Script
-                  type="text/javascript"
-                  src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"
-                  strategy="afterInteractive"
-                  onLoad={() => setMeetingsReady(true)}
-                />
-
                 <div className="flex flex-col gap-7 enzy-hubspot-embed">
                   <HubSpotForm
                     formId={formId}
@@ -157,7 +150,18 @@ export function BookDemoPage({
 
                   {showCalendar ? (
                     <div className="pt-4">
-                      <div className="enzy-meetings-shell">
+                      {/* Load the HubSpot Meetings embed ONLY now — after the
+                          form is submitted — so it never competes with the
+                          form's initial load (keeps the lead form fast). */}
+                      <Script
+                        type="text/javascript"
+                        src="https://static.hsappstatic.net/MeetingsEmbed/ex/MeetingsEmbedCode.js"
+                        strategy="afterInteractive"
+                        onLoad={() => setMeetingsReady(true)}
+                      />
+                      {/* min-height reserves the calendar's space so the iframe
+                          loading in doesn't shove the layout (no CLS). */}
+                      <div className="enzy-meetings-shell min-h-[640px]">
                         <div
                           className="meetings-iframe-container"
                           data-src="https://meetings-na2.hubspot.com/enzy/websitedemo?embed=true"

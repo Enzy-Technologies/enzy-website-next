@@ -54,7 +54,7 @@ const LEARN_DATA: LearnCard[] = [
     bottomImage: imgStoriesBottom.src,
     textColor: "text-white",
     descColor: "text-white/70",
-    customBg: "liquid-glass bg-[rgba(17,17,19,0.55)] border-white/12",
+    customBg: "border border-white/12 bg-[#121417]",
     layoutStyle: "tile3",
     content:
       "Quick case studies.\n\n- What they set up\n- What changed\n- What improved (and how fast)",
@@ -157,11 +157,11 @@ export function Resources() {
         className="relative flex flex-col items-center justify-start w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto z-20"
       >
         <motion.div
-          className="absolute top-[0%] left-[-10%] w-[500px] h-[500px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[80px] pointer-events-none opacity-50 dark:opacity-100"
+          className="absolute top-[0%] left-[-10%] w-[460px] h-[460px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
           style={{ y: backgroundY }}
         />
         <motion.div
-          className="absolute top-[20%] right-[-5%] w-[600px] h-[600px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-50 dark:opacity-100"
+          className="absolute top-[20%] right-[-5%] w-[520px] h-[520px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
           style={{ y: backgroundY2 }}
         />
         <motion.div className="enzy-hero-reveal flex flex-col items-center w-full mb-16 relative z-10">
@@ -185,7 +185,8 @@ export function Resources() {
               layoutId={`card-container-${item.id}`}
               onClick={() => setSelectedId(item.id)}
               className={`relative overflow-hidden rounded-[24px] cursor-pointer group flex flex-col min-h-[380px] w-full ${item.colSpan} ${
-                item.customBg || "liquid-glass"
+                item.customBg ||
+                "border border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03]"
               }`}
               whileHover={{ scale: 0.99 }}
               transition={{ duration: 0.3 }}
@@ -211,11 +212,7 @@ export function Resources() {
               <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
                 <motion.div
                   layoutId={`card-container-${selectedItem.id}`}
-                  className={`relative overflow-hidden rounded-[32px] w-full max-w-5xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col md:flex-row liquid-glass ${
-                    selectedItem.customBg
-                      ? "bg-[rgba(17,17,19,0.55)] border-white/12"
-                      : ""
-                  }`}
+                  className="relative overflow-hidden rounded-[32px] w-full max-w-5xl h-[85vh] max-h-[700px] pointer-events-auto flex flex-col md:flex-row border border-black/10 dark:border-white/10 bg-white dark:bg-[#0b0f14]"
                 >
                   {/* Left/Top Half: Original Artwork Layout */}
                   <div

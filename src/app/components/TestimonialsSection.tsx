@@ -17,42 +17,42 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "Honestly, the biggest impact Enzy has had on our company isn’t just the features themselves, it’s how it reshapes our thinking and behavior as an organization. Before Enzy, we were reacting to results; now we’re anticipating them. Because every KPI, leaderboard, and real-time insight is visible at the moment decisions are made — so if you asked me where the magic really sits, it’s not just the tool — it’s what it enables. Enzy turned data into decision velocity, visibility into alignment, and motivation into momentum. That’s been the difference-maker for us this year.",
     name: "Ashleigh Pepper",
     title: "CEO of Kaizen Promittere",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/697a960ca83443bd4afd2051_Screenshot%202026-01-28%20at%204.04.32%E2%80%AFPM.png"
+    image: "/testimonials/ashleigh-pepper.jpg"
   },
   {
     id: 2,
     quote: "Impressive in every way. From leadership, to UI, to experience... it's all been exceptional! This app is solving so many problems for companies.",
     name: "Stanford Johnsen",
     title: "Co-Founder & CSO of Capital Energy",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/66bf9f06173fdc02d48f23f5_1583360204989.jpeg"
+    image: "/testimonials/stanford-johnsen.jpg"
   },
   {
     id: 3,
     quote: "Enzy is totally transforming our organization. We have more visibility into our day to day and we’re incentivizing the behavior that’s actually driving results. The platform is easy to use, and the user experience makes the team want to use it for everything. Enzy is helping us push the limits of what it means to be a healthcare company.",
     name: "Sean McLean",
     title: "Co-Founder & CEO of Elite Anesthesia",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/66b2932fcf6605eb3392528e_1679593955070.avif"
+    image: "/testimonials/sean-mclean.jpg"
   },
   {
     id: 4,
     quote: "Enzy has been a massive value for us. Since we sell with multiple companies, we’ve always had to have a solution that aggregates that data and showcases it functional and ideally aesthetic way. For years we used web-based “apps” that got the job done. Enzy does it in a sexier, more functional way that has been game changing up into this point.",
     name: "John Taylor",
     title: "Co-Founder & CEO at Grit Marketing",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/66b10d453e2a3decefd44e0f_1698754020984.jpeg"
+    image: "/testimonials/john-taylor.jpg"
   },
   {
     id: 5,
     quote: "What’s been most impressive is how quick they are to implement the changes needed for our structure. We’re a large organization and so it’s not easy for us to get this big ship moving in a new direction and switching platforms.",
     name: "Mike Sawtelle",
     title: "Co-Owner at EcoShield",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/66b10bd7c7ae6a3b59092e90_1676516728094.avif"
+    image: "/testimonials/mike-sawtelle.jpg"
   },
   {
     id: 6,
     quote: "We [use] Enzy extensively throughout our business. It has rapidly become the go-to source for sales reps and managers when it comes to everything from onboarding and metric tracking to prize fulfillment and communication.",
     name: "Cj Adamson",
     title: "Co-Founder & COO of NuSun Power",
-    image: "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/66a17c6e655de68411a23d31_CJ.jpeg"
+    image: "/testimonials/cj-adamson.jpg"
   }
 ];
 
@@ -230,6 +230,7 @@ export function TestimonialsMarquee({
                         <ImageWithFallback
                           src={testimonial.image}
                           alt={testimonial.name}
+                          sizes="(max-width: 768px) 260px, 320px"
                           className="w-full h-full object-cover object-top grayscale-[20%] transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
                         />
                       </div>
@@ -303,6 +304,7 @@ export function TestimonialsMarquee({
                         <ImageWithFallback
                           src={testimonial.image}
                           alt={testimonial.name}
+                          sizes="40px"
                           className="w-full h-full object-cover"
                         />
                       </div>

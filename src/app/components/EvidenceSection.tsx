@@ -9,8 +9,6 @@ const FEATURED_QUOTE = {
   text: "Before Enzy, we were reacting to results. Now we're anticipating them. It turned data into decision velocity, visibility into alignment, and motivation into momentum.",
   name: "Ashleigh Pepper",
   role: "CEO, Kaizen Promittere",
-  image:
-    "https://cdn.prod.website-files.com/6660c2db319e60fb0a15f269/697a960ca83443bd4afd2051_Screenshot%202026-01-28%20at%204.04.32%E2%80%AFPM.png",
 };
 
 

@@ -158,24 +158,26 @@ function PartnerMarqueeLogo({ partner }: { partner: Partner }) {
  *  fade in/out at the edges — minus the captions/highlight. The track renders
  *  the partner set twice so the -50% scroll loops seamlessly. */
 function PartnerLogoMarquee() {
+  // Two identical copies so a -50% translate loops seamlessly (no seam, no
+  // restart). Uniform fixed-width items + no gap keep the boundary aligned.
   const items = [...PARTNERS, ...PARTNERS];
   return (
     // Constrained to ~half the page width (centered) since there aren't enough
-    // partner logos yet to fill an edge-to-edge marquee.
-    <div className="w-full max-w-2xl mx-auto px-4" aria-label="Our partners">
-      <div className="simple-logo-marquee" style={{ ["--speed" as never]: "40s" }}>
-        <div
-          className="simple-logo-marquee__mask"
-          style={{ paddingTop: 8, paddingBottom: 8 }}
-        >
-          <div className="simple-logo-marquee__track">
-            {items.map((p, i) => (
-              <div className="simple-logo-marquee__item" key={`${p.name}-${i}`}>
-                <PartnerMarqueeLogo partner={p} />
-              </div>
-            ))}
+    // partner logos yet to fill an edge-to-edge marquee. The edge mask fades
+    // the logos in/out at the sides, matching the home customer marquee.
+    <div
+      aria-label="Our partners"
+      className="mx-auto w-full max-w-2xl overflow-hidden px-4 py-3 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]"
+    >
+      <div className="flex w-max items-center [animation:enzy-partner-marquee_28s_linear_infinite] motion-reduce:[animation:none]">
+        {items.map((p, i) => (
+          <div
+            key={`${p.name}-${i}`}
+            className="flex h-12 w-[140px] shrink-0 items-center justify-center"
+          >
+            <PartnerMarqueeLogo partner={p} />
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );
