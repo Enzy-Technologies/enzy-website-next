@@ -3,7 +3,7 @@ import { buildMetadata } from "@/app/lib/seo";
 import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Book a demo",
+  title: "Book a Demo",
   description: "Book an Enzy demo and pick a time that works.",
   path: "/book-a-demo",
 });

@@ -4,7 +4,7 @@ import { Privacy } from "@/app/Privacy"
 import { buildMetadata } from "@/app/lib/seo"
 
 export const metadata: Metadata = buildMetadata({
-  title: "Privacy Policy - Enzy",
+  title: "Privacy Policy",
   description: "Privacy policy for Enzy Technologies, LLC.",
   path: "/privacy-policy",
 })

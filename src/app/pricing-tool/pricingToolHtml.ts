@@ -77,7 +77,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .toggle.on{background:var(--green)}
 .toggle::after{content:'';width:16px;height:16px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .25s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
 .toggle.on::after{transform:translateX(18px)}
-.sell-addons{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .25s ease,margin .3s ease;margin-top:0;padding:0 42px 0 42px;display:flex;flex-direction:column;gap:6px}
+.sell-addons{overflow:hidden;max-height:0;opacity:0;transition:max-height .3s ease,opacity .25s ease,margin .3s ease;margin-top:0;padding:0 0 0 42px;display:flex;flex-direction:column;gap:6px}
 .sell-addons.open{max-height:300px;opacity:1;margin-top:12px}
 .sell-addon{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;cursor:pointer;user-select:none;display:flex;align-items:center;justify-content:space-between}
 .sell-addon:hover{border-color:var(--text-mut)}
@@ -98,26 +98,47 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .price-hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;opacity:.85;margin-bottom:8px}
 .price-hero-value{font-family:'IvyOra Text',Georgia,serif;font-size:52px;font-weight:400;line-height:1;position:relative;z-index:1;letter-spacing:-1px}
 .price-hero-sub{font-size:13px;opacity:.7;margin-top:6px;position:relative;z-index:1}
-.discount-banner{display:none;align-items:center;justify-content:center;gap:8px;background:var(--green-dim);border:1px solid rgba(25,173,125,.25);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:20px;text-align:center}
-.discount-banner.show{display:flex}
-.discount-banner-text{font-size:13px;color:var(--green);font-weight:500}
-.discount-pct{font-family:'Inter',sans-serif;font-weight:700;font-size:14px;color:var(--green);background:var(--green-soft);padding:2px 8px;border-radius:4px}
-.summary-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:20px}
-.summary-stat{background:var(--card);padding:16px 18px}
-.summary-stat .stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-mut);margin-bottom:6px}
-.summary-stat .stat-value{font-family:'Inter',sans-serif;font-size:20px;font-weight:700;color:var(--text)}
-.summary-stat .stat-value.small{font-size:16px}
-.summary-stat .stat-note{font-size:11px;color:var(--text-mut);margin-top:2px}
+.meta-discount{flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
+.md-pct{font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.md-text{font-size:11px;font-weight:700;color:var(--green)}
+.totals-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px}
+.totals-row{display:flex}
+.total-block{flex:1;padding:18px 20px;min-width:0}
+.total-divider{width:1px;background:var(--border);margin:16px 0}
+.total-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-mut);margin-bottom:7px}
+.total-value{font-family:'Inter',sans-serif;font-size:25px;font-weight:800;color:var(--text);line-height:1;letter-spacing:-.5px}
+.total-note{font-size:11px;color:var(--text-mut);margin-top:6px;min-height:13px}
+.savings-bar{display:none;align-items:center;gap:10px;background:var(--green-dim);border-top:1px solid rgba(25,173,125,.22);padding:12px 18px}
+.savings-bar.show{display:flex}
+.sb-check{width:22px;height:22px;border-radius:6px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sb-text{flex:1;min-width:0;font-size:12.5px;color:var(--text-sec);line-height:1.35}
+.sb-text b{color:var(--green);font-weight:700;font-size:13.5px}
+.sb-tag{flex-shrink:0;font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;white-space:nowrap}
+.savings-bar.best .sb-tag{background:var(--green);color:#fff}
+.savings-bar.good .sb-tag{background:var(--green-soft);color:var(--green)}
+.savings-bar.alert{background:var(--warn-dim);border-top-color:rgba(244,183,64,.35)}
+.savings-bar.alert .sb-check{background:var(--warn);color:#0B0F14}
+.savings-bar.alert .sb-text b{color:var(--warn)}
+.savings-bar.alert .sb-tag{display:none}
+.summary-meta{display:flex;gap:10px;margin-bottom:16px}
+.meta-item{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px}
+.meta-label{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-mut);margin-bottom:5px}
+.meta-line{display:flex;align-items:baseline;gap:6px}
+.meta-value{font-family:'Inter',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
+.meta-sub{font-size:10px;color:var(--text-mut);font-weight:500}
 .minimum-notice{background:var(--warn-dim);border:1px solid rgba(244,183,64,.25);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--warn);margin-bottom:16px;display:none}
 .minimum-notice.show{display:block}
 .summary-divider{height:1px;background:var(--border);margin:18px 0}
 .line-items-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-mut);margin-bottom:10px}
-.line-item{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
-.line-item:last-child{border-bottom:none}
-.line-item-name{font-size:13px;color:var(--text-sec);display:flex;align-items:center;gap:8px}
-.line-item-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0}
-.line-item-value{font-family:'Inter',sans-serif;font-size:13px;font-weight:600;color:var(--text)}
-.line-item-na{font-size:12px;color:var(--text-mut);font-style:italic}
+.bd-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:9px 0}
+.bd-name{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;color:var(--text);min-width:0}
+.bd-ico{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.bd-val{font-family:'Inter',sans-serif;font-size:14px;font-weight:700;color:var(--text);white-space:nowrap}
+.bd-sep{border-top:1px solid var(--border);margin-top:4px;padding-top:14px}
+.bd-addon{padding:7px 0 7px 36px;position:relative}
+.bd-addon .bd-name{font-size:12.5px;font-weight:500;color:var(--text-sec)}
+.bd-addon .bd-val{font-size:13px;font-weight:600;color:var(--text-sec)}
+.bd-addon::before{content:'';position:absolute;left:12px;top:-4px;width:13px;height:20px;border-left:1.5px solid var(--border);border-bottom:1.5px solid var(--border);border-bottom-left-radius:7px}
 .info-section h4{font-size:12px;font-weight:700;color:var(--text);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
 .info-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:13px}
 .info-label{color:var(--text-mut)}
@@ -134,12 +155,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .billing-opt-tag.none{color:var(--text-mut);background:var(--border)}
 .billing-opt.selected .billing-opt-tag.none{color:var(--text-sec)}
 .billing-best{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap;box-shadow:0 3px 10px rgba(25,173,125,.5)}
-.savings-callout{display:none;align-items:center;gap:13px;background:var(--green-dim);border:1px solid rgba(25,173,125,.3);border-radius:var(--radius-lg);padding:14px 16px;margin-bottom:16px}
-.savings-callout.show{display:flex}
-.savings-callout .sc-icon{width:36px;height:36px;border-radius:11px;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;font-weight:700}
-.savings-callout .sc-body{flex:1;min-width:0}
-.savings-callout .sc-amount{font-family:'IvyOra Text',Georgia,serif;font-size:23px;font-weight:500;color:var(--green);line-height:1.1}
-.savings-callout .sc-text{font-size:12px;color:var(--text-sec);margin-top:2px;line-height:1.35}
 .partner-cta{display:flex;align-items:center;gap:14px;text-decoration:none;background:var(--green-dim);border:1px solid rgba(25,173,125,.3);border-radius:var(--radius-lg);padding:16px 18px;transition:all .2s}
 .partner-cta:hover{border-color:var(--green);background:var(--green-soft);transform:translateY(-1px);box-shadow:0 10px 26px -12px rgba(25,173,125,.5)}
 .partner-cta-body{flex:1;min-width:0}
@@ -147,6 +162,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .partner-cta-text{font-size:12px;color:var(--text-sec);margin-top:4px;line-height:1.4}
 .partner-cta-arrow{flex-shrink:0;width:30px;height:30px;border-radius:50%;background:var(--green);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;transition:transform .2s}
 .partner-cta:hover .partner-cta-arrow{transform:translateX(3px)}
+.module-card.always-on .feature-chip-ai,.feature-chip-ai{background:linear-gradient(135deg,#19AD7D,#22D3EE);color:#fff;border:none;font-weight:700;box-shadow:0 1px 6px rgba(25,173,125,.35)}
+.core-addons{margin-top:12px;padding-left:42px;display:flex;flex-direction:column;gap:8px}
+.ai-price-badge{font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);padding:3px 9px;border-radius:20px;white-space:nowrap}
+.bd-row.enterprise .bd-name{color:var(--warn)}
+.bd-row.enterprise .bd-val{color:var(--warn)}
+.ai-ent-note{font-size:11px;color:var(--text-mut);line-height:1.4;margin:5px 0 2px;padding-left:36px}
+.ai-upgrade-note{font-size:12px;color:var(--text-sec);line-height:1.45}
+.ai-upgrade-note b{color:var(--green);font-weight:700}
 @media(max-width:1024px){.app{grid-template-columns:1fr}.summary-panel{position:static;height:auto;border-left:none;border-top:1px solid var(--border)}.config-panel,.summary-panel{padding:24px 20px}.header{padding:14px 20px}}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
@@ -174,11 +197,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="section">
 <div class="section-label">Step 2</div>
-<div class="section-title">Platform & Modules</div>
+<div class="section-title">Module Selection</div>
 <div class="section-desc">Core is always included. Toggle add-ons below.</div>
 <div class="module-card always-on" id="card-core">
 <div class="module-header"><div class="module-name"><div class="module-icon core-icon">📊</div>Core Module</div><span class="always-label">Always Included</span></div>
-<div class="module-features"><span class="feature-chip">Leaderboards</span><span class="feature-chip">Profiles</span><span class="feature-chip">Badges</span><span class="feature-chip">Competitions & Incentives</span><span class="feature-chip">Messaging</span><span class="feature-chip">Bot Chats</span><span class="feature-chip">Media Library</span></div>
+<div class="module-features"><span class="feature-chip feature-chip-ai">✨ Enzy AI</span><span class="feature-chip">Leaderboards</span><span class="feature-chip">Profiles</span><span class="feature-chip">Badges</span><span class="feature-chip">Competitions & Incentives</span><span class="feature-chip">Messaging</span><span class="feature-chip">Media Library</span></div>
+<div class="core-addons">
+<div class="sell-addon" id="card-enzyai">
+<div class="sell-addon-left"><span class="sell-addon-name">✨ Enzy AI Pro</span></div>
+<div class="sell-addon-right"><span class="ai-price-badge" id="enzyaiPrice">+$10 / user</span><div class="toggle" id="toggle-enzyai"></div></div>
+</div>
+<div class="ai-upgrade-note">Unlocks the full <b>agentic experience</b> — set up <b>automations</b> where your AI agent proactively messages you, nudges teammates, and takes action on your behalf.</div>
+</div>
 </div>
 <div class="module-card" id="card-sell">
 <div class="module-header"><div class="module-name"><div class="module-icon sell-icon">💰</div>Sell Module</div><div class="toggle" id="toggle-sell"></div></div>
@@ -186,15 +216,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="sell-addons" id="sellSubgroup">
 <div class="sell-addon" id="card-weather">
 <div class="sell-addon-left"><span class="sell-addon-name">🗺️ Weather Overlays</span></div>
-<div class="sell-addon-right"><div class="toggle" id="toggle-weather"></div></div>
-</div>
-<div class="sell-addon" id="card-propensity">
-<div class="sell-addon-left"><span class="sell-addon-name">✨ Propensity Scores</span></div>
-<div class="sell-addon-right"><span class="tbd-badge">TBD</span><div class="toggle" id="toggle-propensity"></div></div>
-</div>
-<div class="sell-addon" id="card-coach">
-<div class="sell-addon-left"><span class="sell-addon-name">🤖 AI Coach</span></div>
-<div class="sell-addon-right"><span class="tbd-badge">TBD</span><div class="toggle" id="toggle-coach"></div></div>
+<div class="sell-addon-right"><span class="ai-price-badge" id="weatherPrice">+$10 / user</span><div class="toggle" id="toggle-weather"></div></div>
 </div>
 </div>
 </div>
@@ -220,7 +242,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="card"><div class="input-row">
 <label for="agreementLength">Agreement Length</label>
 <select id="agreementLength"><option value="12" selected>12 months</option><option value="24">24 months</option><option value="36">36 months</option></select>
-<span class="input-hint" id="renewalHint">+7% / year at renewal</span>
 </div></div>
 </div>
 </div>
@@ -231,30 +252,28 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="price-hero-value" id="costPerUser">$50.00</div>
 <div class="price-hero-sub" id="priceHeroSub">per user / month · billed annually</div>
 </div>
-<div class="savings-callout" id="savingsCallout">
-<div class="sc-icon">✓</div>
-<div class="sc-body"><div class="sc-amount" id="savingsAmount">$0</div><div class="sc-text" id="savingsText">saved per year vs monthly billing</div></div>
+<div class="totals-card">
+<div class="totals-row">
+<div class="total-block"><div class="total-label">Per Month</div><div class="total-value" id="monthlyTotal">$10,000</div><div class="total-note" id="minimumNote"></div></div>
+<div class="total-divider"></div>
+<div class="total-block"><div class="total-label">Per Year</div><div class="total-value" id="annualCost">$120,000</div><div class="total-note" id="annualNote">billed annually</div></div>
 </div>
-<div class="discount-banner" id="discountBanner">
-<span class="discount-pct" id="discountPct">0%</span>
-<span class="discount-banner-text" id="discountText">savings vs. standard pricing</span>
-</div>
-<div class="summary-stats">
-<div class="summary-stat"><div class="stat-label">Monthly Total</div><div class="stat-value" id="monthlyTotal">$10,000</div><div class="stat-note" id="minimumNote"></div></div>
-<div class="summary-stat"><div class="stat-label">Annual Cost</div><div class="stat-value" id="annualCost">$120,000</div></div>
-<div class="summary-stat"><div class="stat-label">Setup Fee</div><div class="stat-value small" id="setupFee">$10,000</div><div class="stat-note">One-time fee</div></div>
-<div class="summary-stat"><div class="stat-label">User Baseline</div><div class="stat-value small" id="summaryUsers">200</div><div class="stat-note">committed users</div></div>
+<div class="savings-bar" id="savingsCallout"><span class="sb-check" id="sbIcon">✓</span><span class="sb-text"><b id="savingsAmount">$0</b> <span id="savingsText">saved per year vs monthly billing</span></span><span class="sb-tag" id="sbTag">Best value</span></div>
 </div>
 <div class="minimum-notice" id="minimumBanner">⚠️ $500/mo minimum platform fee applies.</div>
+<div class="summary-meta">
+<div class="meta-item"><span class="meta-label">Setup Fee</span><div class="meta-line"><span class="meta-value" id="setupFee">$10,000</span><span class="meta-sub">one-time</span></div></div>
+<div class="meta-item"><span class="meta-label">Committed Users</span><div class="meta-line"><span class="meta-value" id="summaryUsers">200</span><span class="meta-sub">baseline</span></div><div class="meta-discount" id="volumeDiscount" style="display:none"><span class="md-pct" id="discountPct">0%</span><span class="md-text">volume discount</span></div></div>
+</div>
 <div class="summary-divider"></div>
 <div class="line-items">
 <div class="line-items-label">Module Breakdown (Monthly)</div>
-<div class="line-item"><span class="line-item-name"><span class="line-item-dot"></span>Core Module</span><span class="line-item-value" id="lineCore">$7,000</span></div>
-<div class="line-item" id="lineSellRow"><span class="line-item-name"><span class="line-item-dot"></span>Sell Module</span><span class="line-item-value" id="lineSell">$2,000</span></div>
-<div class="line-item" id="lineWeatherRow" style="display:none"><span class="line-item-name" style="padding-left:14px"><span class="line-item-dot"></span>Weather Overlays</span><span class="line-item-value" id="lineWeather">$0</span></div>
-<div class="line-item" id="linePropensityRow" style="display:none"><span class="line-item-name" style="padding-left:14px"><span class="line-item-dot"></span>Propensity Scores</span><span class="line-item-na">TBD</span></div>
-<div class="line-item" id="lineCoachRow" style="display:none"><span class="line-item-name" style="padding-left:14px"><span class="line-item-dot"></span>AI Coach</span><span class="line-item-na">TBD</span></div>
-<div class="line-item" id="lineRecruitRow"><span class="line-item-name"><span class="line-item-dot"></span>Recruit Module</span><span class="line-item-value" id="lineRecruit">$1,000</span></div>
+<div class="bd-row bd-parent"><span class="bd-name"><span class="bd-ico core-icon">📊</span>Core Module</span><span class="bd-val" id="lineCore">$7,000</span></div>
+<div class="bd-row bd-addon" id="lineEnzyaiRow" style="display:none"><span class="bd-name">Enzy AI Pro</span><span class="bd-val" id="lineEnzyai">$0</span></div>
+<div class="ai-ent-note" id="aiEntNote" style="display:none">*Custom-priced above 200 seats — loop in an AI specialist to scope.</div>
+<div class="bd-row bd-parent bd-sep" id="lineSellRow"><span class="bd-name"><span class="bd-ico sell-icon">💰</span>Sell Module</span><span class="bd-val" id="lineSell">$2,000</span></div>
+<div class="bd-row bd-addon" id="lineWeatherRow" style="display:none"><span class="bd-name">Weather Overlays</span><span class="bd-val" id="lineWeather">$0</span></div>
+<div class="bd-row bd-parent bd-sep" id="lineRecruitRow"><span class="bd-name"><span class="bd-ico recruit-icon">👥</span>Recruit Module</span><span class="bd-val" id="lineRecruit">$1,000</span></div>
 </div>
 <div class="summary-divider"></div>
 <div class="info-section"><h4>Agreement Terms</h4>
@@ -282,7 +301,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <script>
 const T=[{s:1,e:200,c:35,sl:10,r:5,w:10,a:5},{s:201,e:400,c:20,sl:6,r:3,w:6,a:3},{s:401,e:600,c:10,sl:3,r:1.5,w:3,a:1.5},{s:601,e:800,c:5,sl:1.5,r:.75,w:1.5,a:.75},{s:801,e:1000,c:2.5,sl:.75,r:.375,w:.75,a:.375},{s:1001,e:1e6,c:2,sl:.6,r:.3,w:.6,a:.3}];
-const S={users:200,sell:false,recruit:false,weather:false,propensity:false,coach:false,months:12,billing:'annual'};
+const S={users:200,sell:false,recruit:false,weather:false,enzyai:false,months:12,billing:'annual'};
 // Billing cadence multipliers applied to the annual per-user price (annual = current tool math).
 // Monthly is the standard "list" price; annual saves 10%, quarterly saves 5% off that list.
 const BILL={annual:{mult:1,save:.10,sub:'billed annually'},quarterly:{mult:0.95/0.90,save:.05,sub:'billed quarterly'},monthly:{mult:1/0.90,save:0,sub:'billed monthly'}};
@@ -290,40 +309,48 @@ function mc(u,k){let t=0,rem=u;for(const tr of T){if(rem<=0)break;const sz=tr.e-
 function stdPPU(){let p=T[0].c;if(S.sell)p+=T[0].sl;if(S.recruit)p+=T[0].r;if(S.weather)p+=T[0].w;return p;}
 function syncDeps(){
 var sg=document.getElementById('sellSubgroup');
-if(!S.sell){S.weather=S.propensity=S.coach=false;
-['weather','propensity','coach'].forEach(function(x){var c=document.getElementById('card-'+x),t=document.getElementById('toggle-'+x);if(c)c.classList.remove('selected');if(t)t.classList.remove('on');});
+if(!S.sell){S.weather=false;
+['weather'].forEach(function(x){var c=document.getElementById('card-'+x),t=document.getElementById('toggle-'+x);if(c)c.classList.remove('selected');if(t)t.classList.remove('on');});
 if(sg)sg.classList.remove('open');
 }else{if(sg)sg.classList.add('open');}
 }
 function calc(){const u=S.users;if(u<1)return;syncDeps();
 const bl=BILL[S.billing],mult=bl.mult,listMult=BILL.monthly.mult;
 const cc=mc(u,'c'),sc=S.sell?mc(u,'sl'):0,rc=S.recruit?mc(u,'r'):0,wc=S.weather?mc(u,'w'):0;
-let tmA=cc+sc+rc+wc;const bm=tmA<500&&tmA>0;const emA=Math.max(tmA,500);
+const aiOn=S.enzyai,aiCustom=aiOn&&u>200,aiCost=(aiOn&&u<=200)?u*10:0;
+const moduleA=cc+sc+rc+wc;let tmA=moduleA+aiCost;const bm=tmA<500&&tmA>0;const emA=Math.max(tmA,500);
 const em=emA*mult;const cpuA=emA/u;const cpu=cpuA*mult;const auf=Math.ceil(cpuA*1.3*10)/10;
-const sp=stdPPU(),dp=sp>0?((sp-cpuA)/sp)*100:0;const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Price Lock';
+const sp=stdPPU(),dp=sp>0?((sp-moduleA/u)/sp)*100:0;const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Price Lock';
 document.getElementById('costPerUser').textContent='$'+cpu.toFixed(2);
-document.getElementById('priceHeroSub').textContent='per user / month · '+bl.sub;
+document.getElementById('priceHeroSub').textContent='per user / month · '+bl.sub;document.getElementById('annualNote').textContent=bl.sub;
 document.getElementById('monthlyTotal').textContent=fc(em);document.getElementById('annualCost').textContent=fc(em*12);
 document.getElementById('setupFee').textContent=fc(emA);document.getElementById('summaryUsers').textContent=u.toLocaleString();
 document.getElementById('lineCore').textContent=fc(cc*mult);
+var aiRow=document.getElementById('lineEnzyaiRow');aiRow.style.display=aiOn?'flex':'none';
+document.getElementById('lineEnzyai').textContent=aiCustom?'Custom*':fc(aiCost*mult);
+aiRow.classList.toggle('enterprise',aiOn&&aiCustom);
+document.getElementById('aiEntNote').style.display=(aiOn&&aiCustom)?'block':'none';
+document.getElementById('enzyaiPrice').textContent=u>200?'Custom pricing':'+$10 / user';
 document.getElementById('lineSellRow').style.display=S.sell?'flex':'none';document.getElementById('lineSell').textContent=fc(sc*mult);
 document.getElementById('lineRecruitRow').style.display=S.recruit?'flex':'none';document.getElementById('lineRecruit').textContent=fc(rc*mult);
 document.getElementById('lineWeatherRow').style.display=S.weather?'flex':'none';document.getElementById('lineWeather').textContent=fc(wc*mult);
-document.getElementById('linePropensityRow').style.display=S.propensity?'flex':'none';
-document.getElementById('lineCoachRow').style.display=S.coach?'flex':'none';
+var wppu=mc(u,'w')/u;document.getElementById('weatherPrice').textContent='+$'+(wppu%1===0?wppu:wppu.toFixed(2))+' / user';
 document.getElementById('termLength').textContent=mo+' months';document.getElementById('termRenewal').textContent=rt;
 document.getElementById('termAdditionalUser').textContent='$'+auf.toFixed(2)+' / mo per user';
-document.getElementById('renewalHint').textContent=rt;
 const bn=document.getElementById('minimumBanner');if(bm){bn.classList.add('show');document.getElementById('minimumNote').textContent='$500 minimum applied';}else{bn.classList.remove('show');document.getElementById('minimumNote').textContent='';}
-const sco=document.getElementById('savingsCallout'),scA=document.getElementById('savingsAmount'),scT=document.getElementById('savingsText');
-const listYr=emA*listMult*12,saveYr=listYr-em*12,annualSaveYr=listYr-emA*BILL.annual.mult*12;
-if(saveYr>1){sco.classList.add('show');scA.textContent=fc(saveYr);scT.textContent='saved per year vs monthly billing ('+Math.round(bl.save*100)+'% off the standard rate)';}
-else if(annualSaveYr>1){sco.classList.add('show');scA.textContent=fc(annualSaveYr);scT.textContent='you could save per year by switching to annual billing';}
-else{sco.classList.remove('show');}
-const db=document.getElementById('discountBanner');if(dp>.5){db.classList.add('show');document.getElementById('discountPct').textContent=Math.round(dp)+'%';document.getElementById('discountText').textContent='volume savings vs. $'+sp.toFixed(0)+'/user list rate';}else{db.classList.remove('show');}}
+var sco=document.getElementById('savingsCallout'),scA=document.getElementById('savingsAmount'),scT=document.getElementById('savingsText'),sbIcon=document.getElementById('sbIcon'),sbTag=document.getElementById('sbTag');
+var listYr=emA*listMult*12,saveYr=listYr-em*12,annualSaveYr=listYr-emA*BILL.annual.mult*12;
+sco.classList.remove('best','good','alert');sco.classList.add('show');
+if(S.billing==='annual'){sco.classList.add('best');sbIcon.textContent='✓';scA.textContent=fc(saveYr);scT.textContent='saved per year vs monthly billing · 10% off';sbTag.textContent='Best value';}
+else if(S.billing==='quarterly'){sco.classList.add('good');sbIcon.textContent='✓';scA.textContent=fc(saveYr);scT.textContent='saved per year vs monthly billing · 5% off';sbTag.textContent='Better deal';}
+else{sco.classList.add('alert');sbIcon.textContent='!';scA.textContent='$0';scT.textContent='saved — switch to annual to save '+fc(annualSaveYr)+'/yr (10% off)';sbTag.textContent='';}
+var vd=document.getElementById('volumeDiscount');
+if(dp>.5){vd.style.display='flex';document.getElementById('discountPct').textContent=Math.round(dp)+'%';}
+else{vd.style.display='none';}
+}
 function fc(v){return '$'+Math.round(v).toLocaleString();}
 function toggleModule(m){
-if(m==='weather'||m==='propensity'||m==='coach'){if(!S.sell)return;}
+if(m==='weather'){if(!S.sell)return;}
 S[m]=!S[m];
 var c=document.getElementById('card-'+m),t=document.getElementById('toggle-'+m);
 if(c&&t){c.classList.toggle('selected',S[m]);t.classList.toggle('on',S[m]);}

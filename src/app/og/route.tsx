@@ -1,23 +1,18 @@
-import { ImageResponse } from "next/og";
+import { ImageResponse } from "next/og"
 
-import { getLandingPageConfig } from "../config/pages";
+// Dynamic Open Graph card generator. Every page except the homepage points its
+// og:image / twitter:image here (see buildMetadata), passing the page's own
+// title + description as query params so each unique URL gets a bespoke 1200x630
+// preview instead of one shared static card. The homepage uses the static
+// branded card (/og-default.png).
+export const runtime = "edge"
 
-export const runtime = "edge";
+const SIZE = { width: 1200, height: 630 }
 
-export const alt = "Enzy";
-
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
-export const contentType = "image/png";
-
-export default async function OgImage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const config = getLandingPageConfig(slug);
-  const title = config?.seo.title ?? "Enzy";
-  const description = (config?.seo.description ?? "").slice(0, 170);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const title = (searchParams.get("title") ?? "Enzy").slice(0, 120)
+  const description = (searchParams.get("description") ?? "").slice(0, 170)
 
   return new ImageResponse(
     (
@@ -75,7 +70,12 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
       </div>
     ),
     {
-      ...size,
-    }
-  );
+      ...SIZE,
+      headers: {
+        // Cards are pure functions of the query string, so let CDNs / social
+        // scrapers cache them aggressively.
+        "Cache-Control": "public, immutable, no-transform, max-age=31536000",
+      },
+    },
+  )
 }

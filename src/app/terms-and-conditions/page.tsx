@@ -4,7 +4,7 @@ import { Terms } from "@/app/Terms"
 import { buildMetadata } from "@/app/lib/seo"
 
 export const metadata: Metadata = buildMetadata({
-  title: "Terms and Conditions - Enzy",
+  title: "Terms and Conditions",
   description: "Terms and conditions for Enzy Technologies, LLC.",
   path: "/terms-and-conditions",
 })
