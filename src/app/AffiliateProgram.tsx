@@ -102,8 +102,8 @@ export function AffiliateProgram() {
             </BlurReveal>
 
             <p className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60">
-              We team up with the tools, services, and companies that our
-              customers rely on to grow their sales organization. If you have a
+              We work with industry leaders to bring our software to the sales
+              organizations that need it. If you have a
               strong network of sales leaders and an understanding of tools that
               help teams grow, apply to be an affiliate today.
             </p>
@@ -152,8 +152,11 @@ export function AffiliateProgram() {
       <section className="relative w-full px-4 max-w-6xl mx-auto pt-20 md:pt-28">
         <FadeInSection>
           <h2 className="font-ivyora font-medium text-3xl md:text-5xl tracking-[-1px] text-center text-black dark:text-white">
-            Who we sell to
+            Who We Serve
           </h2>
+          <p className="mt-4 text-center font-inter text-base md:text-lg leading-relaxed text-black/60 dark:text-white/60">
+            Including, but not limited to:
+          </p>
         </FadeInSection>
 
         <div className="mt-10 md:mt-14 grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6">
@@ -164,12 +167,6 @@ export function AffiliateProgram() {
             <AudienceColumn title="Virtual Sales" items={VIRTUAL_SALES} />
           </FadeInSection>
         </div>
-
-        <FadeInSection>
-          <p className="mt-8 text-center font-inter text-[15px] font-bold uppercase tracking-[0.18em] text-black/50 dark:text-white/50">
-            & More
-          </p>
-        </FadeInSection>
 
         <FadeInSection className="mt-10 flex justify-center">
           <button

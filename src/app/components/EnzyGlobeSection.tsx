@@ -471,7 +471,7 @@ export function EnzyGlobeSection() {
           Global Impact
         </p>
         <h2
-          className={`font-ivyora font-medium tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2px] leading-[1.05] text-[28px] sm:text-[40px] md:text-[56px] lg:text-[68px] transition-colors duration-500 drop-shadow-sm ${
+          className={`font-ivyora font-medium tracking-[-1px] sm:tracking-[-1.5px] md:tracking-[-2px] leading-[1.05] text-[28px] sm:text-[40px] md:text-[56px] lg:text-[68px] transition-colors duration-500 ${
             isLightMode ? "text-brand-dark" : "text-brand-light"
           }`}
         >

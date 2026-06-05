@@ -6,13 +6,9 @@ import { X } from "lucide-react";
 import { HubSpotForm } from "./HubSpotForm";
 
 /**
- * Affiliate application modal. A standalone clone of PartnerFormModal so the
- * Affiliate Program page has its own modal — when a dedicated affiliate
- * HubSpot form is ready, swap the `formId` below WITHOUT touching the partner
- * modal. Opened by dispatching the `open-affiliate-modal` event.
- *
- * NOTE: until the real affiliate form exists, this intentionally reuses the
- * partner form ID so the CTA still does something useful.
+ * Affiliate application modal. A standalone modal for the Affiliate Program
+ * page (separate from PartnerFormModal so the two forms can diverge freely).
+ * Opened by dispatching the `open-affiliate-modal` event.
  */
 export function AffiliateFormModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -89,10 +85,10 @@ export function AffiliateFormModal() {
             <div className="min-h-[400px] relative enzy-hubspot-embed">
               {/* Re-mounts (and re-runs the HubSpot embed) every time the modal
                   opens, because the modal subtree is unmounted while closed.
-                  TODO: replace this form ID with the dedicated affiliate form
-                  once it exists — currently reuses the partner form. */}
+                  Dedicated affiliate form (same portal 39823762 / region na2 as
+                  the shared HubSpotForm component). */}
               <HubSpotForm
-                formId="d9f856f3-0be8-43a5-8997-9900695d8214"
+                formId="ca13aa2f-9a85-4dd4-8139-eaf7fc610d34"
                 loadingAlign="center"
               />
             </div>

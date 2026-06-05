@@ -146,7 +146,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
               </p>
             </div>
             <Link
-              href="/customers"
+              href="/customer-stories"
               className="group hidden sm:inline-flex items-center gap-2 font-inter text-[15px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
             >
               More stories
