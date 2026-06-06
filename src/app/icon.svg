@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000">
+  <!-- Enzy mark. Adapts to the browser-tab background: dark ink on light
+       chrome, light on dark chrome, so the favicon is always legible. -->
+  <style>
+    polygon { fill: #11161c; }
+    @media (prefers-color-scheme: dark) { polygon { fill: #f5f7fa; } }
+  </style>
+  <polygon points="313.06 874.1 313.46 392.74 687.46 875.03 313.06 874.1"/>
+  <polygon points="687.46 126.25 687.46 606.68 312.54 125.31 687.46 126.25"/>
+</svg>
