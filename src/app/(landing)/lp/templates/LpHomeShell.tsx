@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { ClosingCTASection } from "@/app/components/ClosingCTASection";
 import { HeroSection } from "@/app/components/HeroSection";
 import { EvidenceSection } from "@/app/components/EvidenceSection";
@@ -19,7 +18,6 @@ export function LpHomeShell() {
   return (
     <LpBookDemoScrollShell href="#lp-demo" label="Book a Demo">
       <main className="relative w-full pb-32 md:pb-36 lg:pb-40">
-        <ScrollProgress />
         <HeroSection variant="lp" />
 
         {/* Confidence Boosters */}

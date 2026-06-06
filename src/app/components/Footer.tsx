@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { usePathname } from "next/navigation";
+import { getLandingPageConfig } from "@/app/(landing)/lp/config/pages";
 
 const ENZY_WORDMARK_SRC = "/enzy-wordmark.svg";
 
@@ -16,6 +17,12 @@ const COL_TITLE_CLASS =
 export function Footer() {
   const pathname = usePathname();
   const isLandingPage = pathname?.startsWith("/lp/");
+  // Per-page fine print (e.g. the Facebook/Meta ad-platform disclaimer on
+  // `/lp/meta`). Driven by the landing config so each slug controls its own copy.
+  const landingSlug = isLandingPage ? pathname!.slice("/lp/".length).split("/")[0] : "";
+  const landingDisclaimer = isLandingPage
+    ? getLandingPageConfig(landingSlug)?.disclaimer
+    : undefined;
 
   return (
     <footer className="relative z-10 w-full bg-black text-white overflow-x-hidden">
@@ -87,32 +94,47 @@ export function Footer() {
         )}
 
         {/* Bottom bar */}
-        <div className="flex flex-col gap-6 pt-6 border-t border-white/12 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+        {isLandingPage ? (
+          /* Landing pages: no off-page links, no address — just the copyright
+             line and any per-page fine print (e.g. the Meta ad disclaimer). */
+          <div className="flex flex-col gap-4 pt-6 border-t border-white/12">
             <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50">
               © Enzy. 2026. All rights reserved.
             </p>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/terms-and-conditions"
-                className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
-              >
-                Terms and Conditions
-              </Link>
-              <Link
-                href="/privacy-policy"
-                className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
-              >
-                Privacy Policy
-              </Link>
-            </div>
+            {landingDisclaimer ? (
+              <p className="font-inter text-[11px] sm:text-xs leading-relaxed text-white/40 max-w-3xl">
+                {landingDisclaimer}
+              </p>
+            ) : null}
           </div>
-          <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50 text-left sm:text-right leading-relaxed">
-            4100 N Chapel Ridge Rd, Suite 300
-            <br />
-            Lehi, Utah 84043
-          </p>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-6 pt-6 border-t border-white/12 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+              <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50">
+                © Enzy. 2026. All rights reserved.
+              </p>
+              <div className="flex items-center gap-4">
+                <Link
+                  href="/terms-and-conditions"
+                  className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
+                >
+                  Terms and Conditions
+                </Link>
+                <Link
+                  href="/privacy-policy"
+                  className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/70 underline underline-offset-4 decoration-white/30 hover:text-[#19ad7d] hover:decoration-[#19ad7d] transition-colors"
+                >
+                  Privacy Policy
+                </Link>
+              </div>
+            </div>
+            <p className="font-inter text-[11px] sm:text-xs uppercase tracking-[0.18em] text-white/50 text-left sm:text-right leading-relaxed">
+              4100 N Chapel Ridge Rd, Suite 300
+              <br />
+              Lehi, Utah 84043
+            </p>
+          </div>
+        )}
       </div>
     </footer>
   );

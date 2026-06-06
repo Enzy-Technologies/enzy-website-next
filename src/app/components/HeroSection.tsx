@@ -17,11 +17,10 @@ import { BlurReveal } from "./BlurReveal";
 // settles, matching BlurReveal's internal timing (0.03s per-character stagger +
 // 0.8s per-character duration). Used to start the italic phrase exactly when the
 // lead line finishes, so the reveal reads as one continuous motion.
-// NOTE: HERO_LEAD / HERO_LEAD_ALT must mirror the lead text rendered below.
+// NOTE: HERO_LEAD_ALT must mirror the lead text rendered below.
 const charRevealEnd = (text: string, startDelay = 0.1) =>
   startDelay + Math.max(0, text.replace(/\s+/g, "").length - 1) * 0.03 + 0.8;
 
-const HERO_LEAD = "Performance has always been a game. ";
 const HERO_LEAD_ALT = "Performance has never had an operating system. ";
 
 // How early (in seconds) the italic phrase starts before the lead line fully
@@ -77,37 +76,26 @@ const LP_VALUE_BULLETS = [
 function HeroSectionLp() {
   return (
     <section className="relative w-full">
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden>
-        <div
-          className="absolute inset-0 bg-[radial-gradient(120%_90%_at_50%_-28%,rgba(25,173,125,0.14),transparent_52%),linear-gradient(180deg,var(--color-surface-light)_0%,#ffffff_58%)] dark:bg-[radial-gradient(95%_72%_at_88%_-8%,rgba(25,173,125,0.17),transparent_56%),radial-gradient(72%_58%_at_4%_58%,rgba(25,173,125,0.09),transparent_62%),linear-gradient(180deg,#0b0f14_0%,#060809_100%)]"
-        />
-        <div
-          className="absolute inset-x-0 top-0 h-[min(460px,50vh)] opacity-[0.42] [mask-image:linear-gradient(to_bottom,black,transparent)]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(25,173,125,0.065) 1px, transparent 1px), linear-gradient(90deg, rgba(25,173,125,0.065) 1px, transparent 1px)",
-            backgroundSize: "44px 44px",
-          }}
-        />
-      </div>
-
+      {/* No opaque background here on purpose: the page-wide cream + PixelCanvas
+          (from SiteShell) show through, so the hero blends into the sections
+          below with no white→cream seam — matching the main site hero. */}
       <div className="relative mx-auto max-w-7xl px-4 pb-8 pt-12 md:pb-12 md:pt-16 lg:pt-20">
         <div className="flex flex-col items-center text-center max-w-4xl mx-auto gap-6 md:gap-8">
           <h1
             className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]"
           >
             <BlurReveal as="span" delay={0.1}>
-              Performance has always been a game.{" "}
+              Performance has never had an operating system.{" "}
             </BlurReveal>
-            <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD) - LEAD_OVERLAP} className="font-ivyora font-medium italic">
-              Now there&rsquo;s an operating system for it.
+            <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD_ALT) - LEAD_OVERLAP} className="font-ivyora font-medium italic">
+              Until now.
             </BlurReveal>
           </h1>
 
           <p
             className="max-w-[640px] font-inter text-[17px] leading-[1.55] md:text-[19px] text-black/72 dark:text-white/68"
           >
-            Enzy is the performance operating system for field sales — one that doesn&rsquo;t just visualize your data but tells you what to do with it. Live competitions, public leaderboards, real-time recognition, and AI backed by more sales performance data than any tool in existence.
+            The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more sales performance data than any tool in existence.
           </p>
         </div>
         
@@ -149,9 +137,9 @@ function HeroSectionLp() {
 
         <div className="mt-12 md:mt-16 w-full max-w-4xl mx-auto text-center">
           <p
-            className="mb-4 font-inter text-[10px] font-semibold uppercase tracking-[0.18em] md:text-[11px] text-black/45 dark:text-white/45"
+            className="mb-4 font-inter text-[13px] font-semibold uppercase tracking-[0.18em] md:text-[15px] text-black/45 dark:text-white/45"
           >
-            Trusted by revenue teams worldwide
+            Serving 180k users
           </p>
           <div className="-mx-1 [&_.simple-logo-marquee]:mt-0">
             <SimpleLogosMarquee />

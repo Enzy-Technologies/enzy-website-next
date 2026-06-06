@@ -55,6 +55,11 @@ export type LandingPageConfigHome = {
   layout: "home";
   slug: string;
   seo: LandingSeoConfig;
+  /**
+   * Optional fine-print shown in the stripped-down landing footer (e.g. the
+   * Facebook/Meta ad-platform disclaimer for `/lp/meta`). Plain text only.
+   */
+  disclaimer?: string;
 };
 
 /** Marketing landing: fixed stack (hero → optional embed video → evidence → testimonial → features) + sticky demo CTA. */
@@ -67,6 +72,11 @@ export type LandingPageConfigMarketing = {
   sections?: LandingSectionKey[];
   socialProof?: LandingMarketingSocialProof;
   productVideo?: LandingMarketingProductVideo;
+  /**
+   * Optional fine-print shown in the stripped-down landing footer (e.g. the
+   * Facebook/Meta ad-platform disclaimer for `/lp/meta`). Plain text only.
+   */
+  disclaimer?: string;
 };
 
 export type LandingPageConfig = LandingPageConfigHome | LandingPageConfigMarketing;

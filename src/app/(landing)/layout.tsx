@@ -3,7 +3,7 @@ import Script from "next/script";
 
 /**
  * Layout for the (landing) route group — applies to every `/lp/*` page only
- * (e.g. `/lp/meta`, `/lp/fieldsales`), and nothing else on the site.
+ * (e.g. `/lp/meta`), and nothing else on the site.
  *
  * Ad-traffic tracking lives here so the Meta Pixel fires on landing pages but
  * stays off the main marketing site. Loaded via next/script with

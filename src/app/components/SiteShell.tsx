@@ -46,12 +46,12 @@ export function SiteShell({
   }, [])
 
   // Pixel particle background renders globally on desktop — every page shares the
-  // same parallax/interactive backdrop. Standalone surfaces (`/lp/*` and the
-  // pricing tool) opt out, and the whole site opts out once the wand turns it
-  // off. Mobile opts out inside PixelCanvas itself — it's hidden via CSS
-  // (so it never paints, not even for one frame) and its animation loop is
-  // skipped on phones — which is why there's no mobile check here.
-  const showParticles = !isLp && !particlesDisabled
+  // same parallax/interactive backdrop, including `/lp/*` landing pages. Only the
+  // pricing tool (a self-contained iframe document) opts out, and the whole site
+  // opts out once the wand turns it off. Mobile opts out inside PixelCanvas itself
+  // — it's hidden via CSS (so it never paints, not even for one frame) and its
+  // animation loop is skipped on phones — which is why there's no mobile check here.
+  const showParticles = pathname !== "/pricing-tool" && !particlesDisabled
 
   return (
     <div
@@ -70,7 +70,7 @@ export function SiteShell({
           {children}
         </main>
 
-        {isLp ? null : <Footer />}
+        {pathname === "/pricing-tool" ? null : <Footer />}
       </div>
       <PartnerFormModal />
       <AffiliateFormModal />

@@ -12,6 +12,12 @@ const nextConfig = {
     optimizePackageImports: ["lucide-react", "motion", "motion/react"],
   },
   images: {
+    // Prefer AVIF (≈30% smaller than WebP at equal quality); browsers without
+    // AVIF support fall back to WebP automatically.
+    formats: ["image/avif", "image/webp"],
+    // The hand image uses quality 90; Next 15 requires non-default qualities
+    // to be allow-listed here.
+    qualities: [75, 90],
     remotePatterns: [
       { protocol: "https", hostname: "39823762.fs1.hubspotusercontent-na2.net" },
       { protocol: "https", hostname: "images.unsplash.com" },

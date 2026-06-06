@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import Image from "next/image";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { BlurReveal } from "./BlurReveal";
 
@@ -111,9 +112,12 @@ function Card({ step, index, totalSteps, scrollYProgress }: { step: Step, index:
       </div>
 
       <div className="relative z-10 w-full md:w-[44%] mx-auto flex-1 min-h-0 md:flex-none md:aspect-[3/4] flex items-center justify-center overflow-hidden md:overflow-visible">
-        <img
+        <Image
           src={step.icon}
           alt={step.title}
+          width={1254}
+          height={1254}
+          sizes="(max-width: 768px) 220px, 320px"
           className="relative w-auto h-full max-h-[180px] max-w-full sm:max-h-[280px] md:w-full md:h-full md:max-w-[80%] md:max-h-[80%] object-contain"
         />
       </div>

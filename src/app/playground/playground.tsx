@@ -12,10 +12,16 @@ import {
 } from "motion/react";
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
 
-const HAND_IMAGE =
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Playground/Hand%20Holding%20iPhone.png";
+// Self-hosted from /public (was a HubSpot CDN URL). Source downscaled to
+// 4000×2886 — the same composition/aspect as the 8000×5772 original, but no
+// larger than next/image's 3840px max variant, so output quality is identical
+// while the committed asset is ~3.7MB instead of 12MB. next/image serves
+// right-sized AVIF/WebP variants from this.
+const HAND_IMAGE = "/playground/hand-holding-iphone.png";
 
-const IMAGE_ASPECT = 8000 / 5772;
+// Aspect of the hand PNG (4000/2886 === 8000/5772). The phone-overlay
+// calibration fractions below depend on this exact ratio.
+const IMAGE_ASPECT = 4000 / 2886;
 
 const PHONE_CENTER_X_FRAC = 0.4978;
 const PHONE_CENTER_Y_FRAC = 0.4567;
@@ -266,18 +272,18 @@ export function Playground() {
               CONTAINER_BOTTOM_PAD), so the PNG's own alpha fade at the
               bottom of the wrist has room to fall off cleanly.
 
-              Uses next/image so Next's optimizer compresses the giant
-              8000×5772 source PNG into right-sized AVIF/WebP variants
+              Uses next/image so Next's optimizer compresses the self-hosted
+              4000×2886 source PNG into right-sized AVIF/WebP variants
               cached on the edge. `sizes` mirrors the runtime layout:
               ~85vw on mobile, ~55vw on desktop, capped at 1400px. */}
           <Image
             src={HAND_IMAGE}
             alt="Hand holding phone"
-            width={1600}
-            height={1155}
+            width={2000}
+            height={1443}
             priority
             sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 60vw, 1400px"
-            quality={85}
+            quality={90}
             className="absolute top-0 left-0 pointer-events-none select-none z-20"
             style={{
               width: animValues.cw,
