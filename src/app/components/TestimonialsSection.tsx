@@ -56,6 +56,10 @@ export const TESTIMONIALS: Testimonial[] = [
   }
 ];
 
+// One full set scrolls in this many ms. Shared by the animation and the
+// drag-to-scrub math so they stay in sync.
+const MARQUEE_DURATION_MS = 60000;
+
 function splitQuote(quote: string) {
   const match = quote.match(/^(.*?[.!?])\s+(.*)$/);
   if (match) {
@@ -100,12 +104,23 @@ export function TestimonialsMarquee({
   const trackRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<Animation | null>(null);
   const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  // True while the user is pressing/dragging the strip to scrub it. Pausing the
+  // marquee while this is set lets a drag override the loop; clearing it resumes
+  // the loop from wherever the drag left off.
+  const [isDragging, setIsDragging] = useState(false);
   // Pause the marquee while it's scrolled off-screen so it isn't compositing a
   // wide, many-layered 3D track in the background — that work was making other
   // interactions (e.g. opening the nav menu at the top of the page) feel laggy.
   const [inView, setInView] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
+
+  // Drag-to-scrub bookkeeping.
+  const pointerIdRef = useRef<number | null>(null);
+  const dragStartXRef = useRef(0);
+  const baseTimeRef = useRef(0); // animation.currentTime at press
+  const setWidthRef = useRef(0); // px width of one testimonial set
+  const movedRef = useRef(false); // exceeded the drag threshold?
+  const capturedRef = useRef(false); // have we captured the pointer?
 
   // Two sets is enough for a seamless loop when we animate the track by
   // exactly one set's width.
@@ -135,7 +150,7 @@ export function TestimonialsMarquee({
         { transform: `translate3d(${distance}, 0, 0)` },
       ],
       {
-        duration: 60000, // 60s for a full set; tweak for taste
+        duration: MARQUEE_DURATION_MS,
         iterations: Infinity,
         easing: "linear",
       }
@@ -160,30 +175,77 @@ export function TestimonialsMarquee({
     return () => io.disconnect();
   }, []);
 
-  // Pause when off-screen, when a card is flipped, or when a desktop user is
-  // hovering.
+  // Pause when off-screen, when a card is flipped, or while the user is
+  // dragging the strip. Clearing any of these resumes the loop from its current
+  // position (WAAPI play() continues from the paused currentTime).
   useEffect(() => {
     const animation = animationRef.current;
     if (!animation) return;
-    const isHoverDevice =
-      typeof window !== "undefined" &&
-      window.matchMedia &&
-      window.matchMedia("(hover: hover)").matches;
-
-    if (!inView || flippedIndex !== null || (isHoverDevice && isHovered)) {
+    if (!inView || flippedIndex !== null || isDragging) {
       animation.pause();
     } else {
       animation.play();
     }
-  }, [flippedIndex, isHovered, inView]);
+  }, [flippedIndex, inView, isDragging]);
+
+  // --- Drag / tap-and-drag to scrub through the cards -------------------
+  // We keep the marquee on the Web Animations API (compositor thread) and just
+  // move its playhead: on press we pause and record the current time; on drag
+  // we convert horizontal travel into a currentTime offset (wrapped so the loop
+  // stays seamless); on release we resume. Pointer capture starts only once a
+  // real drag is detected, so a plain tap still flips the card.
+  const handlePointerDown = (e: React.PointerEvent) => {
+    const track = trackRef.current;
+    const anim = animationRef.current;
+    if (!track || !anim) return;
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if (pointerIdRef.current !== null) return;
+    setWidthRef.current = track.offsetWidth / sets;
+    baseTimeRef.current = Number(anim.currentTime) || 0;
+    dragStartXRef.current = e.clientX;
+    movedRef.current = false;
+    capturedRef.current = false;
+    pointerIdRef.current = e.pointerId;
+    anim.pause();
+    setIsDragging(true);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    const anim = animationRef.current;
+    const setWidth = setWidthRef.current;
+    if (!anim || !setWidth) return;
+    const dx = e.clientX - dragStartXRef.current;
+    if (Math.abs(dx) > 5) {
+      movedRef.current = true;
+      if (!capturedRef.current) {
+        try {
+          e.currentTarget.setPointerCapture(e.pointerId);
+        } catch {}
+        capturedRef.current = true;
+      }
+    }
+    // translate = -(t / DURATION) * setWidth, so dragging right (dx > 0) should
+    // decrease t. Wrap into [0, DURATION) for a seamless, infinite scrub.
+    let t = baseTimeRef.current - (dx * MARQUEE_DURATION_MS) / setWidth;
+    t = ((t % MARQUEE_DURATION_MS) + MARQUEE_DURATION_MS) % MARQUEE_DURATION_MS;
+    anim.currentTime = t;
+  };
+
+  const handlePointerEnd = (e: React.PointerEvent) => {
+    if (pointerIdRef.current !== e.pointerId) return;
+    if (capturedRef.current) {
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {}
+    }
+    pointerIdRef.current = null;
+    capturedRef.current = false;
+    setIsDragging(false);
+  };
 
   return (
-    <div
-      ref={rootRef}
-      className={className}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div ref={rootRef} className={className}>
       <style
         dangerouslySetInnerHTML={{
           __html: `
@@ -197,7 +259,16 @@ export function TestimonialsMarquee({
           marquee cards horizontally while leaving the Y axis visible, so the
           cards' large drop shadows aren't sheared off at the bottom. Unlike
           `hidden`, `clip` doesn't force the other axis to `auto`. */}
-      <div className="w-full relative overflow-x-clip">
+      <div
+        className={`w-full relative overflow-x-clip select-none ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
+        style={{ touchAction: "pan-y" }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerEnd}
+        onPointerCancel={handlePointerEnd}
+      >
         <div
           ref={trackRef}
           className="flex w-max py-8"
@@ -216,7 +287,11 @@ export function TestimonialsMarquee({
                   className={`relative w-[300px] md:w-[360px] h-[460px] md:h-[500px] transition-transform duration-700 [transform-style:preserve-3d] cursor-pointer ${
                     isFlipped ? "[transform:rotateY(180deg)]" : ""
                   }`}
-                  onClick={() => setFlippedIndex(isFlipped ? null : idx)}
+                  onClick={() => {
+                    // Suppress the flip if this click ended a drag.
+                    if (movedRef.current) return;
+                    setFlippedIndex(isFlipped ? null : idx);
+                  }}
                 >
                   <div
                     className={`absolute inset-0 rounded-[32px] overflow-hidden flex flex-col transition-opacity duration-300 border shadow-[0_24px_80px_-24px_rgba(0,0,0,0.25)] bg-white/95 border-black/10 hover:border-[#19ad7d]/35 dark:bg-[#0f1419]/95 dark:border-white/12 dark:hover:border-[#19ad7d]/35 ${

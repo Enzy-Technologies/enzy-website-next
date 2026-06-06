@@ -282,7 +282,15 @@ export function Playground() {
             width={2000}
             height={1443}
             priority
-            sizes="(max-width: 1024px) 90vw, (max-width: 1440px) 60vw, 1400px"
+            // The hand image is scaled up far beyond the viewport on small
+            // screens — the phone fills the screen, but the phone is only ~23%
+            // of the image width, so the full image renders at ~175vw at rest
+            // and zooms to ~300vw on scroll. `sizes` must reflect that real
+            // rendered width (not the viewport) or the browser under-fetches a
+            // tiny variant and it looks pixelated. These values push mobile to
+            // the largest (3840px) variant so the phone stays sharp through the
+            // zoom. Desktop is left modest (it renders near 1:1).
+            sizes="(max-width: 767px) 300vw, (max-width: 1023px) 220vw, (max-width: 1440px) 60vw, 1400px"
             quality={90}
             className="absolute top-0 left-0 pointer-events-none select-none z-20"
             style={{
