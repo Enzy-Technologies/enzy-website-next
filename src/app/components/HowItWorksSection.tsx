@@ -4,12 +4,22 @@ import React, { useRef } from "react";
 import Image from "next/image";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { BlurReveal } from "./BlurReveal";
+import { useScrollPin } from "@/app/lib/useScrollPin";
 
 type Step = {
   title: string;
   body: string;
   icon: string;
 };
+
+// While the stage is pinned, clip it this many px short of the bottom edge.
+// iOS Safari flattens its translucent bottom bar whenever a composited layer
+// (here, a card) reaches the bottom viewport edge. Clipping keeps composited
+// content off that edge, AND the clip's presence makes the flattened bar
+// SELF-CLEAR when you scroll past instead of staying opaque until a refresh.
+// Cards sit ~88px above the bottom (pb-12 + pb-10), so this only clips empty
+// padding. Matches the Playground's STAGE_BOTTOM_CLIP.
+const STAGE_BOTTOM_CLIP = 4; // px
 
 const STEPS: Step[] = [
   {
@@ -142,13 +152,35 @@ export function HowItWorksSection() {
     restDelta: 0.0005,
   });
 
+  // Pin the stage with a `position: fixed` toggle instead of `position: sticky`.
+  // A sticky stage with content becomes a persistent composited layer that
+  // flattens iOS Safari's translucent safe-area bars page-wide; `fixed` does
+  // not. See useScrollPin for the full rationale.
+  const pin = useScrollPin(containerRef);
+
   return (
     <section
       id="how-it-works"
       ref={containerRef}
-      className="relative w-full px-4 h-[400vh]"
+      className="relative w-full h-[400vh]"
     >
-      <div className="sticky top-[env(safe-area-inset-top,0px)] h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto pt-24 lg:pt-32 pb-12 lg:pb-20">
+      {/* Full-width pinner (replaces position: sticky). Layout/centering lives
+          on the inner div so it's unaffected by the fixed/absolute toggle. */}
+      <div
+        className="w-full"
+        style={{
+          position: pin.position,
+          top: pin.top,
+          bottom: pin.bottom,
+          left: pin.left,
+          height:
+            pin.position === "fixed"
+              ? `calc(100dvh - ${STAGE_BOTTOM_CLIP}px)`
+              : "100dvh",
+          overflow: pin.position === "fixed" ? "hidden" : "visible",
+        }}
+      >
+      <div className="h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto px-4 pt-24 lg:pt-32 pb-12 lg:pb-20">
         <div className="flex flex-col items-center justify-center text-center mb-8 shrink-0 max-w-[1000px] px-4">
           <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
             The Methodology
@@ -181,6 +213,7 @@ export function HowItWorksSection() {
             />
           ))}
         </div>
+      </div>
       </div>
     </section>
   );

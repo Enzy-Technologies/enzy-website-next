@@ -164,7 +164,12 @@ function EnzyGlobe() {
     
     // Dynamically set camera Z so it always perfectly fits the screen regardless of mobile/desktop aspect ratio
     const updateCameraDistance = (aspect: number) => {
-      const baseDistance = 2.9; // Pulled back safely so the longest beams never exceed the 3D canvas bounds
+      // Mobile shows the FULL sphere (no mask-image fade there), so pull the
+      // camera back a bit more than desktop — otherwise the sphere's bottom is
+      // clipped at the canvas edge (the hard edge). Desktop keeps the tighter,
+      // more immersive framing because its mask fades the lower sphere anyway.
+      const isMobile = window.innerWidth < 1024;
+      const baseDistance = isMobile ? 3.0 : 2.9; // Pulled back safely so the longest beams never exceed the 3D canvas bounds
       if (aspect < 1) {
         // On tall/narrow mobile screens, pull camera back so the sides don't clip
         camera.position.set(0, 0.2, baseDistance / aspect);
@@ -187,8 +192,11 @@ function EnzyGlobe() {
     const globeGroup = new THREE.Group();
     // US is roughly at -98 longitude. polar2Cartesian adds 90 to lng, meaning theta is -8 degrees.
     // We add a slight positive Y rotation (0.15 rad ~ 8.5 degrees) to center the US initially.
-    globeGroup.rotation.y = 0.15; 
-    globeGroup.position.y = -0.1; // Push globe down slightly (less than before to remove top padding)
+    globeGroup.rotation.y = 0.15;
+    // Mobile shows the full sphere (no mask fade), so lift it up: this clears the
+    // bottom clip AND moves the sphere closer to the title. Desktop keeps the
+    // original slight downward push (its mask fades the lower sphere).
+    globeGroup.position.y = window.innerWidth < 1024 ? 0.06 : -0.1;
     scene.add(globeGroup);
 
     // Solid core to block the backside points from blowing out the front
@@ -487,7 +495,7 @@ export function EnzyGlobeSection() {
       {/* Break out of the max-w-7xl container so the canvas can be completely unrestricted horizontally */}
       <div className="flex items-center justify-center relative w-full">
         <div
-          className="w-[120vw] h-[100vw] sm:h-[80vw] max-h-[1000px] relative"
+          className="globe-fade w-[120vw] h-[100vw] sm:h-[80vw] max-h-[1000px] relative"
         >
           <EnzyGlobe />
         </div>

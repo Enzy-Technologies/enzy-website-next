@@ -781,3 +781,14 @@
     }
   }
 }
+
+/* Globe bottom fade — DESKTOP ONLY (>=1024px). On mobile, mask-image is a
+   compositing trigger that flattens iOS Safari's bottom toolbar (the opaque bar
+   during the globe), so we scope the mask to desktop, where there's no iOS
+   toolbar. Mobile gets a hard bottom edge instead (no bar). */
+@media (min-width: 1024px) {
+  .globe-fade {
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 95%);
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 95%);
+  }
+}

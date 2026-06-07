@@ -11,6 +11,7 @@ import {
   cubicBezier,
 } from "motion/react";
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
+import { useScrollPin } from "@/app/lib/useScrollPin";
 
 // Self-hosted from /public (was a HubSpot CDN URL). Source downscaled to
 // 4000×2886 — the same composition/aspect as the 8000×5772 original, but no
@@ -42,6 +43,16 @@ const PHONE_SCREEN_BG = "#faf9f6";
 // has room to fall off — instead of meeting a hard horizontal container
 // edge as the user scrolls out of the zoomed-in state.
 const CONTAINER_BOTTOM_PAD = 0.18; // fraction of ch
+
+// While the stage is pinned, clip it this many px short of the bottom edge.
+// iOS Safari flattens its translucent bottom bar whenever a composited layer
+// (here, the zoomed phone) reaches the bottom viewport edge. Clipping keeps the
+// composited content off that edge, AND — critically — the clip's presence makes
+// the flattened bar SELF-CLEAR when you scroll past (the overflow/height change
+// on the fixed→absolute transition forces iOS to re-evaluate), instead of
+// staying opaque until a refresh. The residual bar is ~this tall; 4px is the
+// smallest value that still reliably self-clears on-device.
+const STAGE_BOTTOM_CLIP = 4; // px
 
 // Gentle ease-in-out for both zoom phases: starts and ends with near-zero
 // velocity so the transition from "in motion" → "held" and "held" → "in motion"
@@ -159,6 +170,12 @@ export function Playground() {
     offset: ["start start", "end end"],
   });
 
+  // Pin the stage via a `position: fixed` toggle instead of `position: sticky`.
+  // A sticky stage with content becomes a persistent composited layer that
+  // flattens iOS Safari's translucent safe-area bars page-wide; `fixed` does
+  // not. See useScrollPin for the full rationale.
+  const pin = useScrollPin(containerRef);
+
   // Smooth out chunky scroll deltas on mobile (iOS momentum scrolling delivers
   // scrollY updates in bursts). The spring interpolates between bursts so each
   // animation frame sees a small, continuous progress step — which translates
@@ -217,8 +234,19 @@ export function Playground() {
       style={{ height: "200vh" }}
     >
       <div
-        className="sticky top-0 w-full h-[100dvh]"
-        style={{ pointerEvents: isInteractive ? "auto" : "none" }}
+        className="w-full"
+        style={{
+          position: pin.position,
+          top: pin.top,
+          bottom: pin.bottom,
+          left: pin.left,
+          height:
+            pin.position === "fixed"
+              ? `calc(100dvh - ${STAGE_BOTTOM_CLIP}px)`
+              : "100dvh",
+          overflow: pin.position === "fixed" ? "hidden" : "visible",
+          pointerEvents: isInteractive ? "auto" : "none",
+        }}
       >
         <motion.div
           className="absolute origin-top-left"
