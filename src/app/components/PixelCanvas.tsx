@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import { useTheme } from "./ThemeProvider";
 import { writeParticlesDisabled } from "../lib/particles";
+import { DESKTOP_MIN, MEDIA } from "../lib/breakpoints";
 
 interface AmbientParticle {
   x: number;
@@ -337,11 +338,11 @@ export function PixelCanvas() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Mobile: skip the entire animation loop. The canvas is also hidden via CSS
-    // (max-[768px]:hidden) so it never paints — not even for a single frame —
-    // and this guard ensures none of the per-frame drawing/particle work runs on
-    // phones. Desktop keeps the full animated canvas.
-    if (window.matchMedia("(max-width: 768px)").matches) return;
+    // Touch (phone + tablet): skip the entire animation loop. The canvas is also
+    // hidden via CSS (max-[1023px]:hidden) so it never paints — not even for a
+    // single frame — and this guard ensures none of the per-frame drawing/particle
+    // work runs below the desktop line. Desktop (>=1024) keeps the full animated canvas.
+    if (window.matchMedia(MEDIA.touch).matches) return;
 
     let width = window.innerWidth;
     let height = window.innerHeight;
@@ -363,7 +364,7 @@ export function PixelCanvas() {
     // Initialize ambient particles. Counts were reduced for mobile performance:
     // the always-on 60fps loop does per-particle math every frame, so a high
     // mobile count was a constant CPU/GPU drain. Desktop trimmed modestly too.
-    const particleCount = width > 768 ? 300 : 140;
+    const particleCount = width >= DESKTOP_MIN ? 300 : 140;
     if (ambientParticlesRef.current.length === 0) {
       for (let i = 0; i < particleCount; i++) {
         const x = Math.random() * width;
@@ -419,7 +420,7 @@ export function PixelCanvas() {
       const parallaxScrollY = Math.max(0, window.scrollY);
       smoothedScrollYRef.current += (parallaxScrollY - smoothedScrollYRef.current) * 0.05;
 
-      const isDesktop = width > 768;
+      const isDesktop = width >= DESKTOP_MIN;
       const isMobile = !isDesktop;
 
       // Mobile-only: "magnetization" bunch under the menu while scrolling.
@@ -923,7 +924,7 @@ export function PixelCanvas() {
       if (width !== lastWidth) {
         ambientParticlesRef.current = [];
         // Keep in sync with the initial count above (reduced for mobile perf).
-        const particleCount = width > 768 ? 300 : 140;
+        const particleCount = width >= DESKTOP_MIN ? 300 : 140;
         for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;
@@ -958,7 +959,7 @@ export function PixelCanvas() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500 max-[768px]:hidden bg-[#fdfbf7] dark:bg-[#0b0f14]"
+      className="fixed inset-0 z-0 pointer-events-none w-full h-full transition-colors duration-500 max-[1023px]:hidden bg-[#fdfbf7] dark:bg-[#0b0f14]"
     />
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type RefObject } from "react";
+import { DESKTOP_MIN } from "./breakpoints";
 
 export type PinStyle = {
   position: "absolute" | "fixed" | "sticky";
@@ -8,9 +9,6 @@ export type PinStyle = {
   bottom: number | "auto";
   left: number;
 };
-
-// Below this width we use the mobile JS pin; at/above it we use native sticky.
-const MOBILE_MAX = 1023;
 
 const DESKTOP_PIN: PinStyle = {
   position: "sticky",
@@ -70,7 +68,7 @@ export function useScrollPin(
       raf = 0;
 
       // Desktop: native sticky, exactly as before this work. No JS pinning.
-      if (window.innerWidth > MOBILE_MAX) {
+      if (window.innerWidth >= DESKTOP_MIN) {
         setPin((p) => (p.position === "sticky" ? p : DESKTOP_PIN));
         return;
       }

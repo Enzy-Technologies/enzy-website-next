@@ -407,6 +407,9 @@
     --logo-width: 116px;
   }
 
+  /* Cosmetic sizing tier within the touch range (not a structural mobile/desktop
+     toggle — see src/app/lib/breakpoints.ts, Rule 2): nudges marquee gap/logo
+     size up a notch on larger phones/tablets. */
   @media (min-width: 768px) {
     .simple-logo-marquee {
       --gap: 2.25rem;
@@ -775,6 +778,9 @@
     display: block;
   }
 
+  /* Cosmetic sizing tier within the touch range (not a structural mobile/desktop
+     toggle — see src/app/lib/breakpoints.ts, Rule 2): small phones need a taller
+     embed so the booking iframe doesn't clip. */
   @media (max-width: 640px) {
     .enzy-hubspot-embed .meetings-iframe-container iframe {
       min-height: 760px;

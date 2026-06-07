@@ -6,6 +6,7 @@ import { useTheme } from "@/app/components/ThemeProvider";
 import * as d3Geo from "d3-geo";
 import { GLOBE_HOTSPOTS } from "./GlobeHotspotsData";
 import { BlurReveal } from "./BlurReveal";
+import { DESKTOP_MIN } from "@/app/lib/breakpoints";
 
 function polar2Cartesian(lat: number, lng: number, r: number) {
   const phi = ((90 - lat) * Math.PI) / 180;
@@ -168,7 +169,7 @@ function EnzyGlobe() {
       // camera back a bit more than desktop — otherwise the sphere's bottom is
       // clipped at the canvas edge (the hard edge). Desktop keeps the tighter,
       // more immersive framing because its mask fades the lower sphere anyway.
-      const isMobile = window.innerWidth < 1024;
+      const isMobile = window.innerWidth < DESKTOP_MIN;
       const baseDistance = isMobile ? 3.0 : 2.9; // Pulled back safely so the longest beams never exceed the 3D canvas bounds
       if (aspect < 1) {
         // On tall/narrow mobile screens, pull camera back so the sides don't clip
@@ -196,7 +197,7 @@ function EnzyGlobe() {
     // Mobile shows the full sphere (no mask fade), so lift it up: this clears the
     // bottom clip AND moves the sphere closer to the title. Desktop keeps the
     // original slight downward push (its mask fades the lower sphere).
-    globeGroup.position.y = window.innerWidth < 1024 ? 0.06 : -0.1;
+    globeGroup.position.y = window.innerWidth < DESKTOP_MIN ? 0.06 : -0.1;
     scene.add(globeGroup);
 
     // Solid core to block the backside points from blowing out the front

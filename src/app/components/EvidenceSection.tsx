@@ -62,7 +62,16 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
   const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
 
   return (
-    <section ref={containerRef} className="relative w-full px-4 py-20 md:py-28 max-w-7xl mx-auto overflow-hidden">
+    <section
+      ref={containerRef}
+      // Tablet-only gap (768–1023): the playground hero above is z-40 and, on a
+      // tablet's wide viewport, the hand image's wrist extends several hundred px
+      // below the runway (the 40%-width clause makes the image tall). Push this
+      // section — and everything after it — down so the phone has room to finish
+      // clear of the stats. Phones don't need it (narrower image); desktop has
+      // its own layout. This is a cosmetic layout-fit gap, not a structural line.
+      className="relative w-full px-4 py-20 md:py-28 max-w-7xl mx-auto overflow-hidden md:mt-[26vh] lg:mt-0"
+    >
       <div className="flex flex-col items-center justify-center text-center relative z-10">
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}

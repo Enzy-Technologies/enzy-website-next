@@ -297,7 +297,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
 
       <div className="relative w-full mx-auto max-w-7xl px-4 md:px-4">
         {isCarousel ? (
-        <div className="absolute top-1/2 -translate-y-1/2 left-4 md:left-12 z-20 hidden md:block">
+        <div className="absolute top-1/2 -translate-y-1/2 left-4 lg:left-12 z-20 hidden lg:block">
           <button
             onClick={scrollPrev}
             className="w-12 h-12 flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md hover:bg-black/50 transition-colors border border-white/10 shadow-xl"
@@ -310,7 +310,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
         ) : null}
 
         {isCarousel ? (
-        <div className="absolute top-1/2 -translate-y-1/2 right-4 md:right-12 z-20 hidden md:block">
+        <div className="absolute top-1/2 -translate-y-1/2 right-4 lg:right-12 z-20 hidden lg:block">
           <button
             onClick={scrollNext}
             className="w-12 h-12 flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md hover:bg-black/50 transition-colors border border-white/10 shadow-xl"

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Plus, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { BlurReveal } from "./components/BlurReveal";
+import { MEDIA } from "./lib/breakpoints";
 
 type ModuleId = "core" | "sell" | "recruit";
 
@@ -270,7 +271,7 @@ function FeatureRow({
     // on the right row. `scroll-mt-*` keeps it clear of the fixed header.
     <div
       id={feature.id}
-      className={`scroll-mt-24 md:scroll-mt-28 ${
+      className={`scroll-mt-24 lg:scroll-mt-28 ${
         isFirst
           ? ""
           : "border-t border-black/8 dark:border-white/8"
@@ -407,9 +408,10 @@ function FeatureBrowser() {
     const scrollToHeader = () => {
       const node = document.getElementById(targetId);
       if (!node) return;
-      // Match the row's `scroll-mt-24 md:scroll-mt-28` so the title clears
-      // the fixed header on both mobile and desktop.
-      const headerOffset = window.matchMedia("(min-width: 768px)").matches
+      // Match the row's `scroll-mt-24 lg:scroll-mt-28` so the title clears the
+      // fixed header. The header grows at the desktop line (logo `h-6 lg:h-9`),
+      // so the offset switches there too — touch (phone + tablet) uses 96.
+      const headerOffset = window.matchMedia(MEDIA.desktop).matches
         ? 112
         : 96;
       const top =

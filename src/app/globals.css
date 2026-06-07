@@ -55,10 +55,11 @@ body::-webkit-scrollbar {
     cubic-bezier(0.16, 1, 0.3, 1) var(--enzy-reveal-delay, 0s) both;
 }
 
-/* Desktop only: swap in the blurred reveal keyframe (mobile keeps the cheap
-   no-blur one above). Placed before the reduced-motion rule so that rule still
-   wins and disables the animation for users who prefer reduced motion. */
-@media (min-width: 769px) {
+/* Desktop only (>=1024): swap in the blurred reveal keyframe (touch — phone +
+   tablet — keeps the cheap no-blur one above). Placed before the reduced-motion
+   rule so that rule still wins and disables the animation for users who prefer
+   reduced motion. */
+@media (min-width: 1024px) {
   .enzy-reveal {
     animation-name: enzy-reveal-up-blur;
   }
@@ -72,11 +73,12 @@ body::-webkit-scrollbar {
   }
 }
 
-/* On phones, reveal every piece together (no per-character cascade) by zeroing
-   the per-element stagger — the character-by-character reveal is a desktop-only
-   touch. The pieces still fade/slide in (and the hero container still animates),
-   just without the sequential stagger. */
-@media (max-width: 768px) {
+/* On touch (phones + tablets, <=1023), reveal every piece together (no
+   per-character cascade) by zeroing the per-element stagger — the
+   character-by-character reveal is a desktop-only touch. The pieces still
+   fade/slide in (and the hero container still animates), just without the
+   sequential stagger. */
+@media (max-width: 1023px) {
   .enzy-reveal {
     animation-delay: 0s !important;
   }
@@ -112,9 +114,10 @@ body::-webkit-scrollbar {
 
 /* The home hero has its own (desktop) reveal, so it doesn't use
    .enzy-hero-reveal. This gives it the SAME standard page-header entrance
-   (fade + gentle scale) on MOBILE ONLY — matching how every other page header
-   animates on phones. Desktop is intentionally left untouched. */
-@media (max-width: 768px) {
+   (fade + gentle scale) on TOUCH ONLY (phones + tablets, <=1023) — matching how
+   every other page header animates below the desktop line. Desktop (>=1024) is
+   intentionally left untouched. */
+@media (max-width: 1023px) {
   .mobile-hero-reveal {
     animation: enzy-hero-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
   }

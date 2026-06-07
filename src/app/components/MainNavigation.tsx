@@ -310,7 +310,7 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
+                    <div className="block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
                         {SYSTEM_SECTIONS.map((section, i) => (
@@ -359,7 +359,7 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
+                    <div className="block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                         {USE_CASES.map((uc, i) => {
@@ -403,7 +403,7 @@ export function MainNavigation() {
                         </div>
                     </motion.div>
 
-                    <div className="hidden md:block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
+                    <div className="block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                         {LEARN_ITEMS.map((item, i) => {

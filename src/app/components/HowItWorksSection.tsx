@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useSpring, useTransform } from "motion/react";
 import { BlurReveal } from "./BlurReveal";
 import { useScrollPin } from "@/app/lib/useScrollPin";
+import { useIsPhone } from "@/app/lib/useMediaQuery";
 
 type Step = {
   title: string;
@@ -158,6 +159,10 @@ export function HowItWorksSection() {
   // not. See useScrollPin for the full rationale.
   const pin = useScrollPin(containerRef);
 
+  // STAGE_BOTTOM_CLIP is PHONE-ONLY (Rule 3): an iPhone Safari toolbar quirk
+  // iPadOS doesn't have. Tablets share the touch pin but skip the clip.
+  const isPhone = useIsPhone();
+
   return (
     <section
       id="how-it-works"
@@ -173,8 +178,10 @@ export function HowItWorksSection() {
           top: pin.top,
           bottom: pin.bottom,
           left: pin.left,
+          // overflow:hidden contains the pinned cards for the whole touch tier;
+          // only the 4px height clip is phone-only (Rule 3 — iOS Safari bar).
           height:
-            pin.position === "fixed"
+            pin.position === "fixed" && isPhone
               ? `calc(100dvh - ${STAGE_BOTTOM_CLIP}px)`
               : "100dvh",
           overflow: pin.position === "fixed" ? "hidden" : "visible",

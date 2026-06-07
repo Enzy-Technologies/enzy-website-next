@@ -12,6 +12,8 @@ import {
 } from "motion/react";
 import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
 import { useScrollPin } from "@/app/lib/useScrollPin";
+import { BREAKPOINTS, DESKTOP_MIN } from "@/app/lib/breakpoints";
+import { useIsPhone } from "@/app/lib/useMediaQuery";
 
 // Self-hosted from /public (was a HubSpot CDN URL). Source downscaled to
 // 4000×2886 — the same composition/aspect as the 8000×5772 original, but no
@@ -82,25 +84,31 @@ export function Playground() {
       // when available, otherwise innerHeight) so the phone always fits
       // even with the URL bar showing. On desktop, innerHeight is fine.
       const vh =
-        vw < 1024
+        vw < DESKTOP_MIN
           ? Math.min(
               window.visualViewport?.height ?? window.innerHeight,
               window.innerHeight
             )
           : window.innerHeight;
 
-      const isMobile = vw < 768;
-      const isDesktop = vw >= 1024;
+      // 1024 is the desktop/touch structural line (Rule 1). WITHIN the touch tier
+      // we still split phone (<768) from tablet (768–1023) for the hero's START
+      // position only: the phone-tuned higher start (vh*0.38) crowds the logo
+      // carousel on a tablet's taller/squarer viewport, so tablet starts lower
+      // (vh*0.5). Everything else — size, zoom, and the zero end-bias that keeps
+      // the zoomed-out phone clear of the section below — is shared across touch.
+      const isDesktop = vw >= DESKTOP_MIN;
+      const isMobile = vw < BREAKPOINTS.md; // phone (<768); the `else` branches below are tablet (768–1023)
 
       let ch;
       if (isDesktop) {
         // Slightly larger on desktop (was vw * 0.55) so the phone has more
         // presence in the hero's right half.
         ch = Math.min(vh * 0.98, (vw * 0.62) / IMAGE_ASPECT);
-      } else if (isMobile) {
-        ch = vh * 0.6;
       } else {
-        ch = Math.min(vh * 0.75, (vw * 0.8) / IMAGE_ASPECT);
+        // Phone + tablet share the phone size — the 40% width clause below sets
+        // the real on-screen size, and this gives the clean full-bleed zoom.
+        ch = vh * 0.6;
       }
 
       let cw = ch * IMAGE_ASPECT;
@@ -124,10 +132,11 @@ export function Playground() {
         // — otherwise the wrist/hand below the phone drags the phone too low.
         startY = vh * 0.5 - PHONE_CENTER_Y_FRAC * ch;
       } else if (isMobile) {
-        // Position phone in the lower half of the hero with breathing
-        // room between the logo marquee caption above and the phone.
+        // Phone: sits a touch higher — its narrow viewport leaves room above.
         startY = vh * 0.38 - 0.1225 * ch;
       } else {
+        // Tablet: start lower than phone so the at-rest phone clears the logo
+        // carousel above on the taller/squarer tablet viewport.
         startY = vh * 0.5 - 0.1225 * ch;
       }
 
@@ -137,8 +146,9 @@ export function Playground() {
       // below, which extends the motion container further down so the
       // image's natural transparent fade never butts up against a
       // container edge during the zoom-out).
-      const heightBudget = isMobile ? 0.78 : 0.78;
-      const widthBudget = isMobile ? 0.84 : 0.85;
+      const heightBudget = 0.78;
+      // Touch (phone + tablet) fills a hair less width than desktop.
+      const widthBudget = isDesktop ? 0.85 : 0.84;
 
       let endScale = Math.min(
         (vh * heightBudget) / phoneH_image,
@@ -147,10 +157,10 @@ export function Playground() {
       if (endScale > 6) endScale = 6;
 
       const endX = vw / 2 - phoneCenterX_image * endScale;
-      // Mobile: center the phone vertically (no downward bias) so the
-      // bottom bezel sits safely above the visible viewport. Desktop:
-      // keep the existing slight downward offset.
-      const endYOffset = isMobile ? 0 : vh * 0.06;
+      // Touch (phone + tablet): no downward bias, so the zoomed-out phone's
+      // bottom bezel stays above the section below (this is what keeps the
+      // tablet phone off the "21%" stats). Desktop keeps its slight offset.
+      const endYOffset = isDesktop ? vh * 0.06 : 0;
       const endY = vh / 2 + endYOffset - phoneCenterY_image * endScale;
 
       setAnimValues({ startX, startY, endX, endY, endScale, cw, ch });
@@ -175,6 +185,11 @@ export function Playground() {
   // flattens iOS Safari's translucent safe-area bars page-wide; `fixed` does
   // not. See useScrollPin for the full rationale.
   const pin = useScrollPin(containerRef);
+
+  // The STAGE_BOTTOM_CLIP mitigation is PHONE-ONLY (Rule 3): it fixes an iPhone
+  // Safari translucent-toolbar quirk iPadOS doesn't have. Tablets share the touch
+  // pin (fixed) but must NOT get the clip — they behave like desktop here.
+  const isPhone = useIsPhone();
 
   // Smooth out chunky scroll deltas on mobile (iOS momentum scrolling delivers
   // scrollY updates in bursts). The spring interpolates between bursts so each
@@ -240,8 +255,12 @@ export function Playground() {
           top: pin.top,
           bottom: pin.bottom,
           left: pin.left,
+          // overflow:hidden contains the zooming phone within the stage for the
+          // whole touch tier (phone + tablet) — it is NOT the iOS mitigation.
+          // Only the 4px height clip is phone-only (Rule 3): tablets get full
+          // 100dvh, phones shave 4px to keep iOS Safari's bottom bar from latching.
           height:
-            pin.position === "fixed"
+            pin.position === "fixed" && isPhone
               ? `calc(100dvh - ${STAGE_BOTTOM_CLIP}px)`
               : "100dvh",
           overflow: pin.position === "fixed" ? "hidden" : "visible",
