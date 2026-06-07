@@ -488,10 +488,6 @@ export function EnzyGlobeSection() {
       <div className="flex items-center justify-center relative w-full">
         <div
           className="w-[120vw] h-[100vw] sm:h-[80vw] max-h-[1000px] relative"
-          style={{
-            maskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 95%)",
-            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 95%)",
-          }}
         >
           <EnzyGlobe />
         </div>

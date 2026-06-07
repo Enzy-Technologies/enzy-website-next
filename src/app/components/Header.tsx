@@ -85,10 +85,19 @@ export function Header() {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'pb-2 lg:pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.5rem)] lg:pt-[calc(env(safe-area-inset-top,0px)+0.75rem)]' : 'pb-3 lg:pb-5 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)] lg:pt-[calc(env(safe-area-inset-top,0px)+1.25rem)]'}`}
+      className={`fixed top-0 left-0 right-0 w-full z-[100] transition-[padding] duration-300 pointer-events-auto ${isScrolled ? 'pb-2 lg:pb-3 pt-[calc(var(--safe-top)+0.5rem)] lg:pt-[calc(var(--safe-top)+0.75rem)]' : 'pb-3 lg:pb-5 pt-[calc(var(--safe-top)+0.75rem)] lg:pt-[calc(var(--safe-top)+1.25rem)]'}`}
     >
+      {/* Backdrop layer — transparent at the top of the page, liquid-glass once
+          scrolled past 20px. It starts BELOW the status-bar/Dynamic Island zone
+          (top:var(--safe-top)) instead of top:0, so the glass never covers that
+          strip — live page content shows behind the island (clock/battery float
+          on top) instead of the glass slamming it opaque. On desktop --safe-top
+          is 0, so the glass fills the header top as before.
+          Mobile gets a floating pill (inset sides, rounded, full border); on lg+
+          it resets to an edge-to-edge bar with only a bottom border, no rounding. */}
       <div
-        className={`absolute inset-0 pointer-events-none border-x-0 border-t-0 border-b transform-gpu will-change-[opacity] transition-[opacity,border-color] duration-300 ${
+        style={{ boxShadow: "var(--header-shadow)" }}
+        className={`absolute left-2.5 right-2.5 lg:left-0 lg:right-0 bottom-0 top-[var(--safe-top)] pointer-events-none border lg:border-x-0 lg:border-t-0 rounded-2xl lg:rounded-none transform-gpu will-change-[opacity] transition-[opacity,border-color] duration-300 ${
           isScrolled
             ? "liquid-glass opacity-100 border-white/20"
             : "bg-transparent opacity-0 border-transparent"

@@ -170,10 +170,31 @@ export function MainNavigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeMobileDropdown, setActiveMobileDropdown] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
+  const mobileControlsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Tap-outside-to-close, without a full-viewport fixed scrim (a full-screen
+  // fixed element defeats iOS Safari's bottom-toolbar passthrough → opaque bar).
+  // Instead we listen for a pointerdown anywhere outside the panel and the
+  // header controls (the controls are excluded so tapping the hamburger toggles
+  // cleanly instead of close-then-reopen).
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (mobilePanelRef.current?.contains(target)) return;
+      if (mobileControlsRef.current?.contains(target)) return;
+      setMobileMenuOpen(false);
+      setActiveMobileDropdown(null);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, [mobileMenuOpen]);
 
   useEffect(() => {
     if (mobileMenuOpen) {
@@ -421,7 +442,7 @@ export function MainNavigation() {
       </div>
 
       {/* Mobile header controls (theme + menu) */}
-      <div className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
+      <div ref={mobileControlsRef} className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
         {/* The pixel-toggle "magic wand" was removed on mobile — the particle
             canvas doesn't run on phones, so the control had nothing to toggle. */}
         <button
@@ -477,29 +498,22 @@ export function MainNavigation() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Scrim — plain fill, no blur. Tap to close. */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.18, ease: 'easeOut' }}
-              onClick={() => {
-                setMobileMenuOpen(false);
-                setActiveMobileDropdown(null);
-              }}
-              className="fixed inset-0 z-[54] lg:hidden bg-black/40"
-            />
+            {/* No scrim element on purpose: a full-viewport fixed scrim defeats
+                iOS Safari's bottom-toolbar passthrough and forces an opaque
+                bottom bar whenever the menu is open. Tap-outside-to-close is
+                handled by the pointerdown listener in the effect above instead. */}
 
             {/* Panel — anchored under the header like the desktop dropdowns. */}
             <motion.div
+              ref={mobilePanelRef}
               initial={{ opacity: 0, y: -10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.2, ease: easeOutExpo }}
               style={{ transformOrigin: 'top center' }}
-              className="fixed top-[calc(76px+env(safe-area-inset-top,0px))] inset-x-3 z-[55] lg:hidden max-h-[calc(100dvh-96px)] overflow-y-auto rounded-[28px] liquid-glass border border-black/10 dark:border-white/10 shadow-[0_24px_70px_rgba(0,0,0,0.28)]"
+              className="fixed top-[calc(76px+env(safe-area-inset-top,0px))] inset-x-3 z-[55] lg:hidden max-h-[calc(100dvh-96px)] overflow-hidden rounded-[28px] liquid-glass shadow-[inset_0_1px_0_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.1)] border border-black/10 dark:border-white/10"
             >
-              <div className="flex flex-col p-2">
+              <div className="flex flex-col p-2 overflow-y-auto max-h-[calc(100dvh-96px)]">
                 {MENU_ITEMS.map((item) => (
                   <div key={item.id} className="flex flex-col">
                     {item.id !== 'about' ? (

@@ -64,7 +64,7 @@ export function SiteShell({
 
         <main
           className={`w-full flex-1 flex flex-col items-center relative ${
-            isLp ? "pt-0" : "pt-[calc(88px+env(safe-area-inset-top,0px))]"
+            isLp ? "pt-0" : "pt-[calc(88px+var(--safe-top))]"
           }`}
         >
           {children}

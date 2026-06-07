@@ -2,7 +2,6 @@
 
 import React from "react";
 import dynamic from "next/dynamic";
-import { ScrollProgress } from "@/app/components/ScrollProgress";
 import { HeroSection } from "@/app/components/HeroSection";
 import { Playground } from "@/app/playground/playground";
 import { EvidenceSection } from "@/app/components/EvidenceSection";
@@ -27,7 +26,6 @@ const EnzyGlobeSection = dynamic(
 export default function Home() {
   return (
     <main className="relative w-full">
-      <ScrollProgress />
       <HeroSection />
       <Playground />
       <EvidenceSection />

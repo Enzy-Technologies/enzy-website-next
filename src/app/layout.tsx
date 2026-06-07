@@ -59,17 +59,20 @@ export const metadata: Metadata = {
   },
 }
 
-// viewportFit "cover" lets the page draw edge-to-edge into the iOS safe areas
-// (under the dynamic island and behind Safari's bottom toolbar). Pair with the
-// root background below + env(safe-area-inset-*) padding on fixed UI.
+// viewportFit "cover" extends the web view up BEHIND the status bar / Dynamic
+// Island, so page content can scroll underneath it (with the clock/battery
+// floating on top) instead of stopping at a solid bar below the status bar.
+// Without it, the layout viewport ends below the status bar and content can't
+// reach that region — which reads as an opaque bar at the top.
+//
+// We intentionally do NOT set `themeColor`: a solid theme-color paints an opaque
+// chrome bar and can't follow our in-app (.dark class) theme toggle, so it gets
+// stuck on the system appearance. Status-bar icon contrast is handled by
+// `color-scheme` (theme.css) instead.
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f6" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b0f14" },
-  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
