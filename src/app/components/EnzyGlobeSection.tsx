@@ -321,7 +321,23 @@ function EnzyGlobe() {
     let previousPointerX = 0;
     let previousPointerY = 0;
 
+    // Only the sphere itself is draggable — not the beams that stick out past
+    // it, nor the empty canvas around it. On pointerdown, raycast against the
+    // solid core sphere and bail if the pointer misses it.
+    const raycaster = new THREE.Raycaster();
+    const pointerNDC = new THREE.Vector2();
+    const pointerHitsSphere = (e: PointerEvent) => {
+      const rect = el.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return false;
+      pointerNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointerNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      coreMesh.updateWorldMatrix(true, false);
+      raycaster.setFromCamera(pointerNDC, camera);
+      return raycaster.intersectObject(coreMesh, false).length > 0;
+    };
+
     const onPointerDown = (e: PointerEvent) => {
+      if (!pointerHitsSphere(e)) return; // beam / empty space → don't grab
       isDragging = true;
       previousPointerX = e.clientX;
       previousPointerY = e.clientY;
@@ -347,6 +363,10 @@ function EnzyGlobe() {
     el.addEventListener("pointerdown", onPointerDown);
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
+    // If the browser takes over the gesture for a vertical page scroll (see
+    // touch-action: pan-y on the mount node), it cancels our pointer — stop
+    // dragging so the globe doesn't keep spinning.
+    window.addEventListener("pointercancel", onPointerUp);
 
     const render = () => {
       const currentTime = performance.now();
@@ -455,6 +475,7 @@ function EnzyGlobe() {
       el.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
       cancelAnimationFrame(animationFrameId);
       if (renderer.domElement.parentElement === el) el.removeChild(renderer.domElement);
       renderer.dispose();
@@ -466,7 +487,13 @@ function EnzyGlobe() {
     };
   }, [themeColors, isLightMode]);
 
-  return <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing pointer-events-auto" style={{ touchAction: 'none' }} />;
+  // touch-action: pan-y lets the browser handle vertical drags as page scroll
+  // (so you can scroll past the globe from anywhere over it, including the beams
+  // and empty space), while horizontal drags still reach the canvas to spin the
+  // globe. Combined with the sphere raycast in onPointerDown, only the sphere
+  // rotates; everything else scrolls. (Desktop is unaffected — touch-action is
+  // touch-only; mouse-drag still does full rotation on the sphere.)
+  return <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing pointer-events-auto" style={{ touchAction: 'pan-y' }} />;
 }
 
 export function EnzyGlobeSection() {
