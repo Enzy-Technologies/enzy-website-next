@@ -71,6 +71,7 @@ export function Playground() {
     startY: 0,
     endX: 0,
     endY: 0,
+    exitX: 0,
     endScale: 1,
     cw: 1024,
     ch: 683,
@@ -163,7 +164,14 @@ export function Playground() {
       const endYOffset = isDesktop ? vh * 0.06 : 0;
       const endY = vh / 2 + endYOffset - phoneCenterY_image * endScale;
 
-      setAnimValues({ startX, startY, endX, endY, endScale, cw, ch });
+      // Desktop EXIT x: on the way back out the phone zooms to scale 1 but stays
+      // horizontally CENTERED (vw/2) instead of sliding back to its right-side
+      // hero position. Computed for scale 1 (not endScale), so paired with the
+      // scale→1 keyframe the phone center stays pinned at vw/2 through the whole
+      // zoom-out. Touch tiers already start centered, so they keep startX (no-op).
+      const exitX = isDesktop ? vw / 2 - phoneCenterX_image : startX;
+
+      setAnimValues({ startX, startY, endX, endY, exitX, endScale, cw, ch });
     };
 
     update();
@@ -214,7 +222,7 @@ export function Playground() {
   const x = useTransform(
     smoothedProgress,
     [...phaseStops],
-    [animValues.startX, animValues.endX, animValues.endX, animValues.startX],
+    [animValues.startX, animValues.endX, animValues.endX, animValues.exitX],
     { ease: phaseEase }
   );
   const y = useTransform(

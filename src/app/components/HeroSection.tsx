@@ -162,16 +162,16 @@ function HeroSectionDefault() {
               horizontal center (lg:w-1/2, shrink-0 so the gap eats into the
               spacer, not the text) and drops its max-width cap so the headline
               fills the width instead of wrapping tightly. */}
-          <div className="mobile-hero-reveal flex flex-col gap-6 text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
+          <div className="mobile-hero-reveal flex flex-col gap-6 lg:gap-[clamp(0.75rem,2svh,1.75rem)] text-center lg:text-left items-center lg:items-start max-w-3xl mx-auto lg:mx-0 lg:max-w-none w-full lg:w-1/2 lg:shrink-0 lg:pl-8 xl:pl-12 z-20">
             <h1
-              className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[72px]"
+              className="font-inter font-bold tracking-[-0.05em] leading-[1.02] text-brand-dark dark:text-brand-light text-[40px] sm:text-[52px] md:text-[64px] lg:text-[clamp(2.25rem,calc(3.4vw_+_0.8svh),6rem)]"
             >
               <BlurReveal as="span" delay={0.1}>Performance has never had an operating system. </BlurReveal>
               <BlurReveal as="span" delay={charRevealEnd(HERO_LEAD_ALT) - LEAD_OVERLAP} className="font-ivyora font-medium italic">Until now.</BlurReveal>
             </h1>
 
             <p
-              className="font-inter text-[16px] md:text-[18px] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 text-black/70 dark:text-white/65"
+              className="font-inter text-[16px] md:text-[18px] lg:text-[clamp(1rem,calc(0.4vw_+_0.7svh),1.25rem)] leading-[1.55] max-w-[640px] mx-auto lg:mx-0 text-black/70 dark:text-white/65"
             >
               The platform your sales team actually wants to open. Live business intelligence meets social media — where high-performance culture builds in real time and AI tells you what to do next, backed by more sales performance data than any tool in existence.
             </p>
