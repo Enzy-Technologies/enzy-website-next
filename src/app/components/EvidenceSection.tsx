@@ -112,7 +112,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
           <p
             className="font-inter text-[15px] md:text-[17px] leading-relaxed mt-4 max-w-[640px] mx-auto text-black/55 dark:text-white/55"
           >
-            Across 39 companies controlling for company size, pre-existing growth trajectory, and industry trends.
+            Across 25,000 sales reps controlling for company size, pre-existing growth trajectory, and industry trends.
           </p>
         </motion.div>
 

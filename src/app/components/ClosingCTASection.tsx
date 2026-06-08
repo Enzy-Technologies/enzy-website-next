@@ -42,13 +42,6 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
           >
             Book a Demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
           </CTAButton>
-          <CTAButton
-            variant="secondary"
-            href="/pricing"
-            className="justify-center rounded-full px-9 py-[15px] font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
-          >
-            See pricing
-          </CTAButton>
         </div>
       </div>
     </section>

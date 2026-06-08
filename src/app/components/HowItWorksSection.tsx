@@ -187,7 +187,15 @@ export function HowItWorksSection() {
           overflow: pin.position === "fixed" ? "hidden" : "visible",
         }}
       >
-      <div className="h-[100dvh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto px-4 pt-24 lg:pt-32 pb-12 lg:pb-20">
+      {/* Size the card layout to the STABLE small viewport (svh), not the
+          dynamic one (dvh). With dvh, scrolling back up makes iOS Safari's bottom
+          toolbar slide in, which shrinks dvh and visibly shrinks the (flex-filled)
+          card — so the last card looked shorter coming back up than it did at the
+          end of the downward scroll (toolbar minimized). svh ignores the toolbar
+          toggle, so the cards keep a constant height regardless of scroll
+          direction. (The pinner height + 4px clip above stay on dvh — that's the
+          separate iOS bottom-bar mitigation.) */}
+      <div className="h-[100svh] w-full flex flex-col items-center justify-start max-w-6xl mx-auto px-4 pt-24 lg:pt-32 pb-12 lg:pb-20">
         <div className="flex flex-col items-center justify-center text-center mb-8 shrink-0 max-w-[1000px] px-4">
           <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
             The Methodology

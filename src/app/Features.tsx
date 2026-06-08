@@ -49,6 +49,14 @@ const FEATURES_DATA: Feature[] = [
   // ---------- Core ----------
   {
     module: "core",
+    id: "enzy-ai",
+    title: "Enzy AI",
+    desc: "AI-driven nudges and answers from your team's connected data — on demand.",
+    image:
+      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
+  },
+  {
+    module: "core",
     id: "leaderboards",
     title: "Leaderboards",
     desc: "Real-time rankings that keep focus high and goals clear across every team.",
@@ -86,14 +94,6 @@ const FEATURES_DATA: Feature[] = [
     desc: "Group threads, announcements, and DMs without switching tools.",
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
-  },
-  {
-    module: "core",
-    id: "bot-chats",
-    title: "Bot Chats",
-    desc: "AI-driven nudges and answers from your team's connected data — on demand.",
-    image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
   },
   {
     module: "core",
@@ -517,13 +517,18 @@ function FeatureBrowser() {
               >
                 {/* Module header row */}
                 <div
-                  className="px-6 md:px-10 py-5 md:py-6 border-b border-black/8 dark:border-white/8"
+                  className="px-6 md:px-10 py-6 md:py-7 border-b border-black/8 dark:border-white/8 bg-black/[0.015] dark:bg-white/[0.015]"
                 >
-                  <div className="flex flex-col">
+                  <div className="flex flex-col gap-1.5">
                     <span
-                      className="font-ivyora text-[22px] md:text-[28px] font-medium tracking-[-0.5px] leading-tight text-black dark:text-white"
+                      className="font-inter text-[11px] md:text-[12px] font-semibold uppercase tracking-[0.2em] text-[#19ad7d]"
                     >
-                      {activeModuleDef?.label} Module
+                      Module
+                    </span>
+                    <span
+                      className="font-ivyora text-[30px] md:text-[40px] font-medium tracking-[-0.6px] leading-[1.02] text-black dark:text-white"
+                    >
+                      {activeModuleDef?.label}
                     </span>
                     <span
                       className="font-inter text-[13px] md:text-[14px] mt-0.5 text-black/55 dark:text-white/55"

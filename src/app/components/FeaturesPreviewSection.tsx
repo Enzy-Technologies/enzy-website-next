@@ -98,7 +98,7 @@ const featurePlaceholders = [
 const cardsData = [
   {
     id: "ai",
-    href: "/system#bot-chats",
+    href: "/system#enzy-ai",
     title: "AI Assistant",
     description:
       "Ask questions about connected data. Get insights and next-best actions — instantly.",

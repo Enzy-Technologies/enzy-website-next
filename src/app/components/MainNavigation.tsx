@@ -54,12 +54,12 @@ const SYSTEM_SECTIONS = [
     title: "Core",
     desc: "Always included.",
     items: [
+      "Enzy AI",
       "Leaderboards",
       "Profiles",
       "Badges",
       "Competitions & Incentives",
       "Messaging",
-      "Bot Chats",
       "Media Library",
     ],
   },

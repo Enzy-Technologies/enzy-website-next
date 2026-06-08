@@ -104,7 +104,7 @@ export function Header() {
         }`}
       />
       <div className="relative flex items-center justify-between w-full px-4 max-w-7xl mx-auto">
-        <div className="flex-1 flex justify-start order-1">
+        <div className="flex-1 flex justify-start order-1 pl-2 lg:pl-0">
           <Link href="/" className="z-50 relative transition-transform duration-300 hover:scale-105 flex items-center">
             <Image
               src="/enzy-wordmark.svg"

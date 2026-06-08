@@ -183,20 +183,32 @@ export function Playground() {
   // scrollY updates in bursts). The spring interpolates between bursts so each
   // animation frame sees a small, continuous progress step — which translates
   // directly into a small, continuous scale change.
+  //
+  // These values are deliberately STIFF + mildly overdamped (critical-ish): the
+  // earlier soft config (k=110, c=28, m=0.45) had a ~1s settle time, so after you
+  // stopped scrolling the phone kept coasting — drifting down and zooming on its
+  // own for a beat ("not stuck to the page"), and lagging visibly when you
+  // re-entered the section from below. This config settles in ~0.1s with no
+  // overshoot, so the phone tracks the scroll position essentially 1:1 (feels
+  // pinned to the page, stationary the instant you stop) while still bridging the
+  // gaps between iOS momentum-scroll bursts.
   const smoothedProgress = useSpring(scrollYProgress, {
-    damping: 28,
-    stiffness: 110,
-    mass: 0.45,
+    damping: 34,
+    stiffness: 750,
+    mass: 0.3,
     restDelta: 0.0005,
   });
 
-  // Phases:
-  // 0.00 -> 0.22  : zoom in  (snappier — gets the user to the action faster)
-  // 0.22 -> 0.85  : HOLD at zoom — phone is fully interactive (~63% of scroll
-  //                 runway, up from 40%, so the click indicators have time to
-  //                 cycle a few times and the user can actually engage)
-  // 0.85 -> 1.00  : zoom out (gradual, ease-in-out)
-  const phaseStops = [0, 0.22, 0.85, 1.0] as const;
+  // Phases. The container is 300vh (runway ~200vh of scroll), and these stops are
+  // tuned so the zoom-in and zoom-out keep the SAME scroll distance as before
+  // (~30vh in, ~20vh out — same softness) while ALL the extra runway goes into
+  // the HOLD. So:
+  // 0.00 -> 0.15 : zoom in  (~30vh of scroll — unchanged feel)
+  // 0.15 -> 0.90 : HOLD at zoom — phone is fully interactive for ~150vh of
+  //                scroll (~1.5 screen-heights), so the pulsing buttons /
+  //                interactive UI stay on screen even longer before zoom-out
+  // 0.90 -> 1.00 : zoom out (~20vh of scroll — unchanged feel)
+  const phaseStops = [0, 0.15, 0.9, 1.0] as const;
   const phaseEase = [zoomEase, linearHold, zoomEase];
 
   const x = useTransform(
@@ -219,8 +231,10 @@ export function Playground() {
   );
   const [isInteractive, setIsInteractive] = useState(false);
   useMotionValueEvent(smoothedProgress, "change", (progress) => {
-    // Widened to align with the longer HOLD phase (phaseStops above).
-    const next = progress >= 0.26 && progress <= 0.82;
+    // Kept inside the HOLD phase (phaseStops above) so the screen is only
+    // interactive once it's fully zoomed and held — now spanning almost the
+    // whole (longer) hold.
+    const next = progress >= 0.17 && progress <= 0.88;
     setIsInteractive((cur) => (cur === next ? cur : next));
   });
 
@@ -228,7 +242,7 @@ export function Playground() {
     <motion.div
       ref={containerRef}
       className="relative w-full z-40 -mt-[45vh] lg:-mt-[100vh] pointer-events-none"
-      style={{ height: "200vh" }}
+      style={{ height: "300vh" }}
     >
       <div
         className="w-full"
