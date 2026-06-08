@@ -7,7 +7,7 @@ import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lu
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF, LP_DEMO_FORM_ID } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
-import { HeroVideoPlaceholder } from "@/app/components/HeroVideoPlaceholder";
+import { PhoneInHand, IMAGE_ASPECT, PHONE_BEZEL_WIDTH_FRAC } from "@/app/playground/PhoneInHand";
 import { LpBookDemoInline } from "@/app/components/landing/LpBookDemoScroll";
 import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
@@ -73,6 +73,68 @@ const LP_VALUE_BULLETS = [
   "Teams report measurable lift while reps stay in their existing workflows.",
 ];
 
+// Target on-screen width of the phone bezel inside the LP hero. The Playground
+// zooms its phone to fill the viewport; the static LP version can't, so we size
+// the composition from a fixed, readable phone width (capped, but shrinking a
+// little on very narrow phones) and let the hand/arm bleed past and clip.
+const LP_PHONE_BEZEL_W = 260;
+// Render the composition for a desktop-ish width on the server + first paint so
+// hydration matches; the effect corrects to the real width on mount (the phone
+// size only changes below ~383px wide, so there's effectively no layout shift).
+const LP_DEFAULT_VW = 1280;
+// Fraction of the hand-image height at which the phone bezel's top edge sits.
+const PHONE_BEZEL_TOP_FRAC = 0.123;
+// Target vertical gap (px) between the subtext and the top of the phone bezel.
+const LP_PHONE_GAP = 60;
+
+/**
+ * Inline iPhone-in-hand for the `/lp/*` hero. Renders the SAME `PhoneInHand`
+ * composition the home-page Playground uses — referenced, not copied — so the
+ * hand artwork, bezel calibration, and live phone UI all update here whenever
+ * they change on home. (The scroll-driven zoom/pin stays exclusive to the
+ * Playground; this is the at-rest composition on its own.)
+ */
+function LpHeroPhone() {
+  const [vw, setVw] = useState(LP_DEFAULT_VW);
+
+  useEffect(() => {
+    const measure = () => setVw(window.innerWidth);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const phoneBezelW = Math.min(LP_PHONE_BEZEL_W, vw * 0.68);
+  const cw = phoneBezelW / PHONE_BEZEL_WIDTH_FRAC;
+  const ch = cw / IMAGE_ASPECT;
+  // Sit the phone a fixed distance below the subtext. The phone bezel begins
+  // ~12.3% down the hand image (the rest is transparent), so pulling the
+  // composition up by (that offset − the target gap) lands the bezel exactly
+  // LP_PHONE_GAP px under the subtext, regardless of the composition's height.
+  // The overlapped region is transparent, so it never covers the copy above.
+  const topPull = Math.max(0, ch * PHONE_BEZEL_TOP_FRAC - LP_PHONE_GAP);
+
+  return (
+    // No `overflow-hidden`: when the composition is wider than the frame (narrow
+    // screens), the hand/arm bleeds past the viewport edges and is clipped
+    // off-screen by SiteShell's `overflow-x-clip` — so it reads as running off
+    // the screen rather than cut at a hard inner edge. The frame still reserves
+    // the vertical space (height: ch); the composition is taken out of flow and
+    // centered so the phone stays centered on the viewport.
+    <div
+      className="relative mx-auto"
+      style={{ width: "100%", maxWidth: cw, height: ch, marginTop: -topPull }}
+    >
+      <div
+        className="absolute left-1/2 top-0 -translate-x-1/2"
+        style={{ width: cw, height: ch }}
+      >
+        <PhoneInHand cw={cw} ch={ch} interactive />
+      </div>
+    </div>
+  );
+}
+
 function HeroSectionLp() {
   return (
     <section className="relative w-full">
@@ -99,33 +161,22 @@ function HeroSectionLp() {
           </p>
         </div>
         
-        <div className="mt-12 md:mt-16 w-full">
+        <div className="w-full">
           <motion.div
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
-            className="relative mx-auto w-full max-w-[min(100%,1000px)]"
+            className="relative mx-auto w-full max-w-[1120px]"
           >
             <div
-              className="pointer-events-none absolute -inset-[12%] rounded-[44%] opacity-80 blur-3xl md:blur-[56px]"
+              className="pointer-events-none absolute inset-x-[15%] -inset-y-[6%] rounded-[44%] opacity-70 blur-3xl md:blur-[64px]"
               style={{
                 background:
                   "radial-gradient(ellipse at 50% 42%, rgba(25,173,125,0.24), transparent 72%)",
               }}
               aria-hidden
             />
-            <div className="relative rounded-[28px] border border-[#19ad7d]/25 bg-gradient-to-br from-[#19ad7d]/20 via-transparent to-[#19ad7d]/10 p-[1px] shadow-[0_24px_80px_-24px_rgba(25,173,125,0.55)] sm:rounded-[32px] md:rounded-[36px]">
-              <div
-                className="overflow-hidden rounded-[27px] sm:rounded-[31px] md:rounded-[35px] bg-[#faf9f6] dark:bg-[#07090c]"
-              >
-                <HeroVideoPlaceholder
-                  variant="lp"
-                  embedded
-                  id="product-video"
-                  label="2-minute overview — full walkthrough lands here soon"
-                />
-              </div>
-            </div>
+            <LpHeroPhone />
           </motion.div>
         </div>
 

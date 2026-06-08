@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from "react";
-import Image from "next/image";
 import {
   motion,
   useScroll,
@@ -10,41 +9,22 @@ import {
   useSpring,
   cubicBezier,
 } from "motion/react";
-import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePhone";
+import {
+  PhoneInHand,
+  IMAGE_ASPECT,
+  PHONE_CENTER_X_FRAC,
+  PHONE_CENTER_Y_FRAC,
+  PHONE_HEIGHT_FRAC,
+  CONTAINER_BOTTOM_PAD,
+} from "./PhoneInHand";
 import { useScrollPin } from "@/app/lib/useScrollPin";
 import { BREAKPOINTS, DESKTOP_MIN } from "@/app/lib/breakpoints";
 import { useIsPhone } from "@/app/lib/useMediaQuery";
 
-// Self-hosted from /public (was a HubSpot CDN URL). Source downscaled to
-// 4000×2886 — the same composition/aspect as the 8000×5772 original, but no
-// larger than next/image's 3840px max variant, so output quality is identical
-// while the committed asset is ~3.7MB instead of 12MB. next/image serves
-// right-sized AVIF/WebP variants from this.
-const HAND_IMAGE = "/playground/hand-holding-iphone.png";
-
-// Aspect of the hand PNG (4000/2886 === 8000/5772). The phone-overlay
-// calibration fractions below depend on this exact ratio.
-const IMAGE_ASPECT = 4000 / 2886;
-
-const PHONE_CENTER_X_FRAC = 0.4978;
-const PHONE_CENTER_Y_FRAC = 0.4567;
-const PHONE_HEIGHT_FRAC = 0.6684;
-
-// iPhone-style inner screen radius (in PHONE_W=393 coordinate space).
-// Scales with the phone via the same transform applied to the screen overlay.
-const PHONE_SCREEN_RADIUS = 56;
-
-// Color of the Enzy UI's outer surface (matches `bg-[#faf9f6]` set inside
-// `InteractivePhone`). Painted on the screen rect itself so any hairline
-// gap between the UI's content and the inner bezel of the iPhone PNG shows
-// the same off-white as the surrounding UI — never the page background.
-const PHONE_SCREEN_BG = "#faf9f6";
-
-// Extra transparent space appended below the hand image inside the
-// scroll/zoom container so the PNG's natural alpha fade at the wrist
-// has room to fall off — instead of meeting a hard horizontal container
-// edge as the user scrolls out of the zoomed-in state.
-const CONTAINER_BOTTOM_PAD = 0.18; // fraction of ch
+// Hand-image aspect, phone-overlay calibration fractions, the screen radius/bg,
+// and the bottom-pad are defined alongside the composition in `PhoneInHand` and
+// imported above — single-sourced so the home Playground and the `/lp/*` hero
+// stay perfectly in calibration.
 
 // While the stage is pinned, clip it this many px short of the bottom edge.
 // iOS Safari flattens its translucent bottom bar whenever a composited layer
@@ -244,12 +224,6 @@ export function Playground() {
     setIsInteractive((cur) => (cur === next ? cur : next));
   });
 
-  const screenScale = (animValues.ch * PHONE_HEIGHT_FRAC) / PHONE_H;
-  const screenW = PHONE_W * screenScale;
-  const screenH = PHONE_H * screenScale;
-  const screenLeft = animValues.cw * PHONE_CENTER_X_FRAC - screenW / 2;
-  const screenTop = animValues.ch * PHONE_CENTER_Y_FRAC - screenH / 2;
-
   return (
     <motion.div
       ref={containerRef}
@@ -287,73 +261,10 @@ export function Playground() {
             willChange: "transform",
           }}
         >
-          {/* Beige underlay sits behind the interactive screen and a hair
-              outside its bounds. The iPhone bezel PNG (z-20) covers it
-              everywhere except inside the screen cutout — so any hairline
-              gap between the rendered Enzy UI (z-10, exact phone-screen
-              size) and the inner edge of the bezel shows the same off-white
-              as the UI, never the page background. The expansion is kept
-              very small (~1% on each side) so the underlay never bleeds
-              past the bezel hardware around the screen. */}
-          <div
-            className="absolute z-[5]"
-            style={{
-              left: screenLeft - screenW * 0.01,
-              top: screenTop - screenH * 0.008,
-              width: screenW * 1.02,
-              height: screenH * 1.016,
-              backgroundColor: PHONE_SCREEN_BG,
-              borderRadius: PHONE_SCREEN_RADIUS * screenScale * 1.05,
-            }}
-            aria-hidden
-          />
-
-          <div
-            className="absolute origin-top-left z-10 overflow-hidden"
-            style={{
-              left: screenLeft,
-              top: screenTop,
-              width: PHONE_W,
-              height: PHONE_H,
-              transform: `scale(${screenScale})`,
-              borderRadius: PHONE_SCREEN_RADIUS,
-            }}
-          >
-            <InteractivePhone interactive={isInteractive} />
-          </div>
-
-          {/* Image is pinned to the TOP of the motion container at its
-              natural cw × ch size. The motion container is taller (see
-              CONTAINER_BOTTOM_PAD), so the PNG's own alpha fade at the
-              bottom of the wrist has room to fall off cleanly.
-
-              Uses next/image so Next's optimizer compresses the self-hosted
-              4000×2886 source PNG into right-sized AVIF/WebP variants
-              cached on the edge. `sizes` mirrors the runtime layout:
-              ~85vw on mobile, ~55vw on desktop, capped at 1400px. */}
-          <Image
-            src={HAND_IMAGE}
-            alt="Hand holding phone"
-            width={2000}
-            height={1443}
-            priority
-            // The hand image is scaled up far beyond the viewport on small
-            // screens — the phone fills the screen, but the phone is only ~23%
-            // of the image width, so the full image renders at ~175vw at rest
-            // and zooms to ~300vw on scroll. `sizes` must reflect that real
-            // rendered width (not the viewport) or the browser under-fetches a
-            // tiny variant and it looks pixelated. These values push mobile to
-            // the largest (3840px) variant so the phone stays sharp through the
-            // zoom. Desktop is left modest (it renders near 1:1).
-            sizes="(max-width: 767px) 300vw, (max-width: 1023px) 220vw, (max-width: 1440px) 60vw, 1400px"
-            quality={90}
-            className="absolute top-0 left-0 pointer-events-none select-none z-20"
-            style={{
-              width: animValues.cw,
-              height: animValues.ch,
-              objectFit: "cover",
-            }}
-            draggable={false}
+          <PhoneInHand
+            cw={animValues.cw}
+            ch={animValues.ch}
+            interactive={isInteractive}
           />
         </motion.div>
       </div>
