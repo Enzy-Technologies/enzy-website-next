@@ -45,7 +45,11 @@ function navigateToSamePageHash(
 const MENU_ITEMS = [
   { id: 'features', label: 'System', path: '/system' },
   { id: 'solutions', label: 'Solutions', path: '/solutions' },
-  { id: 'resources', label: 'Resources', path: '/resources' },
+  // No /resources landing page (hidden — see src/app/resources/page.tsx). The
+  // desktop trigger never navigates on click (preventDefault opens the dropdown
+  // instead) and mobile renders it as a <button>, so this path is only the
+  // crawlable href on desktop — point it at a real page, not the 404.
+  { id: 'resources', label: 'Resources', path: '/insights' },
   { id: 'about', label: 'About', path: '/about' },
 ];
 
@@ -396,11 +400,6 @@ export function MainNavigation() {
                         <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
                             Learn the playbooks that work.
                         </h3>
-                        <div className="mt-4">
-                            <Link href="/resources" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
-                                Browse all resources <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" strokeWidth={2.5} />
-                            </Link>
-                        </div>
                     </motion.div>
 
                     <div className="block w-[1px] shrink-0 bg-gradient-to-b from-transparent via-current to-transparent my-2 text-black/10 dark:text-white/10" />
@@ -634,13 +633,6 @@ export function MainNavigation() {
 
                             {item.id === 'resources' && (
                               <div className="flex flex-col gap-3.5 pl-3 border-l border-black/10 dark:border-white/10">
-                                <Link
-                                  href="/resources"
-                                  onClick={() => { setMobileMenuOpen(false); setActiveMobileDropdown(null); }}
-                                  className="text-[#19ad7d] text-[11px] font-bold uppercase tracking-widest inline-flex items-center gap-1.5"
-                                >
-                                  Browse all resources <ArrowRight size={12} strokeWidth={2.5} />
-                                </Link>
                                 {LEARN_ITEMS.map((li, j) => {
                                   const slug = li.title.toLowerCase().replace(/\s+/g, "-");
                                   const href = li.href ?? `/resources#${slug}`;

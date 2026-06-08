@@ -27,13 +27,6 @@ export const TESTIMONIALS: Testimonial[] = [
     image: "/testimonials/stanford-johnsen.jpg"
   },
   {
-    id: 3,
-    quote: "Enzy is totally transforming our organization. We have more visibility into our day to day and we’re incentivizing the behavior that’s actually driving results. The platform is easy to use, and the user experience makes the team want to use it for everything. Enzy is helping us push the limits of what it means to be a healthcare company.",
-    name: "Sean McLean",
-    title: "Co-Founder & CEO of Elite Anesthesia",
-    image: "/testimonials/sean-mclean.jpg"
-  },
-  {
     id: 4,
     quote: "Enzy has been a massive value for us. Since we sell with multiple companies, we’ve always had to have a solution that aggregates that data and showcases it functional and ideally aesthetic way. For years we used web-based “apps” that got the job done. Enzy does it in a sexier, more functional way that has been game changing up into this point.",
     name: "John Taylor",
@@ -53,11 +46,20 @@ export const TESTIMONIALS: Testimonial[] = [
     name: "Cj Adamson",
     title: "Co-Founder & COO of NuSun Power",
     image: "/testimonials/cj-adamson.jpg"
+  },
+  {
+    id: 7,
+    quote: "Because we have a live scoreboard, they hit numbers I've never seen before.",
+    name: "Alex Smith",
+    title: "CEO of Spartan Solar",
+    image: "/testimonials/alex-smith.jpg"
   }
 ];
 
 // One full set scrolls in this many ms. Shared by the animation and the
-// drag-to-scrub math so they stay in sync.
+// drag-to-scrub math so they stay in sync. Speed is setWidth/duration, so this
+// is scaled to the card count (6 cards → 60000) to hold the visual px/ms speed
+// constant: each card adds ~10000ms.
 const MARQUEE_DURATION_MS = 60000;
 
 function splitQuote(quote: string) {
@@ -357,7 +359,7 @@ export function TestimonialsMarquee({
                   >
                     <div className="absolute top-0 left-0 right-0 h-12 flex items-center justify-between px-6 z-20 transition-colors">
                       <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-[#19ad7d]">
-                        Customer Story
+                        Customer Testimonial
                       </span>
                       <div className="flex items-center gap-1.5 text-[#19ad7d]">
                         <span className="text-[10px] font-bold uppercase tracking-widest">
@@ -386,7 +388,7 @@ export function TestimonialsMarquee({
 
                     <div className="relative h-[45%] w-full p-6 md:p-8 flex flex-col justify-between">
                       <h3
-                        className="font-inter text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-4 text-[#0b0f14] dark:text-white"
+                        className="font-inter text-[17px] md:text-[20px] font-bold leading-[1.3] tracking-tight line-clamp-3 text-[#0b0f14] dark:text-white"
                       >
                         {"\u201C"}
                         {first}

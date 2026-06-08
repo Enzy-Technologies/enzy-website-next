@@ -89,7 +89,7 @@ const PARTNERS: Partner[] = [
   {
     name: "Bips",
     domain: "trybips.com",
-    url: "https://www.trybips.com/",
+    url: "https://www.trybips.com/enzy",
     category: "Taxes & Finance",
     blurb:
       "A financial tracking app built for 1099 reps that automates mileage and expense tracking so they capture every tax deduction all year long.",
@@ -244,7 +244,7 @@ function PartnerLogoMarquee() {
       aria-label="Our partners"
       className="mx-auto w-full max-w-2xl overflow-hidden px-4 py-3 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] [-webkit-mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)]"
     >
-      <div className="flex w-max items-center [animation:enzy-partner-marquee_28s_linear_infinite] motion-reduce:[animation:none]">
+      <div className="flex w-max items-center [animation:enzy-partner-marquee_34s_linear_infinite] motion-reduce:[animation:none]">
         {items.map((p, i) => (
           <div
             key={`${p.name}-${i}`}

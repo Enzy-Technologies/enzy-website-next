@@ -192,7 +192,7 @@ export function About() {
                   Book a Demo <ArrowRight size={18} aria-hidden />
                 </CTAButton>
                 <Link
-                  href="/resources"
+                  href="/customer-stories"
                   className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-inter text-sm font-semibold rounded-full transition-colors text-black/70 hover:text-black hover:bg-black/5 border border-black/10 dark:text-white/70 dark:hover:text-white dark:hover:bg-white/[0.06] dark:border-white/10"
                 >
                   Read customer stories →

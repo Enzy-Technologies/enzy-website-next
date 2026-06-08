@@ -1,16 +1,9 @@
-import React from "react"
-import type { Metadata } from "next"
-import { Resources } from "@/app/Resources"
-import { SEO_CONFIG } from "@/app/utils/seo-config"
-import { buildMetadata } from "@/app/lib/seo"
+import { notFound } from "next/navigation"
 
-export const metadata: Metadata = buildMetadata({
-  title: SEO_CONFIG.resources.title,
-  description: SEO_CONFIG.resources.description,
-  path: "/resources",
-})
-
+// The /resources page is hidden for now. The <Resources /> component and its
+// SEO config are kept intact — to restore, revert this file to render
+// <Resources /> and re-add the nav links + sitemap entry.
 export default function Page() {
-  return <Resources />
+  notFound()
 }
 
