@@ -102,68 +102,113 @@ export function TestimonialsMarquee({
   sets?: number;
 }) {
   const trackRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<Animation | null>(null);
-  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
-  // True while the user is pressing/dragging the strip to scrub it. Pausing the
-  // marquee while this is set lets a drag override the loop; clearing it resumes
-  // the loop from wherever the drag left off.
-  const [isDragging, setIsDragging] = useState(false);
-  // Pause the marquee while it's scrolled off-screen so it isn't compositing a
-  // wide, many-layered 3D track in the background — that work was making other
-  // interactions (e.g. opening the nav menu at the top of the page) feel laggy.
-  const [inView, setInView] = useState(true);
   const rootRef = useRef<HTMLDivElement>(null);
+  const [flippedIndex, setFlippedIndex] = useState<number | null>(null);
+  // Drives the grab/grabbing cursor only; the motion is ref-driven (below).
+  const [isDragging, setIsDragging] = useState(false);
+  const [inView, setInView] = useState(true);
 
-  // Drag-to-scrub bookkeeping.
+  // --- Single-rAF motion model -------------------------------------------
+  // The auto-scroll, the drag, AND the flick momentum are all driven by ONE
+  // requestAnimationFrame loop that writes the track's transform directly. There
+  // is no Web Animations API / compositor animation to pause, resume, or
+  // re-promote — so there is no main-thread↔compositor hand-off anywhere, which
+  // is what was causing the residual jump when a flick's coast settled back into
+  // the auto-scroll. `pos` = leftward translate in px (wrapped to one set width,
+  // so it stays small & precise); `vel` = px/ms, positive = leftward (the
+  // marquee's own direction).
+  const posRef = useRef(0);
+  const velRef = useRef(0);
+  const modeRef = useRef<"auto" | "drag" | "flick">("auto");
+  const rafRef = useRef<number | null>(null);
+  const lastTsRef = useRef(0);
+  const setWidthRef = useRef(0); // px width of one set (one card-list copy)
+  const reducedMotionRef = useRef(false);
+  // Mirror state into refs so the rAF reads current values without re-subscribing.
+  const inViewRef = useRef(true);
+  const flippedRef = useRef<number | null>(null);
+  useEffect(() => {
+    inViewRef.current = inView;
+  }, [inView]);
+  useEffect(() => {
+    flippedRef.current = flippedIndex;
+  }, [flippedIndex]);
+
+  // Drag + flick bookkeeping.
   const pointerIdRef = useRef<number | null>(null);
   const dragStartXRef = useRef(0);
-  const baseTimeRef = useRef(0); // animation.currentTime at press
-  const setWidthRef = useRef(0); // px width of one testimonial set
+  const posAtStartRef = useRef(0);
   const movedRef = useRef(false); // exceeded the drag threshold?
   const capturedRef = useRef(false); // have we captured the pointer?
+  const velocityRef = useRef(0); // smoothed pointer velocity, px/ms, + = right
+  const lastMoveXRef = useRef(0);
+  const lastMoveTimeRef = useRef(0);
 
-  // Two sets is enough for a seamless loop when we animate the track by
-  // exactly one set's width.
+  // Two sets is enough for a seamless loop: shifting by exactly one set's width
+  // puts the second (identical) copy where the first began.
   const marqueeItems = Array(sets).fill(testimonials).flat();
 
-  // Drive the auto-scroll with the Web Animations API — runs on the
-  // compositor thread, so it stays smooth on mobile even when the main
-  // thread is busy (BlurReveal, card content, scroll-driven effects).
+  // The one rAF loop. It owns the transform: auto-scroll, the tail of a flick,
+  // and (rendered from pointermove) the drag all share it, so motion is never
+  // handed between mechanisms.
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-
-    const prefersReducedMotion =
+    reducedMotionRef.current =
       typeof window !== "undefined" &&
-      window.matchMedia &&
+      !!window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotion) return;
+    setWidthRef.current = track.offsetWidth / sets;
 
-    // The track has `sets` copies of the cards. Translating by
-    // -100/sets % shifts exactly one copy, which means the next copy
-    // takes its place — seamless loop.
-    const distance = `-${100 / sets}%`;
-
-    const animation = track.animate(
-      [
-        { transform: "translate3d(0, 0, 0)" },
-        { transform: `translate3d(${distance}, 0, 0)` },
-      ],
-      {
-        duration: MARQUEE_DURATION_MS,
-        iterations: Infinity,
-        easing: "linear",
+    const tick = (ts: number) => {
+      rafRef.current = requestAnimationFrame(tick);
+      const dt = lastTsRef.current ? Math.min(ts - lastTsRef.current, 50) : 16;
+      lastTsRef.current = ts;
+      const sw = track.offsetWidth / sets;
+      if (!sw) return;
+      setWidthRef.current = sw;
+      // Paused (off-screen / a card flipped) or being dragged (pointermove
+      // renders directly) → don't advance here.
+      if (
+        !inViewRef.current ||
+        flippedRef.current !== null ||
+        modeRef.current === "drag"
+      ) {
+        return;
       }
-    );
-
-    animationRef.current = animation;
+      const marqueeSpeed = reducedMotionRef.current
+        ? 0
+        : sw / MARQUEE_DURATION_MS;
+      if (modeRef.current === "flick") {
+        // Decay the flick velocity toward the marquee speed (NOT zero), so it
+        // merges seamlessly into the auto-scroll — same loop, no hand-off.
+        const decay = Math.pow(0.95, dt / 16.67);
+        velRef.current = marqueeSpeed + (velRef.current - marqueeSpeed) * decay;
+        if (
+          Math.abs(velRef.current - marqueeSpeed) <
+          Math.max(marqueeSpeed * 0.01, 0.0005)
+        ) {
+          velRef.current = marqueeSpeed;
+          modeRef.current = "auto";
+        }
+      } else {
+        velRef.current = marqueeSpeed;
+      }
+      let pos = posRef.current + velRef.current * dt;
+      pos = ((pos % sw) + sw) % sw;
+      posRef.current = pos;
+      track.style.transform = `translate3d(${-pos}px, 0, 0)`;
+    };
+    rafRef.current = requestAnimationFrame(tick);
     return () => {
-      animation.cancel();
-      animationRef.current = null;
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      lastTsRef.current = 0;
     };
   }, [sets]);
 
-  // Only run the marquee while it's actually on-screen.
+  // Only advance the marquee while it's actually on-screen (the rAF reads
+  // inViewRef each frame).
   useEffect(() => {
     const el = rootRef.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
@@ -175,46 +220,32 @@ export function TestimonialsMarquee({
     return () => io.disconnect();
   }, []);
 
-  // Pause when off-screen, when a card is flipped, or while the user is
-  // dragging the strip. Clearing any of these resumes the loop from its current
-  // position (WAAPI play() continues from the paused currentTime).
-  useEffect(() => {
-    const animation = animationRef.current;
-    if (!animation) return;
-    if (!inView || flippedIndex !== null || isDragging) {
-      animation.pause();
-    } else {
-      animation.play();
-    }
-  }, [flippedIndex, inView, isDragging]);
-
-  // --- Drag / tap-and-drag to scrub through the cards -------------------
-  // We keep the marquee on the Web Animations API (compositor thread) and just
-  // move its playhead: on press we pause and record the current time; on drag
-  // we convert horizontal travel into a currentTime offset (wrapped so the loop
-  // stays seamless); on release we resume. Pointer capture starts only once a
-  // real drag is detected, so a plain tap still flips the card.
+  // --- Drag + flick: both feed the same rAF via pos / vel / mode ----------
+  // Pointer capture starts only once a real drag is detected, so a plain tap
+  // still flips the card.
   const handlePointerDown = (e: React.PointerEvent) => {
     const track = trackRef.current;
-    const anim = animationRef.current;
-    if (!track || !anim) return;
+    if (!track) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
     if (pointerIdRef.current !== null) return;
     setWidthRef.current = track.offsetWidth / sets;
-    baseTimeRef.current = Number(anim.currentTime) || 0;
     dragStartXRef.current = e.clientX;
+    posAtStartRef.current = posRef.current;
     movedRef.current = false;
     capturedRef.current = false;
     pointerIdRef.current = e.pointerId;
-    anim.pause();
+    velocityRef.current = 0;
+    lastMoveXRef.current = e.clientX;
+    lastMoveTimeRef.current = e.timeStamp;
+    modeRef.current = "drag"; // rAF stops advancing; pointermove drives position
     setIsDragging(true);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (pointerIdRef.current !== e.pointerId) return;
-    const anim = animationRef.current;
-    const setWidth = setWidthRef.current;
-    if (!anim || !setWidth) return;
+    const track = trackRef.current;
+    const sw = setWidthRef.current;
+    if (!track || !sw) return;
     const dx = e.clientX - dragStartXRef.current;
     if (Math.abs(dx) > 5) {
       movedRef.current = true;
@@ -225,11 +256,21 @@ export function TestimonialsMarquee({
         capturedRef.current = true;
       }
     }
-    // translate = -(t / DURATION) * setWidth, so dragging right (dx > 0) should
-    // decrease t. Wrap into [0, DURATION) for a seamless, infinite scrub.
-    let t = baseTimeRef.current - (dx * MARQUEE_DURATION_MS) / setWidth;
-    t = ((t % MARQUEE_DURATION_MS) + MARQUEE_DURATION_MS) % MARQUEE_DURATION_MS;
-    anim.currentTime = t;
+    // Dragging right (dx > 0) moves the cards right → pos decreases. Render now
+    // (don't wait for the rAF) so the strip tracks the finger 1:1.
+    let pos = posAtStartRef.current - dx;
+    pos = ((pos % sw) + sw) % sw;
+    posRef.current = pos;
+    track.style.transform = `translate3d(${-pos}px, 0, 0)`;
+
+    // Smoothed pointer velocity (px/ms, + = right) for the release flick.
+    const mdt = e.timeStamp - lastMoveTimeRef.current;
+    if (mdt > 0) {
+      const instantV = (e.clientX - lastMoveXRef.current) / mdt;
+      velocityRef.current = velocityRef.current * 0.6 + instantV * 0.4;
+    }
+    lastMoveXRef.current = e.clientX;
+    lastMoveTimeRef.current = e.timeStamp;
   };
 
   const handlePointerEnd = (e: React.PointerEvent) => {
@@ -241,6 +282,18 @@ export function TestimonialsMarquee({
     }
     pointerIdRef.current = null;
     capturedRef.current = false;
+
+    // Hand the finger's velocity to the rAF as the flick's starting velocity; it
+    // decays to the marquee speed there (no hand-off — same loop). A tap, or a
+    // release after the finger had paused, hands over vel 0, which just ramps
+    // gently back up to marquee speed. vel is in pos-space (+ = leftward), so it's
+    // the negative of the rightward pointer velocity.
+    const idleMs = e.timeStamp - lastMoveTimeRef.current;
+    let vFinger = velocityRef.current;
+    if (!movedRef.current || idleMs > 100) vFinger = 0;
+    vFinger = Math.max(-3, Math.min(3, vFinger)); // cap runaway flicks
+    velRef.current = -vFinger;
+    modeRef.current = "flick";
     setIsDragging(false);
   };
 

@@ -313,7 +313,9 @@ function EnzyGlobe() {
     let animationFrameId = 0;
     let lastTime = performance.now();
 
-    // Interaction and scroll logic
+    // Interaction + ambient-spin logic
+    const GLOBE_SPIN_RATE = 0.1; // rad/s — gentle ambient Y spin
+    let autoSpinY = 0; // accumulated ambient rotation (time-based, not scroll)
     let manualRotationOffsetY = 0;
     let manualRotationOffsetX = 0;
     let targetRotationY = 0.15; // Initial US center
@@ -375,16 +377,37 @@ function EnzyGlobe() {
       const t = currentTime / 1000;
       lastTime = currentTime;
 
-      // Map scroll to rotation relative to the viewport center so the US is centered on arrival
-      const rect = el.getBoundingClientRect();
-      const distFromCenter = (window.innerHeight / 2) - (rect.top + rect.height / 2);
-      const scrollRotation = distFromCenter * 0.0015;
-      targetRotationY = 0.15 + scrollRotation + manualRotationOffsetY;
+      if (window.innerWidth < DESKTOP_MIN) {
+        // MOBILE: gentle ambient auto-spin, DECOUPLED from scroll. iOS Safari
+        // freezes JS for ~0.5–0.8s during a fling (proven on-device), so a
+        // scroll-linked rotation can't run mid-fling and stutters then jumps to
+        // catch up. A constant time-based spin doesn't read as "stuck to my
+        // scroll", and because delta is clamped, a frozen stretch just pauses the
+        // spin briefly and resumes seamlessly — no catch-up jump.
+        autoSpinY += GLOBE_SPIN_RATE * Math.min(delta, 0.05);
+        targetRotationY = 0.15 + autoSpinY + manualRotationOffsetY;
+      } else {
+        // DESKTOP: original scroll-linked rotation (no iOS JS-freeze here), so the
+        // globe rotates as the section scrolls through the viewport.
+        const rect = el.getBoundingClientRect();
+        const distFromCenter =
+          window.innerHeight / 2 - (rect.top + rect.height / 2);
+        targetRotationY = 0.15 + distFromCenter * 0.0015 + manualRotationOffsetY;
+      }
       targetRotationX = manualRotationOffsetX;
 
-      // Smoothly interpolate current rotation to target rotation
-      globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * 0.1;
-      globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * 0.1;
+      // Smoothly interpolate current rotation toward the target — but with a
+      // FRAME-RATE-INDEPENDENT step. iOS Safari throttles rAF during fast/momentum
+      // scrolling, so frames arrive sparsely; a fixed per-frame lerp (* 0.1) then
+      // barely advances and the globe visibly freezes / lags behind the scroll,
+      // snapping to catch up only once scrolling settles. Deriving the factor from
+      // the real frame delta means a long gap between frames applies a
+      // proportionally larger step, so the rotation keeps pace with the scroll even
+      // at reduced frame rates. (delta is clamped so a backgrounded-tab gap can't
+      // cause a hard jump; at 60fps this is ≈ the old 0.1 feel.)
+      const smoothing = 1 - Math.exp(-8 * Math.min(delta, 0.05));
+      globeGroup.rotation.y += (targetRotationY - globeGroup.rotation.y) * smoothing;
+      globeGroup.rotation.x += (targetRotationX - globeGroup.rotation.x) * smoothing;
       
       
       const worldPos = new THREE.Vector3();
