@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, HeartPulse, type LucideIcon } from "lucide-react";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
 
@@ -33,13 +33,23 @@ type Partner = {
   url: string;
   category: string;
   blurb: string;
+  /** Optional local logo overrides (used instead of the favicon when set). */
+  /** Full-colour square icon shown in the marketplace card's white slot. */
+  cardLogo?: string;
+  /** Transparent wordmark for the monochrome logo carousel. */
+  marqueeLogo?: string;
+  /** Render this generic icon in the card slot instead of fetching a favicon
+   *  (used when the brand favicon is too low-res / poor quality). */
+  cardIcon?: LucideIcon;
+  /** Exclude from the monochrome logo carousel (e.g. no usable mono mark). */
+  hideFromMarquee?: boolean;
 };
 
 const PARTNERS: Partner[] = [
   {
     name: "Sequifi",
     domain: "sequifi.com",
-    url: "https://sequifi.com/",
+    url: "https://sequifi.com/partners/enzy",
     category: "HR & Payroll",
     blurb:
       "An all-in-one HR, payroll, and commission platform built to help commission-driven sales teams hire, pay, and scale.",
@@ -63,7 +73,7 @@ const PARTNERS: Partner[] = [
   {
     name: "The Poser Company",
     domain: "posercompany.com",
-    url: "https://www.posercompany.com/",
+    url: "https://www.posercompany.com/fulfillment.htm",
     category: "Gear & Swag",
     blurb:
       "A brand marketing agency that designs and fulfills premium custom merch, swag, and gear to power your company culture.",
@@ -75,6 +85,61 @@ const PARTNERS: Partner[] = [
     category: "Background Checks",
     blurb:
       "Fast, top-rated background screening and drug testing so you can onboard new reps with confidence.",
+  },
+  {
+    name: "Bips",
+    domain: "trybips.com",
+    url: "https://www.trybips.com/",
+    category: "Taxes & Finance",
+    blurb:
+      "A financial tracking app built for 1099 reps that automates mileage and expense tracking so they capture every tax deduction all year long.",
+    cardLogo: "/logos/bips-icon.png",
+    marqueeLogo: "/logos/bips-mark.png",
+  },
+  {
+    name: "Hire Advantage",
+    domain: "d2dhire.com",
+    url: "https://d2dhire.com/",
+    category: "Recruiting",
+    blurb:
+      "A high-impact recruiting engine that helps door-to-door and field-sales teams source, screen, and hire quality reps at scale.",
+  },
+  {
+    name: "Enerflo",
+    domain: "enerflo.com",
+    url: "https://enerflo.com/",
+    category: "Solar Software",
+    blurb:
+      "The only lead-to-PTO solar platform, unifying sales, contracting, financing, and project tracking so solar teams close more deals and install faster.",
+  },
+  {
+    name: "MF9",
+    domain: "mf9.world",
+    url: "https://mf9.world/",
+    category: "Merch & Fulfillment",
+    blurb:
+      "A multi-disciplinary creative studio offering product design, manufacturing, and fulfillment to bring premium branded merch and gear to life.",
+    marqueeLogo: "/logos/mf9-mark.png",
+  },
+  {
+    name: "HailTrace",
+    domain: "hailtrace.com",
+    url: "https://hailtrace.com/",
+    category: "Storm Data",
+    blurb:
+      "Meteorologist-verified, real-time hail and storm mapping that pinpoints damaged neighborhoods so roofing and restoration teams reach leads first.",
+  },
+  {
+    name: "Friendly Health Co",
+    domain: "friendlyhealthco.com",
+    url: "https://friendlyhealthco.com/",
+    category: "Health Insurance",
+    blurb:
+      "Personalized ACA health insurance guidance that helps 1099 reps and their families find affordable coverage and maximize subsidies.",
+    // Favicon is only 16px (a faint globe) — use a generic icon on the card and
+    // keep it out of the monochrome carousel where it'd render as a blurry blob.
+    cardIcon: HeartPulse,
+    hideFromMarquee: true,
   },
 ];
 
@@ -102,7 +167,9 @@ function PartnerLogo({ partner }: { partner: Partner }) {
 
   return (
     <span className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-transform duration-300 group-hover:scale-105 bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.35)] ring-1 ring-black/5 dark:ring-white/10">
-      {logoFailed ? (
+      {partner.cardIcon ? (
+        <partner.cardIcon size={24} strokeWidth={1.75} className="text-[#19ad7d]" />
+      ) : logoFailed ? (
         <span className="font-inter text-xl font-bold text-[#19ad7d]">
           {partner.name.charAt(0)}
         </span>
@@ -112,7 +179,10 @@ function PartnerLogo({ partner }: { partner: Partner }) {
         // next.config remote-host setup required.
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={`https://www.google.com/s2/favicons?domain=${partner.domain}&sz=128`}
+          src={
+            partner.cardLogo ??
+            `https://www.google.com/s2/favicons?domain=${partner.domain}&sz=128`
+          }
           alt={`${partner.name} logo`}
           width={36}
           height={36}
@@ -142,7 +212,10 @@ function PartnerMarqueeLogo({ partner }: { partner: Partner }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src={`https://www.google.com/s2/favicons?domain=${partner.domain}&sz=128`}
+      src={
+        partner.marqueeLogo ??
+        `https://www.google.com/s2/favicons?domain=${partner.domain}&sz=128`
+      }
       alt={partner.name}
       width={40}
       height={40}
@@ -160,7 +233,9 @@ function PartnerMarqueeLogo({ partner }: { partner: Partner }) {
 function PartnerLogoMarquee() {
   // Two identical copies so a -50% translate loops seamlessly (no seam, no
   // restart). Uniform fixed-width items + no gap keep the boundary aligned.
-  const items = [...PARTNERS, ...PARTNERS];
+  // Partners flagged hideFromMarquee (no usable mono mark) are left out.
+  const marqueePartners = PARTNERS.filter((p) => !p.hideFromMarquee);
+  const items = [...marqueePartners, ...marqueePartners];
   return (
     // Constrained to ~half the page width (centered) since there aren't enough
     // partner logos yet to fill an edge-to-edge marquee. The edge mask fades
