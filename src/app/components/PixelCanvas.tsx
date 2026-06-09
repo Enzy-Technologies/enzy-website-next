@@ -19,6 +19,16 @@ interface AmbientParticle {
   spherePhi: number;
   sphereBand: number;
   sphereKind: "band" | "fill";
+  // Scroll-driven "order": where this pixel belongs once data is organized.
+  // Optional because the gather/easter-egg clones don't use it.
+  targetX?: number;
+  targetY?: number;
+  // Grid stagger: the order value at which this dot starts snapping to its slot,
+  // so the lattice assembles dot-by-dot instead of all at once.
+  settleStart?: number;
+  // Logo: when true this dot starts parked off-screen and streams in from beyond
+  // the edges as you scroll (half the wordmark's dots are incoming this way).
+  incoming?: boolean;
 }
 
 export function PixelCanvas() {
@@ -71,6 +81,21 @@ export function PixelCanvas() {
   const smoothedScrollYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const lastScrollYRef = useRef(typeof window !== "undefined" ? window.scrollY : 0);
   const smoothedScrollVelRef = useRef(0);
+
+  // Scroll-driven "order" narrative: random pixels (entropy) at the top of the
+  // page resolve into an organized structure (the "performance operating system")
+  // by the bottom. orderModeRef picks what they resolve INTO; null = the original
+  // ambient behavior with no organizing pull (production default).
+  const orderSmoothedRef = useRef(0);
+  const orderModeRef = useRef<"grid" | "logo" | null>(null);
+  const targetsReadyRef = useRef(false);
+  // Rasterized alpha mask of the enzy wordmark SVG (1 = inside a glyph). Kept as
+  // a mask rather than points so targets can be sampled on a regular screen-space
+  // lattice at any viewport size — even spacing, crisp edges, no re-loading.
+  const logoMaskRef = useRef<{ data: Uint8Array; w: number; h: number } | null>(
+    null
+  );
+  const logoAspectRef = useRef(2878.98 / 1000);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -344,6 +369,51 @@ export function PixelCanvas() {
     // work runs below the desktop line. Desktop (>=1024) keeps the full animated canvas.
     if (window.matchMedia(MEDIA.touch).matches) return;
 
+    // Opt-in scroll-organize mode (preview/compare). Production stays unchanged
+    // unless ?pixelEnd=grid or ?pixelEnd=logo is present.
+    const pe = new URLSearchParams(window.location.search).get("pixelEnd");
+    orderModeRef.current = pe === "grid" || pe === "logo" ? pe : null;
+
+    // Logo mode needs far more pixels to render the wordmark solidly; grid and
+    // the default ambient field stay lean. Desktop-only (the canvas is hidden on
+    // touch), and the gather easter egg already runs ~2400 fillRects/frame, so
+    // the higher count is well within the per-frame budget.
+    const getParticleCount = () =>
+      orderModeRef.current === "logo"
+        ? 1000
+        : orderModeRef.current === "grid"
+          ? 500
+          : width >= DESKTOP_MIN
+            ? 300
+            : 140;
+
+    // How much of the order range a single grid dot takes to snap into its slot.
+    // Each dot's settleStart is randomized in [0, 1 - SETTLE_SPAN] so the last
+    // dots finish exactly as order reaches 1 (the features section).
+    const SETTLE_SPAN = 0.2;
+
+    // Logo wordmark layout: dots are sampled on a regular lattice at LOGO_SPACING
+    // (screen px) and drawn at a uniform LOGO_DOT size so the mark reads even and
+    // crisp rather than a noisy, variable-size fill.
+    const LOGO_SPACING = 11;
+    const LOGO_DOT = 4;
+
+    const makeParticle = (x: number, y: number): AmbientParticle => ({
+      x,
+      y,
+      baseX: x,
+      baseY: y,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+      size: Math.random() * 1.5 + 0.5,
+      speed: Math.random() * 0.5 + 0.2,
+      isGreen: Math.random() > 0.8,
+      sphereTheta: Math.random() * Math.PI * 2,
+      spherePhi: Math.acos(2 * Math.random() - 1),
+      sphereBand: Math.random(),
+      sphereKind: Math.random() < 0.35 ? "fill" : "band",
+    });
+
     let width = window.innerWidth;
     let height = window.innerHeight;
     let dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
@@ -364,7 +434,7 @@ export function PixelCanvas() {
     // Initialize ambient particles. Counts were reduced for mobile performance:
     // the always-on 60fps loop does per-particle math every frame, so a high
     // mobile count was a constant CPU/GPU drain. Desktop trimmed modestly too.
-    const particleCount = width >= DESKTOP_MIN ? 300 : 140;
+    const particleCount = getParticleCount();
     if (ambientParticlesRef.current.length === 0) {
       for (let i = 0; i < particleCount; i++) {
         const x = Math.random() * width;
@@ -386,6 +456,166 @@ export function PixelCanvas() {
         });
       }
     }
+
+    // Rasterize the real enzy wordmark SVG once into a binary alpha mask. Async
+    // (image load); re-runs assignTargets on completion so the structure appears
+    // as soon as the asset is ready.
+    const rasterizeLogo = () => {
+      const img = new Image();
+      img.onload = () => {
+        const RW = 1400;
+        const aspect =
+          img.naturalWidth && img.naturalHeight
+            ? img.naturalWidth / img.naturalHeight
+            : 2878.98 / 1000;
+        const RH = Math.max(1, Math.round(RW / aspect));
+        const off = document.createElement("canvas");
+        off.width = RW;
+        off.height = RH;
+        const octx = off.getContext("2d", { willReadFrequently: true });
+        if (!octx) return;
+        octx.drawImage(img, 0, 0, RW, RH);
+        const data = octx.getImageData(0, 0, RW, RH).data;
+        const mask = new Uint8Array(RW * RH);
+        for (let i = 0; i < RW * RH; i++) {
+          mask[i] = data[i * 4 + 3] > 100 ? 1 : 0;
+        }
+        logoMaskRef.current = { data: mask, w: RW, h: RH };
+        logoAspectRef.current = aspect;
+        assignTargets();
+      };
+      img.src = "/enzy-wordmark.svg";
+    };
+
+    // Grow/trim the particle array to exactly `target` (used so logo mode can
+    // match its dot count to the evenly-sampled glyph lattice, 1 dot per slot).
+    const reconcileParticleCount = (target: number) => {
+      const arr = ambientParticlesRef.current;
+      if (arr.length > target) {
+        arr.length = target;
+      } else {
+        while (arr.length < target) {
+          arr.push(makeParticle(Math.random() * width, Math.random() * height));
+        }
+      }
+    };
+
+    // Assign each particle its "organized" home for the current mode. Recomputed
+    // on resize so the structure always fits the viewport.
+    const assignTargets = () => {
+      const mode = orderModeRef.current;
+      const ps = ambientParticlesRef.current;
+      if (!mode || ps.length === 0) {
+        targetsReadyRef.current = false;
+        return;
+      }
+      if (mode === "grid") {
+        // Even lattice spanning the full viewport edge to edge (corner to corner,
+        // no margin): col/row map onto [0,width] and [0,height] inclusive.
+        const n = ps.length;
+        const cols = Math.max(1, Math.round(Math.sqrt(n * (width / height))));
+        const rows = Math.max(1, Math.ceil(n / cols));
+        ps.forEach((p, i) => {
+          const col = i % cols;
+          const row = Math.floor(i / cols);
+          p.targetX = cols > 1 ? (col / (cols - 1)) * width : width / 2;
+          p.targetY = rows > 1 ? (row / (rows - 1)) * height : height / 2;
+          // Stable per-dot stagger (assigned once, survives resizes).
+          if (p.settleStart === undefined) {
+            p.settleStart = Math.random() * (1 - SETTLE_SPAN);
+          }
+        });
+      } else {
+        // enzy wordmark: fit into a centered box (preserving aspect), then sample
+        // the glyph mask on a regular LOGO_SPACING lattice. Every kept slot is on
+        // the same grid → perfectly even spacing and a clean silhouette. The
+        // particle count is matched to the slot count so it's exactly 1 dot each.
+        const mask = logoMaskRef.current;
+        if (!mask) {
+          targetsReadyRef.current = false;
+          return;
+        }
+        const aspect = logoAspectRef.current;
+        let tw = width * 0.72;
+        let th = tw / aspect;
+        const maxH = height * 0.5;
+        if (th > maxH) {
+          th = maxH;
+          tw = th * aspect;
+        }
+        const ox = (width - tw) / 2;
+        const oy = (height - th) / 2;
+
+        // Coverage test: keep a lattice slot if ANY glyph pixel falls inside the
+        // cell centered on it — not just the exact center. Point-sampling missed
+        // thin tapering features (e.g. the top wedge of the N) that slip between
+        // lattice points; scanning the whole cell captures every tip and edge.
+        const halfX = ((LOGO_SPACING / tw) * mask.w) / 2;
+        const halfY = ((LOGO_SPACING / th) * mask.h) / 2;
+        const cellFilled = (sx: number, sy: number) => {
+          const cxm = (sx / tw) * mask.w;
+          const cym = (sy / th) * mask.h;
+          const x0 = Math.max(0, Math.floor(cxm - halfX));
+          const x1 = Math.min(mask.w - 1, Math.ceil(cxm + halfX));
+          const y0 = Math.max(0, Math.floor(cym - halfY));
+          const y1 = Math.min(mask.h - 1, Math.ceil(cym + halfY));
+          for (let my = y0; my <= y1; my += 2) {
+            const base = my * mask.w;
+            for (let mx = x0; mx <= x1; mx += 2) {
+              if (mask.data[base + mx]) return true;
+            }
+          }
+          return false;
+        };
+
+        const slots: Array<[number, number]> = [];
+        for (let sy = 0; sy <= th; sy += LOGO_SPACING) {
+          for (let sx = 0; sx <= tw; sx += LOGO_SPACING) {
+            if (cellFilled(sx, sy)) slots.push([ox + sx, oy + sy]);
+          }
+        }
+        if (slots.length === 0) {
+          targetsReadyRef.current = false;
+          return;
+        }
+        reconcileParticleCount(slots.length);
+        ambientParticlesRef.current.forEach((p, i) => {
+          const slot = slots[i % slots.length];
+          p.targetX = slot[0];
+          p.targetY = slot[1];
+          // Half the dots are present from the top (drifting on-screen); the other
+          // half start parked beyond a screen edge and stream in as you scroll.
+          // Interleaved by index so the incoming dots fill gaps spread across the
+          // whole wordmark. Assigned once so it survives resizes.
+          if (p.incoming === undefined) {
+            p.incoming = i % 2 === 1;
+            if (p.incoming) {
+              const edge = Math.floor(Math.random() * 4);
+              const beyond = 0.12 + Math.random() * 0.35; // 12–47% past the edge
+              if (edge === 0) {
+                p.x = -beyond * width;
+                p.y = Math.random() * height;
+              } else if (edge === 1) {
+                p.x = width + beyond * width;
+                p.y = Math.random() * height;
+              } else if (edge === 2) {
+                p.x = Math.random() * width;
+                p.y = -beyond * height;
+              } else {
+                p.x = Math.random() * width;
+                p.y = height + beyond * height;
+              }
+              p.baseX = p.x;
+              p.baseY = p.y;
+            }
+          }
+        });
+      }
+      targetsReadyRef.current = true;
+    };
+
+    assignTargets();
+    if (orderModeRef.current === "logo" && !logoMaskRef.current) rasterizeLogo();
 
     let animationFrameId: number;
     // Cap the heavy per-frame work to ~30fps. The ambient particle drift doesn't
@@ -434,6 +664,35 @@ export function PixelCanvas() {
       const focusEasing = sphereFocusRef.current.active ? 0.12 : 0.18;
       sphereFocusRef.current.strength += (focusTarget - sphereFocusRef.current.strength) * focusEasing;
       const sphereT = sphereFocusRef.current.strength;
+
+      // Scroll-driven order parameter: 0 = entropy (top), 1 = organized (bottom).
+      // Smoothed like the parallax scroll, eased, and suppressed while the sphere
+      // easter egg is active so the two effects never fight.
+      let orderPull = 0;
+      if (orderModeRef.current && targetsReadyRef.current) {
+        // Anchor the "fully organized" moment to the featured-features section so
+        // the data keeps assembling the whole way down and only resolves once you
+        // arrive there (completing a quarter-screen before its top reaches the top,
+        // so it's locked while the section is prominently in view). The footer is
+        // an opaque z-10 bar that would hide a bottom-of-page payoff anyway.
+        // Falls back to 85% of the page if the anchor isn't in the DOM yet.
+        const vh = window.innerHeight;
+        const anchorEl = document.getElementById("featured-features");
+        const anchorY = anchorEl
+          ? Math.max(
+              1,
+              anchorEl.getBoundingClientRect().top + window.scrollY - vh * 0.25
+            )
+          : Math.max(1, (document.documentElement.scrollHeight - vh) * 0.85);
+        const rawOrder = Math.min(1, Math.max(0, window.scrollY / anchorY));
+        orderSmoothedRef.current += (rawOrder - orderSmoothedRef.current) * 0.08;
+        const o = orderSmoothedRef.current;
+        // Mild ease-in (pow 1.4): keeps the hero chaotic, then assembles steadily
+        // through the middle/back of the scroll and only resolves as you reach the
+        // features section — i.e. drawn out rather than snapping together early.
+        const eased = Math.pow(o, 1.4);
+        orderPull = eased * Math.max(0, 1 - sphereT / 0.08);
+      }
 
       const holding = easterEggHoldingRef.current;
       const releasedThisFrame = lastHoldingRef.current && !holding;
@@ -531,19 +790,28 @@ export function PixelCanvas() {
         particle.x += particle.vx;
         particle.y += particle.vy;
 
-        // Gentle bounds wrapping (disable while focusing to avoid "teleport" artifacts)
-        if (sphereT < 0.08) {
+        // Gentle bounds wrapping (disable while focusing or organizing to avoid
+        // "teleport" artifacts as particles travel to their target slots).
+        if (sphereT < 0.08 && orderPull < 0.15 && !particle.incoming) {
           if (particle.x < -10) particle.x = width + 10;
           if (particle.x > width + 10) particle.x = -10;
           if (particle.y < -10) particle.y = height + 10;
           if (particle.y > height + 10) particle.y = -10;
         }
 
-        // Subtle drift back toward base position
+        // Subtle drift back toward base position — fades out as data organizes,
+        // handing control over to the target pull below.
         const dxBase = particle.baseX - particle.x;
         const dyBase = particle.baseY - particle.y;
-        particle.vx += dxBase * 0.0001;
-        particle.vy += dyBase * 0.0001;
+        particle.vx += dxBase * 0.0001 * (1 - orderPull);
+        particle.vy += dyBase * 0.0001 * (1 - orderPull);
+
+        // NOTE: organizing no longer adds spring forces here. A velocity spring
+        // converges on its own clock and raced ahead of the scroll, so the form
+        // snapped together early. Instead we keep the ambient drift untouched and
+        // scrub the *drawn* position toward the target by orderPull at draw time
+        // (see drawX/drawY below) — that tracks scroll exactly and reverses
+        // cleanly when scrolling back up.
 
         // Attraction to mouse trail when moving
         if (isDesktop && velocity > 1) {
@@ -557,13 +825,16 @@ export function PixelCanvas() {
               mousePosition.x - particle.x
             );
             const force = (400 - distToMouse) / 400;
-            particle.vx += Math.cos(angle) * force * 0.65;
-            particle.vy += Math.sin(angle) * force * 0.65;
+            // Fade the cursor's pull as data organizes so it can't smear the form.
+            const mouseGain = 0.65 * (1 - orderPull * 0.9);
+            particle.vx += Math.cos(angle) * force * mouseGain;
+            particle.vy += Math.sin(angle) * force * mouseGain;
           }
         }
 
         // Damping - increase while focusing so it settles, but not instantly.
-        const damp = sphereT > 0.15 ? 0.92 : 0.965;
+        // Also stiffens with order so the organized structure holds steady.
+        const damp = sphereT > 0.15 ? 0.92 : 0.965 - orderPull * 0.075;
         particle.vx *= damp;
         particle.vy *= damp;
 
@@ -580,8 +851,10 @@ export function PixelCanvas() {
           particle.isGreen = Math.random() > 0.8;
         }
 
-        // Special green particles are the same size as the standard particles
-        const pixelSize = particle.size * 3;
+        // Logo mode draws uniform-size dots so the wordmark reads even and crisp;
+        // other modes keep the varied ambient sizes.
+        const pixelSize =
+          orderModeRef.current === "logo" ? LOGO_DOT : particle.size * 3;
         
         // Parallax effect on mobile using smoothed scroll
         const parallaxOffset = isDesktop ? 0 : smoothedScrollYRef.current * (particle.speed * 1.5);
@@ -591,6 +864,30 @@ export function PixelCanvas() {
             : isDesktop
               ? particle.y
               : (((particle.y - parallaxOffset) % height) + height) % height;
+
+        // Organize render blend: scrub the drawn position from its drifting spot
+        // toward this pixel's target slot by the eased scroll order. orderPull is
+        // 0 above the fold (pure ambient) and 1 at the features section (crisp
+        // structure). Linear in scroll, so the formation visibly draws out.
+        let drawX = particle.x;
+        let drawY = renderY;
+        if (orderPull > 0.0001 && particle.targetX !== undefined) {
+          let local: number;
+          if (orderModeRef.current === "grid") {
+            // Per-dot stagger: this dot idles (drifting) until order passes its
+            // settleStart, then eases into its slot over SETTLE_SPAN. The ease-in
+            // (slow approach → fast finish) reads as a snap, and randomized starts
+            // mean dots arrive one-by-one rather than collectively.
+            const s = particle.settleStart ?? 0;
+            const raw = Math.min(1, Math.max(0, (orderPull - s) / SETTLE_SPAN));
+            local = raw * raw;
+          } else {
+            // Logo: collective proportional blend (clean wordmark reveal).
+            local = orderPull;
+          }
+          drawX = particle.x + (particle.targetX - particle.x) * local;
+          drawY = renderY + (particle.targetY! - renderY) * local;
+        }
 
         // Touch/hold "sphere" interaction: gather pixels into a sphere around the touch point.
         let inSphereNow = false;
@@ -728,8 +1025,8 @@ export function PixelCanvas() {
         if (farFade < 0.999) ctx.globalAlpha = farFade;
 
         ctx.fillRect(
-          particle.x - pixelSize / 2,
-          renderY - pixelSize / 2,
+          drawX - pixelSize / 2,
+          drawY - pixelSize / 2,
           pixelSize,
           pixelSize
         );
@@ -923,8 +1220,8 @@ export function PixelCanvas() {
       // when the mobile browser's address bar hides or shows during scrolling.
       if (width !== lastWidth) {
         ambientParticlesRef.current = [];
-        // Keep in sync with the initial count above (reduced for mobile perf).
-        const particleCount = width >= DESKTOP_MIN ? 300 : 140;
+        // Keep in sync with the initial count above (mode-aware; reduced for mobile perf).
+        const particleCount = getParticleCount();
         for (let i = 0; i < particleCount; i++) {
           const x = Math.random() * width;
           const y = Math.random() * height;
@@ -946,6 +1243,9 @@ export function PixelCanvas() {
         }
         lastWidth = width;
       }
+
+      // Targets depend on both width and height — always refit them.
+      assignTargets();
     };
 
     window.addEventListener('resize', handleResize);

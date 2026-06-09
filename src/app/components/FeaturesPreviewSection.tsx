@@ -253,7 +253,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
   };
 
   return (
-    <section className="relative w-full py-20 md:py-28 bg-transparent">
+    <section id="featured-features" className="relative w-full py-20 md:py-28 bg-transparent">
       {/* `relative z-20` keeps the heading + "See the full system" link on
           top of the carousel below — the carousel uses a negative top
           margin (-mt-16) to tuck under the heading and would otherwise
