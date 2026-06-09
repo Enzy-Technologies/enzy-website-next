@@ -207,19 +207,16 @@ export function Integrations() {
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
           <motion.div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
-            <BlurReveal
-              as="h1"
-              className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
-            >
-              Integrated with the tools you use
-            </BlurReveal>
+            <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light">
+              <BlurReveal as="span" delay={0.1}>Keep your stack. </BlurReveal>
+              <BlurReveal as="span" delay={0.49} className="italic">Activate the data inside it.</BlurReveal>
+            </h1>
 
             <p
               className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
             >
-              Connect Enzy to your existing tech stack to automatically track
-              activities, update records, and trigger actions across 50+
-              integrations.
+              Enzy connects to 50+ different tools — turning the data you already
+              collect into live visibility, competitions, and manager action.
             </p>
           </motion.div>
         </div>

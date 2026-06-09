@@ -73,17 +73,15 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
         <section className="pb-12 md:pb-16">
           <div className="flex flex-col items-center justify-center text-center relative z-10">
             <motion.div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
-              <BlurReveal
-                as="h1"
-                className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
-              >
-                Ideas that drive performance
-              </BlurReveal>
+              <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light">
+                <BlurReveal as="span" delay={0.1}>Ideas that drive </BlurReveal>
+                <BlurReveal as="span" delay={0.49} className="italic">performance.</BlurReveal>
+              </h1>
 
               <p
                 className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
               >
-                Articles, playbooks, and customer stories on building
+                Articles, playbooks, and case studies on building
                 high-performance sales teams — straight from the people building
                 Enzy.
               </p>

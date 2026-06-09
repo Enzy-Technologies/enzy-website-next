@@ -94,16 +94,14 @@ export function AffiliateProgram() {
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-10 md:pb-12 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
           <div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
-            <BlurReveal
-              as="h1"
-              className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
-            >
-              Affiliate Program
-            </BlurReveal>
+            <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light">
+              <BlurReveal as="span" delay={0.1}>Refer Enzy. </BlurReveal>
+              <BlurReveal as="span" delay={0.37} className="italic">Earn on every deal.</BlurReveal>
+            </h1>
 
             <p className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60">
-              We work with industry leaders to bring our software to the sales
-              organizations that need it. If you have a
+              We work with industry leaders to put Enzy in front of the sales
+              organizations that need it most. If you have a
               strong network of sales leaders and an understanding of tools that
               help teams grow, apply to be an affiliate today.
             </p>

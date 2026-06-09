@@ -54,17 +54,14 @@ export function CustomerStories() {
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-10 md:pb-12 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
           <div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
-            <BlurReveal
-              as="h1"
-              className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
-            >
-              Customer Stories
-            </BlurReveal>
+            <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light">
+              <BlurReveal as="span" delay={0.1}>Numbers they&apos;d </BlurReveal>
+              <BlurReveal as="span" delay={0.46} className="italic">never seen before.</BlurReveal>
+            </h1>
 
             <p className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60">
-              Real teams, real rollouts, real results. See how sales
-              organizations turn fragmented activity into visible momentum with
-              Enzy.
+              How real teams use Enzy to turn activity into momentum, and
+              momentum into revenue.
             </p>
           </div>
         </div>

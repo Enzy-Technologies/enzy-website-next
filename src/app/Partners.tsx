@@ -146,15 +146,15 @@ const PARTNERS: Partner[] = [
 const BENEFITS = [
   {
     title: "Reach new customers",
-    desc: "Get in front of Enzy's network of sales leaders and operators who are actively buying tools to grow their teams.",
+    desc: "Get in front of the sales operators actively buying to grow their teams.",
   },
   {
     title: "Grow revenue",
-    desc: "Co-sell and co-market alongside us to reach more prospects and close deals faster together.",
+    desc: "Co-sell into a network built on performance — and close more deals together.",
   },
   {
-    title: "Improve joint customer experience",
-    desc: "Deliver more value to shared customers — better integrations, workflows, and tools.",
+    title: "Serve customers better",
+    desc: "Give shared customers a tighter stack — better integrations, cleaner workflows, fewer tools to juggle.",
   },
 ];
 
@@ -297,12 +297,10 @@ export function Partners() {
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-10 md:pb-12 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
           <div className="enzy-hero-reveal flex flex-col items-center max-w-4xl">
-            <BlurReveal
-              as="h1"
-              className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light"
-            >
-              Partner Program
-            </BlurReveal>
+            <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] text-center transition-colors duration-500 text-brand-dark dark:text-brand-light">
+              <BlurReveal as="span" delay={0.1}>Better tools, </BlurReveal>
+              <BlurReveal as="span" delay={0.43} className="italic">one ecosystem.</BlurReveal>
+            </h1>
 
             <p className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60">
               We team up with the tools, services, and companies that our

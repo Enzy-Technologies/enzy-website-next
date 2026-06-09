@@ -42,7 +42,7 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
   },
   customerStories: {
     title: "Customer Stories",
-    description: "Real teams, real rollouts, real results. See how sales organizations turn fragmented activity into visible momentum with Enzy.",
+    description: "See how real sales teams use Enzy to turn daily activity into momentum — and momentum into revenue.",
   },
   insights: {
     title: "Insights - Blog, Playbooks & Case Studies",

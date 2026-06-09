@@ -305,7 +305,7 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
                         <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
-                            See what Enzy does — fast.
+                            One system. The whole performance loop.
                         </h3>
                         <div className="mt-4">
                             <Link href="/system" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">
@@ -354,7 +354,7 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
                         <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
-                            Built for action. Built to scale.
+                            Your motion. Your playbooks.
                         </h3>
                         <div className="mt-4">
                             <Link href="/solutions" onClick={() => setActiveDropdown(null)} className="inline-flex items-center gap-2 text-[#19ad7d] text-xs font-bold uppercase tracking-widest hover:opacity-80 transition-opacity group">

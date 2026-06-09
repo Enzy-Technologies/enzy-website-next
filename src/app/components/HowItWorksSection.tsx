@@ -9,7 +9,7 @@ import { useIsPhone } from "@/app/lib/useMediaQuery";
 
 type Step = {
   title: string;
-  body: string;
+  body: React.ReactNode;
   icon: string;
 };
 
@@ -24,18 +24,30 @@ const STAGE_BOTTOM_CLIP = 4; // px
 
 const STEPS: Step[] = [
   {
-    title: "Live Data Foundation",
-    body: "Enzy integrates with your existing CRM/data sources pulling your team's data into one real-time feed. Everything happening on your team — visible to everyone, all in one place.",
+    title: "Connect",
+    body: (
+      <>
+        Enzy integrates with your existing CRM/data sources pulling your team&apos;s data into one real-time feed. Everything happening on your team — <span className="text-[#19ad7d]">visible to everyone</span>, all in one place.
+      </>
+    ),
     icon: "/icons/live-data-foundation.png",
   },
   {
-    title: "Social Engagement",
-    body: "We bring social media-like dynamics to your sales team — profiles, badges, public leaderboards, group messaging, and live competitions. The mechanics that create momentum, drive behavior, and build a high-performance culture that compounds.",
+    title: "Engage",
+    body: (
+      <>
+        We bring social media-like dynamics to your sales team — profiles, badges, public leaderboards, group messaging, and live competitions. The mechanics that create momentum, drive behavior, and build a <span className="text-[#19ad7d]">high-performance culture that compounds</span>.
+      </>
+    ),
     icon: "/icons/social-engagement.png",
   },
   {
-    title: "AI Performance Intelligence",
-    body: "Our AI doesn't guess. It's trained on real performance outcomes from tens of thousands of sales reps — so every competition, coaching moment, and incentive it surfaces is grounded in what's actually worked, at exactly the right time.",
+    title: "Perform",
+    body: (
+      <>
+        <span className="text-[#19ad7d]">Our AI doesn&apos;t guess.</span> It&apos;s trained on real performance outcomes from tens of thousands of sales reps — so every competition, coaching moment, and incentive it surfaces is grounded in what&apos;s actually worked, at exactly the right time.
+      </>
+    ),
     icon: "/icons/ai-performance-intelligence.png",
   },
 ];

@@ -46,15 +46,15 @@ const ivyOra = localFont({
 
 export const metadata: Metadata = {
   ...buildMetadata({
-    title: "Enzy - The Agentic Engine for High Performance Sales Teams",
+    title: "Enzy | The Performance Operating System for Sales Teams",
     description:
-      "Transform your sales team with Enzy's agentic performance system. Streamline workflows, boost productivity, and close more deals with intelligent automation and real-time insights.",
+      "Performance is the largest untapped lever in your business. Enzy is the operating system that surfaces it.",
     path: "/",
   }),
   // Production origin for resolving every page's relative canonical + OG URLs.
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Enzy - The Agentic Engine for High Performance Sales Teams",
+    default: "Enzy | The Performance Operating System for Sales Teams",
     template: "%s | Enzy",
   },
 }
@@ -102,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     name: siteName,
     url: siteUrl,
     logo: logoUrl,
-    description: "The Agentic Engine for High Performance Sales Teams",
+    description: "The Performance Operating System for Sales Teams",
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "Sales",

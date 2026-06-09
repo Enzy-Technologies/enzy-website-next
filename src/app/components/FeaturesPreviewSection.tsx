@@ -99,7 +99,7 @@ const cardsData = [
   {
     id: "ai",
     href: "/system#enzy-ai",
-    title: "AI Assistant",
+    title: "Enzy AI",
     description:
       "Ask questions about connected data. Get insights and next-best actions — instantly.",
     features: [
@@ -134,7 +134,7 @@ const cardsData = [
   {
     id: "competitions",
     href: "/system#competitions-and-incentives",
-    title: "Competition Builder",
+    title: "Competitions & Incentives",
     description:
       "Launch competitions and incentives in minutes — aligned to the KPIs that matter.",
     features: [

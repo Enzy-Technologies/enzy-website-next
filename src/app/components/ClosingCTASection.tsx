@@ -30,8 +30,8 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
         <p
           className="font-inter text-[15px] md:text-[16px] leading-relaxed mt-6 max-w-[640px] mx-auto text-black/65 dark:text-white/60"
         >
-          Replace your spreadsheet leaderboards, group texts, and Canva
-          competition graphics. Live in two weeks.
+          Replace your spreadsheet leaderboards, scattered group texts, manual
+          incentives, scattered training docs, and more.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-10">

@@ -50,7 +50,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         outcomes: [
           { value: "Clear", label: "daily route + priorities" },
           { value: "Live", label: "activity visibility" },
-          { value: "Less admin", label: "after-hours logging" },
+          { value: "Less", label: "after-hours logging" },
         ],
         plays: [
           {
@@ -64,7 +64,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
           },
           {
             title: "Coverage gaps",
-            description: "Flag missed accounts and auto-recommend next stops.",
+            description: "Flag missed accounts and recommend next stops — so no territory goes cold.",
             steps: [
               "Detect low-touch territories",
               "Suggest the next best accounts",
@@ -84,7 +84,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
           "Wins and risks are missed between meetings",
         ],
         outcomes: [
-          { value: "Signal", label: "what changed + why" },
+          { value: "Signal", label: "on what changed, and why" },
           { value: "Faster", label: "coaching loops" },
           { value: "Aligned", label: "rep + manager priorities" },
         ],
@@ -100,7 +100,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
           },
           {
             title: "Visit follow-up autopilot",
-            description: "Auto-draft follow-ups based on context.",
+            description: "Auto-draft follow-ups from context — so nothing slips between visits.",
             steps: [
               "Detect visit completion",
               "Suggest next action + message",
@@ -156,12 +156,12 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         outcomes: [
           { value: "Faster", label: "first response" },
           { value: "Clear", label: "next-best action" },
-          { value: "Less admin", label: "manual routing" },
+          { value: "Less", label: "manual routing" },
         ],
         plays: [
           {
             title: "Lead triage + routing",
-            description: "Auto-prioritize, assign, and message the right rep.",
+            description: "Auto-prioritize, assign, and message the right rep — so hot leads hit someone fast.",
             steps: [
               "Score lead intent + fit",
               "Route to the right owner",
@@ -170,7 +170,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
           },
           {
             title: "Stale lead rescue",
-            description: "Revive leads before they churn out.",
+            description: "Revive leads before they churn, so winnable deals don't die in the queue.",
             steps: [
               "Detect inactivity windows",
               "Queue a rescue sequence",
@@ -226,7 +226,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
           "Coaching happens too late",
         ],
         outcomes: [
-          { value: "Signal", label: "daily summary" },
+          { value: "Clear", label: "daily summary" },
           { value: "Live", label: "team progress" },
           { value: "Faster", label: "intervention" },
         ],
@@ -337,10 +337,8 @@ export function Solutions() {
         {/* Header */}
         <motion.div className="enzy-hero-reveal flex flex-col items-center relative z-10 shrink-0 w-full">
           <h1 className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] lg:tracking-[-2px] text-center max-w-4xl transition-colors duration-500 text-black dark:text-[#f5f7fa]">
-            <BlurReveal as="span" delay={0.1}>Built for how</BlurReveal><br/>
-            <span className="text-black/40 dark:text-white/40">
-              <BlurReveal as="span" delay={0.3}>your team sells</BlurReveal>
-            </span>
+            <BlurReveal as="span" delay={0.1}>Built for how your team </BlurReveal>
+            <BlurReveal as="span" delay={0.64} className="italic">sells.</BlurReveal>
           </h1>
 
           {/* Mode Tabs */}

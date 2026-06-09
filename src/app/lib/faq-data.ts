@@ -15,7 +15,7 @@ export const SITE_FAQS: FAQItem[] = [
   {
     question: "What is Enzy?",
     answer:
-      "Enzy is the performance layer for frontline sales teams. It uses real-time leaderboards, competitions, and incentives to keep reps motivated, give managers visibility into people they can't see every day, and help revenue teams hit their numbers. Enzy connects to any CRM or data source — no rip and replace — automatically tracks the metrics that matter, and turns that data into behavior change on the field.",
+      "Enzy is the performance operating system for sales teams. It uses real-time leaderboards, competitions, and incentives to keep reps motivated, give managers visibility into people they can't see every day, and help revenue teams hit their numbers. Enzy connects to any CRM or data source — no rip and replace — automatically tracks the metrics that matter, and turns that data into behavior change on the field.",
   },
   {
     question: "What is sales gamification?",

@@ -8,7 +8,7 @@ import { ArrowRight } from "lucide-react";
 const FEATURED_QUOTE = {
   text: "Before Enzy, we were reacting to results. Now we're anticipating them. It turned data into decision velocity, visibility into alignment, and motivation into momentum.",
   name: "Ashleigh Pepper",
-  role: "CEO, Kaizen Promittere",
+  role: "CEO of Kaizen Promittere",
 };
 
 

@@ -26,13 +26,13 @@ const MODULES: ModuleDef[] = [
   {
     id: "sell",
     label: "Sell",
-    tagline: "Field sales execution and pipeline.",
+    tagline: "Win the approach and the follow-up.",
     icon: DollarSign,
   },
   {
     id: "recruit",
     label: "Recruit",
-    tagline: "Sourcing through onboarding.",
+    tagline: "From first contact to first sale.",
     icon: Users,
   },
 ];
@@ -51,7 +51,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "enzy-ai",
     title: "Enzy AI",
-    desc: "AI-driven nudges and answers from your team's connected data — on demand.",
+    desc: "Ask anything about your team's data and get the next-best action — not just what happened, but what to do about it.",
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
   },
@@ -59,7 +59,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "leaderboards",
     title: "Leaderboards",
-    desc: "Real-time rankings that keep focus high and goals clear across every team.",
+    desc: "Make the score impossible to ignore, so reps compete without being told to.",
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
   },
@@ -67,7 +67,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "profiles",
     title: "Profiles",
-    desc: "One place for performance, progress, and recognition for every team member.",
+    desc: "One place for every rep's performance, progress, and recognition — so good work gets seen.",
     image:
       "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcHJvZmlsZSUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -75,7 +75,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "badges",
     title: "Badges",
-    desc: "Recognition that builds loyalty — earned, displayed, and remembered.",
+    desc: "Recognition reps earn, display, and chase — because people repeat what gets seen.",
     image:
       "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -83,7 +83,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "competitions-and-incentives",
     title: "Competitions & Incentives",
-    desc: "Launch contests and rewards in minutes — aligned to the KPIs that matter.",
+    desc: "Launch competitions and incentives in minutes — focused on the behaviors that move revenue.",
     image:
       "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -91,7 +91,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "messaging",
     title: "Messaging",
-    desc: "Group threads, announcements, and DMs without switching tools.",
+    desc: "Put communication where performance happens — aligned action, less noise.",
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
   },
@@ -99,7 +99,7 @@ const FEATURES_DATA: Feature[] = [
     module: "core",
     id: "media-library",
     title: "Media Library",
-    desc: "Approved assets, scripts, and training — organized and shareable.",
+    desc: "Approved assets, scripts, and training in one place — so every rep sells the same way.",
     image:
       "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -109,7 +109,7 @@ const FEATURES_DATA: Feature[] = [
     module: "sell",
     id: "canvassing",
     title: "Canvassing",
-    desc: "Plan territories, route the day, and log every door in the field.",
+    desc: "Plan territories and route the day, so reps spend time at doors — not deciding where to go next.",
     image:
       "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -117,7 +117,7 @@ const FEATURES_DATA: Feature[] = [
     module: "sell",
     id: "lead-management",
     title: "Lead Management",
-    desc: "Keep pipelines organized and priorities obvious from first touch to close.",
+    desc: "Keep priorities obvious from first touch to close, so reps always know who to work next.",
     image:
       "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -141,7 +141,7 @@ const FEATURES_DATA: Feature[] = [
     module: "sell",
     id: "sms-campaigns",
     title: "SMS Campaigns",
-    desc: "Drip and broadcast text campaigns with delivery, reply, and conversion tracking.",
+    desc: "Drip and broadcast texts that turn cold lists into booked conversations.",
     image:
       "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -167,7 +167,7 @@ const FEATURES_DATA: Feature[] = [
     module: "recruit",
     id: "onboarding-workflow",
     title: "Onboarding Workflow",
-    desc: "Automate paperwork, training, and first-week milestones for every new hire.",
+    desc: "Automate paperwork, training, and first-week milestones — so new reps start selling sooner.",
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXNrJTIwbGlzdCUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -483,14 +483,11 @@ function FeatureBrowser() {
             className="font-ivyora font-medium text-[40px] sm:text-[50px] md:text-[64px] leading-[1.05] tracking-[-2px] max-w-4xl text-black dark:text-[#f5f7fa]"
           >
             <BlurReveal as="span" delay={0.1}>
-              Everything you need.
+              Every layer your team{" "}
             </BlurReveal>
-            <br />
-            <span className="text-black/40 dark:text-white/40">
-              <BlurReveal as="span" delay={0.3}>
-                Nothing you don&apos;t.
-              </BlurReveal>
-            </span>
+            <BlurReveal as="span" delay={0.61} className="italic">
+              runs on.
+            </BlurReveal>
           </h1>
         </div>
 

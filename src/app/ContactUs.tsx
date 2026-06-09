@@ -73,7 +73,7 @@ export function ContactUs() {
             delay={0.1}
             className={`font-ivyora font-medium tracking-[-2px] leading-[1.05] text-[40px] sm:text-[50px] md:text-[64px] max-w-3xl ${pageTitle}`}
           >
-            Let&apos;s talk
+            Let&apos;s talk.
           </BlurReveal>
           <p
             className={`mt-6 font-inter text-[16px] md:text-[18px] leading-relaxed max-w-2xl ${pageBody}`}
