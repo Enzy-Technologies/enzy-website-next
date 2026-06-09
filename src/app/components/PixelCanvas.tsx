@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import { useTheme } from "./ThemeProvider";
 import { writeParticlesDisabled } from "../lib/particles";
 import { DESKTOP_MIN, MEDIA } from "../lib/breakpoints";
@@ -33,6 +34,7 @@ interface AmbientParticle {
 
 export function PixelCanvas() {
   const { isLightMode } = useTheme();
+  const pathname = usePathname();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   // When true, the animation loop idles (skips its per-frame work). Set while a
@@ -371,8 +373,28 @@ export function PixelCanvas() {
 
     // Opt-in scroll-organize mode (preview/compare). Production stays unchanged
     // unless ?pixelEnd=grid or ?pixelEnd=logo is present.
+    // The enzy-wordmark organize effect is the production default on the HOME page
+    // only — that's where the featured-features anchor lives. Other pages keep the
+    // plain ambient field. ?pixelEnd=grid|logo|off overrides anywhere.
+    const isHome = pathname === "/";
     const pe = new URLSearchParams(window.location.search).get("pixelEnd");
-    orderModeRef.current = pe === "grid" || pe === "logo" ? pe : null;
+    const nextMode: "grid" | "logo" | null =
+      pe === "grid" || pe === "logo"
+        ? pe
+        : pe === "off"
+          ? null
+          : isHome
+            ? "logo"
+            : null;
+    // When the mode changes (e.g. navigating to/from home, since this canvas
+    // persists across client-side navigation), rebuild the field so off-screen
+    // "incoming" dots from a previous mode aren't left stranded on the next page.
+    if (orderModeRef.current !== nextMode) {
+      ambientParticlesRef.current = [];
+      orderSmoothedRef.current = 0;
+      targetsReadyRef.current = false;
+    }
+    orderModeRef.current = nextMode;
 
     // Logo mode needs far more pixels to render the wordmark solidly; grid and
     // the default ambient field stay lean. Desktop-only (the canvas is hidden on
@@ -1254,7 +1276,7 @@ export function PixelCanvas() {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
     };
-  }, [isLightMode]);
+  }, [isLightMode, pathname]);
 
   return (
     <canvas
