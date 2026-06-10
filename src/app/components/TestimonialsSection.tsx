@@ -17,7 +17,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "Honestly, the biggest impact Enzy has had on our company isn’t just the features themselves, it’s how it reshapes our thinking and behavior as an organization. Before Enzy, we were reacting to results; now we’re anticipating them. Because every KPI, leaderboard, and real-time insight is visible at the moment decisions are made — so if you asked me where the magic really sits, it’s not just the tool — it’s what it enables. Enzy turned data into decision velocity, visibility into alignment, and motivation into momentum. That’s been the difference-maker for us this year.",
     name: "Ashleigh Pepper",
     title: "CEO of Kaizen Promittere",
-    image: "/testimonials/ashleigh-pepper.jpg"
+    image: "/testimonials/ashleigh-pepper-2.jpg"
   },
   {
     id: 2,
@@ -450,7 +450,7 @@ export function TestimonialsMarquee({
                     <div
                       className="mt-4 pt-4 border-t flex items-center gap-3 shrink-0 border-black/10 dark:border-white/10"
                     >
-                      <div className="w-10 h-10 rounded-full overflow-hidden border border-[#19ad7d]/30 shrink-0">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden border border-[#19ad7d]/30 shrink-0">
                         <ImageWithFallback
                           src={testimonial.image}
                           alt={testimonial.name}
