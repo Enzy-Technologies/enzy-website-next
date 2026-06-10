@@ -422,22 +422,10 @@ export function TestimonialsMarquee({
                       “
                     </div>
 
-                    {/* `overflow-y-auto` implicitly forces overflow-x to
-                        `clip`, which would otherwise sever the
-                        text-shadow halo at the left edge of the scroll
-                        container (visible as a hard vertical line of
-                        clipped glow). The `px-3 -mx-3` trick widens the
-                        clip region by 12 px on each side while keeping
-                        the text in its original visual position so the
-                        shadow can render fully on both sides. */}
-                    <div className="flex-1 overflow-y-auto scrollbar-hide px-3 -mx-3 relative z-10">
+                    <div className="flex-1 overflow-y-auto scrollbar-hide relative z-10">
                       <div className="pt-2 pb-4">
-                        {/* White copy + dark text-shadow halo (in both light
-                            and dark mode) keeps the back-side quote crisp
-                            even when the front-face photo bleeds through the
-                            card's slight translucency. */}
-                        <p className="font-inter text-sm md:text-[15px] leading-relaxed text-white [text-shadow:0_0_8px_rgba(0,0,0,0.85),0_0_2px_rgba(0,0,0,0.85)]">
-                          <span className="font-bold block mb-3 text-base md:text-lg leading-[1.3] text-white [text-shadow:0_0_10px_rgba(0,0,0,0.9),0_0_2px_rgba(0,0,0,0.9)]">
+                        <p className="font-inter text-sm md:text-[15px] leading-relaxed text-[#0b0f14] dark:text-white">
+                          <span className="font-bold block mb-3 text-base md:text-lg leading-[1.3] text-[#0b0f14] dark:text-white">
                           {"\u201C"}
                           {first}
                           {"\u201D"}
@@ -459,10 +447,10 @@ export function TestimonialsMarquee({
                         />
                       </div>
                       <div className="flex flex-col">
-                        <span className="font-inter text-xs font-bold tracking-wider uppercase text-white [text-shadow:0_0_8px_rgba(0,0,0,0.8),0_0_2px_rgba(0,0,0,0.8)]">
+                        <span className="font-inter text-xs font-bold tracking-wider uppercase text-[#0b0f14] dark:text-white">
                           {testimonial.name}
                         </span>
-                        <span className="font-inter text-[10px] uppercase line-clamp-1 text-white [text-shadow:0_0_8px_rgba(0,0,0,0.85),0_0_2px_rgba(0,0,0,0.85)]">
+                        <span className="font-inter text-[10px] uppercase line-clamp-1 text-[#0b0f14]/60 dark:text-white/40">
                           {testimonial.title}
                         </span>
                       </div>
