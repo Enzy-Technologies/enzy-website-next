@@ -38,7 +38,7 @@ export const TESTIMONIALS: Testimonial[] = [
     quote: "What’s been most impressive is how quick they are to implement the changes needed for our structure. We’re a large organization and so it’s not easy for us to get this big ship moving in a new direction and switching platforms.",
     name: "Mike Sawtelle",
     title: "Co-Owner at EcoShield",
-    image: "/testimonials/mike-sawtelle.jpg"
+    image: "/testimonials/mike-sawtelle-2.jpg"
   },
   {
     id: 6,
