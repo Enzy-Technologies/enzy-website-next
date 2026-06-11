@@ -73,14 +73,18 @@ body::-webkit-scrollbar {
   }
 }
 
-/* On touch (phones + tablets, <=1023), reveal every piece together (no
-   per-character cascade) by zeroing the per-element stagger — the
-   character-by-character reveal is a desktop-only touch. The pieces still
-   fade/slide in (and the hero container still animates), just without the
-   sequential stagger. */
+/* On touch (phones + tablets, <=1023), don't animate the pieces individually
+   at all. Per-letter transform/opacity animation promotes each character to its
+   own compositing layer, and that layer clips to the character's box — slicing
+   off serif/italic glyph overhang during the entrance (the "cut off" letters).
+   Rendering the pieces as plain, un-animated inline text removes those per-letter
+   layers entirely (so glyphs render fully), and the hero container
+   (.enzy-hero-reveal / .mobile-hero-reveal) animates the whole heading + subtext
+   block as one unit instead. Desktop (>=1024) keeps the per-character blur reveal. */
 @media (max-width: 1023px) {
   .enzy-reveal {
-    animation-delay: 0s !important;
+    display: inline;
+    animation: none;
   }
 }
 
