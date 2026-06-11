@@ -47,16 +47,6 @@ export function About() {
 
   return (
     <div className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-20 z-20 transition-colors duration-500">
-      {/* Background glows — static (parallax removed; the blur is kept). */}
-      <div
-        className="absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
-        aria-hidden
-      />
-      <div
-        className="absolute top-[55%] left-[-12%] w-[560px] h-[560px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.07)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
-        aria-hidden
-      />
-
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
         {/* 001 — Who we are */}
         <div className="enzy-hero-reveal">

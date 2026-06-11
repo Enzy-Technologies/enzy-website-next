@@ -147,15 +147,6 @@ export function Resources() {
       <section
         className="relative flex flex-col items-center justify-start w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto z-20"
       >
-        {/* Background glows — static (parallax removed; the blur is kept). */}
-        <div
-          className="absolute top-[0%] left-[-10%] w-[460px] h-[460px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
-          aria-hidden
-        />
-        <div
-          className="absolute top-[20%] right-[-5%] w-[520px] h-[520px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
-          aria-hidden
-        />
         <motion.div className="enzy-hero-reveal flex flex-col items-center w-full mb-16 relative z-10">
           <BlurReveal
             as="h1"
