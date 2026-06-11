@@ -60,6 +60,7 @@ const SYSTEM_SECTIONS = [
     items: [
       "Enzy AI",
       "Leaderboards",
+      "Goals",
       "Profiles",
       "Badges",
       "Competitions & Incentives",
@@ -85,7 +86,6 @@ const SYSTEM_SECTIONS = [
       "Recruiting Center",
       "Public Recruit Link",
       "Onboarding Workflow",
-      "Document Library",
     ],
   },
 ];

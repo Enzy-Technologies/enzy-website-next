@@ -2,7 +2,7 @@
 
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Plus, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
+import { ChevronDown, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { BlurReveal } from "./components/BlurReveal";
 import { MEDIA } from "./lib/breakpoints";
@@ -40,7 +40,12 @@ const MODULES: ModuleDef[] = [
 type Feature = {
   id: string;
   title: string;
+  /** Collapsed one-liner shown under the title in the accordion header. */
   desc: string;
+  /** Unique expanded copy — never a repeat of `desc`. */
+  body: string;
+  /** Expanded bullet points; each ladders to a behavior change. */
+  bullets: string[];
   module: ModuleId;
   image: string;
 };
@@ -52,6 +57,12 @@ const FEATURES_DATA: Feature[] = [
     id: "enzy-ai",
     title: "Enzy AI",
     desc: "Ask anything about your team's data and get the next-best action — not just what happened, but what to do about it.",
+    body: "Most software tells you what already happened. Enzy AI tells you what to do next. Ask it anything about your team — who's slipping, who's surging, where revenue is leaking — and get the next-best action while it still matters.",
+    bullets: [
+      "Ask in plain language: \"Who's at risk this week?\" or \"Where are we leaking revenue?\"",
+      "Surfaces the signal early, so managers coach before a slump compounds",
+      "Turns raw activity into a recommended action — not just another chart",
+    ],
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
   },
@@ -60,14 +71,40 @@ const FEATURES_DATA: Feature[] = [
     id: "leaderboards",
     title: "Leaderboards",
     desc: "Make the score impossible to ignore, so reps compete without being told to.",
+    body: "Reps don't need to be told to compete — they need to see the score. Leaderboards make standing public in real time, so effort and outcomes are visible and the team self-corrects without a single manager reminder.",
+    bullets: [
+      "Live rankings across any metric — sets, closes, revenue, activity",
+      "Public visibility creates accountability without micromanaging",
+      "Spot momentum shifts the moment they happen",
+    ],
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
+  },
+  {
+    module: "core",
+    id: "goals",
+    title: "Goals",
+    desc: "Make the number explicit and track pacing live — so everyone knows if today's effort is enough.",
+    body: "A target nobody can see is just a hope. Goals make the number explicit for the rep, the team, and the org, then track pacing in real time — so everyone knows whether today's effort is enough before the period closes, not after.",
+    bullets: [
+      "Set goals at the rep, team, or organization level",
+      "Track pacing live against the target — not at month-end",
+      "Turns a quota into a daily behavior the whole team can see",
+    ],
+    image:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
   {
     module: "core",
     id: "profiles",
     title: "Profiles",
     desc: "One place for every rep's performance, progress, and recognition — so good work gets seen.",
+    body: "Every rep's performance, progress, and recognition in one place. When good work is visible, it gets repeated — and reps can see exactly how they stack up and what to chase next.",
+    bullets: [
+      "A single record of stats, badges, and milestones per rep",
+      "Makes progress — and effort — impossible to overlook",
+      "Gives reps ownership of their own performance story",
+    ],
     image:
       "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcHJvZmlsZSUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -76,6 +113,12 @@ const FEATURES_DATA: Feature[] = [
     id: "badges",
     title: "Badges",
     desc: "Recognition reps earn, display, and chase — because people repeat what gets seen.",
+    body: "People repeat what gets seen. Badges turn milestones and behaviors into recognition reps earn, display, and chase — so the right actions compound on their own.",
+    bullets: [
+      "Reward the behaviors that drive revenue, not just the outcomes",
+      "Earned, displayed on profiles, and visible to the whole team",
+      "Recognition that's instant — the moment the work happens",
+    ],
     image:
       "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -84,6 +127,12 @@ const FEATURES_DATA: Feature[] = [
     id: "competitions-and-incentives",
     title: "Competitions & Incentives",
     desc: "Launch competitions and incentives in minutes — focused on the behaviors that move revenue.",
+    body: "Your contests shouldn't live in a spreadsheet. Launch competitions and incentives in minutes, point them at the behaviors that move revenue, and let focused urgency do the rest — built, tracked, and fulfilled in the same system your team already watches.",
+    bullets: [
+      "Spin up a competition in minutes around any metric",
+      "Tie rewards to the specific behaviors you want more of",
+      "Track standings live and fulfill incentives without leaving Enzy",
+    ],
     image:
       "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -92,6 +141,12 @@ const FEATURES_DATA: Feature[] = [
     id: "messaging",
     title: "Messaging",
     desc: "Put communication where performance happens — aligned action, less noise.",
+    body: "Communication shouldn't sit in a separate app from the score. Enzy puts messaging where performance happens — so a call-out, a coaching note, or a win lands in context and drives aligned action instead of noise.",
+    bullets: [
+      "Reach the whole team, a region, or one rep — in context",
+      "Celebrate wins and coach the moment the data moves",
+      "Less scattered noise, more aligned action",
+    ],
     image:
       "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
   },
@@ -100,6 +155,12 @@ const FEATURES_DATA: Feature[] = [
     id: "media-library",
     title: "Media Library",
     desc: "Approved assets, scripts, and training in one place — so every rep sells the same way.",
+    body: "When every rep has the approved assets, scripts, and training in one place, the whole team sells the same way. No digging through folders, no improvising the pitch.",
+    bullets: [
+      "Approved scripts, decks, and training in one searchable place",
+      "Every rep pitches from the same playbook",
+      "Update once and the whole field is current",
+    ],
     image:
       "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -110,6 +171,13 @@ const FEATURES_DATA: Feature[] = [
     id: "canvassing",
     title: "Canvassing",
     desc: "Plan territories and route the day, so reps spend time at doors — not deciding where to go next.",
+    body: "Reps should spend the day at doors, not deciding where to go next. Plan territories, route the day, and keep the field moving — so time goes to selling instead of logistics.",
+    bullets: [
+      "Draw territories and assign them to reps or teams",
+      "Route the day so reps cover ground, not guesswork",
+      "Weather Maps — point reps at the storm-hit streets where demand is live",
+      "See where the team is working in real time",
+    ],
     image:
       "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -118,6 +186,12 @@ const FEATURES_DATA: Feature[] = [
     id: "lead-management",
     title: "Lead Management",
     desc: "Keep priorities obvious from first touch to close, so reps always know who to work next.",
+    body: "From first touch to close, reps should always know who to work next. Lead Management keeps priorities obvious and the pipeline moving, so no opportunity goes cold because nobody knew it was there.",
+    bullets: [
+      "Every lead, stage, and next step in one view",
+      "Priorities stay obvious from first touch to close",
+      "Nothing slips through the cracks between visits",
+    ],
     image:
       "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -126,6 +200,12 @@ const FEATURES_DATA: Feature[] = [
     id: "digital-business-card",
     title: "Digital Business Card",
     desc: "Share your contact and pitch with a tap. Track who opens, when, and what they do next.",
+    body: "Share your contact and pitch with a tap — then see what happens next. Every card is trackable, so reps know who opened it, when, and exactly what to follow up on.",
+    bullets: [
+      "Share contact info and pitch instantly — no app required",
+      "Track opens and engagement to time the follow-up",
+      "Keeps the rep top-of-mind after they leave the door",
+    ],
     image:
       "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -134,6 +214,12 @@ const FEATURES_DATA: Feature[] = [
     id: "appt-scheduling",
     title: "Appt Scheduling",
     desc: "Book, confirm, and reschedule appointments without the back-and-forth.",
+    body: "Kill the back-and-forth. Book, confirm, and reschedule appointments in one flow — so reps spend their time in conversations instead of coordinating them.",
+    bullets: [
+      "Book and confirm appointments without the phone tag",
+      "Automatic reminders cut no-shows",
+      "Reschedule in a tap — no lost slots",
+    ],
     image:
       "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -142,6 +228,12 @@ const FEATURES_DATA: Feature[] = [
     id: "sms-campaigns",
     title: "SMS Campaigns",
     desc: "Drip and broadcast texts that turn cold lists into booked conversations.",
+    body: "Cold lists don't close themselves. Drip and broadcast texts that turn dormant contacts into booked conversations — at the cadence that actually gets replies.",
+    bullets: [
+      "Drip sequences and broadcasts from one place",
+      "Turn cold lists into booked conversations",
+      "Reach the whole list at the timing that converts",
+    ],
     image:
       "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -152,6 +244,12 @@ const FEATURES_DATA: Feature[] = [
     id: "recruiting-center",
     title: "Recruiting Center",
     desc: "Source, score, and pipeline candidates from one workspace.",
+    body: "Source, score, and pipeline candidates from one workspace — so recruiting runs like a sales process instead of a scattered inbox. The strongest candidates stay visible and keep moving.",
+    bullets: [
+      "Source and score candidates in one pipeline",
+      "Move applicants through stages like a deal",
+      "Keep your best prospects from going cold",
+    ],
     image:
       "https://images.unsplash.com/photo-1719400471588-575b23e27bd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWNydWl0aW5nJTIwb25ib2FyZGluZyUyMHRlY2glMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
   },
@@ -160,6 +258,12 @@ const FEATURES_DATA: Feature[] = [
     id: "public-recruit-link",
     title: "Public Recruit Link",
     desc: "A branded apply page that funnels candidates straight into your pipeline.",
+    body: "A branded apply page that funnels candidates straight into your pipeline. Share it anywhere — every applicant lands in the same system your recruiters already work.",
+    bullets: [
+      "A shareable, branded page that's always recruiting",
+      "Applicants flow directly into your pipeline",
+      "Share on social, in ads, or rep-to-rep",
+    ],
     image:
       "https://images.unsplash.com/photo-1586281380349-632531db7ed4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
@@ -168,16 +272,14 @@ const FEATURES_DATA: Feature[] = [
     id: "onboarding-workflow",
     title: "Onboarding Workflow",
     desc: "Automate paperwork, training, and first-week milestones — so new reps start selling sooner.",
+    body: "The faster a new rep starts selling, the faster they stick. Automate paperwork, training, and first-week milestones so onboarding runs itself — and nobody stalls waiting on a manual step.",
+    bullets: [
+      "Automate paperwork, training, and first-week milestones",
+      "Document Library — forms, agreements, and training docs, signed, sorted, and searchable",
+      "New reps ramp to productive sooner, with less manager lift",
+    ],
     image:
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXNrJTIwbGlzdCUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    module: "recruit",
-    id: "document-library",
-    title: "Document Library",
-    desc: "Forms, agreements, and training docs — signed, sorted, searchable.",
-    image:
-      "https://images.unsplash.com/photo-1568667256549-094345857637?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
 ];
 
@@ -301,7 +403,7 @@ function FeatureRow({
         </div>
 
         <motion.span
-          animate={{ rotate: isOpen ? 45 : 0 }}
+          animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className={`shrink-0 inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-full border transition-colors ${
             isOpen
@@ -310,7 +412,7 @@ function FeatureRow({
           }`}
           aria-hidden
         >
-          <Plus size={18} strokeWidth={2} />
+          <ChevronDown size={18} strokeWidth={2} />
         </motion.span>
       </button>
 
@@ -332,8 +434,23 @@ function FeatureRow({
               <p
                 className="font-inter text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed max-w-[680px] text-black/75 dark:text-white/75"
               >
-                {feature.desc}
+                {feature.body}
               </p>
+
+              <ul className="flex flex-col gap-2.5 max-w-[680px]">
+                {feature.bullets.map((bullet) => (
+                  <li
+                    key={bullet}
+                    className="flex items-start gap-3 font-inter text-[14px] sm:text-[15px] md:text-[16px] leading-relaxed text-black/70 dark:text-white/70"
+                  >
+                    <span
+                      className="mt-[9px] shrink-0 w-1.5 h-1.5 rounded-full bg-[#19ad7d]"
+                      aria-hidden
+                    />
+                    <span>{bullet}</span>
+                  </li>
+                ))}
+              </ul>
 
               <div
                 className="relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)] dark:border-white/8 dark:shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
