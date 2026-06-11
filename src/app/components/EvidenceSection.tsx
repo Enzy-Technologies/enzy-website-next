@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { motion, useInView } from "motion/react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -52,18 +52,8 @@ type EvidenceVariant = "default" | "lp";
 export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVariant } = {}) {
   const showQuoteCard = variant !== "lp";
   const { value: count, ref: countRef } = useCountUp(21);
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-  
-  const y = useTransform(scrollYProgress, [0, 1], ["-15%", "15%"]);
-
   return (
     <section
-      ref={containerRef}
       // Tablet-only gap (768–1023): the playground hero above is z-40 and, on a
       // tablet's wide viewport, the hand image's wrist extends several hundred px
       // below the runway (the 40%-width clause makes the image tall). Push this
@@ -89,7 +79,6 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full opacity-[0.15] blur-[80px]"
               style={{
                 background: "radial-gradient(circle, rgba(25,173,125,1) 0%, transparent 70%)",
-                y
               }}
               aria-hidden
             />

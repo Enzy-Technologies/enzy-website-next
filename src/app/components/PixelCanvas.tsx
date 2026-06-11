@@ -400,9 +400,15 @@ export function PixelCanvas() {
     // the default ambient field stay lean. Desktop-only (the canvas is hidden on
     // touch), and the gather easter egg already runs ~2400 fillRects/frame, so
     // the higher count is well within the per-frame budget.
+    // Logo mode opens with the same ambient field as every other page; the extra
+    // pixels needed to complete the wordmark stream in from off-screen as you
+    // scroll. The provisional 300 is what shows before the wordmark SVG loads —
+    // then the array grows to the wordmark's slot count (the extra dots created
+    // off-screen), so the on-screen count never jumps.
+    const RESIDENT_DOTS = 300;
     const getParticleCount = () =>
       orderModeRef.current === "logo"
-        ? 1000
+        ? RESIDENT_DOTS
         : orderModeRef.current === "grid"
           ? 500
           : width >= DESKTOP_MIN
@@ -601,35 +607,56 @@ export function PixelCanvas() {
           return;
         }
         reconcileParticleCount(slots.length);
+        const M = slots.length;
+        // RESIDENT_DOTS dots are present and drifting on-screen from the top (same
+        // count as every other page); the rest stream in from off-screen as you
+        // scroll. Residents are mapped to slots spread evenly across the whole
+        // wordmark (not the first N in scan order) so they aren't clumped, and the
+        // incoming dots fill gaps throughout. Because reconcile only appends/trims
+        // at the end, "resident = index < count" stays stable across resizes and
+        // matches the on-screen particles, so nothing reshuffles or flashes.
+        const residentCount = Math.min(RESIDENT_DOTS, M);
+        const slotOrder: number[] = [];
+        const taken = new Array(M).fill(false);
+        for (let k = 0; k < residentCount; k++) {
+          const idx = Math.min(M - 1, Math.floor(((k + 0.5) * M) / residentCount));
+          if (!taken[idx]) {
+            taken[idx] = true;
+            slotOrder.push(idx);
+          }
+        }
+        for (let s = 0; s < M; s++) if (!taken[s]) slotOrder.push(s);
+
+        const placeOffscreen = (p: AmbientParticle) => {
+          const edge = Math.floor(Math.random() * 4);
+          const beyond = 0.12 + Math.random() * 0.35; // 12–47% past the edge
+          if (edge === 0) {
+            p.x = -beyond * width;
+            p.y = Math.random() * height;
+          } else if (edge === 1) {
+            p.x = width + beyond * width;
+            p.y = Math.random() * height;
+          } else if (edge === 2) {
+            p.x = Math.random() * width;
+            p.y = -beyond * height;
+          } else {
+            p.x = Math.random() * width;
+            p.y = height + beyond * height;
+          }
+          p.baseX = p.x;
+          p.baseY = p.y;
+        };
+
         ambientParticlesRef.current.forEach((p, i) => {
-          const slot = slots[i % slots.length];
+          const slot = slots[slotOrder[i] ?? i % M];
           p.targetX = slot[0];
           p.targetY = slot[1];
-          // Half the dots are present from the top (drifting on-screen); the other
-          // half start parked beyond a screen edge and stream in as you scroll.
-          // Interleaved by index so the incoming dots fill gaps spread across the
-          // whole wordmark. Assigned once so it survives resizes.
-          if (p.incoming === undefined) {
-            p.incoming = i % 2 === 1;
-            if (p.incoming) {
-              const edge = Math.floor(Math.random() * 4);
-              const beyond = 0.12 + Math.random() * 0.35; // 12–47% past the edge
-              if (edge === 0) {
-                p.x = -beyond * width;
-                p.y = Math.random() * height;
-              } else if (edge === 1) {
-                p.x = width + beyond * width;
-                p.y = Math.random() * height;
-              } else if (edge === 2) {
-                p.x = Math.random() * width;
-                p.y = -beyond * height;
-              } else {
-                p.x = Math.random() * width;
-                p.y = height + beyond * height;
-              }
-              p.baseX = p.x;
-              p.baseY = p.y;
-            }
+          const incoming = i >= residentCount;
+          // Only (re)position when a particle's role actually changes, so resident
+          // dots keep drifting continuously and incoming dots keep their entry edge.
+          if (p.incoming !== incoming) {
+            p.incoming = incoming;
+            if (incoming) placeOffscreen(p);
           }
         });
       }

@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
 import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import Link from "next/link";
@@ -42,29 +42,19 @@ const FadeInSection = ({
 );
 
 export function About() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-  
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-
   const pageTitle = "text-black dark:text-[#f5f7fa]";
   const pageBody = "text-black/65 dark:text-white/65";
 
   return (
-    <div ref={containerRef} className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-20 z-20 transition-colors duration-500">
-      {/* Background glows */}
-      <motion.div
+    <div className="relative w-full flex flex-col items-center justify-start pt-7 md:pt-10 pb-16 md:pb-20 z-20 transition-colors duration-500">
+      {/* Background glows — static (parallax removed; the blur is kept). */}
+      <div
         className="absolute top-[8%] right-[-10%] w-[620px] h-[620px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.10)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
-        style={{ y: backgroundY }}
+        aria-hidden
       />
-      <motion.div
+      <div
         className="absolute top-[55%] left-[-12%] w-[560px] h-[560px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.07)_0%,transparent_70%)] rounded-full blur-[90px] pointer-events-none opacity-45 dark:opacity-100"
-        style={{ y: backgroundY2 }}
+        aria-hidden
       />
 
       <div className="w-full max-w-6xl px-5 sm:px-6 md:px-8">
@@ -98,7 +88,7 @@ export function About() {
               ].map((s) => (
                 <div
                   key={s.label}
-                  className="liquid-glass rounded-2xl border p-5 sm:p-6 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                  className="liquid-glass-solid rounded-2xl border p-5 sm:p-6 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
                 >
                   <dt
                     className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
@@ -172,7 +162,7 @@ export function About() {
 
 
             <div
-              className="mt-7 relative rounded-[40px] p-10 md:p-16 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass border-[#19ad7d]/20 bg-[#19ad7d]/5 dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.15)_25.1%,rgba(20,144,103,0.05)_64.2%)]"
+              className="mt-7 relative rounded-[40px] p-10 md:p-16 text-center flex flex-col items-center overflow-hidden group transition-all duration-500 liquid-glass-solid border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
             >
               <div
                 className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(25,173,125,0.2)_0%,transparent_70%)] transition-opacity duration-700 pointer-events-none opacity-20 group-hover:opacity-40 dark:opacity-50 dark:group-hover:opacity-100"

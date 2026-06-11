@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useRef, useState } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { X, ArrowRight } from "lucide-react";
 import { CTAButton } from "./components/CTAButton";
 import { BlurReveal } from "./components/BlurReveal";
@@ -88,14 +88,6 @@ const LEARN_DATA: LearnCard[] = [
 export function Resources() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  const backgroundY2 = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-
   const selectedItem = LEARN_DATA.find((item) => item.id === selectedId);
 
   // Helper to render the inner image layout based on the tile style
@@ -153,16 +145,16 @@ export function Resources() {
   return (
     <>
       <section
-        ref={containerRef}
         className="relative flex flex-col items-center justify-start w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto z-20"
       >
-        <motion.div
+        {/* Background glows — static (parallax removed; the blur is kept). */}
+        <div
           className="absolute top-[0%] left-[-10%] w-[460px] h-[460px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.06)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
-          style={{ y: backgroundY }}
+          aria-hidden
         />
-        <motion.div
+        <div
           className="absolute top-[20%] right-[-5%] w-[520px] h-[520px] bg-[radial-gradient(circle_at_center,rgba(25,173,125,0.04)_0%,transparent_70%)] rounded-full blur-[40px] pointer-events-none opacity-50 dark:opacity-100"
-          style={{ y: backgroundY2 }}
+          aria-hidden
         />
         <motion.div className="enzy-hero-reveal flex flex-col items-center w-full mb-16 relative z-10">
           <BlurReveal
