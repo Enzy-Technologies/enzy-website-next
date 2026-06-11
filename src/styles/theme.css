@@ -264,19 +264,40 @@
   }
 
   /* Liquid glass: frosted + refracted feel via layered highlights + subtle noise. */
-  .liquid-glass {
+  .liquid-glass,
+  .liquid-glass-solid {
     position: relative;
     isolation: isolate;
-    background: rgba(255, 255, 255, 0.38);
     border: 1px solid rgba(0, 0, 0, 0.1);
     box-shadow:
       0 28px 96px rgba(0, 0, 0, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  }
+
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.38);
     -webkit-backdrop-filter: blur(30px) saturate(165%) contrast(125%);
     backdrop-filter: blur(30px) saturate(165%) contrast(125%);
   }
 
-  .liquid-glass > * {
+  /* Opaque sibling of .liquid-glass: identical decorative sheen + concentric
+     rings (via the shared ::before/::after below) and the same border/shadow,
+     but a SOLID background and NO backdrop-filter. backdrop-filter re-blurs the
+     page behind the element on every scroll frame, which is costly on mobile —
+     this avoids that entirely. Use on large/scrolling surfaces (Book-a-demo
+     form + stat cards). */
+  .liquid-glass-solid {
+    background: #f5f6f4;
+  }
+  .dark .liquid-glass-solid {
+    background: #12161b;
+    box-shadow:
+      0 30px 110px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .liquid-glass > *,
+  .liquid-glass-solid > * {
     position: relative;
     z-index: 1;
   }
@@ -291,7 +312,8 @@
     backdrop-filter: blur(34px) saturate(165%) contrast(120%);
   }
 
-  .liquid-glass::before {
+  .liquid-glass::before,
+  .liquid-glass-solid::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -328,7 +350,8 @@
     transition: background 0.15s ease-out;
   }
 
-  .dark .liquid-glass::before {
+  .dark .liquid-glass::before,
+  .dark .liquid-glass-solid::before {
     background:
       /* Dark mode Spotlight gradient */
       radial-gradient(
@@ -357,7 +380,8 @@
     opacity: 0.75;
   }
 
-  .liquid-glass::after {
+  .liquid-glass::after,
+  .liquid-glass-solid::after {
     content: "";
     position: absolute;
     inset: 0;
@@ -390,7 +414,8 @@
     filter: blur(0.5px);
   }
 
-  .dark .liquid-glass::after {
+  .dark .liquid-glass::after,
+  .dark .liquid-glass-solid::after {
     opacity: 0.2;
     mix-blend-mode: screen;
   }

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Script from "next/script";
 import { HubSpotForm } from "@/app/components/HubSpotForm";
 import { DEMO_FORM_ID } from "@/app/lib/booking";
 import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/TestimonialsSection";
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { BlurReveal } from "@/app/components/BlurReveal";
 import { FAQSection } from "@/app/components/FAQSection";
 
@@ -34,16 +34,8 @@ export function BookDemoPage({
 
   const containerText = "text-brand-dark dark:text-brand-light";
   const muted = "text-black/65 dark:text-white/60";
-  const bg = "bg-[rgba(245,245,245,0.42)] dark:bg-white/[0.03]";
-  const border = "border-[rgba(25,173,125,0.28)] dark:border-white/10";
-  const panelText = "text-[rgba(219,219,219,1)] dark:text-inherit";
+  const panelText = "text-black/80 dark:text-white/85";
 
-  const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
 
   useEffect(() => {
     if (!showCalendar) return;
@@ -60,7 +52,7 @@ export function BookDemoPage({
   return (
     <main className="relative w-full">
       {/* We remove the top padding since it's now placed right under the hero */}
-      <section ref={containerRef} className={`relative w-full px-4 ${hideText ? 'pt-0 pb-0' : 'pt-10 pb-10'} max-w-7xl mx-auto`}>
+      <section className={`relative w-full px-4 ${hideText ? 'pt-0 pb-0' : 'pt-10 pb-10'} max-w-7xl mx-auto`}>
         <div className={`grid grid-cols-1 ${hideText ? 'lg:grid-cols-1' : 'lg:grid-cols-12'} gap-10 lg:gap-14 items-start`}>
           {!hideText && (
             <div className="lg:col-span-5 order-1 lg:order-1">
@@ -108,7 +100,7 @@ export function BookDemoPage({
                 {BOOK_DEMO_STATS.map((s) => (
                   <div
                     key={s.label}
-                    className="liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                    className="liquid-glass-solid rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
                   >
                     <dt
                       className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
@@ -131,13 +123,10 @@ export function BookDemoPage({
 
           <div className={`${hideText ? "lg:col-span-1 w-full max-w-2xl mx-auto" : "lg:col-span-7"} order-2 lg:order-2`}>
             <div className="relative">
-            {/* Intense gradients behind the glass */}
-            <div className="pointer-events-none absolute -inset-32 -z-10">
-              <motion.div style={{ y: backgroundY }} className="absolute inset-0 rounded-[44px] bg-[radial-gradient(800px_340px_at_50%_50%,rgba(25,173,125,0.25),transparent_60%),radial-gradient(760px_340px_at_88%_120%,rgba(25,173,125,0.15),transparent_55%)] blur-3xl opacity-90" />
-            </div>
-
+              {/* Opaque card matching the stat cards: same sheen/ring treatment
+                  via .liquid-glass-solid, but no backdrop-filter. */}
               <div
-                className={`liquid-glass book-demo-glass ${panelText} rounded-[32px] md:rounded-[36px] p-5 sm:p-7 md:p-10 border ${border} ${bg} shadow-[0_4px_12px_rgba(0,0,0,0.15)]`}
+                className={`liquid-glass-solid ${panelText} rounded-[32px] md:rounded-[36px] p-5 sm:p-7 md:p-10 border border-[#19ad7d]/20 dark:border-[#19ad7d]/30`}
               >
                 <div className="pointer-events-none absolute inset-0 rounded-[32px] md:rounded-[36px] ring-1 ring-white/10" aria-hidden />
 
@@ -189,7 +178,7 @@ export function BookDemoPage({
               {BOOK_DEMO_STATS.map((s) => (
                 <div
                   key={s.label}
-                  className="liquid-glass rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 bg-[#19ad7d]/[0.03] dark:border-[#19ad7d]/30 dark:bg-[linear-gradient(189.6deg,rgba(25,173,125,0.08)_25.1%,rgba(20,144,103,0.02)_64.2%)]"
+                  className="liquid-glass-solid rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
                 >
                   <dt
                     className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
@@ -219,7 +208,7 @@ export function BookDemoPage({
             </p>
           </div>
           <div className="mt-4">
-            <TestimonialsMarquee testimonials={TESTIMONIALS} sets={3} />
+            <TestimonialsMarquee testimonials={TESTIMONIALS} sets={2} />
           </div>
         </section>
       )}
