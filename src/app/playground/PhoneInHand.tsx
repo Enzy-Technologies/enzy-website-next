@@ -56,6 +56,7 @@ export function PhoneInHand({
   cw,
   ch,
   interactive,
+  tapHint = false,
   imageSizes = DEFAULT_IMAGE_SIZES,
   imagePriority = true,
 }: {
@@ -65,6 +66,8 @@ export function PhoneInHand({
   ch: number;
   /** Enables pointer interaction + click indicators on the phone screen. */
   interactive: boolean;
+  /** Use the louder "ping" tap indicators (landing hero only). */
+  tapHint?: boolean;
   imageSizes?: string;
   imagePriority?: boolean;
 }) {
@@ -105,7 +108,7 @@ export function PhoneInHand({
           borderRadius: PHONE_SCREEN_RADIUS,
         }}
       >
-        <InteractivePhone interactive={interactive} />
+        <InteractivePhone interactive={interactive} tapHint={tapHint} />
       </div>
 
       {/* Bezel + hand PNG, pinned to the top-left at the natural cw × ch size.

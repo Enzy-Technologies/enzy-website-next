@@ -3,11 +3,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "motion/react";
-import { Sparkles, ArrowRight, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
+import { Sparkles, ArrowRight, ArrowDown, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_HREF, LP_DEMO_FORM_ID } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
-import { PhoneInHand, IMAGE_ASPECT, PHONE_BEZEL_WIDTH_FRAC } from "@/app/playground/PhoneInHand";
+import {
+  PhoneInHand,
+  IMAGE_ASPECT,
+  PHONE_BEZEL_WIDTH_FRAC,
+  PHONE_CENTER_X_FRAC,
+  PHONE_CENTER_Y_FRAC,
+  PHONE_HEIGHT_FRAC,
+} from "@/app/playground/PhoneInHand";
 import { LpBookDemoInline } from "@/app/components/landing/LpBookDemoScroll";
 import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 
@@ -114,6 +121,11 @@ function LpHeroPhone() {
   // The overlapped region is transparent, so it never covers the copy above.
   const topPull = Math.max(0, ch * PHONE_BEZEL_TOP_FRAC - LP_PHONE_GAP);
 
+  // Phone-screen geometry within the composition (mirrors PhoneInHand's math),
+  // so the "Tap to try" cue can anchor just above the live screen's top edge.
+  const screenCenterX = cw * PHONE_CENTER_X_FRAC;
+  const screenTop = ch * (PHONE_CENTER_Y_FRAC - PHONE_HEIGHT_FRAC / 2);
+
   return (
     // No `overflow-hidden`: when the composition is wider than the frame (narrow
     // screens), the hand/arm bleeds past the viewport edges and is clipped
@@ -129,7 +141,30 @@ function LpHeroPhone() {
         className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{ width: cw, height: ch }}
       >
-        <PhoneInHand cw={cw} ch={ch} interactive />
+        <PhoneInHand cw={cw} ch={ch} interactive tapHint />
+
+        {/* "Tap to try" cue: a solid white pill with an orange border, set in
+            ivyora italic — the brand's display treatment (cf. "Until now." in
+            the hero headline) — so it reads as Enzy rather than a generic UI
+            tooltip. Floats in the gap above the phone with a gentle bob; a
+            downward arrow points at the live UI. */}
+        <motion.div
+          className="pointer-events-none absolute z-40"
+          style={{ left: screenCenterX, top: screenTop - 16, transform: "translate(-50%, -100%)" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1, y: [0, -5, 0] }}
+          transition={{
+            opacity: { duration: 0.5, delay: 0.6 },
+            y: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+          }}
+        >
+          <span className="flex items-center gap-1.5 rounded-full border border-[#ff8a00]/45 bg-white px-4 py-1.5 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
+            <span className="font-ivyora italic text-[15px] leading-none tracking-[-0.01em] text-brand-dark">
+              Tap to try
+            </span>
+            <ArrowDown size={14} strokeWidth={2.25} className="text-[#ff8a00]" aria-hidden />
+          </span>
+        </motion.div>
       </div>
     </div>
   );

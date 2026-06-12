@@ -86,11 +86,13 @@ function NavOverlay({
   targets,
   setScreen,
   enableIndicators,
+  indicatorVariant = "breathe",
 }: {
   activeSlot: number;
   targets: NavTarget[];
   setScreen: (s: Screen) => void;
   enableIndicators: boolean;
+  indicatorVariant?: "breathe" | "ping";
 }) {
   return (
     <div className="absolute left-0 top-0 flex h-[52px] w-[278px] items-center justify-between p-[8px]">
@@ -128,6 +130,7 @@ function NavOverlay({
                     delay={0.4 + targets.indexOf(target) * 0.4}
                     ringOnly
                     size={32}
+                    variant={indicatorVariant}
                   />
                 )}
               </>
@@ -139,7 +142,15 @@ function NavOverlay({
   );
 }
 
-export function InteractivePhone({ interactive }: { interactive: boolean }) {
+export function InteractivePhone({
+  interactive,
+  tapHint = false,
+}: {
+  interactive: boolean;
+  /** Use the louder "ping" indicator style (landing hero only). */
+  tapHint?: boolean;
+}) {
+  const indicatorVariant = tapHint ? "ping" : "breathe";
   const [screen, setScreen] = useState<Screen>("home");
   const baseScreen: Exclude<Screen, "ai"> = screen === "ai" ? "home" : screen;
   const ScreenComp = screens[baseScreen];
@@ -191,6 +202,7 @@ export function InteractivePhone({ interactive }: { interactive: boolean }) {
               targets={cfg.targets}
               setScreen={setScreen}
               enableIndicators={interactive}
+              indicatorVariant={indicatorVariant}
             />
           </div>
         </>
@@ -204,7 +216,9 @@ export function InteractivePhone({ interactive }: { interactive: boolean }) {
             className="absolute z-40 cursor-pointer rounded-2xl"
             style={{ top: 240, left: 24, width: 345, height: 40 }}
           />
-          {interactive && <ClickIndicator top={241} left={52} delay={0.5} ringOnly size={36} />}
+          {interactive && (
+            <ClickIndicator top={241} left={52} delay={0.5} ringOnly size={36} variant={indicatorVariant} />
+          )}
         </>
       )}
 
@@ -217,7 +231,14 @@ export function InteractivePhone({ interactive }: { interactive: boolean }) {
             style={{ top: NAV_Y - 26, left: SPARKLE_CX - 26, width: 52, height: 52 }}
           />
           {interactive && (
-            <ClickIndicator top={NAV_Y} left={SPARKLE_CX} delay={0.8} ringOnly size={36} />
+            <ClickIndicator
+              top={NAV_Y}
+              left={SPARKLE_CX}
+              delay={0.8}
+              ringOnly
+              size={36}
+              variant={indicatorVariant}
+            />
           )}
         </>
       )}
@@ -230,7 +251,9 @@ export function InteractivePhone({ interactive }: { interactive: boolean }) {
             className="absolute z-40 cursor-pointer rounded-full"
             style={{ top: 24, left: 333, width: 44, height: 44 }}
           />
-          {interactive && <ClickIndicator top={46} left={355} delay={0.4} ringOnly size={48} />}
+          {interactive && (
+            <ClickIndicator top={46} left={355} delay={0.4} ringOnly size={48} variant={indicatorVariant} />
+          )}
         </>
       )}
     </div>
