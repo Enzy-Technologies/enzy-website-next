@@ -9,21 +9,32 @@ const FadeInSection = ({
   children,
   delay = 0,
   className = "",
+  eager = false,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
-}) => (
-  <motion.div
-    initial={{ opacity: 0, y: 24 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-80px" }}
-    transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay }}
-    className={className}
-  >
-    {children}
-  </motion.div>
-);
+  /** Reveal on mount instead of waiting to scroll into view. */
+  eager?: boolean;
+}) => {
+  const reveal = { opacity: 1, y: 0 };
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      {...(eager
+        ? { animate: reveal }
+        : { whileInView: reveal, viewport: { once: true, margin: "-80px" } })}
+      transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// First two rows at the widest (7-col) layout. These reveal on page load so the
+// grid isn't half-empty above the fold; everything after them reveals on scroll.
+const EAGER_REVEAL_COUNT = 14;
 
 type Integration = {
   name: string;
@@ -147,7 +158,11 @@ function IntegrationCard({
   const [logoFailed, setLogoFailed] = useState(false);
 
   return (
-    <FadeInSection delay={Math.min(index, 14) * 0.025} className="flex">
+    <FadeInSection
+      delay={Math.min(index, 14) * 0.025}
+      eager={index < EAGER_REVEAL_COUNT}
+      className="flex"
+    >
       <div className="group flex w-full flex-col items-center gap-3 text-center">
         <span
           className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl transition-all duration-300 group-hover:scale-110 bg-white shadow-[0_4px_14px_rgba(0,0,0,0.08)] dark:shadow-[0_4px_14px_rgba(0,0,0,0.35)] ring-1 ring-black/5 dark:ring-white/10"
