@@ -4,7 +4,7 @@ slug: "cafe-rios-170-boost-in-positive-reviews-with-enzy"
 date: "2023-12-19"
 description: "Cafe Rio, a popular restaurant chain, faced challenges in maintaining consistent customer satisfaction and collecting feedback. See how Enzy helped."
 category: "case-study"
-coverImage: ""
+coverImage: "/insights/cafe-rio.jpg"
 ---
 ### Introduction
 

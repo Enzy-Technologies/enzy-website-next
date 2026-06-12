@@ -4,7 +4,7 @@ slug: "aptives-winning-strategy-with-enzy"
 date: "2024-11-12"
 description: "Faced with the need to evaluate the effectiveness of its incentive programs, Enzy aimed to determine the value of Aptive's investment in Enzy's platform."
 category: "case-study"
-coverImage: ""
+coverImage: "/insights/aptive.webp"
 ---
 ### **Introduction**‍
 

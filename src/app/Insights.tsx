@@ -126,7 +126,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
           >
             <Link
               href={`/insights/${featured.slug}`}
-              className="group grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 rounded-[28px] border overflow-hidden p-4 md:p-5 transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] hover:border-black/20 dark:hover:border-white/25"
+              className="group grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 rounded-[28px] border overflow-hidden p-4 md:p-5 transition-colors border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#12161b]/95 hover:border-black/20 dark:hover:border-white/25"
             >
               <div className="relative aspect-[16/10] rounded-[20px] overflow-hidden">
                 <Cover
@@ -183,7 +183,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
             >
               <Link
                 href={`/insights/${post.slug}`}
-                className="group flex flex-col h-full rounded-[24px] border overflow-hidden transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] hover:border-black/20 dark:hover:border-white/25"
+                className="group flex flex-col h-full rounded-[24px] border overflow-hidden transition-colors border-black/10 dark:border-white/10 bg-white/95 dark:bg-[#12161b]/95 hover:border-black/20 dark:hover:border-white/25"
               >
                 <div className="relative aspect-[16/10] overflow-hidden">
                   <Cover
@@ -229,7 +229,9 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
 
         {filtered.length === 0 && (
           <p className={`text-center font-inter text-[15px] py-16 ${pageBody}`}>
-            More {activeCategory === "All" ? "posts" : pillLabel(activeCategory).toLowerCase()} coming soon.
+            {activeCategory === "All"
+              ? "More posts coming soon."
+              : `${pillLabel(activeCategory)} coming soon.`}
           </p>
         )}
 

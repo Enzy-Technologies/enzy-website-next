@@ -35,6 +35,12 @@ export type BlogPost = {
   updated: string
   /** Self-hosted cover image path. Empty string when not yet supplied. */
   coverImage: string
+  /** Byline author name. Empty when the post has no named author. */
+  author: string
+  /** Byline author role/title (e.g. "VP of Revenue at Enzy"). */
+  authorTitle: string
+  /** Self-hosted author headshot path. Empty renders no byline avatar. */
+  authorImage: string
   /** Estimated read time, e.g. "5 min read". */
   readTime: string
   content: string
@@ -99,6 +105,9 @@ export function getAllPosts(): BlogPost[] {
       date: date ? new Date(date).toISOString() : "",
       updated: new Date(updated).toISOString(),
       coverImage: (data.coverImage || "").trim(),
+      author: (data.author || "").trim(),
+      authorTitle: (data.authorTitle || "").trim(),
+      authorImage: (data.authorImage || "").trim(),
       readTime: estimateReadTime(content),
       content,
     } satisfies BlogPost

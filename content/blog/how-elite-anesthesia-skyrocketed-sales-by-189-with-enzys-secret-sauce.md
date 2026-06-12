@@ -4,7 +4,7 @@ slug: "how-elite-anesthesia-skyrocketed-sales-by-189-with-enzys-secret-sauce"
 date: "2024-09-26"
 description: "Elite Anesthesia, keen on improving their sales numbers, sought a solution to energize their sales team and drive better results. See how Enzy helped them."
 category: "case-study"
-coverImage: ""
+coverImage: "/insights/elite-anesthesia.webp"
 ---
 ### Overview
 

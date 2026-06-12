@@ -4,7 +4,7 @@ slug: "sunder-energys-400m-sales-triumph-with-enzys-revolutionary-tools"
 date: "2023-08-18"
 description: "Sunder Energy transformed its workforce dynamics and achieved remarkable growth by leveraging Enzy’s comprehensive performance optimization platform"
 category: "case-study"
-coverImage: ""
+coverImage: "/insights/sunder-energy.jpeg"
 ---
 ### Overview
 

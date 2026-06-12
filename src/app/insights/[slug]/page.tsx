@@ -72,7 +72,13 @@ export default async function Page({
       "@type": "WebPage",
       "@id": `${siteUrl}/insights/${post.slug}`,
     },
-    author: { "@type": "Organization", name: "Enzy" },
+    author: post.author
+      ? {
+          "@type": "Person",
+          name: post.author,
+          jobTitle: post.authorTitle || undefined,
+        }
+      : { "@type": "Organization", name: "Enzy" },
     publisher: { "@id": `${siteUrl}/#organization` },
   }
 
@@ -80,7 +86,7 @@ export default async function Page({
     <article className="relative w-full flex flex-col items-center pt-4 md:pt-8 lg:pt-12 pb-16 md:pb-24">
       <JsonLd data={articleSchema} />
 
-      <div className="w-full max-w-[760px] px-5 sm:px-6 md:px-8">
+      <div className="w-full max-w-7xl px-5 sm:px-6 md:px-8">
         {/* Back to listing */}
         <Link
           href="/insights"
@@ -109,6 +115,33 @@ export default async function Page({
             <p className="mt-5 font-inter text-[17px] md:text-[19px] leading-relaxed text-black/60 dark:text-white/60">
               {post.description}
             </p>
+          ) : null}
+
+          {/* Author byline (rendered only when the post supplies an author). */}
+          {post.author ? (
+            <div className="mt-7 flex items-center gap-3">
+              {post.authorImage ? (
+                <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full border border-black/10 dark:border-white/15">
+                  <Image
+                    src={post.authorImage}
+                    alt={post.author}
+                    fill
+                    sizes="44px"
+                    className="object-cover"
+                  />
+                </span>
+              ) : null}
+              <span className="flex flex-col leading-tight">
+                <span className="font-inter text-[14px] font-semibold text-[#0b0f14] dark:text-[#f5f7fa]">
+                  {post.author}
+                </span>
+                {post.authorTitle ? (
+                  <span className="font-inter text-[13px] text-black/55 dark:text-white/55">
+                    {post.authorTitle}
+                  </span>
+                ) : null}
+              </span>
+            </div>
           ) : null}
         </header>
 

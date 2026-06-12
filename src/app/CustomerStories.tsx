@@ -25,28 +25,6 @@ const FadeInSection = ({
   </motion.div>
 );
 
-// Placeholder stories until real case studies are wired in.
-const STORIES = [
-  {
-    industry: "Solar",
-    title: "Cutting admin time so reps sell more",
-    blurb:
-      "How a field solar team unified activity and incentives to free up selling hours.",
-  },
-  {
-    industry: "Pest Control",
-    title: "Turning daily activity into momentum",
-    blurb:
-      "A multi-branch operator used leaderboards and competitions to lift consistency.",
-  },
-  {
-    industry: "Direct Sales",
-    title: "Making coaching a daily habit",
-    blurb:
-      "Managers moved from weekly check-ins to real-time signal and faster coaching loops.",
-  },
-];
-
 export function CustomerStories() {
   return (
     <main className="relative w-full pb-24 md:pb-32">
@@ -69,26 +47,11 @@ export function CustomerStories() {
 
       {/* Placeholder story grid */}
       <section className="relative w-full px-4 max-w-6xl mx-auto pt-8 md:pt-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
-          {STORIES.map((s, i) => (
-            <FadeInSection key={s.title} delay={i * 0.08} className="flex">
-              <div className="flex w-full flex-col gap-4 rounded-[24px] border p-7 transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03]">
-                <span className="font-inter text-[11px] font-bold uppercase tracking-[0.18em] text-[#19ad7d]">
-                  {s.industry}
-                </span>
-                <h3 className="font-ivyora font-medium text-[22px] tracking-tight text-black dark:text-white">
-                  {s.title}
-                </h3>
-                <p className="font-inter text-[15px] leading-relaxed text-black/65 dark:text-white/65">
-                  {s.blurb}
-                </p>
-                <span className="mt-2 inline-flex items-center gap-1.5 font-inter text-[13px] font-bold uppercase tracking-widest text-black/40 dark:text-white/40">
-                  Case study coming soon
-                </span>
-              </div>
-            </FadeInSection>
-          ))}
-        </div>
+        <FadeInSection className="flex items-center justify-center py-20 md:py-28">
+          <p className="font-ivyora font-medium text-2xl md:text-3xl tracking-[-0.5px] text-center text-black/70 dark:text-white/70">
+            Customer stories coming soon.
+          </p>
+        </FadeInSection>
 
         {/* Closing CTA */}
         <FadeInSection className="mt-16 flex flex-col items-center text-center">

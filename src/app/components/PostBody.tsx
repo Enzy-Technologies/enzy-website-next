@@ -29,11 +29,21 @@ const components: Components = {
       {children}
     </h4>
   ),
-  p: ({ children }) => (
-    <p className="font-inter text-[16px] md:text-[18px] leading-[1.75] my-5 text-black/72 dark:text-white/72">
-      {children}
-    </p>
-  ),
+  p: ({ children, node }) => {
+    // A standalone image is parsed as a paragraph wrapping an <img>. Our img
+    // renders a block-level <figure>, which is invalid inside <p> — so unwrap
+    // image-only paragraphs and let the figure render on its own.
+    const isImageOnly =
+      node?.children?.length === 1 &&
+      node.children[0].type === "element" &&
+      node.children[0].tagName === "img"
+    if (isImageOnly) return <>{children}</>
+    return (
+      <p className="font-inter text-[16px] md:text-[18px] leading-[1.75] my-5 text-black/72 dark:text-white/72">
+        {children}
+      </p>
+    )
+  },
   a: ({ href, children }) => {
     const url = href ?? "#"
     const isInternal = url.startsWith("/") || url.startsWith("#")
@@ -92,7 +102,20 @@ const components: Components = {
       {children}
     </pre>
   ),
-  img: () => null,
+  // Rendered as a bare <img> (phrasing content) so it stays valid HTML even
+  // when react-markdown wraps a standalone image in a <p>. Self-hosted post
+  // graphics already ship with their own background/rounding; we just block it
+  // out and constrain width responsively. alt carries the description.
+  img: ({ src, alt }) =>
+    typeof src === "string" && src ? (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={src}
+        alt={alt ?? ""}
+        loading="lazy"
+        className="block w-full h-auto my-8 rounded-2xl"
+      />
+    ) : null,
 }
 
 export function PostBody({ content }: { content: string }) {
