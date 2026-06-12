@@ -1,4 +1,5 @@
 import type { LandingPageConfig } from "./types";
+import { SEO_CONFIG } from "@/app/utils/seo-config";
 
 /**
  * Landing pages keyed by URL slug (`/lp/<slug>`).
@@ -15,7 +16,7 @@ export const LANDING_PAGES: Record<string, LandingPageConfig> = {
     layout: "home",
     slug: "meta",
     seo: {
-      title: "Field Sales Coaching Software & Execution Platform | Enzy",
+      title: SEO_CONFIG.home.title,
       description:
         "Field sales execution for route-based teams: visibility between visits, daily coaching, and playbooks that turn CRM signal into rep action — without another dashboard. Book a demo.",
       type: "website",

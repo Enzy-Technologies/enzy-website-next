@@ -52,13 +52,13 @@ export function BookDemoPage({
   return (
     <main className="relative w-full">
       {/* We remove the top padding since it's now placed right under the hero */}
-      <section className={`relative w-full px-4 ${hideText ? 'pt-0 pb-0' : 'pt-10 pb-10'} max-w-7xl mx-auto`}>
+      <section className={`relative w-full px-4 ${hideText ? 'pt-0 pb-0' : 'pt-7 md:pt-10 pb-10'} max-w-7xl mx-auto`}>
         <div className={`grid grid-cols-1 ${hideText ? 'lg:grid-cols-1' : 'lg:grid-cols-12'} gap-10 lg:gap-14 items-start`}>
           {!hideText && (
             <div className="lg:col-span-5 order-1 lg:order-1">
-              {/* Subtext + supporting bullets only appear on large screens.
-                  On mobile we lead straight into the form with just the
-                  headline above it. */}
+              {/* The headline + intro subtext show on all screens. The
+                  supporting bullets and stat cards stay desktop-only so
+                  mobile leads straight into the form after the intro. */}
               <BlurReveal
                 as="h2"
                 delay={0.1}
@@ -66,7 +66,7 @@ export function BookDemoPage({
               >
                 See Enzy turn performance into a system.
               </BlurReveal>
-              <p className={`hidden lg:block mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
+              <p className={`block mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
                 Submit the form and pick a time — Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
               </p>
 
@@ -203,9 +203,9 @@ export function BookDemoPage({
       {!hideTestimonials && (
         <section className="relative w-full pb-14 md:pb-20 overflow-x-clip">
           <div className="mx-auto max-w-7xl px-4">
-            <p className={`m-0 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted}`}>
+            <h2 className={`m-0 font-ivyora font-medium leading-[1.1] tracking-[-1px] text-[28px] sm:text-[34px] md:text-[36px] ${containerText}`}>
               Trusted by operators and sales leaders.
-            </p>
+            </h2>
           </div>
           <div className="mt-4">
             <TestimonialsMarquee testimonials={TESTIMONIALS} sets={2} />
