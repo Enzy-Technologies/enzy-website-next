@@ -33,6 +33,11 @@ const HS_SCRIPT_SRC = `https://js-${HS_REGION}.hsforms.net/forms/embed/developer
 
 const BLOCKED_TIMEOUT_MS = 12_000;
 
+// Don't flash the "Loading form…" hint on fast (warmed/cached) loads. The form
+// usually paints well under this threshold, so the hint never appears and the
+// user just sees the form; it only shows if loading genuinely drags.
+const LOADING_HINT_DELAY_MS = 450;
+
 type Status = "loading" | "ready" | "blocked";
 
 type Props = {
@@ -64,6 +69,9 @@ export function HubSpotForm({
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>("loading");
+  // Only true once loading has dragged past LOADING_HINT_DELAY_MS — keeps the
+  // hint from flashing on fast loads (see constant above).
+  const [showLoadingHint, setShowLoadingHint] = useState(false);
 
   // Keep the latest callbacks in refs so the main effect can depend only on
   // `formId` (callbacks are often inline/unstable and would otherwise force the
@@ -143,12 +151,26 @@ export function HubSpotForm({
     };
   }, [formId]);
 
+  // Reveal the loading hint only if loading outlasts the delay; cancel the
+  // moment status changes (e.g. the form became ready first).
+  useEffect(() => {
+    if (status !== "loading") {
+      setShowLoadingHint(false);
+      return;
+    }
+    const t = window.setTimeout(
+      () => setShowLoadingHint(true),
+      LOADING_HINT_DELAY_MS
+    );
+    return () => window.clearTimeout(t);
+  }, [status]);
+
   const muted = "text-black/60 dark:text-white/60";
   const strong = "text-black dark:text-white";
 
   return (
     <div className={`relative ${className ?? ""}`}>
-      {status === "loading" ? (
+      {status === "loading" && showLoadingHint ? (
         <div
           className={
             loadingAlign === "center"

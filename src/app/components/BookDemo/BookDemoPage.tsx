@@ -8,13 +8,7 @@ import { TestimonialsMarquee, TESTIMONIALS } from "@/app/components/Testimonials
 import { motion } from "motion/react";
 import { BlurReveal } from "@/app/components/BlurReveal";
 import { FAQSection } from "@/app/components/FAQSection";
-
-const BOOK_DEMO_STATS = [
-  { value: "24", unit: "M", label: "Weekly page views" },
-  { value: "21", unit: "%", label: "Increase in sales per rep after implementing Enzy" },
-  { value: "7,000", unit: "+", label: "Incentives ran" },
-  { value: "180", unit: "K", label: "Total users" },
-];
+import { SITE_STATS } from "@/app/lib/stats";
 
 declare global {
   interface Window {
@@ -67,14 +61,14 @@ export function BookDemoPage({
                 See Enzy turn performance into a system.
               </BlurReveal>
               <p className={`block mt-4 font-inter text-[16px] md:text-[17px] leading-[1.65] ${muted} max-w-[540px]`}>
-                Submit the form and pick a time — Enzy will tailor the walkthrough to your team, KPIs, and rhythms.
+                Tell us about your team, then pick a time — we&apos;ll tailor the walkthrough to your KPIs, your structure, and how your team sells.
               </p>
 
               <div className="hidden lg:grid mt-7 gap-3 max-w-[540px]">
                 {[
-                  "Connect your data and unify KPIs across the org",
-                  "Make leaderboards and coaching consistent in real time",
-                  "Launch competitions, nudges, and messaging without tool sprawl",
+                  "See every rep and KPI live — and act before performance slips, not after.",
+                  "Turn the daily score into competition, recognition, and momentum.",
+                  "Run it all in one platform — and retire the spreadsheets, group texts, and one-off tools.",
                 ].map((t) => (
                   <div key={t} className="flex items-start gap-3">
                     <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-[#19ad7d] shrink-0" aria-hidden />
@@ -97,7 +91,7 @@ export function BookDemoPage({
                 transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
                 className="hidden lg:grid mt-7 lg:mt-8 grid-cols-2 gap-3 sm:gap-4 max-w-[540px]"
               >
-                {BOOK_DEMO_STATS.map((s) => (
+                {SITE_STATS.map((s) => (
                   <div
                     key={s.label}
                     className="liquid-glass-solid rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
@@ -175,7 +169,7 @@ export function BookDemoPage({
               transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay: 0.1 }}
               className="lg:hidden order-3 grid grid-cols-2 gap-3 sm:gap-4 mt-2"
             >
-              {BOOK_DEMO_STATS.map((s) => (
+              {SITE_STATS.map((s) => (
                 <div
                   key={s.label}
                   className="liquid-glass-solid rounded-2xl border p-4 sm:p-5 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"

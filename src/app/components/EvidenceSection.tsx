@@ -95,13 +95,13 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
             delay={0.1}
             className="font-inter text-[24px] md:text-[32px] lg:text-[40px] font-bold mt-6 md:mt-8 tracking-tight text-black dark:text-white"
           >
-            Increase in sales per rep after implementing Enzy
+            Increase in sales per rep after adopting Enzy
           </BlurReveal>
 
           <p
             className="font-inter text-[15px] md:text-[17px] leading-relaxed mt-4 max-w-[640px] mx-auto text-black/55 dark:text-white/55"
           >
-            Across 25,000 sales reps controlling for company size, pre-existing growth trajectory, and industry trends.
+            Across 95,867 sales reps, controlling for company size, pre-existing growth trajectory, and industry trends.
           </p>
         </motion.div>
 

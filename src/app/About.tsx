@@ -6,6 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
 import { BOOK_DEMO_HREF } from "./lib/booking";
+import { SITE_STATS } from "./lib/stats";
 import Link from "next/link";
 import { BlurReveal } from "./components/BlurReveal";
 
@@ -69,16 +70,11 @@ export function About() {
 
         {/* 002 — What we've learned */}
         <section data-section="002" className="pb-16 md:pb-24">
-            <dl className="mt-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              {[
-                { value: "24", unit: "M", label: "Weekly Enzy page views" },
-                { value: "21", unit: "%", label: "Increase in sales per rep after implementing Enzy" },
-                { value: "7,000", unit: "+", label: "Incentives ran" },
-                { value: "180", unit: "K", label: "Total users" },
-              ].map((s) => (
+            <dl className="mt-0 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              {SITE_STATS.map((s) => (
                 <div
                   key={s.label}
-                  className="liquid-glass-solid rounded-2xl border p-5 sm:p-6 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
+                  className="liquid-glass-solid rounded-2xl border p-4 sm:p-6 transition-colors border-[#19ad7d]/20 dark:border-[#19ad7d]/30"
                 >
                   <dt
                     className="font-inter font-extrabold tracking-[-1.5px] leading-none text-[34px] sm:text-[40px] md:text-[44px] text-black dark:text-white"
@@ -113,7 +109,7 @@ export function About() {
               </h3>
             </motion.div>
             
-            <div className="flex flex-col gap-6 pl-0 md:pl-8 border-l-0 md:border-l-[3px] border-[#19ad7d]/20 dark:border-[#19ad7d]/30">
+            <div className="flex flex-col gap-6 pl-5 md:pl-8 border-l-[3px] border-[#19ad7d]/20 dark:border-[#19ad7d]/30">
               <FadeInSection delay={0.2}>
                 <p className="font-inter text-[18px] md:text-[20px] leading-relaxed text-black/80 dark:text-white/80">
                   That starts with consolidation. Data, tools, processes, incentives, and rep activity must exist in one connected operating system. Once the system is unified, Enzy&apos;s AI — trained on real outcomes from tens of thousands of field reps — surfaces the behaviors driving pipeline and the gaps slowing teams down.
@@ -183,15 +179,6 @@ export function About() {
             </div>
           </section>
         </FadeInSection>
-
-        {/* About footer */}
-        <footer className="pt-2 pb-6">
-          <div
-            className="flex flex-col md:flex-row md:items-center md:justify-center gap-2 font-inter text-[12px] tracking-tight text-black/45 dark:text-white/40"
-          >
-            <p className="m-0">© ENZY 2026</p>
-          </div>
-        </footer>
 
       </div>
     </div>

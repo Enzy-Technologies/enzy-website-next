@@ -17,6 +17,7 @@ import { JsonLd } from "./components/JsonLd"
 import { buildMetadata } from "./lib/seo"
 import { brandLogoUrl, siteName, siteUrl } from "./lib/site"
 import { SpotlightCursor } from "./components/SpotlightCursor"
+import { HubSpotPrewarm } from "./components/HubSpotPrewarm"
 
 // Site-wide tags. GTM manages Google Analytics and other marketing tags;
 // Hyros runs everywhere so offline-event attribution works whether a visitor
@@ -140,17 +141,38 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}var pm=document.cookie.match(/(?:^|; )enzy-particles=([^;]*)/);var p=pm?decodeURIComponent(pm[1]):null;if(!p){p=localStorage.getItem('enzy-particles');}if(p==='off'){document.documentElement.classList.add('particles-off');}else{document.documentElement.classList.remove('particles-off');}}catch(e){}})();`,
           }}
         />
-        {/* Warm up the HubSpot embed used by the "Become a Partner" form so it
-            opens instantly. preconnect opens the connection early; prefetch
-            pulls the embed script into cache at idle (low priority, no render
-            cost) so it's ready before the modal is opened. */}
+        {/* Warm up the HubSpot embed so forms open instantly. Rendering a form
+            is a serial waterfall: embed script → form definition → HubSpot's own
+            React bundle → reCAPTCHA → fonts. Each hop lives on a different
+            origin, so we preconnect every origin in the chain (opens DNS+TLS
+            early, before the form container mounts) and prefetch the two
+            requests that are gated behind the script — the embed script itself
+            and the Book-a-Demo form definition — so they're already cached when
+            the user reaches /book-a-demo. */}
         <link rel="preconnect" href="https://js-na2.hsforms.net" />
         <link rel="dns-prefetch" href="https://js-na2.hsforms.net" />
         <link rel="preconnect" href="https://forms-na2.hsforms.com" />
+        {/* HubSpot's React/island/ServerRenderer bundles — a serial dependency
+            of every form render, on its own origin. */}
+        <link rel="preconnect" href="https://static.hsappstatic.net" />
+        {/* Form web fonts (Inter) served from HubSpot's CDN. */}
+        <link rel="preconnect" href="https://cdn1.hubspotusercontent-na2.net" />
+        {/* Invisible reCAPTCHA enterprise loaded by the form. */}
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="" />
         <link
           rel="prefetch"
           as="script"
           href="https://js-na2.hsforms.net/forms/embed/developer/39823762.js"
+        />
+        {/* The Book-a-Demo form definition — the first request gated behind the
+            embed script. Prefetching it warms the cache so the form paints as
+            soon as the page mounts instead of after a fresh round-trip. */}
+        <link
+          rel="prefetch"
+          as="fetch"
+          crossOrigin=""
+          href="https://forms-na2.hsforms.com/embed/v4/render-definition/ssr/39823762/94576c22-2aa4-4888-9b5a-c8a3b0313152"
         />
         {/* IvyOra fonts are now self-hosted via next/font (see ivyOra above),
             which handles preloading automatically — no manual <link> needed. */}
@@ -197,6 +219,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           />
         </noscript>
         <SpotlightCursor />
+        <HubSpotPrewarm />
         <JsonLd data={websiteSchema} />
         <JsonLd data={organizationSchema} />
         <JsonLd data={softwareApplicationSchema} />

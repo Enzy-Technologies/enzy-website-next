@@ -81,9 +81,8 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
               <p
                 className="font-inter text-lg md:text-xl mt-8 max-w-2xl text-center leading-relaxed transition-colors duration-500 text-black/60 dark:text-white/60"
               >
-                Articles, playbooks, and case studies on building
-                high-performance sales teams — straight from the people building
-                Enzy.
+                What makes high-performance sales teams win — straight from the
+                people building Enzy.
               </p>
             </motion.div>
           </div>

@@ -10,15 +10,26 @@ const FadeInSection = ({
   children,
   delay = 0,
   className = "",
+  eager = false,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  /**
+   * Play the entrance on mount instead of on scroll-into-view. Use for content
+   * that sits just below the fold so it animates in on initial load rather than
+   * staying hidden until the user scrolls.
+   */
+  eager?: boolean;
 }) => (
   <motion.div
     initial={{ opacity: 0, y: 24 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, margin: "-80px" }}
+    {...(eager
+      ? { animate: { opacity: 1, y: 0 } }
+      : {
+          whileInView: { opacity: 1, y: 0 },
+          viewport: { once: true, margin: "-80px" },
+        })}
     transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1], delay }}
     className={className}
   >
@@ -333,7 +344,7 @@ export function Partners() {
 
       {/* Why Partner with Enzy? */}
       <section className="relative w-full px-4 max-w-6xl mx-auto pt-12 md:pt-16">
-        <FadeInSection>
+        <FadeInSection eager>
           <h2 className="font-ivyora font-medium text-3xl md:text-5xl tracking-[-1px] text-center text-black dark:text-white">
             Why Partner with Enzy?
           </h2>
@@ -341,7 +352,7 @@ export function Partners() {
 
         <div className="mt-10 md:mt-14 grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {BENEFITS.map((b, i) => (
-            <FadeInSection key={b.title} delay={i * 0.08} className="flex">
+            <FadeInSection key={b.title} eager delay={i * 0.08} className="flex">
               <div className="flex w-full flex-col gap-4 rounded-[24px] border p-7 transition-colors border-black/10 dark:border-white/10 bg-white/70 dark:bg-white/[0.03]">
                 <h3 className="font-inter text-[18px] font-bold tracking-tight text-[#19ad7d]">
                   {b.title}

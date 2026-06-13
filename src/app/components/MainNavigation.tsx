@@ -398,7 +398,7 @@ export function MainNavigation() {
                     <motion.div variants={itemVariants} className="w-full md:w-[280px] shrink-0 flex flex-col gap-4">
                         <span className="uppercase tracking-[0.2em] text-[11px] font-bold text-black/40 dark:text-white/40">Overview</span>
                         <h3 className="font-inter text-[24px] lg:text-[28px] leading-[1.2] font-semibold tracking-tight text-black dark:text-white">
-                            Learn the playbooks that work.
+                            Get smarter about performance.
                         </h3>
                     </motion.div>
 
