@@ -5,6 +5,10 @@ import { motion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
+import {
+  FIELD_SALES_INDUSTRIES as FIELD_SALES,
+  VIRTUAL_SALES_INDUSTRIES as VIRTUAL_SALES,
+} from "./lib/industries";
 
 const FadeInSection = ({
   children,
@@ -49,22 +53,6 @@ const STEPS = [
     title: "Send Referrals",
     desc: "Refer sales organizations to Enzy and earn 10% on the first-year ARR for every referral that signs.",
   },
-];
-
-const FIELD_SALES = [
-  "Solar",
-  "Pest Control",
-  "Roofing & Construction",
-  "Home Services",
-  "Real Estate",
-];
-
-const VIRTUAL_SALES = [
-  "Call Centers",
-  "Direct Sales",
-  "Insurance Sales",
-  "Financial Services",
-  "Real Estate Brokerages",
 ];
 
 function AudienceColumn({ title, items }: { title: string; items: string[] }) {

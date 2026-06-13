@@ -26,6 +26,11 @@ export function ContactUs() {
   const pageBody = "text-black/60 dark:text-white/60";
   const cardClass =
     "border-black/10 bg-white/70 dark:border-white/10 dark:bg-white/[0.03]";
+  // Form card uses the same near-opaque treatment as the Insights article cards
+  // so the fields read clearly (the lighter `cardClass` is fine for the small
+  // contact-method cards but too transparent behind a full form).
+  const formCardClass =
+    "border-black/10 bg-white/95 dark:border-white/10 dark:bg-[#12161b]/95";
   const labelClass =
     "font-inter text-[13px] font-semibold text-black/70 dark:text-white/70";
   const inputClass =
@@ -144,7 +149,7 @@ export function ContactUs() {
           </div>
 
           {/* Right: form */}
-          <div className={`rounded-[28px] border p-6 md:p-8 ${cardClass}`}>
+          <div className={`rounded-[28px] border p-6 md:p-8 ${formCardClass}`}>
             {submitted ? (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
@@ -160,8 +165,8 @@ export function ContactUs() {
                 <p className={`mt-3 font-inter text-[15px] max-w-sm ${pageBody}`}>
                   Your email client should have opened with your message. If it
                   didn&apos;t, email us directly at{" "}
-                  <a href={`mailto:${SALES_EMAIL}`} className="text-[#19ad7d]">
-                    {SALES_EMAIL}
+                  <a href="mailto:cs@enzy.ai" className="text-[#19ad7d]">
+                    cs@enzy.ai
                   </a>
                   .
                 </p>

@@ -1,3 +1,12 @@
+import { FIELD_SALES_INDUSTRIES, VIRTUAL_SALES_INDUSTRIES } from "./industries";
+
+// Escape ampersands so names like "Telecom & Fiber" stay valid HTML when
+// interpolated into the answer strings below (rendered via
+// dangerouslySetInnerHTML and emitted in the FAQPage JSON-LD).
+const esc = (s: string) => s.replace(/&/g, "&amp;");
+const FIELD_SALES_LIST = FIELD_SALES_INDUSTRIES.map(esc).join(", ");
+const VIRTUAL_SALES_LIST = VIRTUAL_SALES_INDUSTRIES.map(esc).join(", ");
+
 export type FAQItem = {
   question: string;
   /**
@@ -25,15 +34,10 @@ export const SITE_FAQS: FAQItem[] = [
   {
     question: "What industries does Enzy serve?",
     answer:
-      "Enzy is built for companies with high-velocity, field-based, or direct sales motions — especially those running distributed 1099 or independent reps. This includes:" +
-      "<ul>" +
-      "<li>Home Services (solar, roofing, pest control, HVAC, windows, and more)</li>" +
-      "<li>Financial Services (life, health, and P&amp;C insurance)</li>" +
-      "<li>Telecommunications &amp; Fiber</li>" +
-      "<li>Real Estate</li>" +
-      "<li>Any business that runs a distributed sales force</li>" +
-      "</ul>" +
-      "Enzy is most effective in performance-driven organizations with distributed, remote, or non-traditional sales teams.",
+      "Enzy is built for companies with high-velocity, field-based, or virtual sales motions — especially those running distributed 1099 or independent reps. Teams we serve include:" +
+      "<p><b>Field sales:</b> " + FIELD_SALES_LIST + ".</p>" +
+      "<p><b>Virtual sales:</b> " + VIRTUAL_SALES_LIST + ".</p>" +
+      "<p>Enzy is most effective in performance-driven organizations with distributed, remote, or non-traditional sales teams.</p>",
   },
   {
     question: "Does Enzy work for D2D sales teams?",
