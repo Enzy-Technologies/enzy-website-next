@@ -56,15 +56,18 @@ export default async function MetaLandingPage({
   return (
     <>
       {/*
-        Set the GA4 variant dimension BEFORE the page_view fires. This raw inline
-        script runs during HTML parse — ahead of the layout's afterInteractive
-        gtag('config') — so it queues lp_variant into the dataLayer first and the
-        auto page_view (and every later event) carries it. A useEffect would run
-        too late and the dimension would come back empty.
+        Runs during HTML parse — ahead of every afterInteractive script — so it
+        does two things before anything else reads them:
+          1. Sets the GA4 variant dimension before the layout's gtag('config')
+             fires its page_view, so page_view (and later events) carry lp_variant.
+          2. Writes lp_variant into the URL query string so HubSpot's form picks
+             it up via its NATIVE query-param prefill. We populate the hidden
+             field this way (not by setting the input + dispatching events), which
+             left HubSpot's React form untouched and avoided breaking submission.
       */}
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set',{'${LP_VARIANT_PARAM}':'${variant}'});`,
+          __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('set',{'${LP_VARIANT_PARAM}':'${variant}'});try{var _u=new URL(window.location.href);if(_u.searchParams.get('${LP_VARIANT_PARAM}')!=='${variant}'){_u.searchParams.set('${LP_VARIANT_PARAM}','${variant}');window.history.replaceState(window.history.state,'',_u);}}catch(e){}`,
         }}
       />
       <JsonLd data={buildLandingJsonLd(config)} />
