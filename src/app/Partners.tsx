@@ -64,6 +64,10 @@ const PARTNERS: Partner[] = [
     category: "HR & Payroll",
     blurb:
       "An all-in-one HR, payroll, and commission platform built to help commission-driven sales teams hire, pay, and scale.",
+    // Google has no crawlable favicon for sequifi.com (returns a 404 globe), so
+    // use a local mark for both the card and the monochrome carousel.
+    cardLogo: "/logos/sequifi-mark.png",
+    marqueeLogo: "/logos/sequifi-mark.png",
   },
   {
     name: "Stakt",
@@ -231,7 +235,7 @@ function PartnerMarqueeLogo({ partner }: { partner: Partner }) {
       width={40}
       height={40}
       loading="lazy"
-      className="max-h-full max-w-full h-auto w-auto object-contain opacity-70 brightness-0 dark:opacity-90 dark:invert"
+      className="max-h-full max-w-full h-auto w-auto object-contain opacity-40 brightness-0 dark:opacity-60 dark:invert"
       onError={() => setFailed(true)}
     />
   );

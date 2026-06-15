@@ -160,8 +160,8 @@ function LpHeroPhone() {
             y: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="flex items-center gap-1.5 rounded-full border border-[#ff8a00]/45 bg-white px-4 py-1.5 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
-            <span className="font-ivyora italic text-[15px] leading-none tracking-[-0.01em] text-brand-dark">
+          <span className="flex items-center gap-1 rounded-full border border-[#ff8a00]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
+            <span className="font-[ui-monospace,'SF_Mono','Menlo',monospace] text-[13px] uppercase leading-none tracking-[-0.4px] [word-spacing:-3px] text-brand-dark">
               Tap to try
             </span>
             <ArrowDown size={14} strokeWidth={2.25} className="text-[#ff8a00]" aria-hidden />

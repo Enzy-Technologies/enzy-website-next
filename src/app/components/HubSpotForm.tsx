@@ -102,17 +102,26 @@ export function HubSpotForm({
 
     // Write any hidden-field values into the rendered form. HubSpot's developer
     // embed renders inline (not a cross-origin iframe), so the inputs are real
-    // DOM nodes we can set directly; dispatching input/change lets HubSpot's
-    // own form state pick the value up before submit.
+    // DOM nodes. Two gotchas handled here:
+    //   1. Field names are prefixed with the object type (e.g. `0-1/lp_variant`),
+    //      so we match by suffix too — not just the bare internal name.
+    //   2. The form is React-controlled, so a plain `input.value =` can be
+    //      ignored. We set via the native value setter then dispatch `input`,
+    //      which is the pattern React's change tracking actually detects.
     const applyHiddenFields = () => {
       const fields = hiddenFieldsRef.current;
       if (!fields || !container) return;
       for (const [name, value] of Object.entries(fields)) {
         const input = container.querySelector<HTMLInputElement>(
-          `input[name="${name}"]`
+          `input[name="${name}"], input[name$="/${name}"]`
         );
         if (input && input.value !== value) {
-          input.value = value;
+          const setter = Object.getOwnPropertyDescriptor(
+            window.HTMLInputElement.prototype,
+            "value"
+          )?.set;
+          if (setter) setter.call(input, value);
+          else input.value = value;
           input.dispatchEvent(new Event("input", { bubbles: true }));
           input.dispatchEvent(new Event("change", { bubbles: true }));
         }
@@ -123,6 +132,13 @@ export function HubSpotForm({
       if (cancelled) return;
       setStatus("ready");
       applyHiddenFields();
+      // Re-apply across HubSpot's multi-stage render (SSR → island hydration)
+      // in case a later pass resets the field. Idempotent: skips if already set.
+      [300, 1000, 2000].forEach((d) =>
+        window.setTimeout(() => {
+          if (!cancelled) applyHiddenFields();
+        }, d)
+      );
       onReadyRef.current?.();
     };
 

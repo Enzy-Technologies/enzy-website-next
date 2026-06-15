@@ -2,8 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+// Used by the "More stories" link, hidden until the Customer Stories page launches.
+// import Link from "next/link";
+// Used by the "More stories" link, hidden until the Customer Stories page launches.
+// import { ArrowRight } from "lucide-react";
 
 const FEATURED_QUOTE = {
   text: "Before Enzy, we were reacting to results. Now we're anticipating them. It turned data into decision velocity, visibility into alignment, and motivation into momentum.",
@@ -143,7 +145,8 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
                 {FEATURED_QUOTE.name}, {FEATURED_QUOTE.role}
               </p>
             </div>
-            <Link
+            {/* Hidden until the Customer Stories page launches. Restore to bring back. */}
+            {/* <Link
               href="/customer-stories"
               className="group hidden sm:inline-flex items-center gap-2 font-inter text-[15px] font-semibold whitespace-nowrap text-[#19ad7d] hover:opacity-90"
             >
@@ -153,7 +156,7 @@ export function EvidenceSection({ variant = "default" }: { variant?: EvidenceVar
                 strokeWidth={2.5}
                 className="transition-transform group-hover:translate-x-1"
               />
-            </Link>
+            </Link> */}
           </footer>
         </motion.div>
         ) : null}

@@ -7,7 +7,8 @@ import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
 import { BOOK_DEMO_HREF } from "./lib/booking";
 import { SITE_STATS } from "./lib/stats";
-import Link from "next/link";
+// Used by the Customer Stories CTA, hidden until that page launches.
+// import Link from "next/link";
 import { BlurReveal } from "./components/BlurReveal";
 
 // Below-the-fold social proof: the visitor only reaches it after scrolling past
@@ -169,12 +170,13 @@ export function About() {
                 >
                   Book a Demo <ArrowRight size={18} aria-hidden />
                 </CTAButton>
-                <Link
+                {/* Hidden until the Customer Stories page launches. Restore to bring back. */}
+                {/* <Link
                   href="/customer-stories"
                   className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 font-inter text-sm font-semibold rounded-full transition-all active:scale-95 border border-black/15 bg-white/90 text-[#0b0f14] shadow-[0_1px_3px_rgba(0,0,0,0.08)] backdrop-blur-md hover:bg-white hover:border-black/25 dark:border-white/15 dark:bg-white/[0.06] dark:text-white dark:hover:bg-white/10 dark:hover:border-white/25"
                 >
                   Read Customer Stories →
-                </Link>
+                </Link> */}
               </div>
             </div>
           </section>

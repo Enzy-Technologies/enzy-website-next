@@ -120,11 +120,13 @@ const LEARN_ITEMS: LearnItem[] = [
     desc: "What to measure. What to change.",
     href: "/insights"
   },
-  {
-    title: "Customer Stories",
-    desc: "Real rollouts. Real results.",
-    href: "/customer-stories"
-  },
+  // Temporarily hidden until the Customer Stories page is ready to launch.
+  // Restore this entry (and the matching tile in Resources.tsx) to bring it back.
+  // {
+  //   title: "Customer Stories",
+  //   desc: "Real rollouts. Real results.",
+  //   href: "/customer-stories"
+  // },
   {
     title: "Partners",
     desc: "Meet the companies we trust.",

@@ -20,7 +20,7 @@ const STATIC_ROUTES: Array<{
   { path: "/book-a-demo", changeFrequency: "monthly", priority: 0.6 },
   { path: "/partners", changeFrequency: "monthly", priority: 0.5 },
   { path: "/affiliate-program", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/customer-stories", changeFrequency: "monthly", priority: 0.5 },
+  // { path: "/customer-stories", changeFrequency: "monthly", priority: 0.5 }, // Hidden until launch (page is noindex)
   { path: "/about", changeFrequency: "monthly", priority: 0.5 },
   { path: "/contact-us", changeFrequency: "monthly", priority: 0.5 },
   { path: "/privacy-policy", changeFrequency: "yearly", priority: 0.3 },

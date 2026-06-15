@@ -8,7 +8,8 @@ import { BlurReveal } from "./components/BlurReveal";
 import Image from "next/image";
 
 import imgInsightsBg from "@/assets/fe07aab853fa3e439a789e527dbd50601d1228f8.png";
-import imgStoriesBottom from "@/assets/7354577476170e09a14529efd0dbdd4c33144226.png";
+// Used by the Customer Stories tile, temporarily hidden below until launch.
+// import imgStoriesBottom from "@/assets/7354577476170e09a14529efd0dbdd4c33144226.png";
 
 type LearnCard = {
   id: string;
@@ -44,21 +45,23 @@ const LEARN_DATA: LearnCard[] = [
     content:
       "Short reads on what drives performance.\n\n- The KPIs that actually predict outcomes\n- What top teams do daily\n- How to turn signal into action",
   },
-  {
-    id: "customer-stories",
-    title: "Customer Stories",
-    desc: "Real teams. Real rollouts. Real results.",
-    href: "/customer-stories",
-    colSpan: "col-span-12 lg:col-span-6",
-    bgImage: null,
-    bottomImage: imgStoriesBottom.src,
-    textColor: "text-white",
-    descColor: "text-white/70",
-    customBg: "border border-white/12 bg-[#121417]",
-    layoutStyle: "tile3",
-    content:
-      "Quick case studies.\n\n- What they set up\n- What changed\n- What improved (and how fast)",
-  },
+  // Temporarily hidden until the Customer Stories page is ready to launch.
+  // Restore this tile (and the matching nav entry in MainNavigation.tsx) to bring it back.
+  // {
+  //   id: "customer-stories",
+  //   title: "Customer Stories",
+  //   desc: "Real teams. Real rollouts. Real results.",
+  //   href: "/customer-stories",
+  //   colSpan: "col-span-12 lg:col-span-6",
+  //   bgImage: null,
+  //   bottomImage: imgStoriesBottom.src,
+  //   textColor: "text-white",
+  //   descColor: "text-white/70",
+  //   customBg: "border border-white/12 bg-[#121417]",
+  //   layoutStyle: "tile3",
+  //   content:
+  //     "Quick case studies.\n\n- What they set up\n- What changed\n- What improved (and how fast)",
+  // },
   {
     id: "partners",
     title: "Partners",
