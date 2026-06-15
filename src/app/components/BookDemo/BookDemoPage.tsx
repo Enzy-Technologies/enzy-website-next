@@ -9,6 +9,8 @@ import { motion } from "motion/react";
 import { BlurReveal } from "@/app/components/BlurReveal";
 import { FAQSection } from "@/app/components/FAQSection";
 import { SITE_STATS } from "@/app/lib/stats";
+import type { LpVariant } from "@/app/lib/lpExperiment";
+import { trackLpConversion } from "@/app/lib/lpTracking";
 
 declare global {
   interface Window {
@@ -22,9 +24,31 @@ export function BookDemoPage({
   hideTestimonials = false,
   hideText = false,
   formId = DEMO_FORM_ID,
-}: { hideTestimonials?: boolean; hideText?: boolean; formId?: string } = {}) {
+  lpVariant,
+}: {
+  hideTestimonials?: boolean;
+  hideText?: boolean;
+  formId?: string;
+  /** Set only on the /lp/meta A/B test — tags conversions with the variant. */
+  lpVariant?: LpVariant;
+} = {}) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [meetingsReady, setMeetingsReady] = useState(false);
+
+  // /lp/meta opt-in #2: the actual meeting booking. HubSpot's Meetings embed
+  // posts `meetingBookSucceeded` when a slot is confirmed — distinct from the
+  // form submit above (which only reveals the calendar). Only listen on the
+  // experiment so we don't double-count or fire on the standard booking page.
+  useEffect(() => {
+    if (!lpVariant) return;
+    const onMessage = (event: MessageEvent) => {
+      if ((event?.data as { meetingBookSucceeded?: boolean })?.meetingBookSucceeded) {
+        trackLpConversion("lp_booking", lpVariant);
+      }
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [lpVariant]);
 
   const containerText = "text-brand-dark dark:text-brand-light";
   const muted = "text-black/65 dark:text-white/60";
@@ -128,7 +152,12 @@ export function BookDemoPage({
                   <HubSpotForm
                     formId={formId}
                     loadingAlign="left"
-                    onSubmitted={() => setShowCalendar(true)}
+                    hiddenFields={lpVariant ? { lp_variant: lpVariant } : undefined}
+                    onSubmitted={() => {
+                      setShowCalendar(true);
+                      // /lp/meta opt-in #1: the demo-form submit.
+                      if (lpVariant) trackLpConversion("lp_form_submit", lpVariant);
+                    }}
                   />
 
                   {showCalendar ? (

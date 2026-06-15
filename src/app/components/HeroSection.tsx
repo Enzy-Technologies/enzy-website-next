@@ -17,6 +17,8 @@ import {
 } from "@/app/playground/PhoneInHand";
 import { LpBookDemoInline } from "@/app/components/landing/LpBookDemoScroll";
 import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
+import { LpHeroVideo } from "@/app/components/landing/LpHeroVideo";
+import type { LpVariant } from "@/app/lib/lpExperiment";
 
 import { BlurReveal } from "./BlurReveal";
 
@@ -170,7 +172,8 @@ function LpHeroPhone() {
   );
 }
 
-function HeroSectionLp() {
+function HeroSectionLp({ experimentVariant }: { experimentVariant?: LpVariant }) {
+  const showVideo = experimentVariant === "B";
   return (
     <section className="relative w-full">
       {/* No opaque background here on purpose: the page-wide cream + PixelCanvas
@@ -196,28 +199,33 @@ function HeroSectionLp() {
           </p>
         </div>
         
-        <div className="w-full">
+        <div className={`w-full ${showVideo ? "mt-16 md:mt-24" : ""}`}>
           <motion.div
             initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
             className="relative mx-auto w-full max-w-[1120px]"
           >
-            <div
-              className="pointer-events-none absolute inset-x-[15%] -inset-y-[6%] rounded-[44%] opacity-70 blur-3xl md:blur-[64px]"
-              style={{
-                background:
-                  "radial-gradient(ellipse at 50% 42%, rgba(25,173,125,0.24), transparent 72%)",
-              }}
-              aria-hidden
-            />
-            <LpHeroPhone />
+            {/* Wide ambient glow for the playground phone (variant A). The video
+                (variant B) carries its own green-tinted frame shadow, so it skips
+                this to avoid a double glow. */}
+            {!showVideo && (
+              <div
+                className="pointer-events-none absolute inset-x-[6%] -inset-y-[3%] lg:inset-x-[22%] lg:-inset-y-[4%] rounded-[44%] opacity-95 blur-3xl md:blur-[64px]"
+                style={{
+                  background:
+                    "radial-gradient(ellipse at 50% 54%, rgba(25,173,125,0.42), transparent 70%)",
+                }}
+                aria-hidden
+              />
+            )}
+            {showVideo ? <LpHeroVideo /> : <LpHeroPhone />}
           </motion.div>
         </div>
 
         <div className="mt-16 md:mt-24 w-full max-w-3xl mx-auto">
           <div id="lp-demo" className="scroll-mt-8 w-full">
-            <BookDemoPage hideTestimonials hideText formId={LP_DEMO_FORM_ID} />
+            <BookDemoPage hideTestimonials hideText formId={LP_DEMO_FORM_ID} lpVariant={experimentVariant} />
           </div>
         </div>
 
@@ -295,8 +303,11 @@ function HeroSectionDefault() {
   );
 }
 
-export function HeroSection({ variant = "default" }: { variant?: "default" | "lp" } = {}) {
-  if (variant === "lp") return <HeroSectionLp />;
+export function HeroSection({
+  variant = "default",
+  experimentVariant,
+}: { variant?: "default" | "lp"; experimentVariant?: LpVariant } = {}) {
+  if (variant === "lp") return <HeroSectionLp experimentVariant={experimentVariant} />;
   return <HeroSectionDefault />;
 }
 

@@ -51,6 +51,13 @@ type Props = {
   onSubmitted?: () => void;
   /** Optional extra classes for the outer wrapper. */
   className?: string;
+  /**
+   * Values to write into matching hidden inputs once the form renders, keyed by
+   * the HubSpot property's internal name (e.g. `{ lp_variant: "B" }`). The
+   * field must already exist on the form as a hidden field in HubSpot; if it
+   * doesn't, this is a harmless no-op.
+   */
+  hiddenFields?: Record<string, string>;
 };
 
 function hasRenderedForm(container: HTMLElement | null): boolean {
@@ -66,6 +73,7 @@ export function HubSpotForm({
   onReady,
   onSubmitted,
   className,
+  hiddenFields,
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [status, setStatus] = useState<Status>("loading");
@@ -78,9 +86,11 @@ export function HubSpotForm({
   // form to tear down and re-render on every parent render).
   const onReadyRef = useRef(onReady);
   const onSubmittedRef = useRef(onSubmitted);
+  const hiddenFieldsRef = useRef(hiddenFields);
   useEffect(() => {
     onReadyRef.current = onReady;
     onSubmittedRef.current = onSubmitted;
+    hiddenFieldsRef.current = hiddenFields;
   });
 
   useEffect(() => {
@@ -90,9 +100,29 @@ export function HubSpotForm({
     let cancelled = false;
     setStatus("loading");
 
+    // Write any hidden-field values into the rendered form. HubSpot's developer
+    // embed renders inline (not a cross-origin iframe), so the inputs are real
+    // DOM nodes we can set directly; dispatching input/change lets HubSpot's
+    // own form state pick the value up before submit.
+    const applyHiddenFields = () => {
+      const fields = hiddenFieldsRef.current;
+      if (!fields || !container) return;
+      for (const [name, value] of Object.entries(fields)) {
+        const input = container.querySelector<HTMLInputElement>(
+          `input[name="${name}"]`
+        );
+        if (input && input.value !== value) {
+          input.value = value;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+          input.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+      }
+    };
+
     const markReady = () => {
       if (cancelled) return;
       setStatus("ready");
+      applyHiddenFields();
       onReadyRef.current?.();
     };
 
