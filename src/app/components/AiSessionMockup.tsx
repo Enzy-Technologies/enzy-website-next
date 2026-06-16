@@ -150,9 +150,11 @@ function useIsDesktop() {
   return isDesktop;
 }
 
-/** Measures its own width and returns the scale needed to map `designW` onto it. */
-function useFitScale(designW: number) {
-  const ref = useRef<HTMLDivElement>(null);
+/** Watches `ref`'s width and returns the scale needed to map `designW` onto it. */
+function useFitScale(
+  ref: React.RefObject<HTMLDivElement | null>,
+  designW: number
+) {
   const [scale, setScale] = useState(0.76);
   useLayoutEffect(() => {
     const el = ref.current;
@@ -162,8 +164,8 @@ function useFitScale(designW: number) {
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [designW]);
-  return { ref, scale };
+  }, [ref, designW]);
+  return scale;
 }
 
 /**
@@ -274,8 +276,8 @@ function StreamedAnswer() {
 export function AiSessionMockup() {
   const isDesktop = useIsDesktop();
   const design = isDesktop ? DESKTOP : PHONE;
-  const { ref, scale } = useFitScale(design.w);
   const hostRef = useRef<HTMLDivElement>(null);
+  const scale = useFitScale(hostRef, design.w);
   const [inView, setInView] = useState(false);
 
   const [view, setView] = useState<View>("landing");
@@ -376,10 +378,7 @@ export function AiSessionMockup() {
   return (
     <div className="flex justify-center">
       <div
-        ref={(node) => {
-          ref.current = node;
-          hostRef.current = node;
-        }}
+        ref={hostRef}
         className={`relative w-full ${isDesktop ? "max-w-[520px]" : "max-w-[300px]"}`}
         style={{ height: design.h * scale }}
       >
