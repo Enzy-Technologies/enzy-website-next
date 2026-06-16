@@ -3,7 +3,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { CTAButton } from "./CTAButton";
-import { BOOK_DEMO_HREF } from "@/app/lib/booking";
+import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE } from "@/app/lib/booking";
 
 type ClosingCTASectionProps = {
   demoHref?: string;
@@ -38,7 +38,7 @@ export function ClosingCTASection({ demoHref = BOOK_DEMO_HREF }: ClosingCTASecti
           <CTAButton
             href={demoHref}
             variant="primary"
-            className="book-demo-cta-marker justify-center rounded-full px-9 py-[15px] gap-2 font-semibold text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none"
+            className={`book-demo-cta-marker justify-center px-9 py-[15px] gap-2 text-[15px] w-full sm:w-auto max-w-[320px] sm:max-w-none ${BOOK_DEMO_CTA_STYLE}`}
           >
             Book a Demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
           </CTAButton>

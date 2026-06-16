@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { CTAButton } from "./components/CTAButton";
-import { BOOK_DEMO_HREF } from "./lib/booking";
+import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE } from "./lib/booking";
 import { SITE_STATS } from "./lib/stats";
 // Used by the Customer Stories CTA, hidden until that page launches.
 // import Link from "next/link";
@@ -166,9 +166,9 @@ export function About() {
                 <CTAButton
                   href={BOOK_DEMO_HREF}
                   variant="primary"
-                  className="book-demo-cta-marker w-full sm:w-auto justify-center px-8 py-4 gap-3 font-semibold text-[15px] tracking-tight hover:scale-[1.02] hover:!opacity-100 shadow-[0_0_28px_rgba(25,173,125,0.35)]"
+                  className={`book-demo-cta-marker w-full sm:w-auto justify-center px-8 py-4 gap-3 text-[15px] ${BOOK_DEMO_CTA_STYLE}`}
                 >
-                  Book a Demo <ArrowRight size={18} aria-hidden />
+                  Book a Demo <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
                 </CTAButton>
                 {/* Hidden until the Customer Stories page launches. Restore to bring back. */}
                 {/* <Link

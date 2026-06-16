@@ -9,6 +9,7 @@ import { Sun, Moon, Wand2, ArrowRight } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 import { CTAButton } from "./CTAButton";
+import { BOOK_DEMO_CTA_STYLE } from "../lib/booking";
 import { requestParticlesToggle } from "../lib/particles";
 
 const LOGIN_HREF = "https://app.enzy.co/login";
@@ -145,10 +146,10 @@ export function Header() {
             <CTAButton
               href="/book-a-demo"
               variant="primary"
-              className="book-demo-cta-marker hidden lg:inline-flex z-50 h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
+              className={`book-demo-cta-marker hidden lg:inline-flex z-50 h-10 pl-5 pr-4 gap-2 text-[13px] ${BOOK_DEMO_CTA_STYLE}`}
             >
               Book a Demo
-              <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
+              <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
             </CTAButton>
           )}
 
@@ -188,10 +189,10 @@ export function Header() {
           <CTAButton
             href="/book-a-demo"
             variant="primary"
-            className="shadow-lg shadow-[#19ad7d]/30 pointer-events-auto h-10 pl-5 pr-4 gap-2 text-[13px] font-semibold rounded-full"
+            className={`pointer-events-auto h-10 pl-5 pr-4 gap-2 text-[13px] ${BOOK_DEMO_CTA_STYLE}`}
           >
             Book a Demo
-            <ArrowRight size={14} strokeWidth={2.5} aria-hidden />
+            <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
           </CTAButton>
         </div>
       )}

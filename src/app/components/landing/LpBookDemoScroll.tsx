@@ -12,6 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/app/components/ui/utils";
 import { CTAButton } from "@/app/components/CTAButton";
+import { BOOK_DEMO_CTA_STYLE } from "@/app/lib/booking";
 
 /**
  * Landing CTA pattern aligned with common high-converting SaaS LP behavior:
@@ -106,7 +107,7 @@ export function LpBookDemoInline({
         <CTAButton
           href={href}
           variant="primary"
-          className="w-full max-w-none justify-center rounded-full py-6 sm:py-7 md:py-8 px-8 sm:px-12 md:px-14 gap-3 sm:gap-4 font-inter font-extrabold text-[14px] sm:text-[17px] md:text-[19px] uppercase tracking-[0.14em] sm:tracking-[0.15em] shadow-[0_0_52px_rgba(25,173,125,0.42)] hover:!opacity-100 active:scale-[0.99]"
+          className={`w-full max-w-none justify-center py-6 sm:py-7 md:py-8 px-8 sm:px-12 md:px-14 gap-3 sm:gap-4 text-[14px] sm:text-[17px] md:text-[19px] ${BOOK_DEMO_CTA_STYLE}`}
         >
           {label}{" "}
           <ArrowRight className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" strokeWidth={2.25} aria-hidden />
@@ -172,21 +173,18 @@ function LpBookDemoDock({
               href={href}
               variant="primary"
               className={cn(
-                "relative z-[1] pointer-events-auto w-full justify-center rounded-full font-inter font-extrabold uppercase hover:!opacity-100 active:scale-[0.99]",
-                /* Impact: hero-adjacent glow + crisp ring */
-                "shadow-[0_0_0_1px_rgba(255,255,255,0.35)_inset,0_12px_40px_-10px_rgba(25,173,125,0.55),0_0_56px_-8px_rgba(25,173,125,0.45)]",
-                "ring-[1.5px] ring-[#19ad7d]/35 ring-offset-2 md:ring-2 md:ring-[#19ad7d]/40",
-                "ring-offset-[#faf9f6] dark:ring-offset-[#0b0f14]",
+                "relative z-[1] pointer-events-auto w-full justify-center",
                 /* Mobile: wide + thumb-friendly */
-                "gap-2.5 sm:gap-3 px-10 py-[17px] text-[13px] tracking-[0.12em] sm:px-12 sm:py-[18px] sm:text-[14px] sm:tracking-[0.13em]",
+                "gap-2.5 sm:gap-3 px-10 py-[17px] text-[13px] sm:px-12 sm:py-[18px] sm:text-[14px]",
                 /* Desktop: wider pill, slightly larger type */
-                "md:gap-3.5 md:px-14 md:py-5 md:text-[15px] md:tracking-[0.14em] lg:py-[22px] lg:text-base lg:tracking-[0.145em]"
+                "md:gap-3.5 md:px-14 md:py-5 md:text-[15px] lg:py-[22px] lg:text-base",
+                BOOK_DEMO_CTA_STYLE
               )}
             >
               {label}{" "}
               <ArrowRight
                 className="shrink-0 w-[18px] h-[18px] sm:w-5 sm:h-5 md:w-[22px] md:h-[22px]"
-                strokeWidth={2.35}
+                strokeWidth={2.25}
                 aria-hidden
               />
             </CTAButton>

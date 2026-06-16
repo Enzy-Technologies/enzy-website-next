@@ -2,8 +2,10 @@
 
 import React from "react";
 import { motion } from "motion/react";
+import { ArrowRight } from "lucide-react";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
+import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE } from "./lib/booking";
 
 const FadeInSection = ({
   children,
@@ -63,11 +65,11 @@ export function CustomerStories() {
           </p>
           <div className="mt-8">
             <CTAButton
-              href="/book-a-demo"
+              href={BOOK_DEMO_HREF}
               variant="primary"
-              className="px-8 py-4 font-semibold text-[14px]"
+              className={`px-8 py-4 gap-2 text-[14px] ${BOOK_DEMO_CTA_STYLE}`}
             >
-              Book a Demo
+              Book a Demo <ArrowRight size={16} strokeWidth={2.25} aria-hidden />
             </CTAButton>
           </div>
         </FadeInSection>

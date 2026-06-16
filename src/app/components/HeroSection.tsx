@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useScroll, useTransform, useInView } from "motion/react";
 import { Sparkles, ArrowRight, ArrowDown, CornerDownRight, Star, X, CheckCircle2 } from "lucide-react";
 import { CTAButton } from "./CTAButton";
-import { BOOK_DEMO_HREF, LP_DEMO_FORM_ID } from "@/app/lib/booking";
+import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE, LP_DEMO_FORM_ID } from "@/app/lib/booking";
 import { SimpleLogosMarquee } from "@/app/components/SimpleLogosMarquee";
 import {
   PhoneInHand,
@@ -274,7 +274,7 @@ function HeroSectionDefault() {
               <CTAButton
                 href={BOOK_DEMO_HREF}
                 variant="primary"
-                className="book-demo-cta-marker w-full max-w-[260px] sm:max-w-none sm:w-auto font-inter font-semibold text-[15px] md:text-[16px] h-[48px] md:h-[52px] pl-7 md:pl-8 pr-6 md:pr-7 gap-2 rounded-full shadow-[0_8px_24px_rgba(25,173,125,0.25)] hover:shadow-[0_12px_32px_rgba(25,173,125,0.35)] transition-all duration-300"
+                className={`book-demo-cta-marker w-full max-w-[260px] sm:max-w-none sm:w-auto text-[15px] md:text-[16px] h-[48px] md:h-[52px] pl-7 md:pl-8 pr-6 md:pr-7 gap-2 ${BOOK_DEMO_CTA_STYLE}`}
               >
                 Book a Demo
                 <ArrowRight size={16} strokeWidth={2.25} aria-hidden />

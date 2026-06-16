@@ -7,7 +7,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
-import { BOOK_DEMO_HREF } from "./lib/booking";
+import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE } from "./lib/booking";
 import {
   CATEGORIES,
   formatPostDate,
@@ -247,9 +247,9 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
             <CTAButton
               href={BOOK_DEMO_HREF}
               variant="primary"
-              className="book-demo-cta-marker px-8 py-4 gap-3 font-semibold text-[15px] tracking-tight shadow-[0_0_28px_rgba(25,173,125,0.35)]"
+              className={`book-demo-cta-marker px-8 py-4 gap-3 text-[15px] ${BOOK_DEMO_CTA_STYLE}`}
             >
-              Book a Demo <ArrowRight size={18} aria-hidden />
+              Book a Demo <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
             </CTAButton>
           </div>
         </div>

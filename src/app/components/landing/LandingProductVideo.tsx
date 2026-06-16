@@ -3,6 +3,7 @@
 import React from "react";
 import { ArrowRight } from "lucide-react";
 import { CTAButton } from "@/app/components/CTAButton";
+import { BOOK_DEMO_CTA_STYLE } from "@/app/lib/booking";
 
 type Props = {
   id?: string;
@@ -57,9 +58,9 @@ export function LandingProductVideo({ id = "product-video", eyebrow, title, desc
             <CTAButton
               href={cta.href}
               variant="primary"
-              className="justify-center rounded-full px-7 py-3.5 gap-3 font-bold text-sm uppercase tracking-widest hover:scale-[1.02] hover:!opacity-100"
+              className={`justify-center px-7 py-3.5 gap-3 text-sm ${BOOK_DEMO_CTA_STYLE}`}
             >
-              {cta.label} <ArrowRight size={18} aria-hidden />
+              {cta.label} <ArrowRight size={18} strokeWidth={2.25} aria-hidden />
             </CTAButton>
           </div>
         ) : null}
