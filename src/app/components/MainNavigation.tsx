@@ -62,7 +62,6 @@ const SYSTEM_SECTIONS = [
       "Leaderboards",
       "Goals",
       "Profiles",
-      "Badges",
       "Competitions & Incentives",
       "Messaging",
       "Media Library",
@@ -76,7 +75,6 @@ const SYSTEM_SECTIONS = [
       "Lead Management",
       "Digital Business Card",
       "Appt Scheduling",
-      "SMS Campaigns",
     ],
   },
   {

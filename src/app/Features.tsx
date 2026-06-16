@@ -4,6 +4,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "re
 import { motion, AnimatePresence } from "motion/react";
 import { ChevronDown, Trophy, DollarSign, Users, type LucideIcon } from "lucide-react";
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
+import { AiSessionMockup } from "./components/AiSessionMockup";
+import { ProfileMockup } from "./components/ProfileMockup";
 import { BlurReveal } from "./components/BlurReveal";
 import { MEDIA } from "./lib/breakpoints";
 
@@ -47,7 +49,19 @@ type Feature = {
   /** Expanded bullet points; each ladders to a behavior change. */
   bullets: string[];
   module: ModuleId;
-  image: string;
+  /** Source for the static image treatments. Omitted for live mockups. */
+  image?: string;
+  /** Wider capture used at the desktop breakpoint for the `"phone"` mockup. */
+  imageDesktop?: string;
+  /**
+   * Render treatment for the preview. Default is the generic 16/10 landscape
+   * card. `"phone"` frames `image` as the top of a phone screen — rounded top
+   * corners (phone radius) with the lower edge blurring/fading out to suggest
+   * the screen continues below. `"ai-loop"` renders the auto-playing Enzy AI
+   * session animation in a phone instead of a static image. `"profile-toggle"`
+   * renders the rep profile that toggles between its Badges and Reports tabs.
+   */
+  mockup?: "phone" | "ai-loop" | "profile-toggle";
 };
 
 const FEATURES_DATA: Feature[] = [
@@ -63,8 +77,7 @@ const FEATURES_DATA: Feature[] = [
       "Surfaces the signal early, so managers coach before a slump compounds",
       "Turns raw activity into a recommended action — not just another chart",
     ],
-    image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
+    mockup: "ai-loop",
   },
   {
     module: "core",
@@ -77,8 +90,9 @@ const FEATURES_DATA: Feature[] = [
       "Public visibility creates accountability without micromanaging",
       "Spot momentum shifts the moment they happen",
     ],
-    image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
+    image: "/system/leaderboard.png",
+    imageDesktop: "/system/leaderboard-ipad.png",
+    mockup: "phone",
   },
   {
     module: "core",
@@ -105,22 +119,7 @@ const FEATURES_DATA: Feature[] = [
       "Makes progress — and effort — impossible to overlook",
       "Gives reps ownership of their own performance story",
     ],
-    image:
-      "https://images.unsplash.com/photo-1720962158883-b0f2021fb51e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx1c2VyJTIwcHJvZmlsZSUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    module: "core",
-    id: "badges",
-    title: "Badges",
-    desc: "Recognition reps earn, display, and chase — because people repeat what gets seen.",
-    body: "People repeat what gets seen. Badges turn milestones and behaviors into recognition reps earn, display, and chase — so the right actions compound on their own.",
-    bullets: [
-      "Reward the behaviors that drive revenue, not just the outcomes",
-      "Earned, displayed on profiles, and visible to the whole team",
-      "Recognition that's instant — the moment the work happens",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    mockup: "profile-toggle",
   },
   {
     module: "core",
@@ -191,6 +190,7 @@ const FEATURES_DATA: Feature[] = [
       "Every lead, stage, and next step in one view",
       "Priorities stay obvious from first touch to close",
       "Nothing slips through the cracks between visits",
+      "SMS campaigns — drip and broadcast texts that turn cold lists into booked conversations",
     ],
     image:
       "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
@@ -222,20 +222,6 @@ const FEATURES_DATA: Feature[] = [
     ],
     image:
       "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    module: "sell",
-    id: "sms-campaigns",
-    title: "SMS Campaigns",
-    desc: "Drip and broadcast texts that turn cold lists into booked conversations.",
-    body: "Cold lists don't close themselves. Drip and broadcast texts that turn dormant contacts into booked conversations — at the cadence that actually gets replies.",
-    bullets: [
-      "Drip sequences and broadcasts from one place",
-      "Turn cold lists into booked conversations",
-      "Reach the whole list at the timing that converts",
-    ],
-    image:
-      "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
   },
 
   // ---------- Recruit ----------
@@ -285,6 +271,94 @@ const FEATURES_DATA: Feature[] = [
 
 const TAB_TRANSITION = { duration: 0.45, ease: [0.22, 1, 0.36, 1] as const };
 
+/**
+ * Frames a portrait app capture (393×852) as the top of a phone screen:
+ * rounded top corners simulate the phone's radius. The lower edge blurs and
+ * dissolves to transparent — the image itself is masked, so the bottom fades
+ * into whatever sits behind the phone (the panel background) with no hard
+ * edge, and it reads correctly in both light and dark mode.
+ */
+// Smoothstep-eased vertical alpha gradient between two positions (in %).
+// A plain 2-stop linear gradient kinks at each stop, which reads as an abrupt
+// start/end; easing the alpha curve makes both ends roll in and out smoothly
+// over a short band. `reverse` flips it from visible→transparent (fade out)
+// to transparent→opaque (ramp in).
+function easedMask(start: number, end: number, reverse = false): string {
+  const STEPS = 8;
+  const stops = Array.from({ length: STEPS + 1 }, (_, i) => {
+    const t = i / STEPS;
+    const s = t * t * (3 - 2 * t); // smoothstep
+    const a = reverse ? s : 1 - s;
+    const pos = start + (end - start) * t;
+    return `rgba(0,0,0,${a.toFixed(3)}) ${pos.toFixed(2)}%`;
+  });
+  return `linear-gradient(to bottom, ${stops.join(", ")})`;
+}
+
+/** Tracks whether the viewport is at the desktop breakpoint. */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(MEDIA.desktop);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
+function PhoneMockup({
+  src,
+  srcDesktop,
+  alt,
+}: {
+  src: string;
+  /** Wider capture (e.g. iPad) shown at the desktop breakpoint when provided. */
+  srcDesktop?: string;
+  alt: string;
+}) {
+  const isDesktop = useIsDesktop();
+  // On desktop, show the wider capture in a roomier, less-tall frame; on mobile
+  // keep the phone. Same crop either way: rounded top with the content and the
+  // device edge dissolving out over an eased band near the foot.
+  const useWide = isDesktop && !!srcDesktop;
+  // Shared fade band, eased at both ends. Applied to the image (dissolve
+  // content to transparent) and the border overlay (fade the device edge out
+  // in sync, so it never ends on a line).
+  const FADE = easedMask(78, 90);
+  // Blur ramps in just above the fade so the content softens as it goes.
+  const BLUR = easedMask(72, 88, true);
+  const radius = useWide ? "rounded-t-[28px]" : "rounded-t-[40px]";
+  const frame = useWide
+    ? "max-w-[520px] aspect-[1668/1500]"
+    : "max-w-[320px] aspect-[393/720]";
+  return (
+    <div className="flex justify-center">
+      <div className={`relative w-full overflow-hidden ${frame} ${radius}`}>
+        <ImageWithFallback
+          src={useWide ? (srcDesktop as string) : src}
+          alt={alt}
+          sizes={useWide ? "520px" : "(max-width: 768px) 90vw, 320px"}
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          style={{ maskImage: FADE, WebkitMaskImage: FADE }}
+        />
+        {/* Progressive blur strengthening toward the bottom edge */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 backdrop-blur-[5px]"
+          style={{ maskImage: BLUR, WebkitMaskImage: BLUR }}
+        />
+        {/* Device edge — top + sides only, faded out with the same band so
+            it never terminates on a hard line. */}
+        <div
+          className={`pointer-events-none absolute inset-0 border border-b-0 border-black/12 dark:border-white/15 ${radius}`}
+          style={{ maskImage: FADE, WebkitMaskImage: FADE }}
+        />
+      </div>
+    </div>
+  );
+}
+
 function ModuleRail({
   active,
   onChange,
@@ -316,9 +390,11 @@ function ModuleRail({
             title={mod.label}
             className="group relative w-full text-left pl-3 sm:pl-4 pr-1 py-2.5 sm:py-3 transition-colors"
           >
-            {/* Active indicator bar on the left edge */}
+            {/* Active indicator bar on the left edge. Transition only the two
+                properties that actually change (height + color) — `transition-all`
+                also animates any sub-pixel reflow, which can flash on re-render. */}
             <span
-              className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-full transition-all ${
+              className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-full transition-[height,background-color] duration-300 ${
                 isActive
                   ? "h-[58%] bg-[#19ad7d]"
                   : "h-0 bg-transparent"
@@ -416,20 +492,22 @@ function FeatureRow({
         </motion.span>
       </button>
 
-      <AnimatePresence initial={false}>
-        {isOpen && (
-          <motion.div
-            key="content"
-            initial={skipAnim ? false : { height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={
-              skipAnim
-                ? { duration: 0 }
-                : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
-            }
-            className="overflow-hidden"
-          >
+      {/* No AnimatePresence: closing unmounts the content synchronously (an
+          instant collapse), so the row above a tapped feature reflows in a
+          single step that handleToggle compensates before paint — keeping the
+          tapped title exactly put. Opening still animates height (expand down). */}
+      {isOpen && (
+        <motion.div
+          key="content"
+          initial={skipAnim ? false : { height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          transition={
+            skipAnim
+              ? { duration: 0 }
+              : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }
+          }
+          className="overflow-hidden"
+        >
             <div className="pb-6 md:pb-8 flex flex-col gap-5 md:gap-6">
               <p
                 className="font-inter text-[15px] sm:text-[16px] md:text-[17px] leading-relaxed max-w-[680px] text-black/75 dark:text-white/75"
@@ -452,21 +530,46 @@ function FeatureRow({
                 ))}
               </ul>
 
-              <div
-                className="relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)] dark:border-white/8 dark:shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
-              >
-                <ImageWithFallback
-                  src={feature.image}
+              {feature.mockup === "ai-loop" ? (
+                <AiSessionMockup />
+              ) : feature.mockup === "profile-toggle" ? (
+                <ProfileMockup />
+              ) : feature.mockup === "phone" ? (
+                <PhoneMockup
+                  src={feature.image ?? ""}
+                  srcDesktop={feature.imageDesktop}
                   alt={feature.title}
-                  className="absolute inset-0 w-full h-full object-cover"
                 />
-              </div>
+              ) : (
+                <div
+                  className="relative w-full aspect-[16/10] rounded-[20px] md:rounded-[28px] overflow-hidden border border-black/8 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.20)] dark:border-white/8 dark:shadow-[0_24px_60px_-24px_rgba(0,0,0,0.55)]"
+                >
+                  <ImageWithFallback
+                    src={feature.image}
+                    alt={feature.title}
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                </div>
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
     </div>
   );
+}
+
+/**
+ * Read a deep-link target from the URL hash (e.g. `/system#leaderboards`).
+ * Client-only: the server has no hash, so SSR / first paint falls back to the
+ * default feature. Used to open the linked feature on the very first render so
+ * the page never briefly shows the default (Enzy AI) before switching.
+ */
+function readHashTarget(): { module: ModuleId; id: string } | null {
+  if (typeof window === "undefined") return null;
+  const hash = window.location.hash.replace(/^#/, "").toLowerCase();
+  if (!hash) return null;
+  const match = FEATURES_DATA.find((f) => f.id === hash);
+  return match ? { module: match.module, id: match.id } : null;
 }
 
 function FeatureBrowser() {
@@ -500,6 +603,31 @@ function FeatureBrowser() {
     setActiveModule(id);
     setOpenId(FEATURES_DATA.find((f) => f.module === id)?.id ?? null);
   };
+
+  // Toggle a feature, keeping the tapped title at the exact viewport position
+  // it was clicked. Opening collapses whichever feature was open and expands
+  // this one downward; if the collapsing row sat above, the title would drift
+  // up as the page reflows. Because the collapse is synchronous (the content
+  // unmounts immediately — no exit animation), the reflow happens in a single
+  // step: we record the title's position here, then restore it in the
+  // useLayoutEffect below, before the browser paints. No drift, no bounce.
+  const pendingAnchorRef = useRef<{ id: string; top: number } | null>(null);
+  const handleToggle = (id: string) => {
+    const node = document.getElementById(id);
+    pendingAnchorRef.current = node
+      ? { id, top: node.getBoundingClientRect().top }
+      : null;
+    setOpenId((prev) => (prev === id ? null : id));
+  };
+  useLayoutEffect(() => {
+    const pending = pendingAnchorRef.current;
+    pendingAnchorRef.current = null;
+    if (!pending) return;
+    const node = document.getElementById(pending.id);
+    if (!node) return;
+    const delta = node.getBoundingClientRect().top - pending.top;
+    if (delta !== 0) window.scrollBy(0, delta);
+  }, [openId]);
 
   // Mirror `openId` into a ref so the hash listener can read the
   // currently-open feature without forcing the effect to re-subscribe on
@@ -536,15 +664,17 @@ function FeatureBrowser() {
       window.scrollTo({ top: Math.max(top, 0), behavior: "auto" });
     };
 
-    // Re-assert the scroll across a few ticks. The early calls land the
-    // position once the deep-link layout commits; the later ones override the
-    // browser's own (offset-unaware) fragment scroll, which can fire late
-    // (e.g. after images decode) and would otherwise leave the feature title
-    // pushed above the viewport. We clear the deep-link flag only on the last
-    // tick so the re-render (and this effect's cleanup) can't cancel the
-    // pending scroll timers early.
+    // Snap synchronously, before the browser paints, so the page lands on the
+    // target feature in a single frame (no visible jump from the default).
+    scrollToHeader();
+
+    // Re-assert across a few ticks: these override the browser's own
+    // (offset-unaware) fragment scroll, which can fire late (e.g. after images
+    // decode) and would otherwise leave the feature title pushed above the
+    // viewport. The flag clears on the last tick so the re-render (and this
+    // effect's cleanup) can't cancel the pending scroll timers early.
     const timers: number[] = [];
-    [0, 60, 160, 320, 500].forEach((ms, i, arr) => {
+    [60, 160, 320, 500].forEach((ms, i, arr) => {
       timers.push(
         window.setTimeout(() => {
           scrollToHeader();
@@ -556,33 +686,15 @@ function FeatureBrowser() {
     return () => timers.forEach((t) => clearTimeout(t));
   }, [pendingDeepLinkId]);
 
-  // Hash deep-linking: /system#leaderboards selects the right tab,
-  // expands the matching feature, and scrolls the row to the top of the
-  // viewport (below the fixed header thanks to `scroll-mt-*`).
-  useEffect(() => {
+  // Hash deep-linking: /system#leaderboards opens the matching feature and
+  // scrolls it to just below the header. Runs in a layout effect (before paint).
+  useLayoutEffect(() => {
     const applyHash = () => {
-      const hash = window.location.hash.replace(/^#/, "").toLowerCase();
-      if (!hash) return;
-      const match = FEATURES_DATA.find((f) => f.id === hash);
-      if (!match) return;
-
-      // Strip the fragment from the URL immediately. The browser's native
-      // "scroll to #id" can fire on first paint (while the default feature is
-      // still open) and again after images decode, landing on a stale
-      // position; removing the hash neutralizes it so our own offset-aware
-      // scroll below is the single source of truth.
-      window.history.replaceState(
-        null,
-        "",
-        window.location.pathname + window.location.search
-      );
-
-      // Apply state in one synchronous batch so the next render commits
-      // the final layout (target module active, target row open, all
-      // animations suppressed via `skipAnim`).
-      setActiveModule(match.module);
-      setOpenId(match.id);
-      setPendingDeepLinkId(match.id);
+      const target = readHashTarget();
+      if (!target) return;
+      setActiveModule(target.module);
+      setOpenId(target.id);
+      setPendingDeepLinkId(target.id);
     };
     applyHash();
     window.addEventListener("hashchange", applyHash);
@@ -659,9 +771,7 @@ function FeatureBrowser() {
                       key={feature.id}
                       feature={feature}
                       isOpen={feature.id === openId}
-                      onToggle={() =>
-                        setOpenId(openId === feature.id ? null : feature.id)
-                      }
+                      onToggle={() => handleToggle(feature.id)}
                       isFirst={idx === 0}
                       skipAnim={skipAnim}
                     />

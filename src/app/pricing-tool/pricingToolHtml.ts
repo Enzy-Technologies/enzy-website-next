@@ -212,7 +212,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="module-card" id="card-sell">
 <div class="module-header"><div class="module-name"><div class="module-icon sell-icon">💰</div>Sell Module</div><div class="toggle" id="toggle-sell"></div></div>
-<div class="module-features"><span class="feature-chip">Canvassing</span><span class="feature-chip">Lead Management</span><span class="feature-chip">Digital Business Card</span><span class="feature-chip">Appt Scheduling</span><span class="feature-chip">SMS Campaigns</span></div>
+<div class="module-features"><span class="feature-chip">Canvassing</span><span class="feature-chip">Lead Management</span><span class="feature-chip">Digital Business Card</span><span class="feature-chip">Appt Scheduling</span></div>
 <div class="sell-addons" id="sellSubgroup">
 <div class="sell-addon" id="card-weather">
 <div class="sell-addon-left"><span class="sell-addon-name">🗺️ Weather Overlays</span></div>
@@ -222,7 +222,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="module-card" id="card-recruit">
 <div class="module-header"><div class="module-name"><div class="module-icon recruit-icon">👥</div>Recruit Module</div><div class="toggle" id="toggle-recruit"></div></div>
-<div class="module-features"><span class="feature-chip">Recruiting Center</span><span class="feature-chip">Public Recruit Link</span><span class="feature-chip">Onboarding Workflow</span><span class="feature-chip">Document Library</span></div>
+<div class="module-features"><span class="feature-chip">Recruiting Center</span><span class="feature-chip">Public Recruit Link</span><span class="feature-chip">Onboarding Workflow</span></div>
 </div>
 </div>
 <div class="section">
