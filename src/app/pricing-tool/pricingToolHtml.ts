@@ -201,7 +201,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="section-desc">Core is always included. Toggle add-ons below.</div>
 <div class="module-card always-on" id="card-core">
 <div class="module-header"><div class="module-name"><div class="module-icon core-icon">📊</div>Core Module</div><span class="always-label">Always Included</span></div>
-<div class="module-features"><span class="feature-chip feature-chip-ai">✨ Enzy AI</span><span class="feature-chip">Leaderboards</span><span class="feature-chip">Profiles</span><span class="feature-chip">Badges</span><span class="feature-chip">Competitions & Incentives</span><span class="feature-chip">Messaging</span><span class="feature-chip">Media Library</span></div>
+<div class="module-features"><span class="feature-chip feature-chip-ai">✨ Enzy AI</span><span class="feature-chip">Leaderboards</span><span class="feature-chip">Profiles</span><span class="feature-chip">Goals</span><span class="feature-chip">Badges</span><span class="feature-chip">Competitions & Incentives</span><span class="feature-chip">Messaging</span><span class="feature-chip">Library</span></div>
 <div class="core-addons">
 <div class="sell-addon" id="card-enzyai">
 <div class="sell-addon-left"><span class="sell-addon-name">✨ Enzy AI Pro</span></div>
@@ -212,7 +212,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="module-card" id="card-sell">
 <div class="module-header"><div class="module-name"><div class="module-icon sell-icon">💰</div>Sell Module</div><div class="toggle" id="toggle-sell"></div></div>
-<div class="module-features"><span class="feature-chip">Canvassing</span><span class="feature-chip">Lead Management</span><span class="feature-chip">Digital Business Card</span><span class="feature-chip">Appt Scheduling</span></div>
+<div class="module-features"><span class="feature-chip">Canvassing</span><span class="feature-chip">Lead Management</span><span class="feature-chip">Digital Business Card</span><span class="feature-chip">Calendar</span></div>
 <div class="sell-addons" id="sellSubgroup">
 <div class="sell-addon" id="card-weather">
 <div class="sell-addon-left"><span class="sell-addon-name">🗺️ Weather Overlays</span></div>

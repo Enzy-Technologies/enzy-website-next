@@ -60,11 +60,11 @@ const SYSTEM_SECTIONS = [
     items: [
       "Enzy AI",
       "Leaderboards",
-      "Goals",
       "Profiles",
+      "Goals",
       "Competitions & Incentives",
       "Messaging",
-      "Media Library",
+      "Library",
     ],
   },
   {
@@ -74,7 +74,7 @@ const SYSTEM_SECTIONS = [
       "Canvassing",
       "Lead Management",
       "Digital Business Card",
-      "Appt Scheduling",
+      "Calendar",
     ],
   },
   {

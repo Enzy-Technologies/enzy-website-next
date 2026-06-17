@@ -12,8 +12,8 @@ export const SEO_CONFIG: Record<string, PageSEO> = {
     title: "Enzy | The Performance Operating System for Sales Teams",
     description: "Performance is the largest untapped lever in your business. Enzy is the operating system that surfaces it.",
   },
-  features: {
-    title: "Features",
+  system: {
+    title: "System",
     description: "Explore the system: AI assistant, competitions, incentives, messaging, leaderboards, and integrations — built to drive daily execution.",
   },
   solutions: {

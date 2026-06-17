@@ -6,6 +6,7 @@ import { ChevronDown, Trophy, DollarSign, Users, type LucideIcon } from "lucide-
 import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { AiSessionMockup } from "./components/AiSessionMockup";
 import { ProfileMockup } from "./components/ProfileMockup";
+import { CompetitionsMockup } from "./components/CompetitionsMockup";
 import { BlurReveal } from "./components/BlurReveal";
 import { MEDIA } from "./lib/breakpoints";
 
@@ -60,8 +61,16 @@ type Feature = {
    * the screen continues below. `"ai-loop"` renders the auto-playing Enzy AI
    * session animation in a phone instead of a static image. `"profile-toggle"`
    * renders the rep profile that toggles between its Badges and Reports tabs.
+   * `"competitions-loop"` renders the auto-playing Competitions & Incentives
+   * walkthrough (list → milestone with filling rings → bracket → repeat).
    */
-  mockup?: "phone" | "ai-loop" | "profile-toggle";
+  mockup?: "phone" | "phone-full" | "phone-cutoff" | "ai-loop" | "profile-toggle" | "competitions-loop";
+  /**
+   * For `"phone-cutoff"`: image-height fraction (0–1) where the dissolve
+   * begins — a natural content break (a divider or the gap between rows).
+   * Defaults to 0.767 (the Library's divider above "Trainings").
+   */
+  cutoffFrac?: number;
 };
 
 const FEATURES_DATA: Feature[] = [
@@ -96,6 +105,19 @@ const FEATURES_DATA: Feature[] = [
   },
   {
     module: "core",
+    id: "profiles",
+    title: "Profiles",
+    desc: "One place for every rep's performance, progress, and recognition — so good work gets seen.",
+    body: "Every rep's performance, progress, and recognition in one place. When good work is visible, it gets repeated — and reps can see exactly how they stack up and what to chase next.",
+    bullets: [
+      "A single record of stats, badges, and milestones per rep",
+      "Makes progress — and effort — impossible to overlook",
+      "Gives reps ownership of their own performance story",
+    ],
+    mockup: "profile-toggle",
+  },
+  {
+    module: "core",
     id: "goals",
     title: "Goals",
     desc: "Make the number explicit and track pacing live — so everyone knows if today's effort is enough.",
@@ -110,19 +132,6 @@ const FEATURES_DATA: Feature[] = [
   },
   {
     module: "core",
-    id: "profiles",
-    title: "Profiles",
-    desc: "One place for every rep's performance, progress, and recognition — so good work gets seen.",
-    body: "Every rep's performance, progress, and recognition in one place. When good work is visible, it gets repeated — and reps can see exactly how they stack up and what to chase next.",
-    bullets: [
-      "A single record of stats, badges, and milestones per rep",
-      "Makes progress — and effort — impossible to overlook",
-      "Gives reps ownership of their own performance story",
-    ],
-    mockup: "profile-toggle",
-  },
-  {
-    module: "core",
     id: "competitions-and-incentives",
     title: "Competitions & Incentives",
     desc: "Launch competitions and incentives in minutes — focused on the behaviors that move revenue.",
@@ -132,8 +141,7 @@ const FEATURES_DATA: Feature[] = [
       "Tie rewards to the specific behaviors you want more of",
       "Track standings live and fulfill incentives without leaving Enzy",
     ],
-    image:
-      "https://images.unsplash.com/photo-1642104744809-14b986179927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmNlbnRpdmUlMjByZXdhcmQlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+    mockup: "competitions-loop",
   },
   {
     module: "core",
@@ -146,13 +154,14 @@ const FEATURES_DATA: Feature[] = [
       "Celebrate wins and coach the moment the data moves",
       "Less scattered noise, more aligned action",
     ],
-    image:
-      "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
+    image: "/system/messaging.png",
+    imageDesktop: "/system/messaging-ipad.png",
+    mockup: "phone-full",
   },
   {
     module: "core",
-    id: "media-library",
-    title: "Media Library",
+    id: "library",
+    title: "Library",
     desc: "Approved assets, scripts, and training in one place — so every rep sells the same way.",
     body: "When every rep has the approved assets, scripts, and training in one place, the whole team sells the same way. No digging through folders, no improvising the pitch.",
     bullets: [
@@ -160,8 +169,8 @@ const FEATURES_DATA: Feature[] = [
       "Every rep pitches from the same playbook",
       "Update once and the whole field is current",
     ],
-    image:
-      "https://images.unsplash.com/photo-1650338996177-674884e51683?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZWRpYSUyMGxpYnJhcnklMjBmb2xkZXIlMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/system/library.png",
+    mockup: "phone-cutoff",
   },
 
   // ---------- Sell ----------
@@ -192,8 +201,10 @@ const FEATURES_DATA: Feature[] = [
       "Nothing slips through the cracks between visits",
       "SMS campaigns — drip and broadcast texts that turn cold lists into booked conversations",
     ],
-    image:
-      "https://images.unsplash.com/photo-1702479743967-3dcccd4a671d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlbnRlcnByaXNlJTIwY3JtJTIwZGFya3xlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/system/lead-management.png",
+    mockup: "phone-cutoff",
+    // Fade begins at Ethan Walker's "Wed 30" appointment row.
+    cutoffFrac: 0.745,
   },
   {
     module: "sell",
@@ -211,8 +222,8 @@ const FEATURES_DATA: Feature[] = [
   },
   {
     module: "sell",
-    id: "appt-scheduling",
-    title: "Appt Scheduling",
+    id: "calendar",
+    title: "Calendar",
     desc: "Book, confirm, and reschedule appointments without the back-and-forth.",
     body: "Kill the back-and-forth. Book, confirm, and reschedule appointments in one flow — so reps spend their time in conversations instead of coordinating them.",
     bullets: [
@@ -352,6 +363,102 @@ function PhoneMockup({
             it never terminates on a hard line. */}
         <div
           className={`pointer-events-none absolute inset-0 border border-b-0 border-black/12 dark:border-white/15 ${radius}`}
+          style={{ maskImage: FADE, WebkitMaskImage: FADE }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Like PhoneMockup but shows the *whole* capture — no bottom crop, no fade, no
+ * blur. The frame matches each capture's true aspect (mobile 393×852, desktop
+ * iPad 1668×2388) so the image fills it exactly with nothing cut off, and the
+ * device edge runs all the way around.
+ */
+function StaticPhoneMockup({
+  src,
+  srcDesktop,
+  alt,
+}: {
+  src: string;
+  /** Wider capture (e.g. iPad) shown at the desktop breakpoint when provided. */
+  srcDesktop?: string;
+  alt: string;
+}) {
+  const isDesktop = useIsDesktop();
+  const useWide = isDesktop && !!srcDesktop;
+  const radius = useWide ? "rounded-[28px]" : "rounded-[44px]";
+  const frame = useWide
+    ? "max-w-[440px] aspect-[1668/2388]"
+    : "max-w-[300px] aspect-[393/852]";
+  return (
+    <div className="flex justify-center">
+      <div className={`relative w-full overflow-hidden ${frame} ${radius}`}>
+        <ImageWithFallback
+          src={useWide ? (srcDesktop as string) : src}
+          alt={alt}
+          sizes={useWide ? "440px" : "(max-width: 768px) 90vw, 300px"}
+          className="absolute inset-0 h-full w-full object-cover object-top"
+        />
+        <div
+          className={`pointer-events-none absolute inset-0 border border-black/12 dark:border-white/15 ${radius}`}
+        />
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A single capture framed as the top of a phone (rounded top, border on the
+ * top + sides) with the lower portion dissolving out — the same treatment as
+ * the leaderboard, but the dissolve is placed at a deliberate content break so
+ * everything above stays crisp and the rest melts into the panel. One image is
+ * used at every breakpoint (no separate desktop crop).
+ *
+ * `dividerFrac` is the image-height fraction (0–1) where the dissolve begins —
+ * e.g. the divider above the Library's "Trainings" row, or the gap between two
+ * lead cards. The frame is cropped just past it so the fade completes at the
+ * frame's foot.
+ */
+function CutoffPhoneMockup({
+  src,
+  alt,
+  dividerFrac,
+}: {
+  src: string;
+  alt: string;
+  dividerFrac: number;
+}) {
+  // Width of the dissolve, as a fraction of image height. The frame is cropped
+  // at dividerFrac + BAND so the fade runs out exactly at the frame's foot;
+  // mask percentages are relative to that cropped frame.
+  const BAND = 0.113;
+  const crop = dividerFrac + BAND;
+  const startPct = (dividerFrac / crop) * 100;
+  const FADE = easedMask(startPct, 100);
+  const BLUR = easedMask(startPct - 7, 98, true);
+  return (
+    <div className="flex justify-center">
+      <div
+        className="relative w-full max-w-[300px] overflow-hidden rounded-t-[40px]"
+        style={{ aspectRatio: `393 / ${Math.round(852 * crop)}` }}
+      >
+        <ImageWithFallback
+          src={src}
+          alt={alt}
+          sizes="(max-width: 768px) 90vw, 300px"
+          className="absolute inset-0 h-full w-full object-cover object-top"
+          style={{ maskImage: FADE, WebkitMaskImage: FADE }}
+        />
+        {/* Progressive blur strengthening toward the bottom edge */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 backdrop-blur-[5px]"
+          style={{ maskImage: BLUR, WebkitMaskImage: BLUR }}
+        />
+        {/* Device edge — top + sides only, faded out with the same band. */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-t-[40px] border border-b-0 border-black/12 dark:border-white/15"
           style={{ maskImage: FADE, WebkitMaskImage: FADE }}
         />
       </div>
@@ -534,6 +641,20 @@ function FeatureRow({
                 <AiSessionMockup />
               ) : feature.mockup === "profile-toggle" ? (
                 <ProfileMockup />
+              ) : feature.mockup === "competitions-loop" ? (
+                <CompetitionsMockup />
+              ) : feature.mockup === "phone-full" ? (
+                <StaticPhoneMockup
+                  src={feature.image ?? ""}
+                  srcDesktop={feature.imageDesktop}
+                  alt={feature.title}
+                />
+              ) : feature.mockup === "phone-cutoff" ? (
+                <CutoffPhoneMockup
+                  src={feature.image ?? ""}
+                  alt={feature.title}
+                  dividerFrac={feature.cutoffFrac ?? 0.767}
+                />
               ) : feature.mockup === "phone" ? (
                 <PhoneMockup
                   src={feature.image ?? ""}
@@ -786,6 +907,6 @@ function FeatureBrowser() {
   );
 }
 
-export function Features() {
+export function System() {
   return <FeatureBrowser />;
 }
