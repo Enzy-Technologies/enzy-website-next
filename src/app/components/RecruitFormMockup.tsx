@@ -26,7 +26,7 @@ const REP = {
 export function RecruitFormMockup() {
   return (
     <div className="flex justify-center">
-      <div className="relative w-full max-w-[440px] overflow-hidden rounded-[14px] border border-black/10 bg-[#ececec] shadow-[0_30px_80px_-30px_rgba(0,0,0,0.30)] lg:max-w-[600px] dark:border-white/12 dark:bg-[#1b1f24] dark:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+      <div className="relative w-full max-w-[440px] overflow-hidden rounded-[14px] border border-black/10 bg-[#ececec] lg:max-w-[600px] dark:border-white/12 dark:bg-[#1b1f24]">
         {/* ---- Browser chrome ---- */}
         {/* Tab strip */}
         <div className="flex items-center gap-3 px-3.5 pt-3">

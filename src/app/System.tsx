@@ -7,7 +7,9 @@ import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { AiSessionMockup } from "./components/AiSessionMockup";
 import { ProfileMockup } from "./components/ProfileMockup";
 import { CompetitionsMockup } from "./components/CompetitionsMockup";
+import { CanvassingMockup } from "./components/CanvassingMockup";
 import { RecruitFormMockup } from "./components/RecruitFormMockup";
+import { GoalsMockup } from "./components/GoalsMockup";
 import { BlurReveal } from "./components/BlurReveal";
 import { MEDIA } from "./lib/breakpoints";
 
@@ -66,8 +68,10 @@ type Feature = {
    * walkthrough (list → milestone with filling rings → bracket → repeat).
    * `"browser"` frames a public web page in a desktop browser window (tab strip
    * + address bar) instead of a phone — used for the public-facing recruit form.
+   * `"canvassing-loop"` renders the auto-playing canvassing walkthrough
+   * (territory map → tap red area → zoom to house pins → tap a pin → repeat).
    */
-  mockup?: "phone" | "phone-full" | "phone-cutoff" | "ai-loop" | "profile-toggle" | "competitions-loop" | "browser";
+  mockup?: "phone" | "phone-full" | "phone-cutoff" | "ai-loop" | "profile-toggle" | "competitions-loop" | "browser" | "canvassing-loop" | "goals-collage";
   /**
    * For `"phone-cutoff"`: image-height fraction (0–1) where the dissolve
    * begins — a natural content break (a divider or the gap between rows).
@@ -130,8 +134,7 @@ const FEATURES_DATA: Feature[] = [
       "Track pacing live against the target — not at month-end",
       "Turns a quota into a daily behavior the whole team can see",
     ],
-    image:
-      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    mockup: "goals-collage",
   },
   {
     module: "core",
@@ -189,8 +192,7 @@ const FEATURES_DATA: Feature[] = [
       "Weather Maps — point reps at the storm-hit streets where demand is live",
       "See where the team is working in real time",
     ],
-    image:
-      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXAlMjB0ZXJyaXRvcnklMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+    mockup: "canvassing-loop",
   },
   {
     module: "sell",
@@ -649,6 +651,10 @@ function FeatureRow({
                 <CompetitionsMockup />
               ) : feature.mockup === "browser" ? (
                 <RecruitFormMockup />
+              ) : feature.mockup === "canvassing-loop" ? (
+                <CanvassingMockup />
+              ) : feature.mockup === "goals-collage" ? (
+                <GoalsMockup />
               ) : feature.mockup === "phone-full" ? (
                 <StaticPhoneMockup
                   src={feature.image ?? ""}
@@ -729,6 +735,16 @@ function FeatureBrowser() {
   const handleModuleChange = (id: ModuleId) => {
     setActiveModule(id);
     setOpenId(FEATURES_DATA.find((f) => f.module === id)?.id ?? null);
+    // Reset the reading position to the top of the page so the new module
+    // opens from its start. Without this, switching modules while scrolled
+    // deep into the previous one leaves the viewport mid-page with the first
+    // feature expanded but its title hidden above the fixed nav. Instant (not
+    // smooth) on purpose: a smooth scroll gets cancelled by scroll-anchoring
+    // when the panel swaps height during the module transition, and it runs
+    // synchronously here before the re-render so it reliably sticks.
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "auto" });
+    }
   };
 
   // Toggle a feature, keeping the tapped title at the exact viewport position

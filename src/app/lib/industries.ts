@@ -16,7 +16,6 @@ export const FIELD_SALES_INDUSTRIES = [
   "Network Marketing",
   "Home Security",
   "Permanent Lighting",
-  "Medical Devices",
   "Automotive",
 ];
 
