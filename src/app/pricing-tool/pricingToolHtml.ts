@@ -222,7 +222,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="module-card" id="card-recruit">
 <div class="module-header"><div class="module-name"><div class="module-icon recruit-icon">👥</div>Recruit Module</div><div class="toggle" id="toggle-recruit"></div></div>
-<div class="module-features"><span class="feature-chip">Recruiting Center</span><span class="feature-chip">Public Recruit Link</span><span class="feature-chip">Onboarding Workflow</span></div>
+<div class="module-features"><span class="feature-chip">Recruiting Center</span><span class="feature-chip">Public Recruit Form</span><span class="feature-chip">Onboarding</span></div>
 </div>
 </div>
 <div class="section">

@@ -82,8 +82,8 @@ const SYSTEM_SECTIONS = [
     desc: "Recruiting add-on.",
     items: [
       "Recruiting Center",
-      "Public Recruit Link",
-      "Onboarding Workflow",
+      "Public Recruit Form",
+      "Onboarding",
     ],
   },
 ];

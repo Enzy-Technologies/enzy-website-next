@@ -7,6 +7,7 @@ import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { AiSessionMockup } from "./components/AiSessionMockup";
 import { ProfileMockup } from "./components/ProfileMockup";
 import { CompetitionsMockup } from "./components/CompetitionsMockup";
+import { RecruitFormMockup } from "./components/RecruitFormMockup";
 import { BlurReveal } from "./components/BlurReveal";
 import { MEDIA } from "./lib/breakpoints";
 
@@ -63,8 +64,10 @@ type Feature = {
    * renders the rep profile that toggles between its Badges and Reports tabs.
    * `"competitions-loop"` renders the auto-playing Competitions & Incentives
    * walkthrough (list → milestone with filling rings → bracket → repeat).
+   * `"browser"` frames a public web page in a desktop browser window (tab strip
+   * + address bar) instead of a phone — used for the public-facing recruit form.
    */
-  mockup?: "phone" | "phone-full" | "phone-cutoff" | "ai-loop" | "profile-toggle" | "competitions-loop";
+  mockup?: "phone" | "phone-full" | "phone-cutoff" | "ai-loop" | "profile-toggle" | "competitions-loop" | "browser";
   /**
    * For `"phone-cutoff"`: image-height fraction (0–1) where the dissolve
    * begins — a natural content break (a divider or the gap between rows).
@@ -249,13 +252,13 @@ const FEATURES_DATA: Feature[] = [
       "Move applicants through stages like a deal",
       "Keep your best prospects from going cold",
     ],
-    image:
-      "https://images.unsplash.com/photo-1719400471588-575b23e27bd7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxyZWNydWl0aW5nJTIwb25ib2FyZGluZyUyMHRlY2glMjBkYXJrfGVufDF8fHx8MTc3NTY3NzQxOXww&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/system/recruiting-center.png",
+    mockup: "phone-full",
   },
   {
     module: "recruit",
-    id: "public-recruit-link",
-    title: "Public Recruit Link",
+    id: "public-recruit-form",
+    title: "Public Recruit Form",
     desc: "A branded apply page that funnels candidates straight into your pipeline.",
     body: "A branded apply page that funnels candidates straight into your pipeline. Share it anywhere — every applicant lands in the same system your recruiters already work.",
     bullets: [
@@ -263,13 +266,12 @@ const FEATURES_DATA: Feature[] = [
       "Applicants flow directly into your pipeline",
       "Share on social, in ads, or rep-to-rep",
     ],
-    image:
-      "https://images.unsplash.com/photo-1586281380349-632531db7ed4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    mockup: "browser",
   },
   {
     module: "recruit",
-    id: "onboarding-workflow",
-    title: "Onboarding Workflow",
+    id: "onboarding",
+    title: "Onboarding",
     desc: "Automate paperwork, training, and first-week milestones — so new reps start selling sooner.",
     body: "The faster a new rep starts selling, the faster they stick. Automate paperwork, training, and first-week milestones so onboarding runs itself — and nobody stalls waiting on a manual step.",
     bullets: [
@@ -277,8 +279,8 @@ const FEATURES_DATA: Feature[] = [
       "Document Library — forms, agreements, and training docs, signed, sorted, and searchable",
       "New reps ramp to productive sooner, with less manager lift",
     ],
-    image:
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0YXNrJTIwbGlzdCUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/system/onboarding.png",
+    mockup: "phone-full",
   },
 ];
 
@@ -645,6 +647,8 @@ function FeatureRow({
                 <ProfileMockup />
               ) : feature.mockup === "competitions-loop" ? (
                 <CompetitionsMockup />
+              ) : feature.mockup === "browser" ? (
+                <RecruitFormMockup />
               ) : feature.mockup === "phone-full" ? (
                 <StaticPhoneMockup
                   src={feature.image ?? ""}
