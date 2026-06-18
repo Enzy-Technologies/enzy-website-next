@@ -5,12 +5,11 @@ import { MainNavigation } from "./MainNavigation";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "./ThemeProvider";
-import { Sun, Moon, Wand2, ArrowRight } from "lucide-react";
+import { Sun, Moon, ArrowRight } from "lucide-react";
 
 import { usePathname } from "next/navigation";
 import { CTAButton } from "./CTAButton";
 import { BOOK_DEMO_CTA_STYLE } from "../lib/booking";
-import { requestParticlesToggle } from "../lib/particles";
 
 const LOGIN_HREF = "https://app.enzy.co/login";
 
@@ -127,8 +126,8 @@ export function Header() {
 
         <div className="flex-1 hidden lg:flex justify-end relative items-center gap-2 md:gap-3 order-2 lg:order-3">
           {/* Desktop right-cluster ordering (left → right):
-              Log In · Book a Demo · Pixel sphere · Theme toggle.
-              The two icon buttons live to the RIGHT of the primary CTA so
+              Log In · Book a Demo · Theme toggle.
+              The theme toggle lives to the RIGHT of the primary CTA so
               the Book-a-Demo pill stays visually anchored to the centered
               navigation, with the utility chrome trailing it. */}
           {!isLandingPage && (
@@ -152,18 +151,6 @@ export function Header() {
               <ArrowRight size={14} strokeWidth={2.25} aria-hidden />
             </CTAButton>
           )}
-
-          <button
-            onClick={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              requestParticlesToggle(rect.left + rect.width / 2, rect.top + rect.height / 2);
-            }}
-            className="hidden lg:flex items-center justify-center w-[36px] h-[36px] rounded-full border backdrop-blur-md transition-colors pointer-events-auto z-50 border-black/20 bg-black/5 hover:bg-black/10 text-black dark:border-white/20 dark:bg-white/5 dark:hover:bg-white/10 dark:text-white"
-            aria-label="Toggle pixels"
-            title="Toggle pixels"
-          >
-            <Wand2 size={18} />
-          </button>
 
           <button
             onClick={toggleTheme}

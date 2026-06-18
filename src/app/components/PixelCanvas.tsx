@@ -3,7 +3,6 @@
 import React, { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "./ThemeProvider";
-import { writeParticlesDisabled } from "../lib/particles";
 import { DESKTOP_MIN, MEDIA } from "../lib/breakpoints";
 
 interface AmbientParticle {
@@ -53,7 +52,6 @@ export function PixelCanvas() {
   const holdTargetRef = useRef<{ x: number; y: number } | null>(null);
   const renderCenterRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const lastHoldTargetRef = useRef<{ x: number; y: number } | null>(null);
-  const selectionDisabledRef = useRef(false);
   const sphereFocusRef = useRef<{
     active: boolean;
     x: number;
@@ -127,234 +125,6 @@ export function PixelCanvas() {
     return () => {
       window.removeEventListener("enzy-bg-pause", onPause as EventListener);
       document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, []);
-
-  useEffect(() => {
-    const onSphere = (e: Event) => {
-      const ev = e as CustomEvent<{ active?: boolean; triggerClick?: boolean; x: number; y: number; force?: boolean }>;
-      if (!ev.detail) return;
-      if (easterEggConsumedRef.current && !ev.detail.force) return;
-      
-      const isActive = ev.detail.triggerClick ? true : !!ev.detail.active;
-      
-      if (isActive) {
-        // If forced, reset consumption state so the animation can play
-        if (ev.detail.force) {
-          easterEggConsumedRef.current = false;
-        }
-        if (ev.detail.triggerClick) {
-          autoConsumeRef.current = true;
-        }
-      }
-      
-      // Starting a new hold should reset readiness tracking.
-      if (isActive && !sphereFocusRef.current.active) {
-        sphereFormedAtRef.current = null;
-        sphereReadyRef.current = false;
-
-        // Boost density for the gather by cloning existing particles in-place.
-        // This keeps the effect "made of the same particles" (no separate layer),
-        // and the clones still travel from the same origin positions.
-        if (!gatherBoostedRef.current) {
-          const base = ambientParticlesRef.current;
-          const target = 2400;
-          if (base.length > 0 && base.length < target) {
-            const clonesNeeded = target - base.length;
-            const clones: AmbientParticle[] = [];
-            for (let i = 0; i < clonesNeeded; i++) {
-              const p = base[i % base.length];
-              const r = Math.random();
-              const capBiasedBand =
-                r < 0.18
-                  ? Math.random() * 0.08 // top cap
-                  : r > 0.82
-                    ? 0.92 + Math.random() * 0.08 // bottom cap
-                    : Math.random();
-              clones.push({
-                x: p.x,
-                y: p.y,
-                baseX: p.x,
-                baseY: p.y,
-                vx: p.vx + (Math.random() - 0.5) * 0.18,
-                vy: p.vy + (Math.random() - 0.5) * 0.18,
-                size: Math.max(0.35, p.size * (0.55 + Math.random() * 0.35)),
-                speed: p.speed,
-                isGreen: Math.random() > 0.94, // fewer greens so it's not noisy
-                sphereTheta: Math.random() * Math.PI * 2,
-                spherePhi: Math.acos(2 * Math.random() - 1),
-                sphereBand: capBiasedBand,
-                sphereKind: Math.random() < 0.6 ? "fill" : "band",
-              });
-            }
-            ambientParticlesRef.current = base.concat(clones);
-          }
-          gatherBoostedRef.current = true;
-        }
-      }
-      sphereFocusRef.current.active = isActive;
-      sphereFocusRef.current.x = ev.detail.x;
-      sphereFocusRef.current.y = ev.detail.y;
-      
-      // Manually trigger begin/end logic since we removed the event listeners
-      if (isActive) {
-        const cx = Math.max(24, Math.min(window.innerWidth - 24, ev.detail.x));
-        const viewportH = window.innerHeight;
-        const viewportW = window.innerWidth;
-        const sphereRadius = Math.min(viewportW, viewportH) * 0.24;
-        const margin = 18;
-        const cy = Math.max(sphereRadius + margin, Math.min(viewportH - sphereRadius - margin, ev.detail.y));
-        holdTargetRef.current = { x: cx, y: cy };
-        easterEggHoldingRef.current = true;
-        
-        // Snap partway in immediately so the gather feels responsive on touch.
-        sphereFocusRef.current.strength = Math.max(sphereFocusRef.current.strength, 0.22);
-      } else {
-        easterEggHoldingRef.current = false;
-        holdTargetRef.current = null;
-        autoConsumeRef.current = false;
-      }
-    };
-
-    window.addEventListener("enzy-pixel-sphere", onSphere as EventListener);
-    return () => window.removeEventListener("enzy-pixel-sphere", onSphere as EventListener);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    let pressTimer: number | null = null;
-    let pointerId: number | null = null;
-    let startX = 0;
-    let startY = 0;
-    let active = false;
-    let pointerType: string | null = null;
-
-    const setSelectionDisabled = (disabled: boolean) => {
-      if (selectionDisabledRef.current === disabled) return;
-      selectionDisabledRef.current = disabled;
-      const el = document.documentElement;
-      if (disabled) {
-        el.style.userSelect = "none";
-        (el.style as any).webkitUserSelect = "none";
-        (el.style as any).webkitTouchCallout = "none";
-        (el.style as any).webkitTapHighlightColor = "transparent";
-        (el.style as any).touchAction = "none";
-        if (document.body) (document.body.style as any).touchAction = "none";
-        try {
-          window.getSelection?.()?.removeAllRanges();
-        } catch {}
-      } else {
-        el.style.userSelect = "";
-        (el.style as any).webkitUserSelect = "";
-        (el.style as any).webkitTouchCallout = "";
-        (el.style as any).webkitTapHighlightColor = "";
-        (el.style as any).touchAction = "";
-        if (document.body) (document.body.style as any).touchAction = "";
-      }
-    };
-
-    const isInteractiveTarget = (t: EventTarget | null) => {
-      if (!(t instanceof Element)) return false;
-      return Boolean(t.closest("a,button,input,textarea,select,[role='button'],[role='link']"));
-    };
-
-    const begin = (x: number, y: number) => {
-      if (easterEggConsumedRef.current) return;
-      const cx = Math.max(24, Math.min(window.innerWidth - 24, x));
-      const viewportH = window.innerHeight;
-      const viewportW = window.innerWidth;
-      const sphereRadius = Math.min(viewportW, viewportH) * 0.24;
-      const margin = 18;
-      // Center the sphere at the hold point (clamped only to keep it on-screen).
-      const cy = Math.max(sphereRadius + margin, Math.min(viewportH - sphereRadius - margin, y));
-      holdTargetRef.current = { x: cx, y: cy };
-      easterEggHoldingRef.current = true;
-      // window.dispatchEvent(new CustomEvent("enzy-pixel-sphere", { detail: { active: true, x: cx, y: cy } }));
-    };
-
-    const end = () => {
-      easterEggHoldingRef.current = false;
-      holdTargetRef.current = null;
-      setSelectionDisabled(false);
-      // window.dispatchEvent(
-      //   new CustomEvent("enzy-pixel-sphere", {
-      //     detail: { active: false, x: sphereFocusRef.current.x, y: sphereFocusRef.current.y },
-      //   })
-      // );
-    };
-
-    const onPointerDown = (e: PointerEvent) => {
-      if (easterEggConsumedRef.current) return;
-      if (e.pointerType !== "touch" && e.pointerType !== "mouse") return;
-      if (isInteractiveTarget(e.target)) return;
-      if (pointerId !== null) return;
-      if (e.pointerType === "mouse") {
-        // Only left click-and-hold.
-        if (e.button !== 0) return;
-      }
-
-      pointerId = e.pointerId;
-      pointerType = e.pointerType;
-      startX = e.clientX;
-      startY = e.clientY;
-
-      // Prevent iOS long-press magnifier/callout from ever engaging.
-      if (pointerType === "touch") {
-        setSelectionDisabled(true);
-        e.preventDefault();
-      }
-
-      const delayMs = e.pointerType === "mouse" ? 420 : 260;
-      pressTimer = window.setTimeout(() => {
-        active = true;
-        begin(startX, startY);
-        if (navigator.vibrate) navigator.vibrate(12);
-      }, delayMs);
-    };
-
-    const onPointerMove = (e: PointerEvent) => {
-      if (pointerId === null || e.pointerId !== pointerId) return;
-      const dx = e.clientX - startX;
-      const dy = e.clientY - startY;
-      const moved = Math.sqrt(dx * dx + dy * dy);
-      const cancelThreshold = pointerType === "mouse" ? 6 : 12;
-      if (!active && moved > cancelThreshold) {
-        if (pressTimer !== null) window.clearTimeout(pressTimer);
-        pressTimer = null;
-        pointerId = null;
-        pointerType = null;
-        setSelectionDisabled(false);
-      }
-      if (active) {
-        if (pointerType === "touch") e.preventDefault();
-        // Keep gathering at the current finger point.
-        begin(e.clientX, e.clientY);
-      }
-    };
-
-    const onPointerUpOrCancel = (e: PointerEvent) => {
-      if (pointerId === null || e.pointerId !== pointerId) return;
-      if (pressTimer !== null) window.clearTimeout(pressTimer);
-      pressTimer = null;
-      pointerId = null;
-      pointerType = null;
-      active = false;
-      end();
-    };
-
-    // window.addEventListener("pointerdown", onPointerDown, { capture: true, passive: false });
-    // window.addEventListener("pointermove", onPointerMove, { capture: true, passive: false });
-    // window.addEventListener("pointerup", onPointerUpOrCancel, { capture: true });
-    // window.addEventListener("pointercancel", onPointerUpOrCancel, { capture: true });
-
-    return () => {
-      if (pressTimer !== null) window.clearTimeout(pressTimer);
-      setSelectionDisabled(false);
-      // window.removeEventListener("pointerdown", onPointerDown, { capture: true } as any);
-      // window.removeEventListener("pointermove", onPointerMove, { capture: true } as any);
-      // window.removeEventListener("pointerup", onPointerUpOrCancel, { capture: true } as any);
-      // window.removeEventListener("pointercancel", onPointerUpOrCancel, { capture: true } as any);
     };
   }, []);
 
@@ -1241,10 +1011,6 @@ export function PixelCanvas() {
         sphereReadyRef.current = false;
         gatherBoostedRef.current = false;
         renderCenterRef.current = { x: 0, y: 0 };
-        // Persist the off-state site-wide so the canvas stays gone across page
-        // navigations and reloads (SiteShell reads this and stops rendering us).
-        // The particles are already cleared above, so unmounting is seamless.
-        writeParticlesDisabled(true);
       }
 
       lastHoldingRef.current = holding;

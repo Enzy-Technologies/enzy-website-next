@@ -442,8 +442,6 @@ export function MainNavigation() {
 
       {/* Mobile header controls (theme + menu) */}
       <div ref={mobileControlsRef} className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
-        {/* The pixel-toggle "magic wand" was removed on mobile — the particle
-            canvas doesn't run on phones, so the control had nothing to toggle. */}
         <button
           onClick={toggleTheme}
           className="p-2.5 transition-colors active:scale-95 text-black/80 hover:text-black dark:text-white/85 dark:hover:text-white"

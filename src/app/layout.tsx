@@ -77,12 +77,12 @@ export const viewport: Viewport = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  // Theme + pixel-canvas state are applied entirely client-side by the inline
-  // pre-paint script below (which sets `.dark` / `.particles-off` on <html>
-  // before first paint, from the cookie/localStorage). The server intentionally
-  // does NOT read those cookies — that keeps every route statically renderable
-  // and prefetchable (reading cookies() here would force dynamic rendering of
-  // the whole site). Theme appearance is driven by CSS `dark:` variants.
+  // Theme is applied entirely client-side by the inline pre-paint script below
+  // (which sets `.dark` on <html> before first paint, from the cookie/localStorage).
+  // The server intentionally does NOT read the cookie — that keeps every route
+  // statically renderable and prefetchable (reading cookies() here would force
+  // dynamic rendering of the whole site). Theme appearance is driven by CSS
+  // `dark:` variants.
 
   const logoUrl =
     brandLogoUrl.startsWith("http") ? brandLogoUrl : `${siteUrl}${brandLogoUrl.startsWith("/") ? "" : "/"}${brandLogoUrl}`
@@ -130,15 +130,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning className={ivyOra.variable}>
       <head>
-        {/* Apply theme + pixel-canvas state BEFORE first paint, fully client-side,
-            so routes can stay static (no server cookie read). Reads the
-            enzy-theme / enzy-particles cookies (falling back to localStorage and
-            migrating it into a cookie), then sets `.dark` / `.particles-off` on
-            <html>. CSS `dark:` variants + SiteShell key off these classes, so
-            the correct theme paints immediately with no flash. */}
+        {/* Apply theme BEFORE first paint, fully client-side, so routes can stay
+            static (no server cookie read). Reads the enzy-theme cookie (falling
+            back to localStorage and migrating it into a cookie), then sets `.dark`
+            on <html>. CSS `dark:` variants key off this class, so the correct
+            theme paints immediately with no flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}var pm=document.cookie.match(/(?:^|; )enzy-particles=([^;]*)/);var p=pm?decodeURIComponent(pm[1]):null;if(!p){p=localStorage.getItem('enzy-particles');}if(p==='off'){document.documentElement.classList.add('particles-off');}else{document.documentElement.classList.remove('particles-off');}}catch(e){}})();`,
+            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )enzy-theme=([^;]*)/);var t=m?decodeURIComponent(m[1]):null;if(!t){t=localStorage.getItem('enzy-theme');if(t){document.cookie='enzy-theme='+t+';path=/;max-age=31536000;samesite=lax';}}if(t==='dark'){document.documentElement.classList.add('dark');}else{document.documentElement.classList.remove('dark');}}catch(e){}})();`,
           }}
         />
         {/* Warm up the HubSpot embed so forms open instantly. Rendering a form
