@@ -217,8 +217,10 @@ const FEATURES_DATA: Feature[] = [
       "Track opens and engagement to time the follow-up",
       "Keeps the rep top-of-mind after they leave the door",
     ],
-    image:
-      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080",
+    image: "/system/digital-business-card.png",
+    mockup: "phone-cutoff",
+    // Fade begins at the "Spencer Morgan" contact row.
+    cutoffFrac: 0.805,
   },
   {
     module: "sell",
@@ -231,8 +233,8 @@ const FEATURES_DATA: Feature[] = [
       "Automatic reminders cut no-shows",
       "Reschedule in a tap — no lost slots",
     ],
-    image:
-      "https://images.unsplash.com/photo-1658953229625-aad99d7603b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYWxlbmRhciUyMGFwcCUyMGRhcmslMjBVSXxlbnwxfHx8fDE3NzU2Nzc0MTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    image: "/system/calendar-month.png",
+    mockup: "phone-full",
   },
 
   // ---------- Recruit ----------
