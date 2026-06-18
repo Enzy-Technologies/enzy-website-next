@@ -56,18 +56,18 @@ const L = {
 const INDUSTRY_DETAIL: Record<string, IndustryDetail> = {
   // ---- Field ----
   Solar: {
-    kpis: ["Doors knocked", "Sits set", "Sits sat", "Close %", "Self-gen vs company", "Installs / clawback"],
-    board: "Reps ranked by sits sat and net installs — not just signed deals that fall out before PTO.",
+    kpis: ["Doors knocked", "Appts set", "Appts sat", "Close %", "KW", "Installs"],
+    board: "Reps ranked by appts sat and net installs — not just signed deals that fall out before PTO.",
     reality:
-      "Sits live in a spreadsheet, competitions run in a group text, and a deal that clawed back before PTO still sits on top of the board. The culture you're building outruns the tools you're building it with.",
+      "Appointments live in a spreadsheet, competitions run in a group text, and a deal that clawed back before PTO still sits on top of the board. The culture you're building outruns the tools you're building it with.",
     plays: [
       {
         title: "Rank net installs, not signed paper",
-        desc: "A deal that falls out before PTO isn't revenue, so it shouldn't lead the board. Enzy ranks sits sat and installs that stick — reps chase the number that actually pays.",
+        desc: "A deal that falls out before PTO isn't revenue, so it shouldn't lead the board. Enzy ranks appts sat and installs that stick — reps chase the number that actually pays.",
       },
       {
-        title: "Self-gen and company leads, side by side",
-        desc: "Setters, closers, and self-closing reps each see exactly where they stand in real time — the visibility that turns a scattered 1099 floor into one live scoreboard.",
+        title: "Compete on kW, not just deal count",
+        desc: "A 12kW system and a 4kW system count the same on a deal board, but they don't pay the same. Put kW on the leaderboard and reps compete on system size — the number that actually moves revenue.",
       },
       {
         title: "Recognition the second it lands",
@@ -77,7 +77,7 @@ const INDUSTRY_DETAIL: Record<string, IndustryDetail> = {
     logos: [L.spartan, L.nusun, L.spwr],
   },
   "Pest Control": {
-    kpis: ["Doors", "Contacts", "Accounts sold", "Recurring %", "Reload rate", "Retention"],
+    kpis: ["Sold", "Serviced", "ACV", "Multiyear %", "Retention", "and more"],
     board: "Rank the funnel from doors to recurring accounts, so the board rewards what actually compounds.",
     reality:
       "Every summer the cracks show at the same time — mid-May, someone's pulling FieldRoutes data at 11pm, building a spreadsheet, and dropping it in a group chat that's stale 30 minutes later.",
@@ -159,7 +159,7 @@ const INDUSTRY_DETAIL: Record<string, IndustryDetail> = {
     ],
   },
   "Telecom & Fiber": {
-    kpis: ["Doors", "Connects", "Installs", "Taps passed", "Churn saves"],
+    kpis: ["Leads", "Sales", "Installs", "Products", "and more"],
     board: "Rank connects and completed installs across every door-knocking crew on one live board.",
     reality:
       "You don't own the leads, the carrier can reclaim territory overnight, and the data lives in three to six ISP systems that don't talk to each other. It's a solo field job that's easy to treat like a job, not a sport.",
@@ -409,7 +409,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
     hookLead: "A team you can't see is a team you can't ",
     hookItalic: "coach.",
     hookSub:
-      "The moment a rep leaves the office, most software goes dark. Enzy keeps your distributed crews visible, ranked, and moving — turning every door, sit, and close into a live score, a competition, and a signal a manager can act on today.",
+      "The moment a rep leaves the office, most software goes dark. Enzy keeps your distributed teams visible, ranked, and moving — turning every door, pitch, and close into a live score, a competition, and a signal a manager can act on today.",
     funnel: [
       {
         stage: "Knock",
@@ -417,9 +417,9 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
         enzy: "Every door logged and ranked live. The whole team sees who's working — no status texts required.",
       },
       {
-        stage: "Sit",
+        stage: "Pitch",
         tag: "Motivation",
-        enzy: "Sits fire competitions and recognition that pull the team forward instead of letting Monday's energy fade by Wednesday.",
+        enzy: "Pitches fire competitions and recognition that pull the team forward instead of letting Monday's energy fade by Wednesday.",
       },
       {
         stage: "Close",
@@ -429,8 +429,8 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
     ],
     rituals: [
       {
-        title: "Office vs. office",
-        desc: "Regional and office leaderboards turn scattered crews into one scoreboard. Distributed teams compete like they're in the same room.",
+        title: "Competition that scales",
+        desc: "Rep, team, and office-vs-office leaderboards turn scattered teams into one live scoreboard — distributed reps compete like they're in the same room instead of buried in separate group chats.",
       },
       {
         title: "Recognition that travels",
@@ -443,21 +443,21 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
       statLabel: "Increase in sales per rep after adopting Enzy",
       statSub: "Across 95,867 sales reps, controlling for company size, growth trajectory, and industry trends.",
       quote: {
-        text: "Before Enzy, we were reacting to results. Now we're anticipating them. It turned data into decision velocity, visibility into alignment, and motivation into momentum.",
-        name: "Ashleigh Pepper",
-        role: "CEO, Kaizen Promittere",
-        avatar: "/testimonials/ashleigh-pepper-2.jpg",
+        text: "Because we have a live scoreboard, they hit numbers I've never seen before.",
+        name: "Alex Smith",
+        role: "CEO, Spartan Solar",
+        avatar: "/testimonials/alex-smith.jpg",
       },
       showLogos: true,
     },
   },
   virtual: {
     label: "Virtual Sales",
-    descriptor: "Remote, inside & high-volume teams",
-    hookLead: "Remote killed the sales floor. Enzy puts it back on every ",
-    hookItalic: "screen.",
+    descriptor: "Remote & inside sales teams",
+    hookLead: "A dialer counts the calls. It can't recreate the ",
+    hookItalic: "floor.",
     hookSub:
-      "High-volume virtual teams live and die by pace. Enzy turns every dial, conversation, and close into a real-time wallboard, a competition, and a coaching signal — so a remote team runs with the energy and accountability of a packed sales floor.",
+      "Virtual sales teams live and die by pace. Enzy turns every dial, conversation, and close into a real-time wallboard, a competition, and a coaching signal — so a remote team runs with the energy and accountability of a packed sales floor.",
     funnel: [
       {
         stage: "Dial",
@@ -472,7 +472,7 @@ const MODE_CONTENT: Record<SalesMode, ModeContent> = {
       {
         stage: "Close",
         tag: "Manager action",
-        enzy: "When conversion dips mid-shift, the manager coaches now — not at next week's 1:1 when the leads are already cold.",
+        enzy: "When conversion dips, the manager coaches now — not when the leads are already cold.",
       },
     ],
     rituals: [
@@ -699,8 +699,13 @@ function ModeSection({ content }: { content: ModeContent }) {
           </motion.div>
       </div>
 
-      {/* 4. Rituals — competitions & recognition */}
+      {/* 4. Rituals — the two culture pillars (competition + recognition) Enzy
+          drives beyond raw metrics. Eyebrow frames them so they don't read as
+          two random cards. */}
       <div className="w-full mt-20 lg:mt-28 max-w-4xl mx-auto">
+        <div className="font-inter text-[11px] font-bold uppercase tracking-[0.25em] text-center mb-8 text-black/40 dark:text-white/40">
+          Competition &amp; recognition, built in
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
           {content.rituals.map((r) => (
             <div
