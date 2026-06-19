@@ -241,9 +241,9 @@ function HeroSectionLp({ experimentVariant }: { experimentVariant?: LpVariant })
 
         <div className="mt-12 md:mt-16 w-full max-w-4xl mx-auto text-center">
           <p
-            className="mb-4 font-inter text-[13px] font-semibold uppercase tracking-[0.18em] md:text-[15px] text-black/45 dark:text-white/45"
+            className="mb-4 font-inter text-[15px] font-semibold uppercase tracking-[0.18em] md:text-[15px] text-black/55 dark:text-white/55"
           >
-            Serving 180k users
+            Serving 236k users
           </p>
           <div className="-mx-1 [&_.simple-logo-marquee]:mt-0">
             <SimpleLogosMarquee />
@@ -293,9 +293,9 @@ function HeroSectionDefault() {
 
             <div className="w-full lg:max-w-[560px] mx-auto lg:mx-0">
               <p
-                className="font-inter text-[13px] md:text-[15px] tracking-[0.18em] uppercase font-semibold mb-3 text-black/55 dark:text-white/55"
+                className="font-inter text-[15px] md:text-[15px] tracking-[0.18em] uppercase font-semibold mb-3 text-black/55 dark:text-white/55"
               >
-                Serving 180k users
+                Serving 236k users
               </p>
               <SimpleLogosMarquee />
             </div>

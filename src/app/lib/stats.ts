@@ -19,5 +19,5 @@ export const SITE_STATS: SiteStat[] = [
   { value: "50", unit: "+", label: "Daily engagements per user" },
   { value: "21", unit: "%", label: "Increase in sales per rep after adopting Enzy" },
   { value: "7,000", unit: "+", label: "Incentives launched" },
-  { value: "180", unit: "K", label: "Active Enzy users" },
+  { value: "236", unit: "K", label: "Active Enzy users" },
 ];
