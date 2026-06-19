@@ -115,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       contactType: "Sales",
       email: "sales@enzy.ai",
     },
-    sameAs: ["https://www.linkedin.com/company/enzyco/"],
+    sameAs: ["https://www.linkedin.com/company/enzytechnologies/"],
   }
 
   const softwareApplicationSchema = {

@@ -13,7 +13,7 @@ export const FIELD_SALES_INDUSTRIES = [
   "HVAC",
   "Telecom & Fiber",
   "Residential Real Estate",
-  "Network Marketing",
+  "Direct Sales",
   "Home Security",
   "Permanent Lighting",
   "Automotive",
@@ -24,5 +24,5 @@ export const VIRTUAL_SALES_INDUSTRIES = [
   "Health Insurance",
   "Wholesale Real Estate",
   "Consulting",
-  "Information Product",
+  "Info Product",
 ];

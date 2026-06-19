@@ -200,7 +200,7 @@ const INDUSTRY_DETAIL: Record<string, IndustryDetail> = {
     ],
     logos: [L.space],
   },
-  "Network Marketing": {
+  "Direct Sales": {
     kpis: ["New recruits", "Personally enrolled", "Rank advancements", "Team volume", "Active legs"],
     board: "Recognition that scales across thousands of distributors — rank advancements broadcast company-wide.",
     reality:
@@ -362,7 +362,7 @@ const INDUSTRY_DETAIL: Record<string, IndustryDetail> = {
       },
     ],
   },
-  "Information Product": {
+  "Info Product": {
     kpis: ["Calls booked", "Show rate", "Close %", "Cash collected", "Stick rate"],
     board: "Rank close rate and cash collected in real time, recreating the sales-floor pace for a remote team.",
     reality:
