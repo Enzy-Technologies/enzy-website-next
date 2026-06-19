@@ -59,6 +59,11 @@ export function PhoneInHand({
   tapHint = false,
   imageSizes = DEFAULT_IMAGE_SIZES,
   imagePriority = true,
+  children,
+  showUnderlay = true,
+  screenOffsetX = 0,
+  screenOffsetY = 0,
+  screenGrow = 0,
 }: {
   /** Composition width in px (the hand image's rendered width). */
   cw: number;
@@ -70,12 +75,48 @@ export function PhoneInHand({
   tapHint?: boolean;
   imageSizes?: string;
   imagePriority?: boolean;
+  /**
+   * Custom screen to seat into the bezel cutout instead of the default
+   * `InteractivePhone`. The child is rendered into a PHONE_W×PHONE_H surface
+   * that is already scaled/positioned to the hand image, so it should author
+   * itself at that logical resolution. Used by the home `Playground` (`InteractivePhoneV2`)
+   * to swap in a screenshot-based phone while keeping this exact calibration.
+   */
+  children?: React.ReactNode;
+  /**
+   * The cream underlay masks hairline seams with the same off-white as the
+   * rebuilt React screens. It's meaningless (and the wrong color) behind a
+   * full-bleed screenshot — it peeks out as a cream border — so
+   * the home `Playground` turns it off; the screenshot reaches the bezel on its own.
+   */
+  showUnderlay?: boolean;
+  /**
+   * Fine seating nudge for the seated screen, in PHONE_W×PHONE_H logical px
+   * (positive = right / down). Defaults to 0 so other callers are untouched;
+   * the home `Playground` uses it to align its screenshots precisely in the bezel.
+   */
+  screenOffsetX?: number;
+  screenOffsetY?: number;
+  /**
+   * Grow the seated screen by this many logical px on every side (centered).
+   * Defaults to 0. The home `Playground` uses it to nudge the screenshot a hair
+   * larger so it fully fills the bezel cutout.
+   */
+  screenGrow?: number;
 }) {
   const screenScale = (ch * PHONE_HEIGHT_FRAC) / PHONE_H;
   const screenW = PHONE_W * screenScale;
   const screenH = PHONE_H * screenScale;
-  const screenLeft = cw * PHONE_CENTER_X_FRAC - screenW / 2;
-  const screenTop = ch * PHONE_CENTER_Y_FRAC - screenH / 2;
+  const screenLeft = cw * PHONE_CENTER_X_FRAC - screenW / 2 + screenOffsetX * screenScale;
+  const screenTop = ch * PHONE_CENTER_Y_FRAC - screenH / 2 + screenOffsetY * screenScale;
+
+  // Grow the screen by `screenGrow` logical px per side, centered: scale each
+  // axis so the rendered surface is 2*screenGrow logical px larger, and shift
+  // the top-left origin back by one side's worth to keep it centered.
+  const growScaleX = screenScale * ((PHONE_W + 2 * screenGrow) / PHONE_W);
+  const growScaleY = screenScale * ((PHONE_H + 2 * screenGrow) / PHONE_H);
+  const screenLeftGrown = screenLeft - screenGrow * screenScale;
+  const screenTopGrown = screenTop - screenGrow * screenScale;
 
   return (
     <>
@@ -83,32 +124,37 @@ export function PhoneInHand({
           its bounds. The iPhone bezel PNG (z-20) covers it everywhere except
           inside the screen cutout — so any hairline gap between the rendered
           Enzy UI (z-10, exact phone-screen size) and the inner edge of the bezel
-          shows the same off-white as the UI, never the page background. */}
-      <div
-        className="absolute z-[5]"
-        style={{
-          left: screenLeft - screenW * 0.01,
-          top: screenTop - screenH * 0.008,
-          width: screenW * 1.02,
-          height: screenH * 1.016,
-          backgroundColor: PHONE_SCREEN_BG,
-          borderRadius: PHONE_SCREEN_RADIUS * screenScale * 1.05,
-        }}
-        aria-hidden
-      />
+          shows the same off-white as the UI, never the page background. Disabled
+          for full-bleed screenshots, where cream is the wrong color. */}
+      {showUnderlay && (
+        <div
+          className="absolute z-[5]"
+          style={{
+            left: screenLeft - screenW * 0.01,
+            top: screenTop - screenH * 0.008,
+            width: screenW * 1.02,
+            height: screenH * 1.016,
+            backgroundColor: PHONE_SCREEN_BG,
+            borderRadius: PHONE_SCREEN_RADIUS * screenScale * 1.05,
+          }}
+          aria-hidden
+        />
+      )}
 
       <div
         className="absolute origin-top-left z-10 overflow-hidden"
         style={{
-          left: screenLeft,
-          top: screenTop,
+          left: screenLeftGrown,
+          top: screenTopGrown,
           width: PHONE_W,
           height: PHONE_H,
-          transform: `scale(${screenScale})`,
+          transform: `scale(${growScaleX}, ${growScaleY})`,
           borderRadius: PHONE_SCREEN_RADIUS,
         }}
       >
-        <InteractivePhone interactive={interactive} tapHint={tapHint} />
+        {children ?? (
+          <InteractivePhone interactive={interactive} tapHint={tapHint} />
+        )}
       </div>
 
       {/* Bezel + hand PNG, pinned to the top-left at the natural cw × ch size.

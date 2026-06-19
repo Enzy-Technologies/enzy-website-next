@@ -15,6 +15,7 @@ import {
   PHONE_CENTER_Y_FRAC,
   PHONE_HEIGHT_FRAC,
 } from "@/app/playground/PhoneInHand";
+import { InteractivePhoneV2 } from "@/app/playground/interactive/InteractivePhoneV2";
 import { LpBookDemoInline } from "@/app/components/landing/LpBookDemoScroll";
 import { BookDemoPage } from "@/app/components/BookDemo/BookDemoPage";
 import { LpHeroVideo } from "@/app/components/landing/LpHeroVideo";
@@ -143,13 +144,22 @@ function LpHeroPhone() {
         className="absolute left-1/2 top-0 -translate-x-1/2"
         style={{ width: cw, height: ch }}
       >
-        <PhoneInHand cw={cw} ch={ch} interactive tapHint />
+        <PhoneInHand
+          cw={cw}
+          ch={ch}
+          interactive
+          tapHint
+          showUnderlay={false}
+          screenOffsetX={-1}
+          screenOffsetY={2}
+          screenGrow={1}
+        >
+          <InteractivePhoneV2 interactive tapHint />
+        </PhoneInHand>
 
-        {/* "Tap to try" cue: a solid white pill with an orange border, set in
-            ivyora italic — the brand's display treatment (cf. "Until now." in
-            the hero headline) — so it reads as Enzy rather than a generic UI
-            tooltip. Floats in the gap above the phone with a gentle bob; a
-            downward arrow points at the live UI. */}
+        {/* "Tap to try" cue: a solid white pill with a green border (matching
+            the phone's pulse indicators). Floats in the gap above the phone with
+            a gentle bob; a downward arrow points at the live UI. */}
         <motion.div
           className="pointer-events-none absolute z-40"
           style={{ left: screenCenterX, top: screenTop - 16, transform: "translate(-50%, -100%)" }}
@@ -160,11 +170,11 @@ function LpHeroPhone() {
             y: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="flex items-center gap-1 rounded-full border border-[#ff8a00]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
+          <span className="flex items-center gap-1 rounded-full border border-[#0DA071]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
             <span className="font-[ui-monospace,'SF_Mono','Menlo',monospace] text-[13px] uppercase leading-none tracking-[-0.4px] [word-spacing:-3px] text-brand-dark">
               Tap to try
             </span>
-            <ArrowDown size={14} strokeWidth={2.25} className="text-[#ff8a00]" aria-hidden />
+            <ArrowDown size={14} strokeWidth={2.25} className="text-[#0DA071]" aria-hidden />
           </span>
         </motion.div>
       </div>

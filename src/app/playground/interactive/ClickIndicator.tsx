@@ -2,15 +2,10 @@
 
 import { motion } from "motion/react";
 
-// High-contrast "tap here" color — vivid orange that pops against the
-// cream phone UI and the dark bezel, and reads as a wayfinding cue
-// rather than a brand element (so it doesn't blend with the brand green).
-const INDICATOR_COLOR = "rgba(255, 138, 0, 0.45)";
-const INDICATOR_GLOW = "rgba(255, 138, 0, 0.55)";
-// "ping" variant tones. The center stays translucent so the icon it sits on
-// remains visible through it; the hollow rings carry the attention instead.
-const PING_DOT = "rgba(255, 138, 0, 0.4)";
-const PING_RING = "rgba(255, 138, 0, 0.6)";
+// Default "tap here" hue — vivid orange that pops against the cream phone UI.
+// Callers can override `rgb` (e.g. the home Playground uses brand
+// green). All the tones below are derived from this single "r, g, b" string.
+const DEFAULT_RGB = "255, 138, 0";
 
 type Props = {
   top: number | string;
@@ -25,6 +20,8 @@ type Props = {
    * a more legible "this is tappable" affordance for the landing hero.
    */
   variant?: "breathe" | "ping";
+  /** Base color as an "r, g, b" string. Defaults to the orange tap hue. */
+  rgb?: string;
 };
 
 export function ClickIndicator({
@@ -35,7 +32,15 @@ export function ClickIndicator({
   ringOnly,
   size = 44,
   variant = "breathe",
+  rgb = DEFAULT_RGB,
 }: Props) {
+  const INDICATOR_COLOR = `rgba(${rgb}, 0.45)`;
+  const INDICATOR_GLOW = `rgba(${rgb}, 0.55)`;
+  // "ping" variant tones. The center stays translucent so the icon it sits on
+  // remains visible through it; the hollow rings carry the attention instead.
+  const PING_DOT = `rgba(${rgb}, 0.4)`;
+  const PING_RING = `rgba(${rgb}, 0.6)`;
+
   return (
     <div
       className={`pointer-events-none absolute ${ringOnly ? "z-50" : "z-30"}`}

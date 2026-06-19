@@ -5,94 +5,14 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
-function svgDataUri(svg: string) {
-  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
-}
-
-const featurePlaceholders = [
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/AI%20Chat%201.png",
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/1-1%20Leaderboard%20podium%20(light%20mode).png",
-  svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#071018"/>
-          <stop offset="1" stop-color="#0b0f14"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="45%" cy="22%" r="70%">
-          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.30"/>
-          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1200" height="1600" fill="url(#bg)"/>
-      <rect width="1200" height="1600" fill="url(#glow)"/>
-      <g opacity="0.92">
-        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Profiles</text>
-        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">One view for performance &amp; progress.</text>
-      </g>
-      <g transform="translate(90 310)">
-        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-        <g transform="translate(70 88)">
-          <circle cx="90" cy="90" r="56" fill="rgba(245,247,250,0.12)"/>
-          <rect x="170" y="54" rx="14" width="420" height="22" fill="rgba(245,247,250,0.72)"/>
-          <rect x="170" y="92" rx="14" width="300" height="18" fill="rgba(245,247,250,0.42)"/>
-          <g transform="translate(0 210)">
-            <rect x="0" y="0" rx="20" width="880" height="140" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="30" y="34" rx="12" width="240" height="18" fill="rgba(245,247,250,0.55)"/>
-            <rect x="30" y="70" rx="12" width="360" height="40" fill="rgba(25,173,125,0.14)" stroke="rgba(25,173,125,0.35)"/>
-            <rect x="420" y="70" rx="12" width="420" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-          </g>
-          <g transform="translate(0 400)">
-            <rect x="0" y="0" rx="20" width="420" height="260" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="460" y="0" rx="20" width="420" height="260" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="30" y="34" rx="12" width="250" height="18" fill="rgba(245,247,250,0.55)"/>
-            <rect x="490" y="34" rx="12" width="250" height="18" fill="rgba(245,247,250,0.55)"/>
-            <rect x="30" y="88" rx="12" width="360" height="16" fill="rgba(245,247,250,0.22)"/>
-            <rect x="490" y="88" rx="12" width="360" height="16" fill="rgba(245,247,250,0.22)"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  `),
-  svgDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
-      <defs>
-        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#071018"/>
-          <stop offset="1" stop-color="#0b0f14"/>
-        </linearGradient>
-        <radialGradient id="glow" cx="62%" cy="24%" r="70%">
-          <stop offset="0" stop-color="#19ad7d" stop-opacity="0.30"/>
-          <stop offset="1" stop-color="#19ad7d" stop-opacity="0"/>
-        </radialGradient>
-      </defs>
-      <rect width="1200" height="1600" fill="url(#bg)"/>
-      <rect width="1200" height="1600" fill="url(#glow)"/>
-      <g opacity="0.92">
-        <text x="90" y="170" font-family="Inter, ui-sans-serif, system-ui" font-size="44" font-weight="700" fill="#f5f7fa">Competition Builder</text>
-        <text x="90" y="230" font-family="Inter, ui-sans-serif, system-ui" font-size="22" font-weight="500" fill="rgba(245,247,250,0.72)">Launch incentives in minutes.</text>
-      </g>
-      <g transform="translate(90 310)">
-        <rect x="0" y="0" rx="26" ry="26" width="1020" height="1040" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-        <g transform="translate(64 80)">
-          <rect x="0" y="0" rx="20" width="892" height="92" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-          <rect x="24" y="26" rx="12" width="260" height="18" fill="rgba(245,247,250,0.55)"/>
-          <rect x="24" y="52" rx="12" width="420" height="16" fill="rgba(245,247,250,0.22)"/>
-          <g transform="translate(0 140)">
-            <rect x="0" y="0" rx="20" width="892" height="360" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)"/>
-            <rect x="24" y="26" rx="12" width="180" height="18" fill="rgba(245,247,250,0.55)"/>
-            <rect x="24" y="72" rx="14" width="300" height="40" fill="rgba(25,173,125,0.14)" stroke="rgba(25,173,125,0.35)"/>
-            <rect x="350" y="72" rx="14" width="300" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-            <rect x="24" y="132" rx="14" width="626" height="40" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-            <rect x="24" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-            <rect x="262" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-            <rect x="500" y="212" rx="14" width="220" height="38" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.10)"/>
-          </g>
-        </g>
-      </g>
-    </svg>
-  `),
-  "https://39823762.fs1.hubspotusercontent-na2.net/hubfs/39823762/Enzy.ai%20Website%20Assets%20(DO%20NOT%20EDIT%20OR%20DELETE)/Chats%20(light%20mode).png",
+// Card preview images — the real product screens from the /system feature
+// section. Order matches cardsData.
+const featureImages = [
+  "/system/enzy-ai-featured.png", // Enzy AI
+  "/system/leaderboard.png", // Leaderboards
+  "/system/profile-badges.png", // Profiles
+  "/system/incentives-bracket.png", // Competitions
+  "/system/messaging.png", // Messaging
 ];
 
 const cardsData = [
@@ -134,7 +54,9 @@ const cardsData = [
   {
     id: "competitions",
     href: "/system#competitions-and-incentives",
-    title: "Competitions & Incentives",
+    // Card title is shortened to just "Competitions" here only; the System page
+    // section keeps its full "Competitions & Incentives" name.
+    title: "Competitions",
     description:
       "Launch competitions and incentives in minutes — aligned to the KPIs that matter.",
     features: [
@@ -354,7 +276,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
               >
                 <div className="absolute inset-0 rounded-[32px] overflow-hidden pointer-events-none z-0">
                   <Image
-                    src={featurePlaceholders[i]}
+                    src={featureImages[i]}
                     alt={card.title}
                     fill
                     sizes="(min-width: 1024px) 380px, 85vw"

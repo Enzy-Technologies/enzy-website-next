@@ -17,9 +17,11 @@ import {
   PHONE_HEIGHT_FRAC,
   CONTAINER_BOTTOM_PAD,
 } from "./PhoneInHand";
+import { ArrowDown } from "lucide-react";
 import { useScrollPin } from "@/app/lib/useScrollPin";
 import { BREAKPOINTS, DESKTOP_MIN } from "@/app/lib/breakpoints";
 import { useIsPhone } from "@/app/lib/useMediaQuery";
+import { InteractivePhoneV2 } from "./interactive/InteractivePhoneV2";
 
 // Hand-image aspect, phone-overlay calibration fractions, the screen radius/bg,
 // and the bottom-pad are defined alongside the composition in `PhoneInHand` and
@@ -275,11 +277,53 @@ export function Playground() {
             willChange: "transform",
           }}
         >
+          {/* showUnderlay=false + the seating nudges: tuned so the full-bleed
+              screenshots reach the bezel cleanly (the cream underlay is only for
+              the rebuilt React screens still used by the /lp/* hero). */}
           <PhoneInHand
             cw={animValues.cw}
             ch={animValues.ch}
             interactive={isInteractive}
-          />
+            showUnderlay={false}
+            screenOffsetX={-1}
+            screenOffsetY={2}
+            screenGrow={1}
+          >
+            <InteractivePhoneV2 interactive={isInteractive} tapHint />
+          </PhoneInHand>
+        </motion.div>
+
+        {/* "Tap to try" cue (mirrors the /lp/* hero), but only once the phone is
+            zoomed in and interactive. Positioned in the pinned stage (not the
+            scaled phone layer) so it stays a fixed size; anchored just above the
+            phone's screen top at full zoom (endX/endY/endScale), where the phone
+            sits constant through the whole interactive hold. */}
+        <motion.div
+          className="pointer-events-none absolute z-50"
+          style={{
+            left:
+              animValues.endX +
+              animValues.cw * PHONE_CENTER_X_FRAC * animValues.endScale,
+            top:
+              animValues.endY +
+              animValues.ch *
+                (PHONE_CENTER_Y_FRAC - PHONE_HEIGHT_FRAC / 2) *
+                animValues.endScale -
+              16,
+            transform: "translate(-50%, -100%)",
+          }}
+          animate={{ opacity: isInteractive ? 1 : 0, y: [0, -5, 0] }}
+          transition={{
+            opacity: { duration: 0.4 },
+            y: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
+          }}
+        >
+          <span className="flex items-center gap-1 rounded-full border border-[#0DA071]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
+            <span className="font-[ui-monospace,'SF_Mono','Menlo',monospace] text-[13px] uppercase leading-none tracking-[-0.4px] [word-spacing:-3px] text-brand-dark">
+              Tap to try
+            </span>
+            <ArrowDown size={14} strokeWidth={2.25} className="text-[#0DA071]" aria-hidden />
+          </span>
         </motion.div>
       </div>
     </motion.div>
