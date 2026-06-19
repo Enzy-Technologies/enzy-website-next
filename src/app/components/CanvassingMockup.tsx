@@ -194,12 +194,7 @@ export function CanvassingMockup() {
     <div className="flex justify-center">
       <div
         ref={hostRef}
-        // The single device border: a crisp 1px hairline traced around the
-        // exterior of the phone. It lives on the unscaled wrapper (so it never
-        // sub-pixels) with its radius matched to the scaled screen, and sits
-        // outside the screen against the page — so the dark map can't hide it
-        // and it never bleeds onto the inner content.
-        className="relative w-full max-w-[300px] md:max-w-[330px] ring-1 ring-black/12 dark:ring-white/15"
+        className="relative w-full max-w-[300px] md:max-w-[330px]"
         style={{ height: PHONE.h * scale, borderRadius: 44 * scale }}
       >
         <div
@@ -283,6 +278,15 @@ export function CanvassingMockup() {
           <AnimatePresence>{pinOpen && <PinDetailSheet />}</AnimatePresence>
 
         </div>
+        {/* Device edge — a crisp 1px hairline drawn just inside the frame, on
+            top of all content. It lives on the unscaled wrapper (so it never
+            sub-pixels) and is inset rather than an outset ring, so an
+            overflow-hidden ancestor can't clip it when the phone fills the
+            column on mobile. Radius matches the scaled screen. */}
+        <div
+          className="pointer-events-none absolute inset-0 z-30 border border-black/12 dark:border-white/15"
+          style={{ borderRadius: 44 * scale }}
+        />
       </div>
     </div>
   );
@@ -477,6 +481,12 @@ function PinDetailSheet() {
           bottom: 0,
           left: 0,
           width: DETAIL.width,
+          // Round the bottom corners to the frame radius. The screen already
+          // clips with `overflow-hidden rounded-[44px]`, but a transformed
+          // (animated) descendant escapes that clip on mobile WebKit, so the
+          // card's square corners poke past the rounded frame — round them here.
+          borderBottomLeftRadius: 44,
+          borderBottomRightRadius: 44,
           filter: "drop-shadow(0 -10px 30px rgba(0,0,0,0.10))",
         }}
       />

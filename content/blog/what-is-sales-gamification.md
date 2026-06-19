@@ -24,7 +24,7 @@ Sales gamification is the practice of applying game mechanics to sales processes
 - Leaderboards
 - Competitions
 - Milestones (like the 250 trip)
-- real-time scoring, and
+- Real-time Scoring
 - Employee recognition
 
 *The goal is to drive the behaviors that build culture and increase revenue.*
@@ -52,8 +52,6 @@ So how does gamification work? Gamification is a set of interconnected mechanics
 The leaderboard is the foundation of any gamification system because it makes performance visible, not just to managers but to every rep on the team. Visibility creates accountability in a way that one-on-one coaching conversations cannot replicate at scale. When a rep can see exactly where they stand relative to their peers at any moment in the day, they are given the extrinsic motivation to keep pushing.
 
 I personally like displaying “leading metrics” in addition to the total sales/revenue leaderboards. In D2D sales, that looks like number of doors knocked, number of decision makers talked to, etc, but the principles apply to any sales environment. The key factor is that you can tie back any wins and losses to the inputs connected to those sales.
-
-*Note: click here for my in-depth blog on leaderboards that work.*
 
 ### Competitions
 
@@ -111,6 +109,6 @@ Set up automated alerts for closed deals, milestones reached, and competition up
 
 The answer is **yes**. And we have the research to back it up.
 
-Per Enzy’s incentive study of one of our top D2D pest control companies, “each additional incentive a sales rep participates in increases their daily serviced sales by approximately **9.6%**. This meant a 4.5% boost in sales as a direct result of these incentive programs. This study was based on the impact of Enzy-driven incentives on their sales performance, pulling from over 70 competitions over the summer.
+We analyzed sales performance across 95,867 sales reps in the year before and the year after they adopted Enzy. In that balanced 12-month pre/post window, companies saw a **21% median increase in sales per rep** — a result that held up to statistical scrutiny, with a paired test across all 95,867 sales reps returning p = 0.002 even after controlling for headcount, company-specific baselines, and broader industry trends.
 
 If you’re serious about building a performance culture and you want to see what a gamified sales environment looks like in practice, I would encourage you to book a demo. We would be glad to walk you through how teams like yours are using Enzy to build cultures where people compete, push each other, and want to win.

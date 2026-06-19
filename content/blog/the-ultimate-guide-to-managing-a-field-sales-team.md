@@ -87,7 +87,7 @@ Managing a field sales team well requires adapting the fundamentals of good sale
 
 - **Visibility** Track *leading indicators,* not just trailing indicators, to understand your reps’ strengths and weaknesses
 - **Isolation** Consistent touchpoints and communication throughout the day sales rep every day
-- **Building culture** Lead your veterans, and turn them into leaders who can lead their recruits
+- **Building Culture** Lead your veterans, and turn them into leaders who can lead their recruits
 
 ## Built for Field Sales Teams
 

@@ -224,7 +224,7 @@ export function BookDemoPage({
       </section>
 
       {!hideTestimonials && (
-        <section className="relative w-full pb-14 md:pb-20 overflow-x-clip">
+        <section className="relative w-full pt-8 md:pt-12 pb-14 md:pb-20 overflow-x-clip">
           <div className="mx-auto max-w-7xl px-4">
             <h2 className={`m-0 font-ivyora font-medium leading-[1.1] tracking-[-1px] text-[28px] sm:text-[34px] md:text-[36px] ${containerText}`}>
               Trusted by operators and sales leaders.

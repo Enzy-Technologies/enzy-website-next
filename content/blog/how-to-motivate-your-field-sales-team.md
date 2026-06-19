@@ -55,9 +55,7 @@ This is especially important in field sales because of the physical distance bet
 
 ### Coach to Individuals, Not to Averages
 
-One of the most demotivating experiences a rep can have is receiving generic feedback that does not connect to their specific situation. The best thing I can do is
-
-Real-time performance data makes this kind of specific, individual coaching possible. Without it, managers are working from memory and averages. With it, they can have conversations that actually connect to the rep's experience and help them improve in concrete ways.
+Real-time performance data makes specific, individual coaching possible. Without it, managers are working from memory and averages. With it, they can have conversations that actually connect to the rep's experience and help them improve in concrete ways.
 
 ## What to Do When the Team Is in a Slump
 

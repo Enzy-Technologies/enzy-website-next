@@ -292,7 +292,7 @@ export function FeaturesPreviewSection({ variant = "default" }: { variant?: "def
                 </div>
 
                 <div
-                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left md:text-center md:items-center border-t border-white/20 bg-black/55 md:bg-black/35 px-8 pb-10 pt-8 md:backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
+                  className={`absolute bottom-0 left-0 right-0 z-10 overflow-hidden flex flex-col text-left md:text-center md:items-center border-t border-white/20 bg-black/55 md:bg-black/35 px-8 pb-10 pt-8 backdrop-blur-xl transition-[padding] duration-500 rounded-b-[32px] ${
                     showDetails ? "shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]" : ""
                   }`}
                 >

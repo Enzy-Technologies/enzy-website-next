@@ -334,7 +334,9 @@ export function Partners() {
               <CTAButton
                 variant="secondary"
                 href="#partners-marketplace"
-                className="px-8 py-4 font-semibold text-[14px]"
+                // Keep the dark frosted style but make it less see-through — the
+                // default secondary fill (white/6%) reads as transparent here.
+                className="px-8 py-4 font-semibold text-[14px] dark:!bg-white/15 dark:hover:!bg-white/[0.22]"
               >
                 See our Partners
               </CTAButton>

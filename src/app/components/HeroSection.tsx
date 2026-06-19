@@ -293,7 +293,7 @@ function HeroSectionDefault() {
 
             <div className="w-full lg:max-w-[560px] mx-auto lg:mx-0">
               <p
-                className="font-inter text-[11px] md:text-[12px] tracking-[0.18em] uppercase font-semibold mb-3 text-black/55 dark:text-white/55"
+                className="font-inter text-[13px] md:text-[15px] tracking-[0.18em] uppercase font-semibold mb-3 text-black/55 dark:text-white/55"
               >
                 Serving 180k users
               </p>

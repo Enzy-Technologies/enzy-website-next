@@ -148,14 +148,6 @@ export function ProfileMockup() {
           />
         </motion.div>
 
-        {/* Soften the very bottom edge (the Reports capture cuts mid-content). */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-[8%]"
-          style={{
-            background: `linear-gradient(to top, ${SCREEN_BG}, rgba(250,249,246,0))`,
-          }}
-        />
-
         {tap && <TapPulse x={TAB_X[tap]} y={TAB_Y} />}
 
         {/* Device edge — matches the leaderboard preview's border. Rendered on
