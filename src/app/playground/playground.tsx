@@ -312,6 +312,9 @@ export function Playground() {
               16,
             transform: "translate(-50%, -100%)",
           }}
+          // Start hidden so it never flashes on first paint / hydration before
+          // the phone is interactive.
+          initial={{ opacity: 0 }}
           animate={{ opacity: isInteractive ? 1 : 0, y: [0, -5, 0] }}
           transition={{
             opacity: { duration: 0.4 },

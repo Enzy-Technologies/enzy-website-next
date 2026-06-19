@@ -109,7 +109,10 @@ export function Header() {
             <Image
               src="/enzy-wordmark.svg"
               alt="Enzy Logo"
-              width={220}
+              // Match the SVG's true aspect (viewBox 2878.98×1000 ≈ 2.88:1).
+              // A mismatched ratio here makes the `w-auto` width recalculate
+              // once the SVG loads, which jolts the wordmark on first paint.
+              width={115}
               height={40}
               priority
               className="h-6 lg:h-9 w-auto brightness-0 dark:invert dark:brightness-0"
