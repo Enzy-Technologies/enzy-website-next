@@ -1,4 +1,5 @@
-/* IvyOra Text is now self-hosted via next/font/local (see src/app/layout.tsx).
-   next/font generates the @font-face declarations and exposes the family through
-   the --font-ivyora-local CSS variable, which theme.css maps onto --font-ivyora.
-   Inter and Roboto Mono load via @fontsource (imported in layout.tsx). */
+/* Fonts are self-hosted via next/font (see src/app/layout.tsx): IvyOra Text via
+   next/font/local and Inter via next/font/google. next/font generates the
+   @font-face declarations and exposes each family through a CSS variable
+   (--font-ivyora-local, --font-inter-local) that theme.css maps onto the
+   --font-ivyora / --font-sans / --font-inter tokens. */

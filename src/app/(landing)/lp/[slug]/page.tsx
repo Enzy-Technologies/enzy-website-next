@@ -4,11 +4,21 @@ import { notFound } from "next/navigation";
 
 import { JsonLd } from "@/app/components/JsonLd";
 import { buildMetadata } from "@/app/lib/seo";
-import { getLandingPageConfig } from "@/app/(landing)/lp/config/pages";
+import { getLandingPageConfig, LANDING_PAGES } from "@/app/(landing)/lp/config/pages";
 import { LandingPageTemplate } from "@/app/(landing)/LandingPageTemplate";
 import { isLandingHomeConfig } from "@/app/(landing)/lp/config/types";
 import { buildLandingJsonLd } from "@/app/(landing)/lp/lib/buildLandingJsonLd";
 import { LpHomeShell } from "@/app/(landing)/lp/templates/LpHomeShell";
+
+// Prerender configured marketing LPs at build time. `meta` is intentionally
+// excluded — it has its own route (/lp/meta) that must stay dynamic to read the
+// A/B variant cookie. Today this yields no params (meta is the only config),
+// but it future-proofs any non-meta LP added to LANDING_PAGES.
+export function generateStaticParams() {
+  return Object.keys(LANDING_PAGES)
+    .filter((slug) => slug !== "meta")
+    .map((slug) => ({ slug }));
+}
 
 export async function generateMetadata({
   params,

@@ -4,10 +4,10 @@ slug: "the-ultimate-guide-to-managing-a-field-sales-team"
 date: "2026-06-02"
 description: "Visibility, isolation and culture: the three problems every field sales manager faces and how to solve them."
 category: "blog"
-coverImage: "/insights/managing-field-sales-team-cover.png"
+coverImage: "/insights/managing-field-sales-team-cover.jpg"
 author: "Spencer Ouzounian"
 authorTitle: "VP of Revenue at Enzy"
-authorImage: "/insights/spencer-ouzounian.png"
+authorImage: "/insights/spencer-ouzounian.jpg"
 ---
 Managing a field sales team is one of the most demanding jobs in sales leadership. You are responsible for the performance of people you rarely see in person, working in environments you cannot directly observe, facing challenges that vary by territory, day, and individual rep. The conventional playbook for sales management, built around office visibility, daily standups, and real-time floor coaching, does not translate cleanly to a team spread across neighborhoods, cities, or regions.
 

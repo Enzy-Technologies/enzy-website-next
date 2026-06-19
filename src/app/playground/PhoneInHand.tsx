@@ -18,8 +18,10 @@ import { InteractivePhone, PHONE_W, PHONE_H } from "./interactive/InteractivePho
 
 // Self-hosted from /public. Source downscaled to 4000×2886 (same composition as
 // the 8000×5772 original) so it's no larger than next/image's 3840px max
-// variant — identical output quality, ~3.7MB committed instead of 12MB.
-export const HAND_IMAGE = "/playground/hand-holding-iphone.png";
+// variant. Stored as lossless WebP (alpha preserved, pixel-identical to the
+// former PNG) — ~2.0MB committed instead of 3.7MB. next/image still serves
+// right-sized AVIF/WebP variants to browsers from this source.
+export const HAND_IMAGE = "/playground/hand-holding-iphone.webp";
 
 // Aspect of the hand PNG (4000/2886 === 8000/5772). The phone-overlay
 // calibration fractions below depend on this exact ratio.

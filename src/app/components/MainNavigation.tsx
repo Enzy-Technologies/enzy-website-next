@@ -103,13 +103,12 @@ type LearnItem = {
   title: string;
   desc: string;
   /**
-   * Optional explicit destination. When omitted the dropdown links into
-   * `/resources#${slug}` (in-page anchor on the Resources hub). When
-   * provided the dropdown renders a regular `next/link` to this exact
-   * route — used by Partners to deep-link to the standalone
-   * `/partners` page.
+   * Explicit destination for this dropdown item — rendered as a regular
+   * `next/link`. Required: the standalone `/resources` hub is currently
+   * disabled (it calls notFound()), so every Learn item must point at a real
+   * route of its own.
    */
-  href?: string;
+  href: string;
 };
 
 const LEARN_ITEMS: LearnItem[] = [
@@ -235,7 +234,8 @@ export function MainNavigation() {
   return (
     <>
       {/* Desktop Main Navigation */}
-      <div 
+      <nav
+        aria-label="Primary"
         className="hidden lg:flex flex-col items-center z-50 pointer-events-auto"
         onMouseLeave={handleMouseLeave}
       >
@@ -406,16 +406,11 @@ export function MainNavigation() {
 
                     <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-8">
                         {LEARN_ITEMS.map((item, i) => {
-                            const slug = item.title.toLowerCase().replace(/\s+/g, "-");
-                            const href = item.href ?? `/resources#${slug}`;
                             return (
                               <motion.div key={i} variants={itemVariants} className="flex flex-col">
                                   <Link
-                                      href={href}
-                                      onClick={(e) => {
-                                          if (!item.href) {
-                                              navigateToSamePageHash(e, "/resources", slug);
-                                          }
+                                      href={item.href}
+                                      onClick={() => {
                                           setActiveDropdown(null);
                                       }}
                                       className="group flex flex-col -m-3 p-3 rounded-xl transition-colors duration-300 hover:bg-black/[0.04] dark:hover:bg-white/[0.06]"
@@ -438,7 +433,7 @@ export function MainNavigation() {
             )}
           </AnimatePresence>
         </div>
-      </div>
+      </nav>
 
       {/* Mobile header controls (theme + menu) */}
       <div ref={mobileControlsRef} className="lg:hidden relative z-[60] flex items-center gap-2 pointer-events-auto">
@@ -501,7 +496,8 @@ export function MainNavigation() {
                 handled by the pointerdown listener in the effect above instead. */}
 
             {/* Panel — anchored under the header like the desktop dropdowns. */}
-            <motion.div
+            <motion.nav
+              aria-label="Mobile"
               ref={mobilePanelRef}
               initial={{ opacity: 0, y: -10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -632,16 +628,11 @@ export function MainNavigation() {
                             {item.id === 'resources' && (
                               <div className="flex flex-col gap-3.5 pl-3 border-l border-black/10 dark:border-white/10">
                                 {LEARN_ITEMS.map((li, j) => {
-                                  const slug = li.title.toLowerCase().replace(/\s+/g, "-");
-                                  const href = li.href ?? `/resources#${slug}`;
                                   return (
                                     <Link
                                       key={j}
-                                      href={href}
-                                      onClick={(e) => {
-                                        if (!li.href) {
-                                          navigateToSamePageHash(e, "/resources", slug);
-                                        }
+                                      href={li.href}
+                                      onClick={() => {
                                         setMobileMenuOpen(false);
                                         setActiveMobileDropdown(null);
                                       }}
@@ -676,7 +667,7 @@ export function MainNavigation() {
                   Log In
                 </Link>
               </div>
-            </motion.div>
+            </motion.nav>
           </>
         )}
       </AnimatePresence>

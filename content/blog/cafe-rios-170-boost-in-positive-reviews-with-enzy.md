@@ -6,11 +6,11 @@ description: "Cafe Rio, a popular restaurant chain, faced challenges in maintain
 category: "case-study"
 coverImage: "/insights/cafe-rio.jpg"
 ---
-### Introduction
+## Introduction
 
 Cafe Rio, a popular restaurant chain, faced challenges in maintaining consistent customer satisfaction and collecting actionable feedback. With the goal of enhancing customer experience and improving their online reputation, they partnered with Enzy, a data-driven performance optimization platform, to leverage its intelligent insights and customizability.
 
-### Challenges
+## Challenges
 
 Before implementing Enzy, Cafe Rio struggled with:
 
@@ -18,7 +18,7 @@ Before implementing Enzy, Cafe Rio struggled with:
 * Limited actionable insights from existing data
 * Difficulty in real-time communication and performance tracking
 
-### Solution: Enzy Performance Optimization Platform
+## Solution: Enzy Performance Optimization Platform
 
 Cafe Rio adopted Enzy’s platform to address these challenges. The solution included:
 
@@ -26,7 +26,7 @@ Cafe Rio adopted Enzy’s platform to address these challenges. The solution inc
 * **Customizable Dashboards**: Tailored views to monitor key performance indicators.
 * **Actionable Insights**: Intelligent bots providing data-driven recommendations.
 
-### Results
+## Results
 
 After implementing Enzy, Cafe Rio observed remarkable improvements in their performance metrics. Key results include:
 
@@ -37,7 +37,7 @@ After implementing Enzy, Cafe Rio observed remarkable improvements in their perf
    * **26% Increase in Average Monthly Google Scores**: The Taylorsville location, highlighted for being the first to implement Enzy, demonstrated a significant rise in their average monthly scores from April 2021 to October 2022.**‍**
    * **Improved Decision-Making**: Access to timely and relevant data enabled Cafe Rio to make better-informed decisions.
 
-### Testimonials
+## Testimonials
 
 Todd Smith, the Chief Marketing Officer of Cafe Rio, shared his insights on the impact of Enzy:
 
@@ -46,6 +46,6 @@ Todd Smith, the Chief Marketing Officer of Cafe Rio, shared his insights on the 
 * **Timely Data**: “Getting the right data at the right time helps you make the best decisions… you guys are really good at getting data at the right time.”
 * **Industry Impact**: “I think [Enzy] is a game changer for the restaurant industry.”
 
-### Conclusion
+## Conclusion
 
 Cafe Rio’s partnership with Enzy has proven to be a transformative journey, significantly boosting their customer feedback metrics and operational efficiency. The intelligent insights and customizable features of the Enzy platform have enabled Cafe Rio to not only enhance their customer experience but also to set a new standard in the restaurant industry.

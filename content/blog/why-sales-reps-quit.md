@@ -4,10 +4,10 @@ slug: "why-sales-reps-quit"
 date: "2026-06-03"
 description: "How to build the systems that will help retain your reps, lower turnover, and improve team culture."
 category: "blog"
-coverImage: "/insights/why-sales-reps-quit-cover.png"
+coverImage: "/insights/why-sales-reps-quit-cover.jpg"
 author: "Spencer Ouzounian"
 authorTitle: "VP of Revenue at Enzy"
-authorImage: "/insights/spencer-ouzounian.png"
+authorImage: "/insights/spencer-ouzounian.jpg"
 ---
 Sales rep turnover is one of the most expensive problems a sales organization can face, and it is one that most organizations consistently underestimate. If you’ve ever run a sales organization yourself, you know the pain I’m talking about.
 

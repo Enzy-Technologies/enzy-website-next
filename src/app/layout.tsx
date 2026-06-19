@@ -2,13 +2,7 @@ import React from "react"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import localFont from "next/font/local"
-import "@fontsource/inter/index.css"
-import "@fontsource/inter/500.css"
-import "@fontsource/inter/600.css"
-import "@fontsource/inter/700.css"
-import "@fontsource/inter/800.css"
-import "@fontsource/inter/900.css"
-import "@fontsource/roboto-mono/index.css"
+import { Inter } from "next/font/google"
 import "./globals.css"
 
 import { ThemeProvider } from "./components/ThemeProvider"
@@ -42,6 +36,18 @@ const ivyOra = localFont({
     { path: "./fonts/IvyOraText-MediumItalic.woff2", weight: "500", style: "italic" },
   ],
   variable: "--font-ivyora-local",
+  display: "swap",
+})
+
+// Inter via next/font/google: self-hosted at build time, subset to latin, with
+// size-adjusted fallback metrics (zero CLS) and font-display: swap. Replaces the
+// six @fontsource/inter weight files. Exposes --font-inter-local, which theme.css
+// maps onto the --font-sans / --font-inter tokens. (Roboto Mono was dropped — it
+// was imported but never used; monospace UI uses the system ui-monospace stack.)
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-inter-local",
   display: "swap",
 })
 
@@ -109,7 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       contactType: "Sales",
       email: "sales@enzy.ai",
     },
-    sameAs: ["https://twitter.com/enzy", "https://linkedin.com/company/enzy"],
+    sameAs: ["https://www.linkedin.com/company/enzyco/"],
   }
 
   const softwareApplicationSchema = {
@@ -128,7 +134,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   }
 
   return (
-    <html lang="en" suppressHydrationWarning className={ivyOra.variable}>
+    <html lang="en" suppressHydrationWarning className={`${ivyOra.variable} ${inter.variable}`}>
       <head>
         {/* Apply theme BEFORE first paint, fully client-side, so routes can stay
             static (no server cookie read). Reads the enzy-theme cookie (falling

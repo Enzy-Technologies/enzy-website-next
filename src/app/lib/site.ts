@@ -5,10 +5,6 @@ export const siteName = "Enzy"
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") || "https://enzy.ai"
 
-// Branded 1200x630 social share card (lives in /public). Used as the Open
-// Graph / Twitter image for every page on the site.
-export const defaultOgImagePath = "/og-default.png"
-
 // The actual Enzy brand logo (wordmark). Self-hosted in /public so it ships
 // with the app (same-origin, edge-cached, no third-party dependency). Used for
 // structured data (Organization schema) where the real logo — not the social

@@ -4,10 +4,10 @@ slug: "how-to-motivate-your-field-sales-team"
 date: "2026-06-09"
 description: "A practical guide to building the systems, habits, and culture that keep field sales reps motivated."
 category: "blog"
-coverImage: "/insights/how-to-motivate-your-field-sales-team.png"
+coverImage: "/insights/how-to-motivate-your-field-sales-team.jpg"
 author: "Spencer Ouzounian"
 authorTitle: "VP of Revenue at Enzy"
-authorImage: "/insights/spencer-ouzounian.png"
+authorImage: "/insights/spencer-ouzounian.jpg"
 ---
 Field sales is one of the hardest environments to lead. Reps that are scattered across areas are not as easy to motivate as an in-office team.
 

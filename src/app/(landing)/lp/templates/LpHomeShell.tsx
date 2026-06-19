@@ -21,13 +21,13 @@ import type { LpVariant } from "@/app/lib/lpExperiment";
 export function LpHomeShell({ variant }: { variant?: LpVariant } = {}) {
   return (
     <LpBookDemoScrollShell href="#lp-demo" label="Book a Demo">
-      <main className="relative w-full pb-32 md:pb-36 lg:pb-40">
+      <div className="relative w-full pb-32 md:pb-36 lg:pb-40">
         <HeroSection variant="lp" experimentVariant={variant} />
 
         {/* Confidence Boosters */}
         <EvidenceSection variant="lp" />
         <LpSingleTestimonial testimonial={TESTIMONIALS[1]} />
-      </main>
+      </div>
     </LpBookDemoScrollShell>
   );
 }

@@ -25,10 +25,14 @@ function Cover({
   src,
   alt,
   sizes,
+  priority = false,
 }: {
   src: string;
   alt: string;
   sizes: string;
+  /** Set only on the above-the-fold featured cover (its LCP image). Never on
+   *  the grid covers — priority-loading off-screen images competes with the LCP. */
+  priority?: boolean;
 }) {
   if (src) {
     return (
@@ -37,6 +41,7 @@ function Cover({
         alt={alt}
         fill
         sizes={sizes}
+        priority={priority}
         className="object-cover transition-transform duration-700 group-hover:scale-105"
       />
     );
@@ -132,6 +137,7 @@ export function Insights({ posts }: { posts: PostSummary[] }) {
                   src={featured.coverImage}
                   alt={featured.title}
                   sizes="(min-width: 1024px) 50vw, 100vw"
+                  priority
                 />
               </div>
               <div className="flex flex-col justify-center py-2 md:py-6 pr-2 md:pr-6">

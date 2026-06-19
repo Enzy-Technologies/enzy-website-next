@@ -4,10 +4,10 @@ slug: "what-is-sales-gamification"
 date: "2026-06-10"
 description: "Learn how gamification turns competitive energy into consistent revenue."
 category: "blog"
-coverImage: "/insights/what-is-sales-gamification.png"
+coverImage: "/insights/what-is-sales-gamification.jpg"
 author: "Spencer Ouzounian"
 authorTitle: "VP of Revenue at Enzy"
-authorImage: "/insights/spencer-ouzounian.png"
+authorImage: "/insights/spencer-ouzounian.jpg"
 ---
 Before I knew what gamification was, I was already using it. When I sold pest control door-to-door, our company ran a summer-long incentive called the “250 Trip”. Anyone who sold more than 250 accounts went on a trip to Fiji, Thailand, somewhere really cool. Not only was the trip motivating, but it was a sort of status symbol. The badge that you were truly a “high-achiever”.
 
@@ -25,7 +25,7 @@ Sales gamification is the practice of applying game mechanics to sales processes
 - Competitions
 - Milestones (like the 250 trip)
 - Real-time Scoring
-- Employee recognition
+- Employee Recognition
 
 *The goal is to drive the behaviors that build culture and increase revenue.*
 

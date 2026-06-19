@@ -229,6 +229,13 @@ export function InteractivePhoneV2({
   // differs, the new one fades in on TOP of this — so the phone never flashes
   // its background between pages. Becomes the new settled screen on completion.
   const [settled, setSettled] = useState<BaseScreen>("home");
+  // Track which screen screenshots have actually painted. Tap indicators are
+  // withheld until the underlying screen image has loaded, so a pulse never
+  // floats over a not-yet-painted screen on the first visit to a heavy
+  // screenshot (e.g. incentives.png). See the indicator gate below.
+  const [loaded, setLoaded] = useState<Partial<Record<BaseScreen, boolean>>>({});
+  const markLoaded = (s: BaseScreen) =>
+    setLoaded((prev) => (prev[s] ? prev : { ...prev, [s]: true }));
 
   const baseScreen: BaseScreen = screen === "ai" ? returnTo : screen;
 
@@ -260,6 +267,7 @@ export function InteractivePhoneV2({
         width={PHONE_W}
         height={PHONE_H}
         priority={settled === "home"}
+        onLoad={() => markLoaded(settled)}
         draggable={false}
         className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
       />
@@ -277,6 +285,7 @@ export function InteractivePhoneV2({
             alt={`${baseScreen} screen`}
             width={PHONE_W}
             height={PHONE_H}
+            onLoad={() => markLoaded(baseScreen)}
             draggable={false}
             className="pointer-events-none absolute inset-0 h-full w-full select-none object-cover"
           />
@@ -358,6 +367,7 @@ export function InteractivePhoneV2({
             />
             {interactive &&
               h.indicate &&
+              loaded[baseScreen] &&
               (h.pulse === "card" ? (
                 // Whole-rect pulse: an always-present green outline + glow that
                 // breathes between lighter and stronger (never disappears). No

@@ -34,8 +34,10 @@ export function Footer() {
               <Image
                 src={ENZY_WORDMARK_SRC}
                 alt=""
-                width={220}
-                height={32}
+                // Match the SVG's true aspect (viewBox 2878.98×1000 ≈ 2.88:1)
+                // so the `w-auto` width doesn't recalc on load. See Header.tsx.
+                width={115}
+                height={40}
                 className="h-8 md:h-10 w-auto invert brightness-0 contrast-100 pointer-events-none"
               />
             </div>
@@ -48,8 +50,10 @@ export function Footer() {
               <Image
                 src={ENZY_WORDMARK_SRC}
                 alt=""
-                width={220}
-                height={32}
+                // Match the SVG's true aspect (viewBox 2878.98×1000 ≈ 2.88:1)
+                // so the `w-auto` width doesn't recalc on load. See Header.tsx.
+                width={115}
+                height={40}
                 className="h-8 md:h-10 w-auto invert brightness-0 contrast-100 pointer-events-none"
               />
             </Link>

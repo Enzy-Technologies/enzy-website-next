@@ -4,7 +4,7 @@ import React from "react";
 
 export function Terms() {
   return (
-    <main className="w-full pt-7 md:pt-10 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
+    <div className="w-full pt-7 md:pt-10 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 font-inter">Terms and Conditions</h1>
         <p className="italic opacity-70 mb-8 font-inter">Last updated May 22nd, 2025</p>
         <div className="prose max-w-none prose-slate dark:prose-invert prose-headings:font-inter prose-p:font-inter prose-a:text-[#19ad7d]">
@@ -256,6 +256,6 @@ export function Terms() {
             <p className="text-sm opacity-70">For questions about these Terms and Conditions, please contact us at info@enzy.ai</p>
           </div>
         </div>
-      </main>
+      </div>
   );
 }

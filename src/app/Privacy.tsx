@@ -4,7 +4,7 @@ import React from "react";
 
 export function Privacy() {
   return (
-    <main className="w-full pt-7 md:pt-10 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
+    <div className="w-full pt-7 md:pt-10 pb-16 px-4 md:px-6 lg:px-8 max-w-5xl mx-auto text-[#0b0f14] dark:text-[#f5f7fa]">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-3 font-inter">Privacy Policy</h1>
         <p className="opacity-70 mb-1 font-inter">Enzy Technologies, LLC</p>
         <p className="opacity-70 mb-8 font-inter text-sm">Effective Date: August 09, 2024</p>
@@ -154,6 +154,6 @@ export function Privacy() {
             <p className="text-sm opacity-70">For privacy inquiries or to exercise your rights, please contact us at info@enzy.ai</p>
           </div>
         </div>
-      </main>
+      </div>
   );
 }

@@ -52,14 +52,14 @@ function LandingHero({ config }: { config: LandingPageConfigMarketing }) {
 export function LandingPageTemplate({ config }: { config: LandingPageConfigMarketing }) {
   return (
     <LpBookDemoScrollShell href="#lp-demo" label="Book a Demo">
-      <main className="relative w-full pb-32 md:pb-36 lg:pb-40">
+      <div className="relative w-full pb-32 md:pb-36 lg:pb-40">
         <LandingHero config={config} />
         {config.productVideo ? <LandingProductVideo {...config.productVideo} /> : null}
         
         {/* Confidence Boosters */}
         <EvidenceSection variant="lp" />
         <LpSingleTestimonial testimonial={TESTIMONIALS[1]} />
-      </main>
+      </div>
     </LpBookDemoScrollShell>
   );
 }

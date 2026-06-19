@@ -29,7 +29,7 @@ const FadeInSection = ({
 
 export function CustomerStories() {
   return (
-    <main className="relative w-full pb-24 md:pb-32">
+    <div className="relative w-full pb-24 md:pb-32">
       {/* Hero */}
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-10 md:pb-12 max-w-7xl mx-auto overflow-hidden">
         <div className="flex flex-col items-center justify-center text-center relative z-10">
@@ -74,6 +74,6 @@ export function CustomerStories() {
           </div>
         </FadeInSection>
       </section>
-    </main>
+    </div>
   );
 }

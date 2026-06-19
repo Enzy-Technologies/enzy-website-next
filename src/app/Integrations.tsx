@@ -216,7 +216,7 @@ export function Integrations() {
   }, [activeTab]);
 
   return (
-    <main className="relative w-full pb-24 md:pb-32">
+    <div className="relative w-full pb-24 md:pb-32">
       {/* Hero — padding matches the other directory-style pages so it sits
           the same distance below the fixed nav. */}
       <section className="relative w-full px-4 pt-7 md:pt-10 pb-12 md:pb-16 max-w-7xl mx-auto overflow-hidden">
@@ -295,6 +295,6 @@ export function Integrations() {
           </p>
         </FadeInSection>
       </section>
-    </main>
+    </div>
   );
 }

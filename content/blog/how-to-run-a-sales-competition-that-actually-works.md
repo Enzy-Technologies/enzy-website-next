@@ -4,10 +4,10 @@ slug: "how-to-run-a-sales-competition-that-actually-works"
 date: "2026-06-05"
 description: "How to design, structure, and run sales competitions that create urgency, reward the right behaviors, and build a culture where people want to win."
 category: "blog"
-coverImage: "/insights/how-to-run-a-sales-competition.png"
+coverImage: "/insights/how-to-run-a-sales-competition.jpg"
 author: "Spencer Ouzounian"
 authorTitle: "VP of Revenue at Enzy"
-authorImage: "/insights/spencer-ouzounian.png"
+authorImage: "/insights/spencer-ouzounian.jpg"
 ---
 Hot take: Sales competitions might be one of the most-used yet least-understood tools in the history of sales.
 

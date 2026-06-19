@@ -84,8 +84,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Inter', sans-serif;
-  --font-inter: 'Inter', sans-serif;
+  --font-sans: var(--font-inter-local), 'Inter', sans-serif;
+  --font-inter: var(--font-inter-local), 'Inter', sans-serif;
   --font-ivyora: var(--font-ivyora-local), serif;
   --color-brand-dark: var(--color-brand-dark);
   --color-brand-light: var(--color-brand-light);

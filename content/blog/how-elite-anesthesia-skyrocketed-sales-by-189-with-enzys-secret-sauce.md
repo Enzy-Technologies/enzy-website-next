@@ -6,22 +6,22 @@ description: "Elite Anesthesia, keen on improving their sales numbers, sought a 
 category: "case-study"
 coverImage: "/insights/elite-anesthesia.webp"
 ---
-### Overview
+## Overview
 
 In August 2024, Elite Anesthesia partnered with Enzy to significantly boost their sales performance through real-time competitions and strategic incentives. This case study showcases how these initiatives led to remarkable growth in sales activities.
 
-### The Challenge
+## The Challenge
 
 Elite Anesthesia, keen on improving their sales numbers, sought a solution to energize their sales team and drive better results. They turned to Enzy's performance optimization platform to achieve this goal.
 
-### The Strategy
+## The Strategy
 
 Enzy introduced competition-based incentive, to win a pair of Air Jordans, that motivated sales reps to increase their activities. The focus was on two key metrics:
 
 * **Demo Count**: The number of product demos conducted.
 * **Scheduled Cases**: The number of cases scheduled with clients.
 
-### What We Found
+## What We Found
 
 1. **Dramatic Increase in Demos**
    * **189% Growth**: Following the launch of Enzy's demo incentive in August, demo counts surged by 189% compared to July, demonstrating the powerful impact of targeted incentives.**‍**
@@ -32,11 +32,11 @@ Enzy introduced competition-based incentive, to win a pair of Air Jordans, that 
    * **Where to Focus**: The data indicates that targeting incentives at the early stages of the sales funnel, like demos, can lead to more substantial impacts.**‍**
    * **Future Opportunities**: Continued data collection and analysis will help refine these strategies for even greater success in the future.
 
-### Conclusion
+## Conclusion
 
 The partnership between Elite Anesthesia and Enzy showcases how strategic incentives can transform sales performance. By using Enzy's platform, Elite Anesthesia not only increased their demos but also gained insights into optimizing their sales approach.
 
-### Ready to Transform Your Business?
+## Ready to Transform Your Business?
 
 Enzy can help your organization achieve similar results by tailoring incentive strategies to your needs. Book a demo today to learn more about how we can drive your success!
 

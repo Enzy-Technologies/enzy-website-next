@@ -68,7 +68,7 @@ export function BookDemoPage({
   }, [meetingsReady, showCalendar]);
 
   return (
-    <main className="relative w-full">
+    <div className="relative w-full">
       {/* We remove the top padding since it's now placed right under the hero */}
       <section className={`relative w-full px-4 ${hideText ? 'pt-0 pb-0' : 'pt-7 md:pt-10 pb-10'} max-w-7xl mx-auto`}>
         <div className={`grid grid-cols-1 ${hideText ? 'lg:grid-cols-1' : 'lg:grid-cols-12'} gap-10 lg:gap-14 items-start`}>
@@ -238,7 +238,7 @@ export function BookDemoPage({
 
       {/* FAQ lives at the very bottom of the standalone page only. */}
       {!hideText && <FAQSection />}
-    </main>
+    </div>
   );
 }
 

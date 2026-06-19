@@ -25,7 +25,7 @@ const EnzyGlobeSection = dynamic(
 
 export default function Home() {
   return (
-    <main className="relative w-full">
+    <div className="relative w-full">
       <HeroSection />
       <Playground />
       <EvidenceSection />
@@ -34,6 +34,6 @@ export default function Home() {
       <FeaturesPreviewSection />
       <TestimonialsSection />
       <ClosingCTASection />
-    </main>
+    </div>
   );
 }
