@@ -49,7 +49,7 @@ export const TESTIMONIALS: Testimonial[] = [
   },
   {
     id: 7,
-    quote: "Because we have a live scoreboard, they hit numbers I've never seen before.",
+    quote: "Because we have a live scoreboard, they hit numbers I've never seen before. It's all about consolidation, how can you get all the tools that are necessary to fuel the behaviors that you want to get the results that you want out of your salesforce in one ecosystem and that was the major reason why I picked Enzy.",
     name: "Alex Smith",
     title: "CEO of Spartan Solar",
     image: "/testimonials/alex-smith.jpg"
