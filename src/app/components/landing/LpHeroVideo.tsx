@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from "lucide-react";
 import { DESKTOP_MIN } from "@/app/lib/breakpoints";
+import { trackVideo } from "@/app/lib/lpTracking";
 
 /**
  * Variant B hero for /lp/meta: the product video. Two cuts, switched at the
@@ -50,18 +51,27 @@ type CutProps = {
   poster: string;
   radius: string;
   glow: string;
+  /** Identifies this cut in GA4 video events (e.g. "Enzy hero — landscape"). */
+  title: string;
   /** Touch: tap toggles the control bar (vs hover-to-reveal on desktop). */
   touch?: boolean;
 };
+
+// GA4 video_progress milestones (percent). 100 is reported as video_complete.
+const PROGRESS_MILESTONES = [10, 25, 50, 75] as const;
 
 /**
  * Custom control bar with center play-with-sound + auto-hide. On desktop the bar
  * reveals on hover; on touch it toggles on tap (standard mobile behavior).
  */
-function VideoCutCustom({ webm, mp4, poster, radius, glow, touch = false }: CutProps) {
+function VideoCutCustom({ webm, mp4, poster, radius, glow, title, touch = false }: CutProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLVideoElement>(null);
   const hideTimer = useRef<number | undefined>(undefined);
+  // GA4 milestones already fired this mount — the video loops, so without this
+  // each milestone would re-fire on every loop. Cleared once per page load.
+  const firedMilestones = useRef<Set<number>>(new Set());
+  const startedTracked = useRef(false);
 
   const [started, setStarted] = useState(false); // center play clicked yet
   const [playing, setPlaying] = useState(true);
@@ -80,9 +90,32 @@ function VideoCutCustom({ webm, mp4, poster, radius, glow, touch = false }: CutP
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
-    const onTime = () => setCurrent(v.currentTime);
+    const onTime = () => {
+      setCurrent(v.currentTime);
+      // Fire GA4 progress milestones once each (10/25/50/75), then complete (100).
+      const dur = v.duration;
+      if (!Number.isFinite(dur) || dur <= 0) return;
+      const pct = (v.currentTime / dur) * 100;
+      for (const m of PROGRESS_MILESTONES) {
+        if (pct >= m && !firedMilestones.current.has(m)) {
+          firedMilestones.current.add(m);
+          trackVideo("video_progress", { title, url: mp4, duration: dur, currentTime: v.currentTime, percent: m });
+        }
+      }
+      // Loops never fire `ended`, so detect completion near the tail end.
+      if (pct >= 99 && !firedMilestones.current.has(100)) {
+        firedMilestones.current.add(100);
+        trackVideo("video_complete", { title, url: mp4, duration: dur, currentTime: dur, percent: 100 });
+      }
+    };
     const onDur = () => setDuration(Number.isFinite(v.duration) ? v.duration : 0);
-    const onPlay = () => setPlaying(true);
+    const onPlay = () => {
+      setPlaying(true);
+      if (!startedTracked.current) {
+        startedTracked.current = true;
+        trackVideo("video_start", { title, url: mp4, duration: v.duration, currentTime: v.currentTime });
+      }
+    };
     const onPause = () => setPlaying(false);
     const onVol = () => {
       setMuted(v.muted);
@@ -102,7 +135,7 @@ function VideoCutCustom({ webm, mp4, poster, radius, glow, touch = false }: CutP
       v.removeEventListener("pause", onPause);
       v.removeEventListener("volumechange", onVol);
     };
-  }, []);
+  }, [title, mp4]);
 
   useEffect(() => {
     const onFs = () => {
@@ -140,6 +173,7 @@ function VideoCutCustom({ webm, mp4, poster, radius, glow, touch = false }: CutP
     v.muted = false;
     if (v.volume === 0) v.volume = 1;
     setStarted(true);
+    trackVideo("video_play_with_sound", { title, url: mp4, duration: v.duration, currentTime: v.currentTime });
     void v.play().catch(() => {});
     revealControls();
   };
@@ -299,6 +333,7 @@ export function LpHeroVideo() {
         {isDesktop === false ? (
           <VideoCutCustom
             touch
+            title="Enzy hero — portrait"
             webm="/lp/hero-video-portrait.webm"
             mp4="/lp/hero-video-portrait.mp4"
             poster="/lp/hero-video-portrait-poster.jpg"
@@ -317,6 +352,7 @@ export function LpHeroVideo() {
       <div className="mx-auto hidden w-full max-w-[960px] lg:block">
         {isDesktop === true ? (
           <VideoCutCustom
+            title="Enzy hero — landscape"
             webm="/lp/hero-video-landscape.webm"
             mp4="/lp/hero-video-landscape.mp4"
             poster="/lp/hero-video-landscape-poster.jpg"
