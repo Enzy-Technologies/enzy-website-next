@@ -1,12 +1,24 @@
 "use client";
 
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useTheme } from "@/app/components/ThemeProvider";
 import * as d3Geo from "d3-geo";
 import { GLOBE_HOTSPOTS } from "./GlobeHotspotsData";
 import { BlurReveal } from "./BlurReveal";
 import { DESKTOP_MIN } from "@/app/lib/breakpoints";
+
+// Initial left-right orientation of the globe (rotation around Y). polar2Cartesian
+// maps longitude L to azimuth (L+90)°, so centering longitude L on the front of
+// the sphere means rotation.y = -(L+90)°. We center the Atlantic Ocean (~30°W):
+// -(-30 + 90)° = -60° ≈ -1.047 rad. (Was 0.15 / US-centered before that.)
+const INITIAL_ROTATION_Y = -1.047;
+
+// Initial downward tilt (rotation around X). A positive value rotates the north
+// pole toward the camera, so we look down onto the northern hemisphere and the
+// North Atlantic reads more head-on — which also lifts North America forward and
+// drops Africa toward the lower edge. ~0.4 rad ≈ 23°.
+const INITIAL_ROTATION_X = 0.4;
 
 function polar2Cartesian(lat: number, lng: number, r: number) {
   const phi = ((90 - lat) * Math.PI) / 180;
@@ -191,9 +203,11 @@ function EnzyGlobe() {
     scene.add(ambientLight);
 
     const globeGroup = new THREE.Group();
-    // US is roughly at -98 longitude. polar2Cartesian adds 90 to lng, meaning theta is -8 degrees.
-    // We add a slight positive Y rotation (0.15 rad ~ 8.5 degrees) to center the US initially.
-    globeGroup.rotation.y = 0.15;
+    // Initial orientation: left-right centers the Atlantic (INITIAL_ROTATION_Y),
+    // and a downward tilt (INITIAL_ROTATION_X) angles the globe so the North
+    // Atlantic reads head-on.
+    globeGroup.rotation.y = INITIAL_ROTATION_Y;
+    globeGroup.rotation.x = INITIAL_ROTATION_X;
     // Mobile shows the full sphere (no mask fade), so lift it up: this clears the
     // bottom clip AND moves the sphere closer to the title. Desktop keeps the
     // original slight downward push (its mask fades the lower sphere).
@@ -318,8 +332,8 @@ function EnzyGlobe() {
     let autoSpinY = 0; // accumulated ambient rotation (time-based, not scroll)
     let manualRotationOffsetY = 0;
     let manualRotationOffsetX = 0;
-    let targetRotationY = 0.15; // Initial US center
-    let targetRotationX = 0;
+    let targetRotationY = INITIAL_ROTATION_Y; // Initial Atlantic-centered orientation
+    let targetRotationX = INITIAL_ROTATION_X; // Initial downward tilt (North Atlantic head-on)
     let isDragging = false;
     let previousPointerX = 0;
     let previousPointerY = 0;
@@ -385,16 +399,16 @@ function EnzyGlobe() {
         // scroll", and because delta is clamped, a frozen stretch just pauses the
         // spin briefly and resumes seamlessly — no catch-up jump.
         autoSpinY += GLOBE_SPIN_RATE * Math.min(delta, 0.05);
-        targetRotationY = 0.15 + autoSpinY + manualRotationOffsetY;
+        targetRotationY = INITIAL_ROTATION_Y + autoSpinY + manualRotationOffsetY;
       } else {
         // DESKTOP: original scroll-linked rotation (no iOS JS-freeze here), so the
         // globe rotates as the section scrolls through the viewport.
         const rect = el.getBoundingClientRect();
         const distFromCenter =
           window.innerHeight / 2 - (rect.top + rect.height / 2);
-        targetRotationY = 0.15 + distFromCenter * 0.0015 + manualRotationOffsetY;
+        targetRotationY = INITIAL_ROTATION_Y + distFromCenter * 0.0015 + manualRotationOffsetY;
       }
-      targetRotationX = manualRotationOffsetX;
+      targetRotationX = INITIAL_ROTATION_X + manualRotationOffsetX;
 
       // Smoothly interpolate current rotation toward the target — but with a
       // FRAME-RATE-INDEPENDENT step. iOS Safari throttles rAF during fast/momentum
@@ -523,8 +537,40 @@ function EnzyGlobe() {
 export function EnzyGlobeSection() {
   const { isLightMode } = useTheme();
 
+  // On mobile, defer mounting the heavy three.js globe (scene build, geojson
+  // fetch, 60k-point generation, and the ambient spin) until the section
+  // scrolls into view — so nothing loads or spins while it's far below the fold.
+  // Desktop mounts immediately (its rotation is scroll-linked and it sits higher
+  // in the page). ssr:false (the dynamic import in Home) means this only runs
+  // client-side, so reading window here is safe and there's no hydration risk.
+  const sectionRef = useRef<HTMLElement>(null);
+  const [showGlobe, setShowGlobe] = useState(
+    () => typeof window === "undefined" || window.innerWidth >= DESKTOP_MIN,
+  );
+
+  useEffect(() => {
+    if (showGlobe) return;
+    const el = sectionRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          setShowGlobe(true);
+          io.disconnect();
+        }
+      },
+      // Start a touch early so the globe is ready as the user arrives.
+      { rootMargin: "200px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [showGlobe]);
+
   return (
-    <section className="relative w-full overflow-hidden pt-20 md:pt-28 pb-12 md:pb-16 flex flex-col items-center">
+    <section
+      ref={sectionRef}
+      className="relative w-full overflow-hidden pt-20 md:pt-28 pb-12 md:pb-16 flex flex-col items-center"
+    >
       <div className="relative z-10 w-full px-4 text-center max-w-3xl mx-auto mb-2 md:mb-3 flex flex-col items-center">
         <p className="font-inter text-[12px] md:text-[14px] tracking-[0.2em] uppercase font-bold text-[#19ad7d] mb-6">
           Global Impact
@@ -548,7 +594,7 @@ export function EnzyGlobeSection() {
         <div
           className="globe-fade w-[120vw] h-[100vw] sm:h-[80vw] max-h-[1000px] relative"
         >
-          <EnzyGlobe />
+          {showGlobe && <EnzyGlobe />}
         </div>
       </div>
     </section>
