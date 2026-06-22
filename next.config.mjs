@@ -21,7 +21,6 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "39823762.fs1.hubspotusercontent-na2.net" },
       { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "cdn.prod.website-files.com" },
       { protocol: "https", hostname: "upload.wikimedia.org" },
     ],
   },
@@ -40,6 +39,8 @@ const nextConfig = {
       { source: "/blog", destination: "/insights", permanent: true },
       { source: "/schedule-a-meeting", destination: "/book-a-demo", permanent: true },
       { source: "/home", destination: "/", permanent: true },
+      // Internal pricing tool — renamed from the old /pricing-configurator.
+      { source: "/pricing-configurator", destination: "/pricing-tool", permanent: true },
 
       // Meta/Facebook ad landing page.
       { source: "/meta", destination: "/lp/meta", permanent: true },
