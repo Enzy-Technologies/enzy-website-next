@@ -1,6 +1,7 @@
 import React from "react"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import localFont from "next/font/local"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -231,6 +232,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
+        {/* Vercel Speed Insights — real-user Core Web Vitals (LCP, INP, CLS).
+            Free on the current plan; collects field performance per route. */}
+        <SpeedInsights />
       </body>
     </html>
   )
