@@ -1,7 +1,8 @@
-import React from "react"
+import React, { Suspense } from "react"
 import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { RouteChangeTracking } from "./components/RouteChangeTracking"
 import localFont from "next/font/local"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -232,6 +233,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <ThemeProvider>
           <SiteShell>{children}</SiteShell>
         </ThemeProvider>
+        {/* Re-fire GA4 page_view + Hyros on client-side route changes (this is
+            an SPA, so tags that only run on initial load miss in-app nav).
+            Suspense boundary is required because it reads useSearchParams. */}
+        <Suspense fallback={null}>
+          <RouteChangeTracking hyrosPh={HYROS_PH} />
+        </Suspense>
+
         {/* Vercel Speed Insights — real-user Core Web Vitals (LCP, INP, CLS).
             Free on the current plan; collects field performance per route. */}
         <SpeedInsights />
