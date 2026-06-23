@@ -321,11 +321,11 @@ export function Playground() {
             y: { duration: 2.4, repeat: Infinity, ease: "easeInOut" },
           }}
         >
-          <span className="flex items-center gap-1 rounded-full border border-[#0DA071]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
+          <span className="flex items-center gap-1 rounded-full border border-[#FF9F0A]/45 bg-white px-2 py-1 shadow-[0_10px_28px_rgba(11,15,20,0.14)]">
             <span className="font-[ui-monospace,'SF_Mono','Menlo',monospace] text-[13px] uppercase leading-none tracking-[-0.4px] [word-spacing:-3px] text-brand-dark">
               Tap to try
             </span>
-            <ArrowDown size={14} strokeWidth={2.25} className="text-[#0DA071]" aria-hidden />
+            <ArrowDown size={14} strokeWidth={2.25} className="text-[#FF9F0A]" aria-hidden />
           </span>
         </motion.div>
       </div>

@@ -39,7 +39,7 @@ const FAINT = "#a3a39d";
 const MINT = "#ccece1";
 const CHIP = "#d6efe6";
 const GREEN = "#0DA071";
-const GREEN_RGB = "13, 160, 113"; // #0DA071 for the chip pulse
+const GREEN_RGB = "255, 159, 10"; // amber-orange #FF9F0A for the chip pulse
 const TEAL = "#12bd95";
 const PANEL_BORDER = "linear-gradient(135deg, #2fd9b6, #0DA071)";
 
@@ -358,9 +358,9 @@ export function AiSessionPlayground({
                         pulsing
                           ? {
                               boxShadow: [
-                                `0 0 0 1.5px rgba(${GREEN_RGB}, 0.5), 0 0 8px 1px rgba(${GREEN_RGB}, 0.3)`,
-                                `0 0 0 2px rgba(${GREEN_RGB}, 1), 0 0 16px 3px rgba(${GREEN_RGB}, 0.6)`,
-                                `0 0 0 1.5px rgba(${GREEN_RGB}, 0.5), 0 0 8px 1px rgba(${GREEN_RGB}, 0.3)`,
+                                `0 0 0 1.5px rgba(${GREEN_RGB}, 0.65), 0 0 8px 1px rgba(${GREEN_RGB}, 0.45)`,
+                                `0 0 0 2px rgba(${GREEN_RGB}, 1), 0 0 16px 3px rgba(${GREEN_RGB}, 0.8)`,
+                                `0 0 0 1.5px rgba(${GREEN_RGB}, 0.65), 0 0 8px 1px rgba(${GREEN_RGB}, 0.45)`,
                               ],
                             }
                           : { boxShadow: "0 0 0 0 rgba(13,160,113,0)" }

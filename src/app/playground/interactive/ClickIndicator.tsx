@@ -38,8 +38,8 @@ export function ClickIndicator({
   const INDICATOR_GLOW = `rgba(${rgb}, 0.55)`;
   // "ping" variant tones. The center stays translucent so the icon it sits on
   // remains visible through it; the hollow rings carry the attention instead.
-  const PING_DOT = `rgba(${rgb}, 0.4)`;
-  const PING_RING = `rgba(${rgb}, 0.6)`;
+  const PING_DOT = `rgba(${rgb}, 0.55)`;
+  const PING_RING = `rgba(${rgb}, 0.78)`;
 
   return (
     <div
@@ -52,7 +52,7 @@ export function ClickIndicator({
               IN from 0 and back OUT to 0 within its own loop (opacity
               [0, peak, 0]), so the keyframe that wraps is always invisible —
               no hard scale-reset flash at the loop boundary. */}
-          {[0, 0.9].map((offset, i) => (
+          {[0, 1.3].map((offset, i) => (
             <motion.span
               key={i}
               className="absolute rounded-full"
@@ -64,9 +64,9 @@ export function ClickIndicator({
                 border: `1.5px solid ${PING_RING}`,
               }}
               initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: [0.6, 1.8], opacity: [0, 0.6, 0] }}
+              animate={{ scale: [0.6, 1.8], opacity: [0, 0.8, 0] }}
               transition={{
-                duration: 1.8,
+                duration: 2.6,
                 delay: delay + offset,
                 repeat: Infinity,
                 ease: "easeOut",
@@ -85,8 +85,8 @@ export function ClickIndicator({
               background: PING_DOT,
               boxShadow: `0 0 12px ${INDICATOR_GLOW}`,
             }}
-            animate={{ opacity: [0.7, 1, 0.7] }}
-            transition={{ duration: 1.8, delay, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ opacity: [0.85, 1, 0.85] }}
+            transition={{ duration: 2.6, delay, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       ) : (

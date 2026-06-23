@@ -65,8 +65,8 @@ type Hotspot = {
   ariaLabel?: string;
 };
 
-// Brand green (#0DA071) for the playground's pulse indicators.
-const GREEN_RGB = "13, 160, 113";
+// Pulse-indicator hue for the playground. Amber-orange #FF9F0A for visibility.
+const GREEN_RGB = "255, 159, 10";
 
 // Mirrors TOP_OFFSET in AiSessionPlayground — how far the AI header drops to
 // clear the notch. Used to keep the close-button overlay aligned with it.
@@ -389,9 +389,9 @@ export function InteractivePhoneV2({
                   }}
                   animate={{
                     boxShadow: [
-                      `0 0 0 1.5px rgba(${GREEN_RGB}, 0.5), 0 0 8px 1px rgba(${GREEN_RGB}, 0.3)`,
-                      `0 0 0 2px rgba(${GREEN_RGB}, 1), 0 0 18px 3px rgba(${GREEN_RGB}, 0.6)`,
-                      `0 0 0 1.5px rgba(${GREEN_RGB}, 0.5), 0 0 8px 1px rgba(${GREEN_RGB}, 0.3)`,
+                      `0 0 0 1.5px rgba(${GREEN_RGB}, 0.65), 0 0 8px 1px rgba(${GREEN_RGB}, 0.45)`,
+                      `0 0 0 2px rgba(${GREEN_RGB}, 1), 0 0 18px 3px rgba(${GREEN_RGB}, 0.8)`,
+                      `0 0 0 1.5px rgba(${GREEN_RGB}, 0.65), 0 0 8px 1px rgba(${GREEN_RGB}, 0.45)`,
                     ],
                   }}
                   transition={{
