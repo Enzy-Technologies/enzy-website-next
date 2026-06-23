@@ -14,7 +14,7 @@ export const PRICING_TOOL_HTML = String.raw`<!DOCTYPE html>
 --text:#0B0F14;--text-sec:#4B5563;--text-mut:#6B7280;
 --green:#19AD7D;--green-hov:#149067;--green-press:#0F6E4F;--green-glow:#19AD7D;
 --green-dim:rgba(25,173,125,0.08);--green-soft:rgba(25,173,125,0.14);
---warn:#F4B740;--warn-dim:rgba(244,183,64,0.1);--error:#F04438;--info:#22D3EE;
+--warn:#D97706;--warn-dim:rgba(244,183,64,0.1);--error:#F04438;--info:#22D3EE;
 --shadow-sm:0 1px 3px rgba(11,15,20,0.05);--shadow-md:0 8px 30px rgba(11,15,20,0.08);
 --radius:14px;--radius-sm:10px;--radius-lg:24px;
 }
@@ -97,7 +97,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .price-hero::before{content:'';position:absolute;top:-50%;right:-25%;width:220px;height:220px;background:rgba(255,255,255,.06);border-radius:50%}
 .price-hero-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;opacity:.85;margin-bottom:8px}
 .price-hero-value{font-family:'IvyOra Text',Georgia,serif;font-size:52px;font-weight:400;line-height:1;position:relative;z-index:1;letter-spacing:-1px}
+.price-hero-unit{font-family:'Inter',sans-serif;font-size:22px;font-weight:600;opacity:.75;letter-spacing:0;margin-left:4px}
 .price-hero-sub{font-size:13px;opacity:.7;margin-top:6px;position:relative;z-index:1}
+.price-hero.ph-quarterly{background:linear-gradient(155deg,#149067,#19AD7D 45%,#34C495);box-shadow:0 14px 40px -12px rgba(52,196,149,.5)}
+.price-hero.ph-monthly{background:linear-gradient(155deg,#B45309,#D97706 45%,#F59E0B);box-shadow:0 14px 40px -12px rgba(217,119,6,.5)}
 .meta-discount{flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px}
 .md-pct{font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
 .md-text{font-size:11px;font-weight:700;color:var(--green)}
@@ -167,9 +170,32 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 .ai-price-badge{font-size:11px;font-weight:700;color:var(--green);background:var(--green-soft);padding:3px 9px;border-radius:20px;white-space:nowrap}
 .bd-row.enterprise .bd-name{color:var(--warn)}
 .bd-row.enterprise .bd-val{color:var(--warn)}
-.ai-ent-note{font-size:11px;color:var(--text-mut);line-height:1.4;margin:5px 0 2px;padding-left:36px}
+.ai-ent-note{font-size:11px;color:var(--warn);line-height:1.4;margin:5px 0 2px;padding-left:36px}
 .ai-upgrade-note{font-size:12px;color:var(--text-sec);line-height:1.45}
 .ai-upgrade-note b{color:var(--green);font-weight:700}
+.discounts-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);padding:16px 18px;margin-bottom:16px}
+.dc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dc-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--text-mut)}
+.dc-tag{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:3px 8px;border-radius:20px;background:var(--green);color:#fff}
+.dc-tag.good{background:var(--green-soft);color:var(--green)}
+.dc-tag.none{display:none}
+.dc-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:5px 0;font-size:13px}
+.dc-label{color:var(--text-sec);display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.dc-sub{font-size:10px;color:var(--text-mut);text-transform:uppercase;letter-spacing:.4px}
+.dc-pct{font-size:10px;font-weight:700;color:var(--green);background:var(--green-soft);padding:2px 7px;border-radius:20px}
+.dc-val{font-family:'Inter',sans-serif;font-weight:700;color:var(--text);white-space:nowrap}
+.dc-disc .dc-val{color:var(--green)}
+.dc-row.dc-final{border-top:1px solid var(--border);margin-top:6px;padding-top:12px}
+.dc-final .dc-label{font-weight:700;color:var(--text);font-size:14px}
+.dc-final .dc-val{font-size:18px;letter-spacing:-.3px}
+.dc-avail{opacity:.7}
+.dc-avail .dc-val{color:var(--text-mut);font-weight:600;font-style:italic}
+.dc-avail .dc-pct{background:var(--border);color:var(--text-mut)}
+.dc-note{font-size:11px;color:var(--text-mut);margin-top:10px;line-height:1.4}
+.dc-note.nudge{color:var(--warn)}
+.dc-u{font-size:12px;color:var(--text-mut);font-weight:600}
+.dc-permonth{padding-top:2px}
+.dc-permonth .dc-label,.dc-permonth .dc-val{font-size:12px;color:var(--text-mut);font-weight:600}
 @media(max-width:1024px){.app{grid-template-columns:1fr}.summary-panel{position:static;height:auto;border-left:none;border-top:1px solid var(--border)}.config-panel,.summary-panel{padding:24px 20px}.header{padding:14px 20px}}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 </style>
@@ -207,7 +233,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="sell-addon-left"><span class="sell-addon-name">✨ Enzy AI Pro</span></div>
 <div class="sell-addon-right"><span class="ai-price-badge" id="enzyaiPrice">+$10 / user</span><div class="toggle" id="toggle-enzyai"></div></div>
 </div>
-<div class="ai-upgrade-note">Unlocks the full <b>agentic experience</b> — set up <b>automations</b> where your AI agent proactively messages you, nudges teammates, and takes action on your behalf.</div>
+<div class="ai-upgrade-note">Unlocks the full <b>agentic experience</b> with <b>10× the usage</b> — set up <b>automations</b> where your AI agent proactively messages you, nudges teammates, and takes action on your behalf.</div>
 </div>
 </div>
 <div class="module-card" id="card-sell">
@@ -230,8 +256,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="section-title">Billing Cadence</div>
 <div class="section-desc">Annual is our standard plan and unlocks the best per-user rate.</div>
 <div class="billing-toggle">
-<button type="button" class="billing-opt selected" data-billing="annual"><span class="billing-best">Best Value</span><span class="billing-opt-name">Annual</span><span class="billing-opt-tag">Save 10%</span></button>
-<button type="button" class="billing-opt" data-billing="quarterly"><span class="billing-opt-name">Quarterly</span><span class="billing-opt-tag">Save 5%</span></button>
+<button type="button" class="billing-opt selected" data-billing="annual"><span class="billing-best">Best Value</span><span class="billing-opt-name">Annual</span><span class="billing-opt-tag">Save 20%</span></button>
+<button type="button" class="billing-opt" data-billing="quarterly"><span class="billing-opt-name">Quarterly</span><span class="billing-opt-tag">Save 10%</span></button>
 <button type="button" class="billing-opt" data-billing="monthly"><span class="billing-opt-name">Monthly</span><span class="billing-opt-tag none">No Discount</span></button>
 </div>
 </div>
@@ -247,33 +273,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="summary-panel">
 <div class="summary-header"><h2>Pricing Summary</h2><p>Updates live as you configure</p></div>
-<div class="price-hero">
+<div class="price-hero ph-annual" id="priceHero">
 <div class="price-hero-label">Cost Per User</div>
-<div class="price-hero-value" id="costPerUser">$50.00</div>
-<div class="price-hero-sub" id="priceHeroSub">per user / month · billed annually</div>
+<div class="price-hero-value"><span id="costPerUser">$32.00</span><span class="price-hero-unit">/mo</span></div>
+<div class="price-hero-sub" id="priceHeroSub">billed annually</div>
 </div>
-<div class="totals-card">
-<div class="totals-row">
-<div class="total-block"><div class="total-label">Per Month</div><div class="total-value" id="monthlyTotal">$10,000</div><div class="total-note" id="minimumNote"></div></div>
-<div class="total-divider"></div>
-<div class="total-block"><div class="total-label">Per Year</div><div class="total-value" id="annualCost">$120,000</div><div class="total-note" id="annualNote">billed annually</div></div>
-</div>
-<div class="savings-bar" id="savingsCallout"><span class="sb-check" id="sbIcon">✓</span><span class="sb-text"><b id="savingsAmount">$0</b> <span id="savingsText">saved per year vs monthly billing</span></span><span class="sb-tag" id="sbTag">Best value</span></div>
+<div class="discounts-card" id="discountsCard">
+<div class="dc-head"><span class="dc-title">Price breakdown</span><span class="dc-tag" id="dcTag">Best value</span></div>
+<div class="dc-row"><span class="dc-label">List price</span><span class="dc-val" id="dcList">$96,000</span></div>
+<div class="dc-row dc-disc" id="dcVolRow" style="display:none"><span class="dc-label">Volume discount <span class="dc-pct" id="dcVolPct">0%</span></span><span class="dc-val" id="dcVol">−$0</span></div>
+<div class="dc-row dc-disc" id="dcBillRow"><span class="dc-label"><span id="dcBillName">Annual billing</span> <span class="dc-pct" id="dcBillPct">20%</span></span><span class="dc-val" id="dcBill">−$19,200</span></div>
+<div class="dc-row dc-final"><span class="dc-label">Your price</span><span class="dc-val"><span id="dcFinal">$76,800</span><span class="dc-u"> /yr</span></span></div>
+<div class="dc-note" id="dcNote" style="display:none"></div>
 </div>
 <div class="minimum-notice" id="minimumBanner">⚠️ $500/mo minimum platform fee applies.</div>
 <div class="summary-meta">
-<div class="meta-item"><span class="meta-label">Setup Fee</span><div class="meta-line"><span class="meta-value" id="setupFee">$10,000</span><span class="meta-sub">one-time</span></div></div>
-<div class="meta-item"><span class="meta-label">Committed Users</span><div class="meta-line"><span class="meta-value" id="summaryUsers">200</span><span class="meta-sub">baseline</span></div><div class="meta-discount" id="volumeDiscount" style="display:none"><span class="md-pct" id="discountPct">0%</span><span class="md-text">volume discount</span></div></div>
+<div class="meta-item"><span class="meta-label">Setup Fee</span><div class="meta-line"><span class="meta-value" id="setupFee">$6,400</span><span class="meta-sub">one-time</span></div></div>
+<div class="meta-item"><span class="meta-label">Baseline</span><div class="meta-line"><span class="meta-value" id="summaryUsers">200</span><span class="meta-sub">users</span></div></div>
 </div>
+<div id="breakdownSection">
 <div class="summary-divider"></div>
 <div class="line-items">
-<div class="line-items-label">Module Breakdown (Monthly)</div>
-<div class="bd-row bd-parent"><span class="bd-name"><span class="bd-ico core-icon">📊</span>Core Module</span><span class="bd-val" id="lineCore">$7,000</span></div>
-<div class="bd-row bd-addon" id="lineEnzyaiRow" style="display:none"><span class="bd-name">Enzy AI Pro</span><span class="bd-val" id="lineEnzyai">$0</span></div>
+<div class="line-items-label">Per user breakdown</div>
+<div class="bd-row bd-parent"><span class="bd-name"><span class="bd-ico core-icon">📊</span>Core Module</span><span class="bd-val" id="lineCore">$32.00</span></div>
+<div class="bd-row bd-addon" id="lineEnzyaiRow" style="display:none"><span class="bd-name">Enzy AI Pro</span><span class="bd-val" id="lineEnzyai">$12.00</span></div>
 <div class="ai-ent-note" id="aiEntNote" style="display:none">*Custom-priced above 200 seats — loop in an AI specialist to scope.</div>
-<div class="bd-row bd-parent bd-sep" id="lineSellRow"><span class="bd-name"><span class="bd-ico sell-icon">💰</span>Sell Module</span><span class="bd-val" id="lineSell">$2,000</span></div>
-<div class="bd-row bd-addon" id="lineWeatherRow" style="display:none"><span class="bd-name">Weather Overlays</span><span class="bd-val" id="lineWeather">$0</span></div>
-<div class="bd-row bd-parent bd-sep" id="lineRecruitRow"><span class="bd-name"><span class="bd-ico recruit-icon">👥</span>Recruit Module</span><span class="bd-val" id="lineRecruit">$1,000</span></div>
+<div class="bd-row bd-parent bd-sep" id="lineSellRow"><span class="bd-name"><span class="bd-ico sell-icon">💰</span>Sell Module</span><span class="bd-val" id="lineSell">$10.00</span></div>
+<div class="bd-row bd-addon" id="lineWeatherRow" style="display:none"><span class="bd-name">Weather Overlays</span><span class="bd-val" id="lineWeather">$10.00</span></div>
+<div class="bd-row bd-parent bd-sep" id="lineRecruitRow"><span class="bd-name"><span class="bd-ico recruit-icon">👥</span>Recruit Module</span><span class="bd-val" id="lineRecruit">$5.00</span></div>
+</div>
 </div>
 <div class="summary-divider"></div>
 <div class="info-section"><h4>Agreement Terms</h4>
@@ -282,7 +310,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="summary-divider"></div>
 <div class="info-section"><h4>Usage Fees</h4>
-<div class="info-row"><span class="info-label">Additional User</span><span class="info-value-mono" id="termAdditionalUser">$65.00 / mo per user</span></div>
+<div class="info-row"><span class="info-label">Additional User</span><span class="info-value-mono" id="termAdditionalUser">$41.60 / mo per user</span></div>
 <div class="info-row"><span class="info-label">E-Signed Documents</span><span class="info-value-mono">$2.50 / document</span></div>
 <div class="info-row"><span class="info-label">Outbound Domestic SMS</span><span class="info-value-mono">$0.03 / SMS</span></div>
 </div>
@@ -291,20 +319,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <a class="partner-cta" href="/partners" target="_blank" rel="noopener noreferrer">
 <div class="partner-cta-body">
 <div class="partner-cta-title">Explore the Enzy partner network</div>
-<div class="partner-cta-text">Background checks, gear &amp; swag, commission &amp; payroll, and more — see every integration and offer.</div>
+<div class="partner-cta-text">Gear &amp; swag, commission &amp; payroll, background checks, and more — see every integration and offer.</div>
 </div>
 <span class="partner-cta-arrow">→</span>
 </a>
 </div>
-<div class="footer-note">Enzy Confidential · Internal use only</div>
 </div>
 </div>
 <script>
-const T=[{s:1,e:200,c:35,sl:10,r:5,w:10,a:5},{s:201,e:400,c:20,sl:6,r:3,w:6,a:3},{s:401,e:600,c:10,sl:3,r:1.5,w:3,a:1.5},{s:601,e:800,c:5,sl:1.5,r:.75,w:1.5,a:.75},{s:801,e:1000,c:2.5,sl:.75,r:.375,w:.75,a:.375},{s:1001,e:1e6,c:2,sl:.6,r:.3,w:.6,a:.3}];
+const T=[{s:1,e:200,c:32,sl:12,r:8,w:8,a:12},{s:201,e:400,c:20,sl:6,r:3,w:6,a:3},{s:401,e:600,c:10,sl:3,r:1.5,w:3,a:1.5},{s:601,e:800,c:5,sl:1.5,r:.75,w:1.5,a:.75},{s:801,e:1000,c:2.5,sl:.75,r:.375,w:.75,a:.375},{s:1001,e:1e6,c:2,sl:.6,r:.3,w:.6,a:.3}];
 const S={users:200,sell:false,recruit:false,weather:false,enzyai:false,months:12,billing:'annual'};
-// Billing cadence multipliers applied to the annual per-user price (annual = current tool math).
-// Monthly is the standard "list" price; annual saves 10%, quarterly saves 5% off that list.
-const BILL={annual:{mult:1,save:.10,sub:'billed annually'},quarterly:{mult:0.95/0.90,save:.05,sub:'billed quarterly'},monthly:{mult:1/0.90,save:0,sub:'billed monthly'}};
+// Billing cadence multipliers applied to the annual per-user price (annual = the base rate stored in T).
+// Monthly is the full "list" price (annual / 0.80); quarterly sits between (annual / 0.80 * 0.90).
+// Net: annual saves exactly 20% vs monthly, quarterly saves exactly 10% vs monthly.
+const BILL={annual:{mult:1,save:.20,sub:'billed annually'},quarterly:{mult:0.90/0.80,save:.10,sub:'billed quarterly'},monthly:{mult:1/0.80,save:0,sub:'billed monthly'}};
 function mc(u,k){let t=0,rem=u;for(const tr of T){if(rem<=0)break;const sz=tr.e-tr.s+1;t+=Math.min(rem,sz)*tr[k];rem-=sz;}return t;}
 function stdPPU(){let p=T[0].c;if(S.sell)p+=T[0].sl;if(S.recruit)p+=T[0].r;if(S.weather)p+=T[0].w;return p;}
 function syncDeps(){
@@ -317,36 +345,52 @@ if(sg)sg.classList.remove('open');
 function calc(){const u=S.users;if(u<1)return;syncDeps();
 const bl=BILL[S.billing],mult=bl.mult,listMult=BILL.monthly.mult;
 const cc=mc(u,'c'),sc=S.sell?mc(u,'sl'):0,rc=S.recruit?mc(u,'r'):0,wc=S.weather?mc(u,'w'):0;
-const aiOn=S.enzyai,aiCustom=aiOn&&u>200,aiCost=(aiOn&&u<=200)?u*10:0;
+const aiOn=S.enzyai,aiCustom=aiOn&&u>200,aiCost=(aiOn&&u<=200)?u*12:0;
 const moduleA=cc+sc+rc+wc;let tmA=moduleA+aiCost;const bm=tmA<500&&tmA>0;const emA=Math.max(tmA,500);
 const em=emA*mult;const cpuA=emA/u;const cpu=cpuA*mult;const auf=Math.ceil(cpuA*1.3*10)/10;
-const sp=stdPPU(),dp=sp>0?((sp-moduleA/u)/sp)*100:0;const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Price Lock';
+const sp=stdPPU();const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Price Lock';
 document.getElementById('costPerUser').textContent='$'+cpu.toFixed(2);
-document.getElementById('priceHeroSub').textContent='per user / month · '+bl.sub;document.getElementById('annualNote').textContent=bl.sub;
-document.getElementById('monthlyTotal').textContent=fc(em);document.getElementById('annualCost').textContent=fc(em*12);
+document.getElementById('priceHeroSub').textContent=bl.sub;
+document.getElementById('priceHero').className='price-hero ph-'+S.billing;
 document.getElementById('setupFee').textContent=fc(emA);document.getElementById('summaryUsers').textContent=u.toLocaleString();
-document.getElementById('lineCore').textContent=fc(cc*mult);
+document.getElementById('breakdownSection').style.display=(S.sell||S.recruit||S.weather||S.enzyai)?'block':'none';
+document.getElementById('lineCore').textContent='$'+(cc*mult/u).toFixed(2);
 var aiRow=document.getElementById('lineEnzyaiRow');aiRow.style.display=aiOn?'flex':'none';
-document.getElementById('lineEnzyai').textContent=aiCustom?'Custom*':fc(aiCost*mult);
+document.getElementById('lineEnzyai').textContent=aiCustom?'Custom*':'$'+(aiCost*mult/u).toFixed(2);
 aiRow.classList.toggle('enterprise',aiOn&&aiCustom);
 document.getElementById('aiEntNote').style.display=(aiOn&&aiCustom)?'block':'none';
-document.getElementById('enzyaiPrice').textContent=u>200?'Custom pricing':'+$10 / user';
-document.getElementById('lineSellRow').style.display=S.sell?'flex':'none';document.getElementById('lineSell').textContent=fc(sc*mult);
-document.getElementById('lineRecruitRow').style.display=S.recruit?'flex':'none';document.getElementById('lineRecruit').textContent=fc(rc*mult);
-document.getElementById('lineWeatherRow').style.display=S.weather?'flex':'none';document.getElementById('lineWeather').textContent=fc(wc*mult);
+document.getElementById('enzyaiPrice').textContent=u>200?'Custom pricing':'+$12 / user';
+document.getElementById('lineSellRow').style.display=S.sell?'flex':'none';document.getElementById('lineSell').textContent='$'+(sc*mult/u).toFixed(2);
+document.getElementById('lineRecruitRow').style.display=S.recruit?'flex':'none';document.getElementById('lineRecruit').textContent='$'+(rc*mult/u).toFixed(2);
+document.getElementById('lineWeatherRow').style.display=S.weather?'flex':'none';document.getElementById('lineWeather').textContent='$'+(wc*mult/u).toFixed(2);
 var wppu=mc(u,'w')/u;document.getElementById('weatherPrice').textContent='+$'+(wppu%1===0?wppu:wppu.toFixed(2))+' / user';
 document.getElementById('termLength').textContent=mo+' months';document.getElementById('termRenewal').textContent=rt;
 document.getElementById('termAdditionalUser').textContent='$'+auf.toFixed(2)+' / mo per user';
-const bn=document.getElementById('minimumBanner');if(bm){bn.classList.add('show');document.getElementById('minimumNote').textContent='$500 minimum applied';}else{bn.classList.remove('show');document.getElementById('minimumNote').textContent='';}
-var sco=document.getElementById('savingsCallout'),scA=document.getElementById('savingsAmount'),scT=document.getElementById('savingsText'),sbIcon=document.getElementById('sbIcon'),sbTag=document.getElementById('sbTag');
-var listYr=emA*listMult*12,saveYr=listYr-em*12,annualSaveYr=listYr-emA*BILL.annual.mult*12;
-sco.classList.remove('best','good','alert');sco.classList.add('show');
-if(S.billing==='annual'){sco.classList.add('best');sbIcon.textContent='✓';scA.textContent=fc(saveYr);scT.textContent='saved per year vs monthly billing · 10% off';sbTag.textContent='Best value';}
-else if(S.billing==='quarterly'){sco.classList.add('good');sbIcon.textContent='✓';scA.textContent=fc(saveYr);scT.textContent='saved per year vs monthly billing · 5% off';sbTag.textContent='Better deal';}
-else{sco.classList.add('alert');sbIcon.textContent='!';scA.textContent='$0';scT.textContent='saved — switch to annual to save '+fc(annualSaveYr)+'/yr (10% off)';sbTag.textContent='';}
-var vd=document.getElementById('volumeDiscount');
-if(dp>.5){vd.style.display='flex';document.getElementById('discountPct').textContent=Math.round(dp)+'%';}
-else{vd.style.display='none';}
+const bn=document.getElementById('minimumBanner');if(bm){bn.classList.add('show');}else{bn.classList.remove('show');}
+// Itemized discounts: list price -> volume -> billing -> your price (annual figures; always sums to final).
+var stdNoVolYr=Math.max(u*sp+aiCost,500);
+var finalYr=em*12;
+var billDiscYr=emA*(listMult-mult)*12;
+var volDiscYr=(stdNoVolYr-emA)*listMult*12;if(volDiscYr<1)volDiscYr=0;
+var listYr=finalYr+billDiscYr+volDiscYr;
+var volPct=stdNoVolYr>0?Math.round((stdNoVolYr-emA)/stdNoVolYr*100):0;
+var billPct=Math.round((listMult-mult)/listMult*100);
+document.getElementById('dcList').textContent=fc(listYr);
+document.getElementById('dcFinal').textContent=fc(finalYr);
+var volRow=document.getElementById('dcVolRow');
+if(volDiscYr>0){volRow.style.display='flex';document.getElementById('dcVolPct').textContent=volPct+'%';document.getElementById('dcVol').textContent='−'+fc(volDiscYr);}else{volRow.style.display='none';}
+var billRow=document.getElementById('dcBillRow'),dcTag=document.getElementById('dcTag'),dcNote=document.getElementById('dcNote'),cadName=S.billing==='annual'?'Annual':S.billing==='quarterly'?'Quarterly':'Monthly';
+if(S.billing==='monthly'){
+billRow.classList.add('dc-avail');billRow.style.display='flex';
+document.getElementById('dcBillName').textContent='Annual billing';document.getElementById('dcBillPct').textContent='20%';document.getElementById('dcBill').textContent='available';
+dcTag.textContent='';dcTag.className='dc-tag none';
+dcNote.style.display='block';dcNote.className='dc-note nudge';dcNote.textContent="You're on the monthly list price — switch to annual to save "+fc(emA*(listMult-1)*12)+"/yr.";
+}else{
+billRow.classList.remove('dc-avail');billRow.style.display='flex';
+document.getElementById('dcBillName').textContent=cadName+' billing';document.getElementById('dcBillPct').textContent=billPct+'%';document.getElementById('dcBill').textContent='−'+fc(billDiscYr);
+dcTag.textContent=S.billing==='annual'?'Best value':'Better deal';dcTag.className='dc-tag'+(S.billing==='quarterly'?' good':'');
+dcNote.style.display='none';
+}
 }
 function fc(v){return '$'+Math.round(v).toLocaleString();}
 function toggleModule(m){
