@@ -180,10 +180,10 @@ const HOTSPOTS: Record<BaseScreen, Hotspot[]> = {
   messaging: mainHotspots("messaging"),
   incentives: [
     ...mainHotspots("incentives"),
-    // The "All-Inclusive Experience" tournament card → opens the bracket. The
-    // whole photo card is the tap target and pulses as one.
+    // The "Champions Cup" tournament card → opens the bracket. The whole photo
+    // card is the tap target and pulses as one.
     {
-      id: "all-inclusive",
+      id: "champions-cup",
       to: "bracket",
       rect: { left: 16, top: 185, width: 362, height: 205 },
       indicate: true,
@@ -191,7 +191,7 @@ const HOTSPOTS: Record<BaseScreen, Hotspot[]> = {
       pulseRadius: 16,
       pulseInset: { left: 8, right: 9, top: 3, bottom: 2.5 },
       delay: 0.45,
-      ariaLabel: "Open All-Inclusive Experience bracket",
+      ariaLabel: "Open Champions Cup bracket",
     },
   ],
   // Bracket: only the back arrow. No nav, and intentionally NO hotspot/pulse
