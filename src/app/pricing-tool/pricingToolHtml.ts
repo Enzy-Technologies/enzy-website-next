@@ -310,7 +310,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 <div class="summary-divider"></div>
 <div class="info-section"><h4>Usage Fees</h4>
-<div class="info-row"><span class="info-label">Additional User</span><span class="info-value-mono" id="termAdditionalUser">$41.60 / mo per user</span></div>
+<div class="info-row"><span class="info-label">Additional User</span><span class="info-value-mono" id="termAdditionalUser">$42 / mo per user</span></div>
 <div class="info-row"><span class="info-label">E-Signed Documents</span><span class="info-value-mono">$2.50 / document</span></div>
 <div class="info-row"><span class="info-label">Outbound Domestic SMS</span><span class="info-value-mono">$0.03 / SMS</span></div>
 </div>
@@ -347,7 +347,7 @@ const bl=BILL[S.billing],mult=bl.mult,listMult=BILL.monthly.mult;
 const cc=mc(u,'c'),sc=S.sell?mc(u,'sl'):0,rc=S.recruit?mc(u,'r'):0,wc=S.weather?mc(u,'w'):0;
 const aiOn=S.enzyai,aiCustom=aiOn&&u>200,aiCost=(aiOn&&u<=200)?u*12:0;
 const moduleA=cc+sc+rc+wc;let tmA=moduleA+aiCost;const bm=tmA<500&&tmA>0;const emA=Math.max(tmA,500);
-const em=emA*mult;const cpuA=emA/u;const cpu=cpuA*mult;const auf=Math.ceil(cpuA*1.3*10)/10;
+const em=emA*mult;const cpuA=emA/u;const cpu=cpuA*mult;const auf=Math.round(cpuA*1.3);
 const sp=stdPPU();const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Price Lock';
 document.getElementById('costPerUser').textContent='$'+cpu.toFixed(2);
 document.getElementById('priceHeroSub').textContent=bl.sub;
@@ -365,7 +365,7 @@ document.getElementById('lineRecruitRow').style.display=S.recruit?'flex':'none';
 document.getElementById('lineWeatherRow').style.display=S.weather?'flex':'none';document.getElementById('lineWeather').textContent='$'+(wc*mult/u).toFixed(2);
 var wppu=mc(u,'w')/u;document.getElementById('weatherPrice').textContent='+$'+(wppu%1===0?wppu:wppu.toFixed(2))+' / user';
 document.getElementById('termLength').textContent=mo+' months';document.getElementById('termRenewal').textContent=rt;
-document.getElementById('termAdditionalUser').textContent='$'+auf.toFixed(2)+' / mo per user';
+document.getElementById('termAdditionalUser').textContent='$'+auf+' / mo per user';
 const bn=document.getElementById('minimumBanner');if(bm){bn.classList.add('show');}else{bn.classList.remove('show');}
 // Itemized discounts: list price -> volume -> billing -> your price (annual figures; always sums to final).
 var stdNoVolYr=Math.max(u*sp+aiCost,500);
