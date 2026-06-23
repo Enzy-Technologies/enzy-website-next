@@ -3,11 +3,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { MEDIA } from "../lib/breakpoints";
 
 /**
  * Auto-playing, looping walkthrough of the Competitions & Incentives feature,
- * framed in a phone. It threads three real app screens together as one screen
- * with iOS-style push navigation:
+ * framed in a phone (mobile) or iPad (desktop). It threads three real app
+ * screens together as one screen with iOS-style push navigation:
  *
  *   Incentives list → (tap the Milestone card) → Milestone detail
  *     → (tap back) → list → (tap the Tournament card) → Bracket
@@ -15,15 +16,24 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
  *
  * All three screens are static captures; the motion is the tap pulse + the
  * push/pop transition between them. Tap targets are positioned as fractions of
- * the capture (the frame is locked to its 393×852 aspect), so a pulse lands on
- * the same spot at any rendered size. The card centers were measured directly
- * off the list capture.
+ * the capture, so a pulse lands on the same spot at any rendered size. The
+ * card centers were measured directly off each list capture — and because the
+ * iPad list is a two-column grid (tournament top-left, milestone top-right)
+ * rather than the phone's single stacked column, the targets differ per form
+ * factor.
  */
 
 const SHOTS = {
-  list: "/system/incentives-list.png",
-  milestone: "/system/incentives-milestone.png",
-  bracket: "/system/incentives-bracket.png",
+  phone: {
+    list: "/system/incentives-list.png",
+    milestone: "/system/incentives-milestone.png",
+    bracket: "/system/incentives-bracket.png",
+  },
+  ipad: {
+    list: "/system/incentives-list-ipad.png",
+    milestone: "/system/incentives-milestone-ipad.png",
+    bracket: "/system/incentives-bracket-ipad.png",
+  },
 } as const;
 
 const GREEN = "#0DA071";
@@ -32,12 +42,33 @@ type Screen = "list" | "milestone" | "bracket";
 type Tap = "milestone-card" | "tournament-card" | "back" | null;
 
 // Tap targets as fractions of the screen: the two list cards (centered on each
-// card's artwork) + the detail back button (top-left).
+// card's artwork) + the detail back button (top-left). Phone stacks the cards
+// in one column; iPad lays them out as a two-column grid on the first row.
 const TAP = {
-  "tournament-card": { x: 0.5, y: 0.305 },
-  "milestone-card": { x: 0.5, y: 0.612 },
-  back: { x: 0.1, y: 0.05 },
+  phone: {
+    "tournament-card": { x: 0.5, y: 0.305 },
+    "milestone-card": { x: 0.5, y: 0.612 },
+    back: { x: 0.1, y: 0.05 },
+  },
+  ipad: {
+    "tournament-card": { x: 0.255, y: 0.225 },
+    "milestone-card": { x: 0.745, y: 0.225 },
+    back: { x: 0.05, y: 0.04 },
+  },
 } as const;
+
+/** Tracks whether the viewport is at the desktop breakpoint. */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(MEDIA.desktop);
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
 
 /** Expanding tap ripple shown at a screen-fraction position before a nav. */
 function TapPulse({ x, y }: { x: number; y: number }) {
@@ -63,9 +94,15 @@ function TapPulse({ x, y }: { x: number; y: number }) {
 
 export function CompetitionsMockup() {
   const hostRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
   const [inView, setInView] = useState(false);
   const [screen, setScreen] = useState<Screen>("list");
   const [tap, setTap] = useState<Tap>(null);
+
+  // On desktop, frame the iPad captures in a roomier tablet shell; on mobile
+  // keep the phone. Each form factor has its own captures + tap targets.
+  const shots = isDesktop ? SHOTS.ipad : SHOTS.phone;
+  const taps = isDesktop ? TAP.ipad : TAP.phone;
 
   // Run the loop only while on screen.
   useEffect(() => {
@@ -150,18 +187,22 @@ export function CompetitionsMockup() {
   }, [inView]);
 
   const detail = screen === "list" ? null : screen;
+  const frame = isDesktop
+    ? "max-w-[440px] aspect-[1668/2388] rounded-[28px]"
+    : "max-w-[300px] aspect-[393/852] rounded-[44px]";
+  const sizes = isDesktop ? "440px" : "(max-width: 768px) 90vw, 300px";
 
   return (
     <div className="flex justify-center">
       <div
         ref={hostRef}
-        className="relative w-full max-w-[300px] aspect-[393/852] overflow-hidden rounded-[44px] bg-white"
+        className={`relative w-full overflow-hidden bg-white ${frame}`}
       >
         {/* Root: the incentives list. Always mounted; detail screens push over it. */}
         <ImageWithFallback
-          src={SHOTS.list}
+          src={shots.list}
           alt="Competitions & incentives list"
-          sizes="(max-width: 768px) 90vw, 300px"
+          sizes={sizes}
           className="absolute inset-0 h-full w-full object-cover object-top"
         />
 
@@ -177,9 +218,9 @@ export function CompetitionsMockup() {
               transition={{ duration: 0.42, ease: [0.32, 0.72, 0, 1] }}
             >
               <ImageWithFallback
-                src={SHOTS[detail]}
+                src={shots[detail]}
                 alt={detail === "milestone" ? "Milestone incentive detail" : "Tournament bracket"}
-                sizes="(max-width: 768px) 90vw, 300px"
+                sizes={sizes}
                 className="absolute inset-0 h-full w-full object-cover object-top"
               />
             </motion.div>
@@ -187,10 +228,14 @@ export function CompetitionsMockup() {
         </AnimatePresence>
 
         {/* Tap pulse, positioned per target. Rendered last so it sits on top. */}
-        {tap && <TapPulse x={TAP[tap].x} y={TAP[tap].y} />}
+        {tap && <TapPulse x={taps[tap].x} y={taps[tap].y} />}
 
         {/* Device edge — matches the other previews. */}
-        <div className="pointer-events-none absolute inset-0 z-40 rounded-[44px] border border-black/12 dark:border-white/15" />
+        <div
+          className={`pointer-events-none absolute inset-0 z-40 border border-black/12 dark:border-white/15 ${
+            isDesktop ? "rounded-[28px]" : "rounded-[44px]"
+          }`}
+        />
       </div>
     </div>
   );
