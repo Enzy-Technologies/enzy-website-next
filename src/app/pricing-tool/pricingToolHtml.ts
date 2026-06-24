@@ -233,7 +233,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 <div class="sell-addon-left"><span class="sell-addon-name">✨ Enzy AI Pro</span></div>
 <div class="sell-addon-right"><span class="ai-price-badge" id="enzyaiPrice">+$10 / user</span><div class="toggle" id="toggle-enzyai"></div></div>
 </div>
-<div class="ai-upgrade-note">Unlocks the full <b>agentic experience</b> with <b>10× the usage</b> — set up <b>automations</b> where your AI agent proactively messages you, nudges teammates, and takes action on your behalf.</div>
+<div class="ai-upgrade-note">Unlocks the full <b>agentic experience</b> with <b>20× the usage</b> — set up <b>automations</b> where your AI agent proactively messages you, nudges teammates, and takes action on your behalf.</div>
 </div>
 </div>
 <div class="module-card" id="card-sell">
