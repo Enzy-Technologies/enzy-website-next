@@ -109,6 +109,9 @@ const PARTNERS: Partner[] = [
     category: "Recruiting",
     blurb:
       "A high-impact recruiting engine that helps door-to-door and field-sales teams source, screen, and hire quality reps at scale.",
+    // No usable custom mark; keep its low-res favicon out of the monochrome
+    // carousel (still shown on the directory card below).
+    hideFromMarquee: true,
   },
   {
     name: "Bips",
@@ -334,9 +337,7 @@ export function Partners() {
               <CTAButton
                 variant="secondary"
                 href="#partners-marketplace"
-                // Keep the dark frosted style but make it less see-through — the
-                // default secondary fill (white/6%) reads as transparent here.
-                className="px-8 py-4 font-semibold text-[14px] dark:!bg-white/15 dark:hover:!bg-white/[0.22]"
+                className="px-8 py-4 font-semibold text-[14px]"
               >
                 See our Partners
               </CTAButton>
