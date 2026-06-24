@@ -61,7 +61,7 @@ const PARTNERS: Partner[] = [
     name: "Sequifi",
     domain: "sequifi.com",
     url: "https://sequifi.com/partners/enzy",
-    category: "HR & Payroll",
+    category: "Commissions",
     blurb:
       "An all-in-one HR, payroll, and commission platform built to help commission-driven sales teams hire, pay, and scale.",
     // Google has no crawlable favicon for sequifi.com (returns a 404 globe), so
@@ -70,12 +70,12 @@ const PARTNERS: Partner[] = [
     marqueeLogo: "/logos/sequifi-mark.png",
   },
   {
-    name: "Stakt",
-    domain: "stakt.io",
-    url: "https://stakt.io/",
-    category: "Commissions",
+    name: "HailTrace",
+    domain: "hailtrace.com",
+    url: "https://hailtrace.com/",
+    category: "Storm Data",
     blurb:
-      "Commission automation software that calculates, tracks, and pays out complex field-sales commissions accurately and on time.",
+      "Meteorologist-verified, real-time hail and storm mapping that pinpoints damaged neighborhoods so roofing and restoration teams reach leads first.",
   },
   {
     name: "Truwear",
@@ -84,40 +84,6 @@ const PARTNERS: Partner[] = [
     category: "Apparel",
     blurb:
       "Performance menswear and custom-branded apparel that keeps your team looking sharp on the doors and in the office.",
-  },
-  {
-    name: "The Poser Company",
-    domain: "posercompany.com",
-    url: "https://www.posercompany.com/fulfillment.htm",
-    category: "Gear & Swag",
-    blurb:
-      "A brand marketing agency that designs and fulfills premium custom merch, swag, and gear to power your company culture.",
-  },
-  {
-    name: "Victig",
-    domain: "victig.com",
-    url: "https://victig.com/",
-    category: "Background Checks",
-    blurb:
-      "Fast, top-rated background screening and drug testing so you can onboard new reps with confidence.",
-  },
-  {
-    name: "Bips",
-    domain: "trybips.com",
-    url: "https://www.trybips.com/enzy",
-    category: "Taxes & Finance",
-    blurb:
-      "A financial tracking app built for 1099 reps that automates mileage and expense tracking so they capture every tax deduction all year long.",
-    cardLogo: "/logos/bips-icon.png",
-    marqueeLogo: "/logos/bips-mark.png",
-  },
-  {
-    name: "Hire Advantage",
-    domain: "d2dhire.com",
-    url: "https://d2dhire.com/",
-    category: "Recruiting",
-    blurb:
-      "A high-impact recruiting engine that helps door-to-door and field-sales teams source, screen, and hire quality reps at scale.",
   },
   {
     name: "Enerflo",
@@ -137,12 +103,46 @@ const PARTNERS: Partner[] = [
     marqueeLogo: "/logos/mf9-mark.png",
   },
   {
-    name: "HailTrace",
-    domain: "hailtrace.com",
-    url: "https://hailtrace.com/",
-    category: "Storm Data",
+    name: "Hire Advantage",
+    domain: "d2dhire.com",
+    url: "https://d2dhire.com/",
+    category: "Recruiting",
     blurb:
-      "Meteorologist-verified, real-time hail and storm mapping that pinpoints damaged neighborhoods so roofing and restoration teams reach leads first.",
+      "A high-impact recruiting engine that helps door-to-door and field-sales teams source, screen, and hire quality reps at scale.",
+  },
+  {
+    name: "Bips",
+    domain: "trybips.com",
+    url: "https://www.trybips.com/enzy",
+    category: "Taxes & Finance",
+    blurb:
+      "A financial tracking app built for 1099 reps that automates mileage and expense tracking so they capture every tax deduction all year long.",
+    cardLogo: "/logos/bips-icon.png",
+    marqueeLogo: "/logos/bips-mark.png",
+  },
+  {
+    name: "Victig",
+    domain: "victig.com",
+    url: "https://victig.com/",
+    category: "Background Checks",
+    blurb:
+      "Fast, top-rated background screening and drug testing so you can onboard new reps with confidence.",
+  },
+  {
+    name: "The Poser Company",
+    domain: "posercompany.com",
+    url: "https://www.posercompany.com/fulfillment.htm",
+    category: "Gear & Swag",
+    blurb:
+      "A brand marketing agency that designs and fulfills premium custom merch, swag, and gear to power your company culture.",
+  },
+  {
+    name: "Stakt",
+    domain: "stakt.io",
+    url: "https://stakt.io/",
+    category: "Commissions",
+    blurb:
+      "Commission automation software that calculates, tracks, and pays out complex field-sales commissions accurately and on time.",
   },
   {
     name: "Friendly Health Co",
