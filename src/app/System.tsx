@@ -189,7 +189,7 @@ const FEATURES_DATA: Feature[] = [
     bullets: [
       "Draw territories and assign them to reps or teams",
       "Route the day so reps cover ground, not guesswork",
-      "Weather Maps — point reps at the storm-hit streets where demand is live",
+      "Weather Overlays — point reps at the storm-hit streets where demand is live",
       "See where the team is working in real time",
     ],
     mockup: "canvassing-loop",
