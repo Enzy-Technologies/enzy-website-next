@@ -352,7 +352,7 @@ const sp=stdPPU();const mo=S.months;const rt=mo===12?'+7% / year at renewal':'Pr
 document.getElementById('costPerUser').textContent='$'+cpu.toFixed(2);
 document.getElementById('priceHeroSub').textContent=bl.sub;
 document.getElementById('priceHero').className='price-hero ph-'+S.billing;
-document.getElementById('setupFee').textContent=fc(emA);document.getElementById('summaryUsers').textContent=u.toLocaleString();
+document.getElementById('setupFee').textContent=fc(em);document.getElementById('summaryUsers').textContent=u.toLocaleString();
 document.getElementById('breakdownSection').style.display=(S.sell||S.recruit||S.weather||S.enzyai)?'block':'none';
 document.getElementById('lineCore').textContent='$'+(cc*mult/u).toFixed(2);
 var aiRow=document.getElementById('lineEnzyaiRow');aiRow.style.display=aiOn?'flex':'none';
