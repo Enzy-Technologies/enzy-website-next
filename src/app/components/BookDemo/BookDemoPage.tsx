@@ -78,7 +78,7 @@ export function BookDemoPage({
                   supporting bullets and stat cards stay desktop-only so
                   mobile leads straight into the form after the intro. */}
               <BlurReveal
-                as="h2"
+                as="h1"
                 delay={0.1}
                 className={`font-ivyora font-medium leading-[1.05] tracking-[-2px] ${containerText} text-[40px] sm:text-[48px] md:text-[56px]`}
               >

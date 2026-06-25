@@ -1,5 +1,5 @@
 ---
-title: "How Elite Anesthesia Skyrocketed Sales by 189% with Enzy's Secret Sauce"
+title: "How Elite Anesthesia Skyrocketed Sales 189% with Enzy's Secret Sauce"
 slug: "how-elite-anesthesia-skyrocketed-sales-by-189-with-enzys-secret-sauce"
 date: "2024-09-26"
 description: "Elite Anesthesia, keen on improving their sales numbers, sought a solution to energize their sales team and drive better results. See how Enzy helped them."

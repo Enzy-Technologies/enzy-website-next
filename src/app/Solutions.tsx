@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { DoorOpen, Headset, ArrowRight } from "lucide-react";
 import { BlurReveal } from "./components/BlurReveal";
 import { CTAButton } from "./components/CTAButton";
+import { ImageWithFallback } from "./components/figma/ImageWithFallback";
 import { BOOK_DEMO_HREF, BOOK_DEMO_CTA_STYLE } from "./lib/booking";
 import { FIELD_SALES_INDUSTRIES, VIRTUAL_SALES_INDUSTRIES } from "./lib/industries";
 
@@ -748,10 +749,12 @@ function ModeSection({ content }: { content: ModeContent }) {
             </blockquote>
             <footer className="flex items-center gap-4 mt-8 pt-6 border-t border-black/10 dark:border-white/10">
               {content.proof.quote.avatar ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <ImageWithFallback
                   src={content.proof.quote.avatar}
                   alt={content.proof.quote.name}
+                  width={48}
+                  height={48}
+                  sizes="48px"
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : null}
