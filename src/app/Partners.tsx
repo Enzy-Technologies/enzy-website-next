@@ -150,7 +150,7 @@ const PARTNERS: Partner[] = [
   {
     name: "Friendly Health Co",
     domain: "friendlyhealthco.com",
-    url: "https://friendlyhealthco.com/",
+    url: "https://friendlyhealthco.com/enzy",
     category: "Health Insurance",
     blurb:
       "Personalized ACA health insurance guidance that helps 1099 reps and their families find affordable coverage and maximize subsidies.",
