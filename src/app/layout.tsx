@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import Script from "next/script"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { RouteChangeTracking } from "./components/RouteChangeTracking"
+import { AdParamsCapture } from "./components/AdParamsCapture"
 import localFont from "next/font/local"
 import { Inter } from "next/font/google"
 import "./globals.css"
@@ -238,6 +239,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             Suspense boundary is required because it reads useSearchParams. */}
         <Suspense fallback={null}>
           <RouteChangeTracking hyrosPh={HYROS_PH} />
+          {/* Persist inbound Meta ad params (utm_*, campaign/adset/ad ids,
+              fbclid) so they survive cross-page nav and ride into HubSpot at
+              form submit. See lib/adTracking. */}
+          <AdParamsCapture />
         </Suspense>
 
         {/* Vercel Speed Insights — real-user Core Web Vitals (LCP, INP, CLS).

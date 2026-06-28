@@ -11,6 +11,7 @@ import { FAQSection } from "@/app/components/FAQSection";
 import { SITE_STATS } from "@/app/lib/stats";
 import type { LpVariant } from "@/app/lib/lpExperiment";
 import { trackLpConversion } from "@/app/lib/lpTracking";
+import { getHiddenFieldsForForm } from "@/app/lib/adTracking";
 
 declare global {
   interface Window {
@@ -34,6 +35,17 @@ export function BookDemoPage({
 } = {}) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [meetingsReady, setMeetingsReady] = useState(false);
+
+  // Captured Meta ad params (utm_*, campaign/adset/ad ids, fbclid) to write into
+  // the form's hidden fields. Read once on mount via the lazy initializer; the
+  // effect re-reads in case AdParamsCapture persisted them after first paint
+  // (same-page ad landing), which updates `hiddenFields` and re-applies them.
+  const [adFields, setAdFields] = useState<Record<string, string>>(() =>
+    typeof window === "undefined" ? {} : getHiddenFieldsForForm()
+  );
+  useEffect(() => {
+    setAdFields(getHiddenFieldsForForm());
+  }, []);
 
   // /lp/meta opt-in #2: the actual meeting booking. HubSpot's Meetings embed
   // posts `meetingBookSucceeded` when a slot is confirmed — distinct from the
@@ -152,7 +164,13 @@ export function BookDemoPage({
                   <HubSpotForm
                     formId={formId}
                     loadingAlign="left"
-                    hiddenFields={lpVariant ? { lp_variant: lpVariant } : undefined}
+                    hiddenFields={(() => {
+                      const fields = {
+                        ...adFields,
+                        ...(lpVariant ? { lp_variant: lpVariant } : {}),
+                      };
+                      return Object.keys(fields).length ? fields : undefined;
+                    })()}
                     onSubmitted={() => {
                       setShowCalendar(true);
                       // /lp/meta opt-in #1: the demo-form submit.

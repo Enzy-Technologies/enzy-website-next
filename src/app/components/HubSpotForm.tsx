@@ -181,6 +181,26 @@ export function HubSpotForm({
     };
   }, [formId]);
 
+  // Re-apply hidden fields if they arrive or change AFTER the form is ready
+  // (e.g. ad params read from storage asynchronously). markReady() applies them
+  // once at ready; this catches later updates. Idempotent — only writes inputs
+  // whose value actually differs.
+  useEffect(() => {
+    if (status !== "ready") return;
+    const container = containerRef.current;
+    if (!container || !hiddenFields) return;
+    for (const [name, value] of Object.entries(hiddenFields)) {
+      const input = container.querySelector<HTMLInputElement>(
+        `input[name="${name}"]`
+      );
+      if (input && input.value !== value) {
+        input.value = value;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    }
+  }, [hiddenFields, status]);
+
   // Reveal the loading hint only if loading outlasts the delay; cancel the
   // moment status changes (e.g. the form became ready first).
   useEffect(() => {
