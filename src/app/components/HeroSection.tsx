@@ -233,13 +233,17 @@ function HeroSectionLp({ experimentVariant }: { experimentVariant?: LpVariant })
           </motion.div>
         </div>
 
-        <div className="mt-16 md:mt-24 w-full max-w-3xl mx-auto">
+        {/* z-20: the form's native dropdowns overflow past this box into the
+            marquee below. The marquee animates a transform → its own compositing
+            layer, which would otherwise paint over the open dropdown. Lifting the
+            form's stacking context above the marquee's keeps menus on top. */}
+        <div className="relative z-20 mt-16 md:mt-24 w-full max-w-3xl mx-auto">
           <div id="lp-demo" className="scroll-mt-8 w-full">
             <BookDemoPage hideTestimonials hideText formId={LP_DEMO_FORM_ID} lpVariant={experimentVariant} />
           </div>
         </div>
 
-        <div className="mt-12 md:mt-16 w-full max-w-4xl mx-auto text-center">
+        <div className="relative z-10 mt-12 md:mt-16 w-full max-w-4xl mx-auto text-center">
           <p
             className="mb-4 font-inter text-[15px] font-semibold uppercase tracking-[0.18em] md:text-[15px] text-black/55 dark:text-white/55"
           >
