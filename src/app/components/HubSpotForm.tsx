@@ -67,6 +67,102 @@ function hasRenderedForm(container: HTMLElement | null): boolean {
   );
 }
 
+/**
+ * Set an input's value through React's native setter so HubSpot's controlled
+ * phone component actually re-renders from it (a plain `el.value = ...` is
+ * silently ignored by React-controlled inputs). Then fire input + change so
+ * HubSpot re-parses and updates its hidden submit field.
+ */
+function setNativeValue(el: HTMLInputElement, value: string, fireChange = true) {
+  const setter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    "value"
+  )?.set;
+  setter?.call(el, value);
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  // `change` is what makes HubSpot re-parse into its hidden submit field. Skip
+  // it for purely cosmetic prefix tweaks (clear/restore of "+1") so we don't
+  // trip validation on an empty field the user is still working in.
+  if (fireChange) el.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+// WebKit/Blink fire a CSS animationstart when a field gets autofilled, even in
+// the cases (notably Safari) where they fire no input/change event until blur.
+// We hang a no-op keyframe off `:-webkit-autofill` so we can listen for it and
+// normalize the moment autofill lands, rather than waiting for the user to tab
+// out of the field.
+const AUTOFILL_KEYFRAME = "enzyAutofillStart";
+function ensureAutofillKeyframes() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById("enzy-autofill-kf")) return;
+  const style = document.createElement("style");
+  style.id = "enzy-autofill-kf";
+  style.textContent =
+    `@keyframes ${AUTOFILL_KEYFRAME}{from{}to{}}` +
+    `input:-webkit-autofill{animation-name:${AUTOFILL_KEYFRAME};animation-duration:1ms}`;
+  document.head.appendChild(style);
+}
+
+/**
+ * Coerce a US phone value into canonical E.164 (`+1XXXXXXXXXX`), or return null
+ * to mean "leave it alone".
+ *
+ * Why: HubSpot's phone field (hsfc-PhoneInput) parses some autofill shapes
+ * correctly but mangles others. Browser autofill commonly injects a number with
+ * a bare leading country code and no plus (`18015551234`, typical of iOS
+ * Contacts) which HubSpot turns into `+118015551234`, or — on Chrome, because
+ * the field is pre-seeded with `+1` — a doubled `+1+18015551234`. Both submit a
+ * broken number and can flip the detected country off the US. Feeding HubSpot a
+ * clean `+1XXXXXXXXXX` is the one shape it always parses correctly.
+ *
+ * We deliberately return null (no change) for anything that isn't an
+ * unambiguous, complete US number so we never fight a user mid-type or rewrite a
+ * value HubSpot has already formatted. US area codes never start with 1, so a
+ * 10-digit national part beginning with 1 is an incomplete entry, not a number.
+ */
+function normalizeUsPhone(raw: string): string | null {
+  const digits = (raw || "").replace(/\D/g, "");
+  if (!digits) return null;
+  let national = digits;
+  // Strip a displaced country-code "1" from the LEADING end — covers
+  // `1XXXXXXXXXX` and the doubled `+1+1XXXXXXXXXX` case.
+  while (national.length > 10 && national.startsWith("1")) {
+    national = national.slice(1);
+  }
+  // ...and from the TRAILING end — covers Chrome on iOS, where autofill inserts
+  // the number *before* the pre-seeded `+1`, pushing the country code to the end
+  // (`XXXXXXXXXX1`). Only ever runs while we still have excess digits, so a real
+  // 10-digit number that happens to end in 1 is never touched.
+  while (national.length > 10 && national.endsWith("1")) {
+    national = national.slice(0, -1);
+  }
+  if (national.length !== 10) return null; // incomplete / not a US number
+  if (national.startsWith("1")) return null; // invalid US area code → mid-type
+  return `+1${national}`;
+}
+
+/**
+ * Normalize one phone input in place, but only if it's actually broken. The
+ * digit-equality guard means a value that's already `+1` + the same 10 digits
+ * (in any of HubSpot's display formats) is left untouched, so we never loop with
+ * HubSpot's formatter.
+ */
+function normalizePhoneInput(el: HTMLInputElement) {
+  const next = normalizeUsPhone(el.value);
+  if (!next) return;
+  // Already canonical? Only if it carries the leading "+" AND the same digits.
+  // The "+" matters: HubSpot reads `+18015551234` as country-code + national,
+  // but `18015551234` (identical digits, no plus) as a bare national number and
+  // prepends another 1 → `+118015551234`. Comparing digits alone would wrongly
+  // treat the broken no-plus form as already-correct and skip it. The "+" test
+  // also lets HubSpot's own display formats (`+1 (801) 555-1234`) pass through
+  // untouched, so we never loop with its formatter.
+  if (el.value.trim().startsWith("+") && el.value.replace(/\D/g, "") === next.replace(/\D/g, "")) {
+    return;
+  }
+  setNativeValue(el, next);
+}
+
 export function HubSpotForm({
   formId,
   loadingAlign = "left",
@@ -119,10 +215,100 @@ export function HubSpotForm({
       }
     };
 
+    // Keep phone fields submittable as clean US E.164 regardless of how the
+    // browser autofills them (see normalizeUsPhone). Attached once, on ready.
+    let phoneCleanup: (() => void) | null = null;
+    const setupPhoneNormalization = () => {
+      if (phoneCleanup || !container) return;
+      const inputs = Array.from(
+        container.querySelectorAll<HTMLInputElement>('input[type="tel"]')
+      );
+      if (inputs.length === 0) return;
+
+      ensureAutofillKeyframes();
+
+      // On touch devices the pre-seeded "+1" makes iOS/Chrome treat the field as
+      // non-empty and skip the phone autofill prompt (Chrome on iOS won't offer
+      // it at all unless you move the caret before the "+1"). We clear the
+      // untouched prefix on focus so autofill engages and inserts cleanly, then
+      // restore it on blur if the field went unused. Desktop — already working —
+      // is left exactly as-is.
+      const isTouch =
+        typeof window !== "undefined" &&
+        !!window.matchMedia?.("(pointer: coarse)").matches;
+      // "Pristine" = nothing but the prefix (no digits, or just the country 1).
+      const isPristinePrefix = (v: string) => {
+        const d = v.replace(/\D/g, "");
+        return d === "" || d === "1";
+      };
+
+      // Normalize on input/change/blur. `input` is what makes autofill correct
+      // itself instantly: Chrome fires it on autofill, and HubSpot validates on
+      // it too. Crucially this does NOT disturb manual typing — normalizeUsPhone
+      // only rewrites a complete, broken US number, and a hand-typed value always
+      // carries HubSpot's leading "+", so the guard leaves it untouched.
+      const handlers = inputs.map((el) => {
+        const originalPlaceholder = el.placeholder;
+        const fn = () => normalizePhoneInput(el);
+        // Safari often fires no input/change on autofill until blur; the
+        // :-webkit-autofill animation is the reliable signal there. Defer one
+        // frame so the autofilled value is readable before we normalize.
+        const onAutofill = (e: AnimationEvent) => {
+          if (e.animationName === AUTOFILL_KEYFRAME) {
+            requestAnimationFrame(() => normalizePhoneInput(el));
+          }
+        };
+        const onFocus = () => {
+          if (isTouch && isPristinePrefix(el.value)) {
+            // Hide the field's placeholder ("*") while we blank it — otherwise
+            // clearing "+1" leaves an empty field showing the required-marker.
+            el.placeholder = "";
+            setNativeValue(el, "", false);
+          }
+        };
+        const onBlur = () => {
+          fn();
+          // Restore the cosmetic "+1" if the user focused but left it empty.
+          if (isTouch && el.value.replace(/\D/g, "") === "") {
+            setNativeValue(el, "+1", false);
+          }
+          if (isTouch) el.placeholder = originalPlaceholder;
+        };
+        el.addEventListener("input", fn);
+        el.addEventListener("change", fn);
+        el.addEventListener("focus", onFocus);
+        el.addEventListener("blur", onBlur);
+        el.addEventListener("animationstart", onAutofill);
+        return { el, fn, onFocus, onBlur, onAutofill };
+      });
+
+      // Backstop for any browser that autofills silently before the user ever
+      // touches the field. We skip a focused field so we don't fight typing.
+      const sweeps = [250, 700, 1500].map((ms) =>
+        window.setTimeout(() => {
+          for (const el of inputs) {
+            if (document.activeElement !== el) normalizePhoneInput(el);
+          }
+        }, ms)
+      );
+
+      phoneCleanup = () => {
+        for (const { el, fn, onFocus, onBlur, onAutofill } of handlers) {
+          el.removeEventListener("input", fn);
+          el.removeEventListener("change", fn);
+          el.removeEventListener("focus", onFocus);
+          el.removeEventListener("blur", onBlur);
+          el.removeEventListener("animationstart", onAutofill);
+        }
+        for (const t of sweeps) window.clearTimeout(t);
+      };
+    };
+
     const markReady = () => {
       if (cancelled) return;
       setStatus("ready");
       applyHiddenFields();
+      setupPhoneNormalization();
       onReadyRef.current?.();
     };
 
@@ -175,6 +361,7 @@ export function HubSpotForm({
       document.removeEventListener("submit", onSubmit, true);
       window.clearInterval(poll);
       window.clearTimeout(blockedTimer);
+      phoneCleanup?.();
       script.remove();
       // Clear rendered markup so a remount renders cleanly.
       container.innerHTML = "";
