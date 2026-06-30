@@ -19,3 +19,10 @@ export const DEMO_FORM_ID = "94576c22-2aa4-4888-9b5a-c8a3b0313152";
 
 /** HubSpot form used on /lp/* landing pages — separate form for ad/landing-page attribution. */
 export const LP_DEMO_FORM_ID = "8bde40f5-6ad5-4c18-b277-f47fd96297ca";
+
+/**
+ * GFI partner opt-in form (/lp/gfi). Its own HubSpot form so submissions are
+ * cleanly attributable to the GFI partnership and carry the tier / add-on
+ * selections used to generate the DocuSign agreement.
+ */
+export const GFI_FORM_ID = "9376b087-0028-4102-98ac-74f2359a9f07";
