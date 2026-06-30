@@ -160,7 +160,11 @@ export function BookDemoPage({
               >
                 <div className="pointer-events-none absolute inset-0 rounded-[32px] md:rounded-[36px] ring-1 ring-white/10" aria-hidden />
 
-                <div className="flex flex-col gap-7 enzy-hubspot-embed">
+                {/* Pull the embed outward on mobile so the form sits ~8px from
+                    the card edge (card padding is 20px; -12px margin nets 8px),
+                    giving the fields room on phones. Reset at sm+ where the
+                    wider padding is fine. */}
+                <div className="flex flex-col gap-7 enzy-hubspot-embed -mx-3 sm:mx-0">
                   <HubSpotForm
                     formId={formId}
                     loadingAlign="left"
