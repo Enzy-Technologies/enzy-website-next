@@ -1,0 +1,31 @@
+# Enzy
+
+> Enzy is the performance operating system for sales teams. It turns real-time performance data into visibility, accountability, motivation, recognition, and manager action that change revenue behavior — built at the intersection of live business intelligence and the engagement mechanics of social media.
+
+Enzy invented and owns the "performance operating system" category. Most software records what happened; Enzy changes what happens next. The product runs one continuous loop — Data → Visibility → Accountability → Motivation → Action → Recognition → Culture → Performance — rather than a set of disconnected modules.
+
+Customers are sales organizations, heavily field and direct-to-door (pest control, solar, roofing, alarms, direct sales). The buyer is usually a sales leader, manager, or rep who cares about momentum and results. Enzy is US-based (Enzy Technologies, LLC) and integrates with 50+ CRMs, field-service platforms, and dialers.
+
+## Core pages
+
+- [Home](https://enzy.ai/): Enzy, the performance operating system for sales teams — performance is the largest untapped lever in your business, and Enzy surfaces it.
+- [System](https://enzy.ai/system): How the platform works — AI assistant, competitions, incentives, messaging, leaderboards, and integrations, built to drive daily execution.
+- [Solutions](https://enzy.ai/solutions): How Enzy fits each role — reps, managers, leaders, and ops — turning connected data into actions and outcomes.
+- [Integrations](https://enzy.ai/integrations): Enzy connects to 50+ CRMs, field-service platforms, dialers, and tools to track activity, sync records, and trigger actions across the stack.
+- [About](https://enzy.ai/about): Why Enzy exists — an AI-first way to drive daily execution, engagement, and results for sales teams.
+
+## Resources
+
+- [Insights](https://enzy.ai/insights): Articles, playbooks, and case studies on sales performance, competitions, incentives, and building high-performance teams.
+- [Partners](https://enzy.ai/partners): Partners that help Enzy customers grow — payroll, commissions, apparel, swag, and background checks — plus how to become an Enzy partner.
+- [Affiliate Program](https://enzy.ai/affiliate-program): Refer sales organizations to Enzy and earn 10% of first-year ARR for every referral that signs.
+
+## Get in touch
+
+- [Book a Demo](https://enzy.ai/book-a-demo): Book an Enzy demo and pick a time that works.
+- [Contact Us](https://enzy.ai/contact-us): Reach sales for demos and pricing, or support for account help.
+
+## Legal
+
+- [Privacy Policy](https://enzy.ai/privacy-policy): Privacy policy for Enzy Technologies, LLC.
+- [Terms and Conditions](https://enzy.ai/terms-and-conditions): Terms and conditions for Enzy Technologies, LLC.
