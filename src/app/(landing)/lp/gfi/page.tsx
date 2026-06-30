@@ -16,7 +16,7 @@ import { GfiLandingShell } from "./GfiLandingShell";
 export const metadata: Metadata = buildMetadata({
   title: "Enzy for GFI Agency Owners",
   description:
-    "GFI has partnered with Enzy, the performance operating system for sales teams. Opt in at exclusive partner pricing and run your agency like a high-performance team.",
+    "GFI has partnered with Enzy, the performance operating system for sales teams. Opt in at exclusive partner pricing and run your agency on momentum.",
   path: "/lp/gfi",
   hiddenFromSearchEngines: true,
 });

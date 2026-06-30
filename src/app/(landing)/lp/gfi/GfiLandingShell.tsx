@@ -97,7 +97,7 @@ const VALUE_PROPS: { title: string; body: string }[] = [
   },
   {
     title: "Make the month a competition",
-    body: "Competitions, incentives, and badges turn quotas into something agents chase — and wins into something the whole agency celebrates.",
+    body: "Competitions, incentives, and badges turn goals into something agents chase — and wins into something the whole agency celebrates.",
   },
   {
     title: "Run it all in one place",
@@ -170,7 +170,7 @@ export function GfiLandingShell() {
             delay={0.1}
             className={`mt-3 font-ivyora font-medium leading-[1.05] tracking-[-1.5px] ${containerText} text-[38px] sm:text-[48px] md:text-[58px]`}
           >
-            Run your GFI agency like a high-performance team.
+            Run your GFI agency on momentum.
           </BlurReveal>
           <p className={`mt-5 max-w-2xl font-inter text-[16px] leading-[1.65] md:text-[18px] ${muted}`}>
             GFI has partnered with Enzy — the performance operating system for sales
@@ -246,7 +246,7 @@ export function GfiLandingShell() {
               className="absolute right-6 top-7 rounded-full px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-[0.12em] text-white"
               style={{ backgroundColor: GREEN }}
             >
-              Most complete
+              Recommended
             </span>
             <p className="font-inter text-[12px] font-semibold uppercase tracking-[0.16em] text-black/50 dark:text-white/50">
               Tier 2
@@ -273,7 +273,7 @@ export function GfiLandingShell() {
           {ADD_ONS.map((a) => (
             <div
               key={a.name}
-              className="rounded-2xl border border-black/10 p-5 dark:border-white/10"
+              className="rounded-2xl border border-black/10 bg-white/40 p-5 backdrop-blur-[30px] dark:border-white/10 dark:bg-white/[0.05]"
             >
               <div className="flex items-baseline justify-between gap-3">
                 <h3 className={`m-0 font-inter text-[15px] font-semibold ${containerText}`}>
