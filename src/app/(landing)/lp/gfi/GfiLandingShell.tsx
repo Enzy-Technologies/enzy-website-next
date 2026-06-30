@@ -302,7 +302,11 @@ export function GfiLandingShell() {
             Pick your tier, choose any add-ons, and we&apos;ll send your agreement to
             sign.
           </p>
-          <div className="mt-7 enzy-hubspot-embed">
+          {/* Pull the embedded form outward on mobile so it sits ~8px from the
+              card edge (card padding is 24px; -16px margin nets 8px), giving the
+              fields room without changing the heading/subtext inset above. Reset
+              at sm+ where there's no squeeze. */}
+          <div className="mt-7 enzy-hubspot-embed -mx-4 sm:mx-0">
             <HubSpotForm formId={GFI_FORM_ID} loadingAlign="left" />
           </div>
         </div>
