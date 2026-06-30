@@ -5,6 +5,7 @@ import { Check } from "lucide-react";
 
 import { BlurReveal } from "@/app/components/BlurReveal";
 import { HubSpotForm } from "@/app/components/HubSpotForm";
+import { EvidenceSection } from "@/app/components/EvidenceSection";
 import { GFI_FORM_ID } from "@/app/lib/booking";
 
 /**
@@ -26,19 +27,19 @@ type Feature = { name: string; desc: string };
 const TIER_1_FEATURES: Feature[] = [
   {
     name: "Messaging",
-    desc: "Streamlined internal comms with unlimited users per group — auto-organized by your org chart so the right agents are always in the right thread.",
-  },
-  {
-    name: "Profiles & Badges",
-    desc: "A social-media-like profile for every agent that turns recognition into credibility the whole team can see.",
+    desc: "Streamlined internal comms with unlimited users per group, auto-organized by your org chart so the right agents are always in the right thread.",
   },
   {
     name: "Leaderboards",
     desc: "Put the daily score in front of everyone. Visibility breeds accountability.",
   },
   {
+    name: "Profiles & Badges",
+    desc: "A social-media-like profile for every agent that turns recognition into credibility the whole team can see.",
+  },
+  {
     name: "Competitions & Incentives",
-    desc: "Turn the month into a race. Teams running competitions lift sales 27% on average.",
+    desc: "Turn the month into a race. Teams running competitions lift sales 21% on average.",
   },
   {
     name: "Feed",
@@ -48,60 +49,53 @@ const TIER_1_FEATURES: Feature[] = [
 
 const TIER_2_FEATURES: Feature[] = [
   {
-    name: "Task Programs",
-    desc: "Structured workflows that turn your playbook into the daily actions that drive production.",
-  },
-  {
     name: "Enzy AI",
-    desc: "Watches every agent's numbers in real time and pushes the right person the right nudge — a rep going cold, a streak worth celebrating, a goal within reach — so you act while it still moves the month, not after.",
+    desc: "Watches every agent's numbers in real time and surfaces what matters: a rep going cold, a streak worth celebrating, a goal within reach. It pushes that to the right person so you act while it still moves the month, not after.",
   },
   {
     name: "Media Library",
     desc: "Training and resources in one place, so every new agent ramps the same way.",
   },
   {
-    name: "Customer Surveys",
-    desc: "Capture client feedback effortlessly and feed it straight back into coaching.",
+    name: "Digital Business Card & Customer Surveys",
+    desc: "A modern, shareable card that makes every agent easy to refer and remember, plus built-in surveys that capture client feedback and turn it into credibility.",
   },
   {
-    name: "Digital Business Card",
-    desc: "A modern, shareable card that makes every agent easy to refer and remember.",
+    name: "Lead Mapping & Appointment Scheduling",
+    desc: "Smarter client acquisition that maps leads and books appointments in one flow.",
   },
   {
     name: "Recruiting & Onboarding",
     desc: "Streamline how you bring on and ramp new agents.",
   },
-  {
-    name: "Lead Mapping & Appointment Scheduling",
-    desc: "Smarter client acquisition — map leads and book appointments in one flow.",
-  },
 ];
 
-const ADD_ONS: { name: string; price: string; desc: string }[] = [
+const ADD_ONS: { name: string; price: string; desc: string; note?: string }[] = [
   {
     name: "Custom CRM Integration",
     price: "$427–$713/mo",
     desc: "Automated reporting and bi-directional lead sync with your existing CRM.",
+    note: "Includes a dedicated onboarding and discovery call to scope your integration and confirm pricing.",
   },
   {
     name: "Premium Support",
     price: "$142/mo",
-    desc: "A dedicated Enzy rep to set up competitions, badges, and backend admin — so you stay focused on growth.",
+    desc: "A dedicated Enzy rep to set up competitions, badges, and backend admin, so you stay focused on growth.",
   },
 ];
 
 const VALUE_PROPS: { title: string; body: string }[] = [
   {
-    title: "See every agent live",
-    body: "Leaderboards and profiles put the daily score in front of the whole team — so production becomes visible and accountability takes care of itself.",
+    title: "Visibility that drives competition",
+    body: "Leaderboards and live profiles put every agent's score in front of the whole team — then competitions, incentives, and badges turn that score into something they chase and celebrate.",
   },
   {
-    title: "Make the month a competition",
-    body: "Competitions, incentives, and badges turn goals into something agents chase — and wins into something the whole agency celebrates.",
+    title: "Messaging built into your data",
+    body: "One communication hub that replaces the scattered GroupMe, WhatsApp, and Telegram threads — and because it's wired to your live numbers, recognition and celebration become seamless.",
   },
   {
     title: "Run it all in one place",
-    body: "Messaging, recognition, and coaching live in one platform — so you can retire the group texts, spreadsheets, and one-off tools.",
+    body: "Performance, recognition, and coaching on one connected system — so you retire the spreadsheets and one-off tools for good.",
   },
 ];
 
@@ -187,19 +181,34 @@ export function GfiLandingShell() {
           </a>
         </div>
 
-        {/* What's in it for agency owners */}
-        <div className="mt-16 grid grid-cols-1 gap-5 md:mt-20 md:grid-cols-3 md:gap-6">
-          {VALUE_PROPS.map((v) => (
-            <div
-              key={v.title}
-              className="liquid-glass-solid rounded-3xl border border-[#19ad7d]/20 p-6 dark:border-[#19ad7d]/30"
-            >
-              <h3 className={`m-0 font-inter text-[17px] font-semibold ${containerText}`}>
-                {v.title}
-              </h3>
-              <p className={`mt-2 m-0 font-inter text-[14px] leading-[1.6] ${muted}`}>{v.body}</p>
-            </div>
-          ))}
+        {/* The three pillars — bridges from the hero ("…on momentum"). Numbered
+            to frame them as the core of what the agency runs on, not a loose
+            feature list. */}
+        <div className="mt-16 md:mt-20">
+          <h2
+            className={`m-0 max-w-2xl font-ivyora font-medium leading-[1.1] tracking-[-1px] ${containerText} text-[30px] sm:text-[36px]`}
+          >
+            What that momentum runs on.
+          </h2>
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
+            {VALUE_PROPS.map((v, i) => (
+              <div
+                key={v.title}
+                className="liquid-glass-solid rounded-3xl border border-[#19ad7d]/20 p-6 dark:border-[#19ad7d]/30"
+              >
+                <span
+                  className="font-inter text-[13px] font-bold tracking-[0.12em]"
+                  style={{ color: GREEN }}
+                >
+                  {`0${i + 1}`}
+                </span>
+                <h3 className={`mt-3 m-0 font-inter text-[17px] font-semibold ${containerText}`}>
+                  {v.title}
+                </h3>
+                <p className={`mt-2 m-0 font-inter text-[14px] leading-[1.6] ${muted}`}>{v.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -240,7 +249,14 @@ export function GfiLandingShell() {
           {/* Tier 2 */}
           <div
             className="liquid-glass-solid relative flex flex-col rounded-[28px] border p-7 md:p-8"
-            style={{ borderColor: GREEN }}
+            // Green glow (instead of the default neutral glass shadow) so Tier 2
+            // reads as the highlighted plan. Inline because liquid-glass-solid's
+            // own box-shadow is unlayered CSS and would otherwise win.
+            style={{
+              borderColor: GREEN,
+              boxShadow:
+                "0 18px 50px rgba(25,173,125,0.28), inset 0 1px 0 rgba(255,255,255,0.25)",
+            }}
           >
             <span
               className="absolute right-6 top-7 rounded-full px-3 py-1 font-inter text-[11px] font-semibold uppercase tracking-[0.12em] text-white"
@@ -284,6 +300,11 @@ export function GfiLandingShell() {
                 </span>
               </div>
               <p className={`mt-1.5 m-0 font-inter text-[13px] leading-[1.55] ${muted}`}>{a.desc}</p>
+              {a.note ? (
+                <p className={`mt-2 m-0 font-inter text-[12px] italic leading-[1.5] ${muted}`}>
+                  {a.note}
+                </p>
+              ) : null}
               <p className="mt-1.5 m-0 font-inter text-[11px] uppercase tracking-[0.1em] text-black/40 dark:text-white/40">
                 Optional add-on
               </p>
@@ -293,7 +314,7 @@ export function GfiLandingShell() {
       </section>
 
       {/* Opt-in form */}
-      <section id="opt-in" className="relative mx-auto w-full max-w-3xl scroll-mt-8 px-4 pb-24 md:pb-32">
+      <section id="opt-in" className="relative mx-auto w-full max-w-3xl scroll-mt-8 px-4 pb-6 md:pb-8">
         <div className="liquid-glass-solid rounded-[32px] border border-[#19ad7d]/20 p-6 dark:border-[#19ad7d]/30 sm:p-8 md:p-10">
           <h2 className={`m-0 font-ivyora font-medium tracking-[-1px] ${containerText} text-[28px] sm:text-[34px]`}>
             Opt in to Enzy.
@@ -312,12 +333,20 @@ export function GfiLandingShell() {
         </div>
         <p className={`mt-5 text-center font-inter text-[12px] leading-[1.6] ${muted}`}>
           Questions about the partnership? Reach your GFI leadership or email{" "}
-          <a href="mailto:sales@enzy.co" className="underline underline-offset-2">
-            sales@enzy.co
+          <a href="mailto:sales@enzy.ai" className="underline underline-offset-2">
+            sales@enzy.ai
           </a>
           .
         </p>
       </section>
+
+      {/* Proof. The lp variant drops the quote card and shows just the headline
+          stat. It carries a home/meta-only tablet top margin (md:mt-[26vh]) to
+          clear the playground hero there; this page has no such hero, so the
+          wrapper cancels that margin to avoid an empty tablet gap. */}
+      <div className="md:-mt-[26vh] lg:mt-0 [&>section]:pt-10 md:[&>section]:pt-12">
+        <EvidenceSection variant="lp" />
+      </div>
     </div>
   );
 }
