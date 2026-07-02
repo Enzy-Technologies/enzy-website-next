@@ -54,6 +54,9 @@ type Partner = {
   cardIcon?: LucideIcon;
   /** Exclude from the monochrome logo carousel (e.g. no usable mono mark). */
   hideFromMarquee?: boolean;
+  /** Extra classes for the marquee logo (e.g. scale down a mark that reads
+   *  larger than the others). */
+  marqueeClassName?: string;
 };
 
 const PARTNERS: Partner[] = [
@@ -68,6 +71,20 @@ const PARTNERS: Partner[] = [
     // use a local mark for both the card and the monochrome carousel.
     cardLogo: "/logos/sequifi-mark.png",
     marqueeLogo: "/logos/sequifi-mark.png",
+  },
+  {
+    name: "JobNimbus",
+    domain: "jobnimbus.com",
+    url: "https://www.jobnimbus.com/",
+    category: "CRM & Project Management",
+    blurb:
+      "The #1 CRM and project management software for contractors, giving roofing and home-services teams one place to track leads, jobs, and payments from first knock to final invoice.",
+    // Google's favicon for jobnimbus.com is a solid dark tile that renders as a
+    // black square under the carousel's monochrome treatment — use the
+    // transparent wordmark for the marquee instead.
+    marqueeLogo: "/logos/jobnimbus-mark.png",
+    // Stacked icon+wordmark reads larger than the single marks — scale it down.
+    marqueeClassName: "scale-[0.85]",
   },
   {
     name: "HailTrace",
@@ -238,7 +255,9 @@ function PartnerMarqueeLogo({ partner }: { partner: Partner }) {
       width={40}
       height={40}
       loading="lazy"
-      className="max-h-full max-w-full h-auto w-auto object-contain opacity-40 brightness-0 dark:opacity-60 dark:invert"
+      className={`max-h-full max-w-full h-auto w-auto object-contain opacity-40 brightness-0 dark:opacity-60 dark:invert${
+        partner.marqueeClassName ? ` ${partner.marqueeClassName}` : ""
+      }`}
       onError={() => setFailed(true)}
     />
   );
